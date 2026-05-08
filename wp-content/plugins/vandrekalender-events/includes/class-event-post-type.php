@@ -2,13 +2,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Registers the vandrekalender_event custom post type and activity taxonomy.
+ *
+ * @package Vandrekalender
+ */
 class Vandrekalender_Event_Post_Type {
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
 	}
 
+	/**
+	 * Register the vandrekalender_event post type.
+	 */
 	public function register_post_type() {
 		$labels = [
 			'name'               => __( 'Events', 'vandrekalender-events' ),
@@ -35,6 +46,9 @@ class Vandrekalender_Event_Post_Type {
 		);
 	}
 
+	/**
+	 * Register the vandrekalender_activity taxonomy.
+	 */
 	public function register_taxonomy() {
 		register_taxonomy(
 			'vandrekalender_activity',

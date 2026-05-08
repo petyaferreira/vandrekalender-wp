@@ -3,7 +3,7 @@
 
 # Dependencies
 /vendor/
-/node_modules/
+node_modules/
 
 # WP content — whitelist only our theme and plugin
 /wp-content/*
@@ -16,9 +16,11 @@
 !/wp-content/plugins/vandrekalender-events/
 !/wp-content/plugins/vandrekalender-events/**
 
-# Built assets
+# Built assets and dependencies (must come after whitelist negations)
 /wp-content/themes/vandrekalender-theme/public/
+/wp-content/themes/vandrekalender-theme/node_modules/
 /wp-content/plugins/vandrekalender-events/build/
+/wp-content/plugins/vandrekalender-events/node_modules/
 
 # macOS
 .DS_Store

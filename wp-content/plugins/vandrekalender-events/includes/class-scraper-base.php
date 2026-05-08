@@ -2,26 +2,53 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Base class for all event scrapers.
+ *
+ * @package Vandrekalender
+ */
 abstract class Vandrekalender_Scraper_Base {
 
+	/**
+	 * Fetch raw HTML from the event source.
+	 *
+	 * @return string Raw HTML body.
+	 */
 	abstract protected function fetch(): string;
 
+	/**
+	 * Parse HTML into an array of event data arrays.
+	 *
+	 * @param string $html Raw HTML from fetch().
+	 * @return array Array of event data arrays.
+	 */
 	abstract protected function parse( string $html ): array;
 
-	public function run() {
+	/**
+	 * Fetch, parse, and upsert all events from the source.
+	 *
+	 * @return int Number of events created or updated.
+	 */
+	public function run(): int {
 		$html   = $this->fetch();
 		$events = $this->parse( $html );
 		$count  = 0;
 
 		foreach ( $events as $event ) {
 			if ( $this->upsert_event( $event ) ) {
-				$count++;
+				++$count;
 			}
 		}
 
 		return $count;
 	}
 
+	/**
+	 * Insert or update an event post, deduplicating by source URL.
+	 *
+	 * @param array $event Event data array including post fields and meta keys.
+	 * @return bool True if the event was created or updated.
+	 */
 	protected function upsert_event( array $event ): bool {
 		if ( empty( $event['_event_source_url'] ) ) {
 			return false;
@@ -83,6 +110,12 @@ abstract class Vandrekalender_Scraper_Base {
 		return true;
 	}
 
+	/**
+	 * Fetch a URL via wp_remote_get and return the body, or empty string on failure.
+	 *
+	 * @param string $url URL to fetch.
+	 * @return string Response body.
+	 */
 	protected function remote_get( string $url ): string {
 		$response = wp_remote_get(
 			$url,

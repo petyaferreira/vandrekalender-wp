@@ -26,6 +26,16 @@
         <severity>0</severity>
     </rule>
 
+    <!-- File names use shorter names intentionally (class-scraper-base vs class-vandrekalender-scraper-base) -->
+    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
+        <severity>0</severity>
+    </rule>
+
+    <!-- meta_query and meta_key are used intentionally for event filtering and deduplication -->
+    <rule ref="WordPress.DB.SlowDBQuery">
+        <severity>0</severity>
+    </rule>
+
     <arg name="extensions" value="php"/>
 
     <file>wp-content/themes/vandrekalender-theme</file>

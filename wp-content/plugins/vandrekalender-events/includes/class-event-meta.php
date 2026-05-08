@@ -2,25 +2,66 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Registers meta fields for the vandrekalender_event post type.
+ *
+ * @package Vandrekalender
+ */
 class Vandrekalender_Event_Meta {
 
 	const META_FIELDS = [
-		'_event_date'          => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
-		'_event_distance_km'   => [ 'type' => 'number', 'sanitize' => 'floatval' ],
-		'_event_difficulty'    => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
-		'_event_location_name' => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
-		'_event_lat'           => [ 'type' => 'number', 'sanitize' => 'floatval' ],
-		'_event_lng'           => [ 'type' => 'number', 'sanitize' => 'floatval' ],
-		'_event_organiser'     => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
-		'_event_source_url'    => [ 'type' => 'string', 'sanitize' => 'esc_url_raw' ],
-		'_event_claim_status'  => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
-		'_event_region'        => [ 'type' => 'string', 'sanitize' => 'sanitize_text_field' ],
+		'_event_date'          => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
+		'_event_distance_km'   => [
+			'type'     => 'number',
+			'sanitize' => 'floatval',
+		],
+		'_event_difficulty'    => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
+		'_event_location_name' => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
+		'_event_lat'           => [
+			'type'     => 'number',
+			'sanitize' => 'floatval',
+		],
+		'_event_lng'           => [
+			'type'     => 'number',
+			'sanitize' => 'floatval',
+		],
+		'_event_organiser'     => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
+		'_event_source_url'    => [
+			'type'     => 'string',
+			'sanitize' => 'esc_url_raw',
+		],
+		'_event_claim_status'  => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
+		'_event_region'        => [
+			'type'     => 'string',
+			'sanitize' => 'sanitize_text_field',
+		],
 	];
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_meta' ] );
 	}
 
+	/**
+	 * Register all meta fields with the REST API.
+	 */
 	public function register_meta() {
 		foreach ( self::META_FIELDS as $key => $config ) {
 			register_post_meta(

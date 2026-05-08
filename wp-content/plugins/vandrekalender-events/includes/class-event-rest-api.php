@@ -2,14 +2,25 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * REST API endpoints for reading walking events.
+ *
+ * @package Vandrekalender
+ */
 class Vandrekalender_Event_Rest_Api {
 
 	const NAMESPACE = 'vandrekalender/v1';
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
 	}
 
+	/**
+	 * Register REST routes.
+	 */
 	public function register_routes() {
 		register_rest_route(
 			self::NAMESPACE,
@@ -38,6 +49,12 @@ class Vandrekalender_Event_Rest_Api {
 		);
 	}
 
+	/**
+	 * Return a filtered list of published events.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function get_events( WP_REST_Request $request ) {
 		$meta_query = [];
 
@@ -98,6 +115,12 @@ class Vandrekalender_Event_Rest_Api {
 		return rest_ensure_response( array_map( [ $this, 'format_event' ], $posts ) );
 	}
 
+	/**
+	 * Return a single event by ID.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error
+	 */
 	public function get_event( WP_REST_Request $request ) {
 		$post = get_post( (int) $request->get_param( 'id' ) );
 
@@ -108,6 +131,12 @@ class Vandrekalender_Event_Rest_Api {
 		return rest_ensure_response( $this->format_event( $post ) );
 	}
 
+	/**
+	 * Format a post into an event response array.
+	 *
+	 * @param WP_Post $post The event post.
+	 * @return array
+	 */
 	private function format_event( WP_Post $post ) {
 		$meta = get_post_meta( $post->ID );
 
@@ -129,13 +158,33 @@ class Vandrekalender_Event_Rest_Api {
 		];
 	}
 
+	/**
+	 * Return the query param definitions for the events collection endpoint.
+	 *
+	 * @return array
+	 */
 	private function get_collection_params() {
 		return [
-			'date_from'    => [ 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ],
-			'date_to'      => [ 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ],
-			'region'       => [ 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ],
-			'difficulty'   => [ 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ],
-			'distance_max' => [ 'type' => 'number', 'sanitize_callback' => 'floatval' ],
+			'date_from'    => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'date_to'      => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'region'       => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'difficulty'   => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'distance_max' => [
+				'type'              => 'number',
+				'sanitize_callback' => 'floatval',
+			],
 		];
 	}
 }

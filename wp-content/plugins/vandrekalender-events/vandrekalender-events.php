@@ -6,6 +6,8 @@
  * Version:     1.0.0
  * Author:      Petya Ferreira
  * Text Domain: vandrekalender-events
+ *
+ * @package Vandrekalender
  */
 
 defined( 'ABSPATH' ) || exit;
