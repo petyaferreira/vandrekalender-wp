@@ -1,0 +1,30 @@
+# Environment
+.env
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# WP content — whitelist only our theme and plugin
+/wp-content/*
+!/wp-content/themes/
+!/wp-content/plugins/
+/wp-content/themes/*
+!/wp-content/themes/vandrekalender-theme/
+!/wp-content/themes/vandrekalender-theme/**
+/wp-content/plugins/*
+!/wp-content/plugins/vandrekalender-events/
+!/wp-content/plugins/vandrekalender-events/**
+
+# Built assets
+/wp-content/themes/vandrekalender-theme/public/
+/wp-content/plugins/vandrekalender-events/build/
+
+# macOS
+.DS_Store
+
+# SQL dumps
+*.sql
+
+# IDE
+.vscode/settings.json

@@ -1,0 +1,21 @@
+{
+    "name": "vandrekalender-events",
+    "version": "1.0.0",
+    "description": "Gutenberg blocks for Vandrekalender events",
+    "author": "Petya Ferreira",
+    "license": "ISC",
+    "scripts": {
+        "start": "wp-scripts start",
+        "build": "wp-scripts build"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^30.0.0"
+    },
+    "dependencies": {
+        "@wordpress/api-fetch": "^7.0.0",
+        "@wordpress/components": "^28.0.0",
+        "@wordpress/data": "^10.0.0",
+        "@wordpress/element": "^6.0.0",
+        "@wordpress/i18n": "^5.0.0"
+    }
+}

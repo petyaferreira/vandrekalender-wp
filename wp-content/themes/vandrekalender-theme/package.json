@@ -1,0 +1,14 @@
+{
+    "name": "vandrekalender-theme",
+    "version": "1.0.0",
+    "description": "Vandrekalender FSE block theme",
+    "author": "Petya Ferreira",
+    "license": "ISC",
+    "scripts": {
+        "start": "wp-scripts start --webpack-src-dir=resources --output-path=public",
+        "build": "wp-scripts build --webpack-src-dir=resources --output-path=public"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^30.0.0"
+    }
+}

@@ -1,0 +1,141 @@
+name: Deploy to Nordicway
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      ref:
+        required: false
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      ref:
+        description: 'Branch, tag, or SHA to deploy (empty = default branch)'
+        required: false
+        type: string
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      THEME_NAME: vandrekalender-theme
+      PLUGIN_NAME: vandrekalender-events
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install and Build Theme
+        working-directory: wp-content/themes/${{ env.THEME_NAME }}
+        run: |
+          rm -rf public
+          npm ci || npm install
+          npm run build
+
+      - name: Install and Build Plugin
+        working-directory: wp-content/plugins/${{ env.PLUGIN_NAME }}
+        run: |
+          rm -rf build
+          npm ci || npm install
+          npm run build
+
+      - name: Prepare Nordicway deploy structure
+        run: |
+          mkdir -p nordicway/wp-content/themes/$THEME_NAME
+          mkdir -p nordicway/wp-content/plugins/$PLUGIN_NAME
+
+          rsync -av "wp-content/themes/$THEME_NAME/" "nordicway/wp-content/themes/$THEME_NAME" \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.gitignore \
+            --exclude=.prettierrc \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=webpack.config.js \
+            --exclude=phpcs.xml \
+            --exclude=composer.json \
+            --exclude=composer.lock \
+            --exclude=resources
+
+          rsync -av "wp-content/plugins/$PLUGIN_NAME/" "nordicway/wp-content/plugins/$PLUGIN_NAME" \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.gitignore \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=webpack.config.js \
+            --exclude=phpcs.xml \
+            --exclude=composer.json \
+            --exclude=composer.lock \
+            --exclude=README.md \
+            --exclude=src
+
+      - name: Write SSH key and add host
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NORDICWAY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.NORDICWAY_SSH_PORT }} ${{ secrets.NORDICWAY_SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Create remote wp-content subfolders
+        env:
+          HOST: ${{ secrets.NORDICWAY_SSH_HOST }}
+          USER: ${{ secrets.NORDICWAY_SSH_USERNAME }}
+          PORT: ${{ secrets.NORDICWAY_SSH_PORT }}
+          DEST: ${{ secrets.NORDICWAY_DEST_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$PORT" \
+            -o StrictHostKeyChecking=yes \
+            "$USER@$HOST" "mkdir -p '$DEST/themes' '$DEST/plugins'"
+
+      - name: Deploy to Nordicway
+        env:
+          HOST: ${{ secrets.NORDICWAY_SSH_HOST }}
+          USER: ${{ secrets.NORDICWAY_SSH_USERNAME }}
+          PORT: ${{ secrets.NORDICWAY_SSH_PORT }}
+          DEST: ${{ secrets.NORDICWAY_DEST_PATH }}
+        run: |
+          echo "Deploying to $USER@$HOST:$DEST (${{ inputs.environment }})"
+          scp -i ~/.ssh/deploy_key -P "$PORT" -r "nordicway/wp-content/themes/$THEME_NAME" \
+            "$USER@$HOST:$DEST/themes/"
+          scp -i ~/.ssh/deploy_key -P "$PORT" -r "nordicway/wp-content/plugins/$PLUGIN_NAME" \
+            "$USER@$HOST:$DEST/plugins/"
+          echo "✅ Deployment complete → ${{ inputs.environment }}"
+
+      - name: Post-deploy sanity check
+        env:
+          HOST: ${{ secrets.NORDICWAY_SSH_HOST }}
+          USER: ${{ secrets.NORDICWAY_SSH_USERNAME }}
+          PORT: ${{ secrets.NORDICWAY_SSH_PORT }}
+          DEST: ${{ secrets.NORDICWAY_DEST_PATH }}
+        run: |
+          ssh -T -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=yes "$USER@$HOST" <<'SSHCMDS'
+            echo '--- Themes ---'
+            ls -lah "${DEST}/themes" || true
+            echo '--- Plugins ---'
+            ls -lah "${DEST}/plugins" || true
+          SSHCMDS

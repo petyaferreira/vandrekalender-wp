@@ -1,0 +1,14 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/event-filters",
+    "title": "Event Filters",
+    "category": "widgets",
+    "description": "Filter controls for the event calendar.",
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "supports": {
+        "html": false
+    }
+}

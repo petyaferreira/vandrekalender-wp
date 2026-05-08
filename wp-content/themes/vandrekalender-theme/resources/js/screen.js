@@ -1,0 +1,1 @@
+// Frontend scripts entry point
