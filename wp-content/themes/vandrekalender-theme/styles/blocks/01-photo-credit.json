@@ -1,0 +1,9 @@
+{
+    "version": 2,
+    "title": "Photo Credit",
+    "slug": "photo-credit",
+    "blockTypes": ["core/paragraph"],
+    "styles": {
+        "css": ""
+    }
+}

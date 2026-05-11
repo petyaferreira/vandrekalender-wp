@@ -4,19 +4,24 @@
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
+  margin: 0;
 }
 
 // Photo credit positioned at bottom-right of a Cover block
-.wp-block-cover .photo-credit {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.75rem;
-    font-size: 0.7rem;
-    opacity: 0.7;
-    margin: 0;
+.wp-block-cover__inner-container {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.wp-block-cover .is-style-photo-credit {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  opacity: 0.7;
 }
