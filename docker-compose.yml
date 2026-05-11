@@ -20,8 +20,8 @@ services:
         define( 'SCRIPT_DEBUG', true );
         define( 'WP_DEVELOPMENT_MODE', true );
     volumes:
-      - "./wp-content/themes/vandrekalender-theme:/var/www/html/wp-content/themes/vandrekalender-theme"
-      - "./wp-content/plugins/vandrekalender-events:/var/www/html/wp-content/plugins/vandrekalender-events"
+      - "./wp-content/themes:/var/www/html/wp-content/themes"
+      - "./wp-content/plugins:/var/www/html/wp-content/plugins"
       - "./custom.ini:/usr/local/etc/php/conf.d/custom.ini"
 
   db:
