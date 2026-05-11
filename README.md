@@ -22,6 +22,34 @@ cd wp-content/themes/vandrekalender-theme && npm install && npm run build
 cd wp-content/plugins/vandrekalender-events && npm install && npm run build
 ```
 
+## Plugins & Themes
+
+WordPress plugins and themes are managed via Composer using [WPackagist](https://wpackagist.org).
+Composer-managed packages are **not committed** — they are installed fresh on every CI deploy.
+
+**Add a plugin or theme:**
+```bash
+composer require wpackagist-plugin/akismet        # plugin from wordpress.org
+composer require wpackagist-theme/twentytwentyfive # theme from wordpress.org
+```
+
+**Update a specific package:**
+```bash
+composer update wpackagist-plugin/safe-svg
+```
+
+**Update all packages:**
+```bash
+composer update
+```
+
+**Install after cloning (dev setup):**
+```bash
+composer install   # installs everything in composer.lock including wp-content packages
+```
+
+Commit `composer.lock` after any `require` or `update` so CI uses the exact same versions.
+
 ## WP-CLI
 
 ```bash

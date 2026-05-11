@@ -40,6 +40,9 @@ jobs:
           ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
           fetch-depth: 0
 
+      - name: Install Composer packages
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -96,6 +99,23 @@ jobs:
             --exclude=README.md \
             --exclude=src
 
+          # Composer-managed themes and plugins
+          for dir in wp-content/themes/*/; do
+            name=$(basename "$dir")
+            if [ "$name" != "$THEME_NAME" ]; then
+              mkdir -p "nordicway/wp-content/themes/$name"
+              rsync -av "$dir" "nordicway/wp-content/themes/$name" --exclude=.git
+            fi
+          done
+
+          for dir in wp-content/plugins/*/; do
+            name=$(basename "$dir")
+            if [ "$name" != "$PLUGIN_NAME" ]; then
+              mkdir -p "nordicway/wp-content/plugins/$name"
+              rsync -av "$dir" "nordicway/wp-content/plugins/$name" --exclude=.git
+            fi
+          done
+
       - name: Write SSH key and add host
         run: |
           mkdir -p ~/.ssh
@@ -123,10 +143,16 @@ jobs:
           DEST: ${{ secrets.NORDICWAY_DEST_PATH }}
         run: |
           echo "Deploying to $USER@$HOST:$DEST (${{ inputs.environment }})"
-          scp -i ~/.ssh/deploy_key -P "$PORT" -r "nordicway/wp-content/themes/$THEME_NAME" \
-            "$USER@$HOST:$DEST/themes/"
-          scp -i ~/.ssh/deploy_key -P "$PORT" -r "nordicway/wp-content/plugins/$PLUGIN_NAME" \
-            "$USER@$HOST:$DEST/plugins/"
+
+          # Deploy all themes and plugins from the nordicway staging dir
+          for dir in nordicway/wp-content/themes/*/; do
+            scp -i ~/.ssh/deploy_key -P "$PORT" -r "$dir" "$USER@$HOST:$DEST/themes/"
+          done
+
+          for dir in nordicway/wp-content/plugins/*/; do
+            scp -i ~/.ssh/deploy_key -P "$PORT" -r "$dir" "$USER@$HOST:$DEST/plugins/"
+          done
+
           echo "✅ Deployment complete → ${{ inputs.environment }}"
 
       - name: Post-deploy sanity check
