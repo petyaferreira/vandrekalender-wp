@@ -38,7 +38,7 @@ class Vandrekalender_Event_Post_Type {
 				'labels'       => $labels,
 				'public'       => true,
 				'show_in_rest' => true,
-				'supports'     => [ 'title', 'editor', 'thumbnail', 'author' ],
+				'supports'     => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author' ],
 				'has_archive'  => false,
 				'rewrite'      => [ 'slug' => 'tur' ],
 				'menu_icon'    => 'dashicons-location-alt',
