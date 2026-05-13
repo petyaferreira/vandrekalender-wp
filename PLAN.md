@@ -178,7 +178,7 @@ File: `includes/class-event-post-type.php`
 |---|---|---|---|
 | Activity type | `vandrekalender_activity` | naturvandring, nattevandring, familietur, motionsvandring, … | v1 ships with a core set, extensible |
 | Region | `vandrekalender_region` | Nordjylland, Vestjylland, Østjylland, Fyn, Sønderjylland, Sjælland, Nordsjælland, København, Bornholm, … | **Auto-derived** from start coordinates via reverse geocoding on save — never entered manually |
-| Distance range | `vandrekalender_distance_range` | kort (0–10 km), mellem (10–25 km), lang (25+ km) | **Auto-assigned on save from all routes** — an event with routes [10, 50, 100 km] gets all three terms: `kort`, `mellem`, `lang`. This makes taxonomy filtering a fast SQL query. |
+| Distance range | `vandrekalender_distance_range` | short (0–10 km), medium (10–25 km), long (25+ km) | **Auto-assigned on save from all routes** — an event with routes [10, 50, 100 km] gets all three terms: `short`, `medium`, `long`. This makes taxonomy filtering a fast SQL query. |
 | Organiser type | `vandrekalender_organiser_type` | klub, forening, individuel | Distinguishes official club events from community/individual events |
 
 > **Difficulty skipped for v1.** Region is a taxonomy term, not a meta field — auto-derived so it never needs manual input.
