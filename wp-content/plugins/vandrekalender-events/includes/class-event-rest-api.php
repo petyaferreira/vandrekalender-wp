@@ -60,7 +60,7 @@ class Vandrekalender_Event_Rest_Api {
 
 		if ( $request->get_param( 'date_from' ) ) {
 			$meta_query[] = [
-				'key'     => '_event_date',
+				'key'     => \Vandrekalender\Event::META_DATE,
 				'value'   => sanitize_text_field( $request->get_param( 'date_from' ) ),
 				'compare' => '>=',
 			];
@@ -68,43 +68,20 @@ class Vandrekalender_Event_Rest_Api {
 
 		if ( $request->get_param( 'date_to' ) ) {
 			$meta_query[] = [
-				'key'     => '_event_date',
+				'key'     => \Vandrekalender\Event::META_DATE,
 				'value'   => sanitize_text_field( $request->get_param( 'date_to' ) ),
 				'compare' => '<=',
 			];
 		}
 
-		if ( $request->get_param( 'difficulty' ) ) {
-			$meta_query[] = [
-				'key'   => '_event_difficulty',
-				'value' => sanitize_text_field( $request->get_param( 'difficulty' ) ),
-			];
-		}
-
-		if ( $request->get_param( 'distance_max' ) ) {
-			$meta_query[] = [
-				'key'     => '_event_distance_km',
-				'value'   => floatval( $request->get_param( 'distance_max' ) ),
-				'compare' => '<=',
-				'type'    => 'DECIMAL',
-			];
-		}
-
 		$args = [
-			'post_type'      => 'vandrekalender_event',
+			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
 			'posts_per_page' => 50,
 			'orderby'        => 'meta_value',
-			'meta_key'       => '_event_date',
+			'meta_key'       => \Vandrekalender\Event::META_DATE,
 			'order'          => 'ASC',
 		];
-
-		if ( $request->get_param( 'region' ) ) {
-			$args['meta_query'][] = [
-				'key'   => '_event_region',
-				'value' => sanitize_text_field( $request->get_param( 'region' ) ),
-			];
-		}
 
 		if ( ! empty( $meta_query ) ) {
 			$args['meta_query'] = array_merge( $args['meta_query'] ?? [], $meta_query );
@@ -124,7 +101,7 @@ class Vandrekalender_Event_Rest_Api {
 	public function get_event( WP_REST_Request $request ) {
 		$post = get_post( (int) $request->get_param( 'id' ) );
 
-		if ( ! $post || $post->post_type !== 'vandrekalender_event' ) {
+		if ( ! $post || $post->post_type !== \Vandrekalender\Event::CUSTOMPOSTTYPE ) {
 			return new WP_Error( 'not_found', __( 'Event not found.', 'vandrekalender-events' ), [ 'status' => 404 ] );
 		}
 
@@ -138,23 +115,21 @@ class Vandrekalender_Event_Rest_Api {
 	 * @return array
 	 */
 	private function format_event( WP_Post $post ) {
-		$meta = get_post_meta( $post->ID );
+		$date   = get_post_meta( $post->ID, \Vandrekalender\Event::META_DATE, true );
+		$routes = get_post_meta( $post->ID, \Vandrekalender\Event::META_ROUTES, true );
 
 		return [
-			'id'            => $post->ID,
-			'title'         => $post->post_title,
-			'description'   => apply_filters( 'the_content', $post->post_content ),
-			'permalink'     => get_permalink( $post->ID ),
-			'date'          => $meta['_event_date'][0] ?? null,
-			'distance_km'   => isset( $meta['_event_distance_km'][0] ) ? (float) $meta['_event_distance_km'][0] : null,
-			'difficulty'    => $meta['_event_difficulty'][0] ?? null,
-			'location_name' => $meta['_event_location_name'][0] ?? null,
-			'lat'           => isset( $meta['_event_lat'][0] ) ? (float) $meta['_event_lat'][0] : null,
-			'lng'           => isset( $meta['_event_lng'][0] ) ? (float) $meta['_event_lng'][0] : null,
-			'organiser'     => $meta['_event_organiser'][0] ?? null,
-			'source_url'    => $meta['_event_source_url'][0] ?? null,
-			'claim_status'  => $meta['_event_claim_status'][0] ?? 'unclaimed',
-			'region'        => $meta['_event_region'][0] ?? null,
+			'id'          => $post->ID,
+			'title'       => $post->post_title,
+			'description' => apply_filters( 'the_content', $post->post_content ),
+			'permalink'   => get_permalink( $post->ID ),
+			'date'        => $date ? $date : null,
+			'routes'      => is_array( $routes ) ? $routes : [],
+			'taxonomies'  => [
+				'location' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LOCATION, [ 'fields' => 'names' ] ),
+				'format'   => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_FORMAT, [ 'fields' => 'names' ] ),
+				'length'   => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'names' ] ),
+			],
 		];
 	}
 
@@ -165,25 +140,25 @@ class Vandrekalender_Event_Rest_Api {
 	 */
 	private function get_collection_params() {
 		return [
-			'date_from'    => [
+			'date_from' => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			'date_to'      => [
+			'date_to'   => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			'region'       => [
+			'location'  => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			'difficulty'   => [
+			'format'    => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			'distance_max' => [
-				'type'              => 'number',
-				'sanitize_callback' => 'floatval',
+			'length'    => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
 			],
 		];
 	}
