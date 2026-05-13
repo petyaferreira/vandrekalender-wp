@@ -7,34 +7,44 @@
         "color": {
             "palette": [
                 {
-                    "slug": "forest-green",
+                    "slug": "forest",
                     "color": "#2D5F3F",
-                    "name": "Forest Green"
+                    "name": "Forest"
                 },
                 {
-                    "slug": "moss",
-                    "color": "#5A8A5E",
-                    "name": "Moss"
+                    "slug": "fern",
+                    "color": "#527A50",
+                    "name": "Fern"
                 },
                 {
-                    "slug": "sage",
-                    "color": "#A8C5A0",
-                    "name": "Sage"
+                    "slug": "meadow",
+                    "color": "#C2D9B0",
+                    "name": "Meadow"
                 },
                 {
-                    "slug": "earth",
-                    "color": "#8B6914",
-                    "name": "Earth"
+                    "slug": "amber",
+                    "color": "#D97535",
+                    "name": "Amber"
                 },
                 {
-                    "slug": "sand",
-                    "color": "#F5F0E8",
-                    "name": "Sand"
+                    "slug": "golden",
+                    "color": "#E8B040",
+                    "name": "Golden"
                 },
                 {
-                    "slug": "stone",
-                    "color": "#6B6B6B",
-                    "name": "Stone"
+                    "slug": "bark",
+                    "color": "#7A5230",
+                    "name": "Bark"
+                },
+                {
+                    "slug": "cream",
+                    "color": "#FAF5EC",
+                    "name": "Cream"
+                },
+                {
+                    "slug": "pebble",
+                    "color": "#7A7268",
+                    "name": "Pebble"
                 },
                 {
                     "slug": "white",
@@ -42,9 +52,9 @@
                     "name": "White"
                 },
                 {
-                    "slug": "black",
-                    "color": "#1A1A1A",
-                    "name": "Black"
+                    "slug": "charcoal",
+                    "color": "#1D1A14",
+                    "name": "Charcoal"
                 }
             ]
         },
@@ -82,8 +92,8 @@
     },
     "styles": {
         "color": {
-            "background": "#FFFFFF",
-            "text": "#1A1A1A"
+            "background": "var(--wp--preset--color--cream)",
+            "text": "var(--wp--preset--color--charcoal)"
         },
         "typography": {
             "fontFamily": "var(--wp--preset--font-family--sans)",
@@ -93,11 +103,11 @@
         "elements": {
             "link": {
                 "color": {
-                    "text": "var(--wp--preset--color--forest-green)"
+                    "text": "var(--wp--preset--color--forest)"
                 },
                 ":hover": {
                     "color": {
-                        "text": "var(--wp--preset--color--moss)"
+                        "text": "var(--wp--preset--color--amber)"
                     }
                 }
             },

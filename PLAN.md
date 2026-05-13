@@ -172,25 +172,90 @@ Modelled on `paychex-wp/composer.json`:
 ### Custom Post Type: `vandrekalender_event`
 File: `includes/class-event-post-type.php`
 
-Meta fields (registered via `register_post_meta`):
+#### Taxonomies
+
+| Taxonomy | Slug | Terms | Notes |
+|---|---|---|---|
+| Activity type | `vandrekalender_activity` | naturvandring, nattevandring, familietur, motionsvandring, … | v1 ships with a core set, extensible |
+| Region | `vandrekalender_region` | Nordjylland, Vestjylland, Østjylland, Fyn, Sønderjylland, Sjælland, Nordsjælland, København, Bornholm, … | **Auto-derived** from start coordinates via reverse geocoding on save — never entered manually |
+| Distance range | `vandrekalender_distance_range` | kort (0–10 km), mellem (10–25 km), lang (25+ km) | **Auto-assigned on save from all routes** — an event with routes [10, 50, 100 km] gets all three terms: `kort`, `mellem`, `lang`. This makes taxonomy filtering a fast SQL query. |
+| Organiser type | `vandrekalender_organiser_type` | klub, forening, individuel | Distinguishes official club events from community/individual events |
+
+> **Difficulty skipped for v1.** Region is a taxonomy term, not a meta field — auto-derived so it never needs manual input.
+
+#### Meta Fields — Event Level (shared across all routes)
+
 | Field | Type | Notes |
 |---|---|---|
-| `_event_date` | string | ISO 8601 |
-| `_event_distance_km` | float | nullable |
-| `_event_difficulty` | string | easy/moderate/hard |
-| `_event_location_name` | string | Display name |
-| `_event_lat` | float | |
-| `_event_lng` | float | |
-| `_event_organiser` | string | |
-| `_event_source_url` | string | Original URL if scraped |
-| `_event_claim_status` | string | unclaimed/claimed |
-| `_event_region` | string | Danish region |
+| `_event_date` | string | ISO 8601 date (YYYY-MM-DD) — time is per-route, not event-level |
+| `_event_address` | string | Full address (street, zip, city) |
+| `_event_location_name` | string | Human-readable display name |
+| `_event_start_lat` | float | Shared start point latitude (most events start from same location) |
+| `_event_start_lng` | float | Shared start point longitude |
+| `_event_organiser` | string | Organiser name |
+| `_event_source_url` | string | Original URL (scraped events) — used for deduplication |
+| `_event_claim_status` | string | `unclaimed` / `claimed` |
+| `_event_routes` | string (JSON) | Array of route/distance options — see structure below |
 
-Taxonomy: `vandrekalender_activity` (initially just "walking", extensible)
+#### `_event_routes` JSON Structure
+
+Each event has one or more route options (e.g. mammutmarch.dk: 75 km or 100 km on the same day). Each route is independent — its own distance, price, start time, cutoff time, and map. Stored as a JSON array in `_event_routes`. One WP post per event.
+
+```json
+[
+  {
+    "km": 75,
+    "price": 250,
+    "start_time": "13:00",
+    "max_time": "24:00",
+    "finish_lat": 55.851,
+    "finish_lng": 12.571,
+    "route_map_url": "https://...",
+    "registration_url": "https://...",
+    "description": "En udfordrende rute..."
+  },
+  {
+    "km": 100,
+    "price": 350,
+    "start_time": "08:00",
+    "max_time": "30:00",
+    "finish_lat": 55.851,
+    "finish_lng": 12.571,
+    "route_map_url": "https://...",
+    "registration_url": "https://...",
+    "description": "Den lange rute..."
+  }
+]
+```
+
+- `km` — distance in kilometres
+- `price` — price in DKK; `0` = free
+- `start_time` — departure time for this route (HH:MM)
+- `max_time` — maximum allowed completion time (e.g. `"30:00"` = 30 hours); can exceed 24h for ultra-distance events
+- `finish_lat` / `finish_lng` — optional; omit for circular routes (same as event-level start)
+- `route_map_url` — GPX file or image URL for this specific route
+- `registration_url` — sign-up link for this specific route
+
+**Computed on save (not user input):**
+- `vandrekalender_distance_range` taxonomy terms — derived from **all** routes in the array. An event with [10, 50] km gets both `kort` and `lang` terms. This keeps distance filtering as a fast SQL taxonomy query rather than PHP JSON iteration.
+
+#### Routes Admin UI
+
+The WP admin meta box (and frontend event creation form) uses an add/remove list pattern for routes:
+
+- **"Add route"** button opens a mini-form: `km`, `price`, `start_time`, `max_time`, `registration_url` (required fields), plus optional `description`, `route_map_url`, `finish_lat/lng`
+- Confirming adds the route to a list below the button
+- Each route in the list shows a summary row: `75 km — 13:00 — 250 kr — [Edit] [×]`
+- **Edit** re-opens the mini-form pre-filled for that route
+- **×** removes the route
+- At least one route is required to save/publish
+- On save: array serialised to `_event_routes` JSON; distance range taxonomy terms auto-assigned from all km values
+
+Single event page renders a tab switcher when multiple routes exist (same pattern as mammutmarch.dk).
 
 ### REST API
 File: `includes/class-event-rest-api.php`
-- `GET /wp-json/vandrekalender/v1/events` — with filter params: date_from, date_to, region, difficulty, distance_max
+- `GET /wp-json/vandrekalender/v1/events` — filter params: `date_from`, `date_to`, `region`, `distance_range`, `activity`, `organiser_type`, `is_free`
 - `GET /wp-json/vandrekalender/v1/events/{id}`
 
 ---
@@ -203,9 +268,11 @@ File: `includes/class-event-rest-api.php`
 - Renders events as cards with: title, date, distance, difficulty badge, location
 
 ### Block: Event Filters (`vandrekalender-events/src/event-filters/`)
-- Region dropdown (Danish regions)
-- Distance range slider
-- Difficulty pills
+- Region dropdown (`vandrekalender_region` taxonomy)
+- Distance range pills: kort / mellem / lang (`vandrekalender_distance_range`)
+- Activity type filter (`vandrekalender_activity`)
+- Organiser type filter (`vandrekalender_organiser_type`)
+- Free/paid toggle
 - Date range picker
 - Filters update URL params → calendar block re-fetches
 
@@ -321,9 +388,11 @@ Required secrets: `NORDICWAY_SSH_KEY`, `NORDICWAY_SSH_HOST`, `NORDICWAY_SSH_PORT
 **Plugin — Data Model**
 - [ ] Plugin bootstrap file
 - [ ] Custom post type `vandrekalender_event`
-- [ ] Meta fields registration
-- [ ] `vandrekalender_activity` taxonomy
-- [ ] REST API endpoints (list + single)
+- [ ] Meta fields registration (`_event_distances` JSON array, all fields per plan)
+- [ ] Taxonomies: `vandrekalender_activity`, `vandrekalender_region`, `vandrekalender_distance_range`, `vandrekalender_organiser_type`
+- [ ] Auto-derive region from coordinates (reverse geocoding on save)
+- [ ] Auto-assign distance range from `_event_distance_km` on save
+- [ ] REST API endpoints (list + single) with new filter params
 
 **Plugin — Blocks**
 - [ ] Event Calendar block
