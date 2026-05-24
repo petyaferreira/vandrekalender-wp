@@ -1,0 +1,196 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1rem 0;max-width:680px}
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+
+.hero{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:2rem 1.5rem;margin-bottom:12px;position:relative;overflow:hidden}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,#185FA5 0%,#0C447C 100%);opacity:.08;pointer-events:none}
+.hero h1{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.hero p{font-size:14px;color:var(--color-text-secondary);margin-bottom:16px}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;height:36px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);padding:0 12px;font-size:14px;color:var(--color-text-primary)}
+.search-row button{height:36px;padding:0 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-info);color:var(--color-text-info);font-size:14px;cursor:pointer;white-space:nowrap}
+
+.filter-bar{display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:12px;flex-wrap:wrap}
+.filter-bar select{height:30px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);padding:0 8px}
+.filter-chip{height:30px;padding:0 12px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);display:flex;align-items:center;gap:6px;cursor:pointer}
+.filter-chip.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.filter-label{font-size:12px;color:var(--color-text-tertiary);margin-right:4px}
+
+.view-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.result-count{font-size:13px;color:var(--color-text-secondary)}
+.view-toggle{display:flex;gap:4px}
+.view-btn{height:30px;padding:0 12px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:5px}
+.view-btn.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+
+.cal-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:12px}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cal-nav span{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.cal-nav button{width:28px;height:28px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.day-header{text-align:center;font-size:11px;font-weight:500;color:var(--color-text-tertiary);padding:4px 0;text-transform:uppercase;letter-spacing:.05em}
+.day{min-height:52px;border-radius:6px;padding:4px;display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;transition:background .1s}
+.day:hover{background:var(--color-background-secondary)}
+.day.selected{background:var(--color-background-info)}
+.day.other-month .day-num{color:var(--color-text-tertiary)}
+.day.today .day-num{color:var(--color-text-info);font-weight:500}
+.day-num{font-size:12px;color:var(--color-text-secondary);margin-bottom:3px;line-height:1}
+.day.selected .day-num{color:var(--color-text-info)}
+.dot{width:22px;height:22px;border-radius:50%;background:#185FA5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff}
+.dot.sm{width:18px;height:18px;font-size:10px;background:#378ADD}
+.dot.lg{width:26px;height:26px;font-size:12px;background:#0C447C}
+.day.selected .dot{background:#fff;color:#185FA5}
+
+.selected-banner{background:var(--color-background-info);border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;font-size:13px;color:var(--color-text-info);display:flex;align-items:center;justify-content:space-between}
+.clear-btn{font-size:12px;cursor:pointer;opacity:.7}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.card-img{height:72px;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center}
+.card-img i{font-size:24px;color:var(--color-text-tertiary)}
+.card-body{padding:10px}
+.card-date{font-size:11px;color:var(--color-text-tertiary);margin-bottom:2px}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;line-height:1.3}
+.badges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.badge.dist{background:#E6F1FB;color:#0C447C}
+.badge.easy{background:#EAF3DE;color:#27500A}
+.badge.med{background:#FAEEDA;color:#633806}
+.badge.src{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+
+.load-more{width:100%;height:36px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:13px;cursor:pointer;margin-bottom:12px}
+.annotation{font-size:11px;color:var(--color-text-tertiary);font-style:italic;text-align:center;margin-top:4px}
+</style>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-overlay"></div>
+    <p class="section-label">Section 1 — hero</p>
+    <h1>Find din næste vandreture i Danmark</h1>
+    <p>Over 340 vandreture fra hele landet — officielle arrangementer og private ture</p>
+    <div class="search-row">
+      <input type="text" placeholder="Søg efter sted, navn eller arrangør..." />
+      <button>Søg</button>
+    </div>
+  </div>
+
+  <p class="section-label">Section 2 — sticky filter bar</p>
+  <div class="filter-bar">
+    <span class="filter-label">Filtrér:</span>
+    <select><option>Alle regioner</option><option>Hovedstaden</option><option>Midtjylland</option></select>
+    <select><option>Alle distancer</option><option>Under 10 km</option><option>10–20 km</option></select>
+    <div class="filter-chip active"><i class="ti ti-calendar-event" aria-hidden="true"></i> Denne måned</div>
+    <div class="filter-chip"><i class="ti ti-run" aria-hidden="true"></i> Let</div>
+    <div class="filter-chip">Gratis</div>
+  </div>
+
+  <p class="section-label">Section 3 — view toggle</p>
+  <div class="view-row">
+    <span class="result-count">Viser 48 vandreture i juni 2025</span>
+    <div class="view-toggle">
+      <button class="view-btn"><i class="ti ti-layout-list" aria-hidden="true"></i> Liste</button>
+      <button class="view-btn active"><i class="ti ti-calendar" aria-hidden="true"></i> Kalender</button>
+      <button class="view-btn"><i class="ti ti-map" aria-hidden="true"></i> Kort</button>
+    </div>
+  </div>
+
+  <p class="section-label">Section 4 — calendar view (active)</p>
+  <div class="cal-wrap">
+    <div class="cal-nav">
+      <button><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+      <span>Juni 2025</span>
+      <button><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+    </div>
+    <div class="cal-grid">
+      <div class="day-header">man</div><div class="day-header">tir</div><div class="day-header">ons</div><div class="day-header">tor</div><div class="day-header">fre</div><div class="day-header">lør</div><div class="day-header">søn</div>
+
+      <div class="day other-month"><span class="day-num">26</span></div>
+      <div class="day other-month"><span class="day-num">27</span></div>
+      <div class="day other-month"><span class="day-num">28</span></div>
+      <div class="day other-month"><span class="day-num">29</span></div>
+      <div class="day other-month"><span class="day-num">30</span></div>
+      <div class="day other-month"><span class="day-num">31</span></div>
+      <div class="day"><span class="day-num">1</span></div>
+
+      <div class="day"><span class="day-num">2</span><div class="dot sm">2</div></div>
+      <div class="day"><span class="day-num">3</span></div>
+      <div class="day"><span class="day-num">4</span></div>
+      <div class="day"><span class="day-num">5</span></div>
+      <div class="day"><span class="day-num">6</span></div>
+      <div class="day"><span class="day-num">7</span><div class="dot lg">9</div></div>
+      <div class="day"><span class="day-num">8</span><div class="dot">4</div></div>
+
+      <div class="day"><span class="day-num">9</span></div>
+      <div class="day"><span class="day-num">10</span></div>
+      <div class="day today"><span class="day-num">11</span><div class="dot sm">1</div></div>
+      <div class="day"><span class="day-num">12</span></div>
+      <div class="day"><span class="day-num">13</span></div>
+      <div class="day selected"><span class="day-num">14</span><div class="dot">6</div></div>
+      <div class="day"><span class="day-num">15</span><div class="dot sm">3</div></div>
+
+      <div class="day"><span class="day-num">16</span></div>
+      <div class="day"><span class="day-num">17</span></div>
+      <div class="day"><span class="day-num">18</span></div>
+      <div class="day"><span class="day-num">19</span></div>
+      <div class="day"><span class="day-num">20</span></div>
+      <div class="day"><span class="day-num">21</span><div class="dot lg">11</div></div>
+      <div class="day"><span class="day-num">22</span><div class="dot">5</div></div>
+
+      <div class="day"><span class="day-num">23</span><div class="dot sm">2</div></div>
+      <div class="day"><span class="day-num">24</span></div>
+      <div class="day"><span class="day-num">25</span></div>
+      <div class="day"><span class="day-num">26</span></div>
+      <div class="day"><span class="day-num">27</span></div>
+      <div class="day"><span class="day-num">28</span><div class="dot lg">8</div></div>
+      <div class="day"><span class="day-num">29</span><div class="dot">3</div></div>
+
+      <div class="day"><span class="day-num">30</span><div class="dot sm">1</div></div>
+      <div class="day other-month"><span class="day-num">1</span></div>
+      <div class="day other-month"><span class="day-num">2</span></div>
+      <div class="day other-month"><span class="day-num">3</span></div>
+      <div class="day other-month"><span class="day-num">4</span></div>
+      <div class="day other-month"><span class="day-num">5</span></div>
+      <div class="day other-month"><span class="day-num">6</span></div>
+    </div>
+    <p class="annotation">dot size reflects number of events — same colour throughout, no encoding beyond the count</p>
+  </div>
+
+  <div class="selected-banner">
+    <span><i class="ti ti-calendar-event" aria-hidden="true" style="margin-right:6px"></i>Lørdag 14. juni — 6 vandreture</span>
+    <span class="clear-btn">Ryd valg ✕</span>
+  </div>
+
+  <p class="section-label">Section 4 — card view (filtered to selected day)</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-img"><i class="ti ti-trees" aria-hidden="true"></i></div>
+      <div class="card-body">
+        <div class="card-date">Lør 14. juni · 09:00</div>
+        <div class="card-title">Morgentur i Dyrehaven</div>
+        <div class="badges"><span class="badge dist">12 km</span><span class="badge easy">Let</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img"><i class="ti ti-mountain" aria-hidden="true"></i></div>
+      <div class="card-body">
+        <div class="card-date">Lør 14. juni · 08:30</div>
+        <div class="card-title">Møns Klint Kyststi</div>
+        <div class="badges"><span class="badge dist">21 km</span><span class="badge med">Moderat</span><span class="badge src">DVL.dk</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img"><i class="ti ti-wave-sine" aria-hidden="true"></i></div>
+      <div class="card-body">
+        <div class="card-date">Lør 14. juni · 10:00</div>
+        <div class="card-title">Strandtur ved Hornbæk</div>
+        <div class="badges"><span class="badge dist">8 km</span><span class="badge easy">Let</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="load-more">Indlæs flere (3 tilbage)</button>
+
+</div>
