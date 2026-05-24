@@ -5,8 +5,10 @@
     "author": "Petya Ferreira",
     "license": "ISC",
     "scripts": {
+        "build": "npm run build:blocks & npm run build:resources",
         "build:blocks": "wp-scripts build --source-path=blocks",
         "build:resources": "wp-scripts build resources/event-meta-fields/index.js --output-path=build/event-meta-fields",
+        "start": "npm run start:blocks & npm run start:resources",
         "start:blocks": "wp-scripts start --source-path=blocks",
         "start:resources": "wp-scripts start resources/event-meta-fields/index.js --output-path=build/event-meta-fields"
     },
