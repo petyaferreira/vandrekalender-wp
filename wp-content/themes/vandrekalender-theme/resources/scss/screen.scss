@@ -11,6 +11,15 @@ body {
   margin: 0;
 }
 
+// On dark/coloured backgrounds that explicitly set white text, links should
+// inherit white rather than the global fjord link colour.
+.has-white-color.has-text-color a,
+.has-white-color.has-text-color a:hover,
+.has-white-color.has-text-color a:active,
+.has-white-color.has-text-color a:focus {
+  color: inherit;
+}
+
 // Photo credit positioned at bottom-right of a Cover block
 .wp-block-cover__inner-container {
   align-self: stretch;

@@ -5,17 +5,12 @@
     "author": "Petya Ferreira",
     "license": "ISC",
     "scripts": {
-        "start": "wp-scripts start",
-        "build": "wp-scripts build"
+        "build:blocks": "wp-scripts build --source-path=blocks",
+        "build:resources": "wp-scripts build resources/event-meta-fields/index.js --output-path=build/event-meta-fields",
+        "start:blocks": "wp-scripts start --source-path=blocks",
+        "start:resources": "wp-scripts start resources/event-meta-fields/index.js --output-path=build/event-meta-fields"
     },
     "devDependencies": {
         "@wordpress/scripts": "^30.0.0"
-    },
-    "dependencies": {
-        "@wordpress/api-fetch": "^7.0.0",
-        "@wordpress/components": "^28.0.0",
-        "@wordpress/data": "^10.0.0",
-        "@wordpress/element": "^6.0.0",
-        "@wordpress/i18n": "^5.0.0"
     }
 }

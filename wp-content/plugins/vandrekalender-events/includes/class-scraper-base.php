@@ -57,7 +57,7 @@ abstract class Vandrekalender_Scraper_Base {
 		// Deduplicate by source URL.
 		$existing = get_posts(
 			[
-				'post_type'      => 'vandrekalender_event',
+				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 				'post_status'    => 'any',
 				'posts_per_page' => 1,
 				'meta_query'     => [
@@ -78,7 +78,7 @@ abstract class Vandrekalender_Scraper_Base {
 		}
 
 		$post_data = [
-			'post_type'    => 'vandrekalender_event',
+			'post_type'    => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'  => 'publish',
 			'post_title'   => sanitize_text_field( $event['post_title'] ?? '' ),
 			'post_content' => wp_kses_post( $event['post_content'] ?? '' ),
@@ -96,10 +96,10 @@ abstract class Vandrekalender_Scraper_Base {
 			return false;
 		}
 
-		$meta_fields = array_keys( Vandrekalender_Event_Meta::META_FIELDS );
-		foreach ( $meta_fields as $key ) {
-			if ( isset( $event[ $key ] ) ) {
-				update_post_meta( $post_id, $key, $event[ $key ] );
+		$reserved = [ 'post_title', 'post_content', 'post_status', 'post_type', 'ID' ];
+		foreach ( $event as $key => $value ) {
+			if ( ! in_array( $key, $reserved, true ) ) {
+				update_post_meta( $post_id, $key, $value );
 			}
 		}
 
