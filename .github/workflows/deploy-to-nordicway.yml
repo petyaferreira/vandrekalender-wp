@@ -97,7 +97,8 @@ jobs:
             --exclude=composer.json \
             --exclude=composer.lock \
             --exclude=README.md \
-            --exclude=src
+            --exclude=blocks \
+            --exclude=resources
 
           # Composer-managed themes and plugins
           for dir in wp-content/themes/*/; do
