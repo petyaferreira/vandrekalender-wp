@@ -71,6 +71,16 @@ composer run phpcbf    # auto-fix PHP
 ./mysql-import.sh backup.sql   # import from .sql
 ```
 
+**After importing a production dump**, check that `WORDPRESS_DB_PREFIX` in `.env` matches the table prefix in the dump. If WP-CLI reports a prefix mismatch, update `.env` and restart with `./start.sh` before continuing.
+
+Then run a URL search-replace so WordPress uses your local URL instead of the live site:
+
+```bash
+./wp.sh search-replace 'https://vandrekalender.dk' 'http://localhost:8080' --skip-columns=guid
+```
+
+Replace `8080` with your actual `WORDPRESS_PORT` from `.env` if you changed it. The `--skip-columns=guid` flag preserves post GUIDs, which should keep pointing to the origin URL.
+
 ## Deploy
 
 Push to `main` → auto-deploys to Nordicway staging via GitHub Actions.
