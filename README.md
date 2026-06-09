@@ -28,22 +28,26 @@ WordPress plugins and themes are managed via Composer using [WPackagist](https:/
 Composer-managed packages are **not committed** — they are installed fresh on every CI deploy.
 
 **Add a plugin or theme:**
+
 ```bash
 composer require wpackagist-plugin/akismet        # plugin from wordpress.org
 composer require wpackagist-theme/twentytwentyfive # theme from wordpress.org
 ```
 
 **Update a specific package:**
+
 ```bash
 composer update wpackagist-plugin/safe-svg
 ```
 
 **Update all packages:**
+
 ```bash
 composer update
 ```
 
 **Install after cloning (dev setup):**
+
 ```bash
 composer install   # installs everything in composer.lock including wp-content packages
 ```
@@ -80,6 +84,8 @@ Then run a URL search-replace so WordPress uses your local URL instead of the li
 ```
 
 Replace `8080` with your actual `WORDPRESS_PORT` from `.env` if you changed it. The `--skip-columns=guid` flag preserves post GUIDs, which should keep pointing to the origin URL.
+
+**To sync production uploads**, set `NORDICWAY_SSH_HOST`, `NORDICWAY_SSH_PORT`, `NORDICWAY_SSH_USERNAME`, `NORDICWAY_DEST_PATH`, and `NORDICWAY_SSH_KEY_PATH` in `.env`, then run `./sync-uploads.sh`.
 
 ## Deploy
 
