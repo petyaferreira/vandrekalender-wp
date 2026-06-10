@@ -82,7 +82,7 @@ class Event {
 				'supports'      => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
 				'public'        => true,
 				'show_in_rest'  => true,
-				'has_archive'   => false,
+				'has_archive'   => true,
 				'rewrite'       => [
 					'slug'       => 'event',
 					'with_front' => false,

@@ -16,6 +16,7 @@ Walking events calendar for Denmark. Aggregates events from scrapers, Facebook, 
 | Sitemap and URL structure | `docs/sitemap.md` |
 | Monetisation and business model | `docs/monetisation.md` |
 | Deployment, CI/CD, environments | `docs/deployment.md` |
+| Internationalisation — Polylang, translation functions, REST API lang filtering | `docs/i18n.md` |
 
 ---
 

@@ -4,6 +4,33 @@
 
 ---
 
+## Installing Plugins and Themes
+
+All free plugins and themes are installed via Composer using [WPackagist](https://wpackagist.org). Never install plugins manually through the WP admin.
+
+```bash
+# Add a plugin
+composer require wpackagist-plugin/plugin-slug
+
+# Add a theme
+composer require wpackagist-theme/theme-slug
+
+# Install everything (after cloning or after editing composer.json)
+composer install
+```
+
+WPackagist is already configured as a repository in `composer.json`. The `composer/installers` package routes plugins to `wp-content/plugins/` and themes to `wp-content/themes/` automatically.
+
+Currently installed via Composer:
+
+| Package | Type | Notes |
+|---|---|---|
+| `wpackagist-plugin/safe-svg` | Plugin | Safe SVG uploads |
+| `wpackagist-plugin/polylang` | Plugin | Multilingual — see `docs/i18n.md` |
+| `wpackagist-theme/twentytwentyfive` | Theme | Default WP theme (kept as fallback) |
+
+---
+
 ## Environments
 
 | Environment | URL | How to deploy |
