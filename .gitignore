@@ -25,6 +25,9 @@ node_modules/
 # macOS
 .DS_Store
 
+# Word temporary lock files
+~$*
+
 # SQL dumps
 *.sql
 
