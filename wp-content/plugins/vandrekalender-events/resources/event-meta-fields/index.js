@@ -8,7 +8,11 @@ import {
   DatePicker,
   __experimentalText as Text,
 } from '@wordpress/components';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch, dispatch } from '@wordpress/data';
+
+// event_region and event_length are auto-assigned on save — hide their panels.
+dispatch( 'core/edit-post' ).removeEditorPanel( 'taxonomy-panel-event_region' );
+dispatch( 'core/edit-post' ).removeEditorPanel( 'taxonomy-panel-event_length' );
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import {
@@ -38,10 +42,9 @@ const generateRouteId = () => {
 
 const emptyRoute = () => ({
   id: generateRouteId(),
-  tourId: '',
-  startTime: '',
-  cutoffTime: '',
-  length: '',
+  distance_km: '',
+  start_time: '',
+  cutoff_time: '',
   price: '',
 });
 
@@ -49,10 +52,9 @@ const normalizeRoutes = raw => {
   if (!Array.isArray(raw)) return [];
   return raw.filter(Boolean).map(r => ({
     id: typeof r?.id === 'string' ? r.id : generateRouteId(),
-    tourId: typeof r?.tourId === 'string' ? r.tourId : '',
-    startTime: typeof r?.startTime === 'string' ? r.startTime : '',
-    cutoffTime: typeof r?.cutoffTime === 'string' ? r.cutoffTime : '',
-    length: typeof r?.length === 'string' ? r.length : '',
+    distance_km: typeof r?.distance_km === 'string' ? r.distance_km : '',
+    start_time: typeof r?.start_time === 'string' ? r.start_time : '',
+    cutoff_time: typeof r?.cutoff_time === 'string' ? r.cutoff_time : '',
     price: typeof r?.price === 'string' ? r.price : '',
   }));
 };
@@ -173,14 +175,14 @@ const EventDocumentFields = () => {
                 }}
               >
                 <Flex direction="column" gap={1} style={{ width: '100%' }}>
-                  {route.length && <Text>{route.length} km</Text>}
-                  {route.startTime && (
+                  {route.distance_km && <Text>{route.distance_km} km</Text>}
+                  {route.start_time && (
                     <Text>
-                      {__('Start:', 'vandrekalender-events')} {route.startTime}
+                      {__('Start:', 'vandrekalender-events')} {route.start_time}
                     </Text>
                   )}
                   {route.price && <Text>{route.price} kr</Text>}
-                  {(!route.length || !route.startTime) && (
+                  {(!route.distance_km || !route.start_time) && (
                     <Text variant="muted">
                       {__('Incomplete route', 'vandrekalender-events')}
                     </Text>
@@ -234,8 +236,8 @@ const EventDocumentFields = () => {
                 label={__('Distance (km)', 'vandrekalender-events')}
                 type="number"
                 min="0"
-                value={route.length}
-                onChange={value => updateRoute(index, { length: value })}
+                value={route.distance_km}
+                onChange={value => updateRoute(index, { distance_km: value })}
                 placeholder="25"
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -243,20 +245,22 @@ const EventDocumentFields = () => {
 
               <SelectControl
                 label={__('Start Time', 'vandrekalender-events')}
-                value={route.startTime}
+                value={route.start_time}
                 options={timeOptions}
-                onChange={value => updateRoute(index, { startTime: value })}
+                onChange={value => updateRoute(index, { start_time: value })}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
               />
 
               <TextControl
-                label={__('Cutoff Time', 'vandrekalender-events')}
-                value={route.cutoffTime}
-                onChange={value => updateRoute(index, { cutoffTime: value })}
-                placeholder={__('e.g. 8:00 or 30:00', 'vandrekalender-events')}
+                label={__('Cutoff Time (hours)', 'vandrekalender-events')}
+                type="number"
+                min="0"
+                value={route.cutoff_time}
+                onChange={value => updateRoute(index, { cutoff_time: value })}
+                placeholder="8"
                 help={__(
-                  'Maximum time allowed to finish the route.',
+                  'Maximum hours allowed to finish the route.',
                   'vandrekalender-events'
                 )}
                 __next40pxDefaultSize
@@ -270,19 +274,6 @@ const EventDocumentFields = () => {
                 value={route.price}
                 onChange={value => updateRoute(index, { price: value })}
                 placeholder="0"
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-              />
-
-              <TextControl
-                label={__('Tour ID', 'vandrekalender-events')}
-                value={route.tourId}
-                onChange={value => updateRoute(index, { tourId: value })}
-                placeholder="e.g. TOUR-123"
-                help={__(
-                  'External ID from the organiser or registration system.',
-                  'vandrekalender-events'
-                )}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
               />
