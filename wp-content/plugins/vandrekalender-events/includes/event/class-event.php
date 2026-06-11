@@ -28,8 +28,13 @@ class Event {
 	public const TAX_LENGTH = 'event_length';
 
 	// Meta keys.
-	public const META_DATE   = 'event_date';
-	public const META_ROUTES = 'event_routes';
+	public const META_DATE         = 'event_date';
+	public const META_ROUTES       = 'event_routes';
+	public const META_PLACE_NAME   = 'event_place_name';
+	public const META_ADDRESS      = 'event_address';
+	public const META_LAT          = 'event_lat';
+	public const META_LNG          = 'event_lng';
+	public const META_MUNICIPALITY = 'event_municipality';
 
 	/**
 	 * Get the singleton instance.
@@ -51,6 +56,11 @@ class Event {
 		add_action( 'init', [ $this, 'register_taxonomies' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
+		// Hook directly into meta saves — fires at the exact moment each value is
+		// written to the database, regardless of whether the save comes from the
+		// block editor REST API, a scraper, or wp-cli.
+		add_action( 'added_post_meta', [ $this, 'on_event_meta_saved' ], 10, 4 );
+		add_action( 'updated_post_meta', [ $this, 'on_event_meta_saved' ], 10, 4 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
 	}
 
@@ -144,6 +154,247 @@ class Event {
 				'default'      => [],
 			]
 		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_PLACE_NAME,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_ADDRESS,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_LAT,
+			[
+				'type'         => 'number',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => 0,
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_LNG,
+			[
+				'type'         => 'number',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => 0,
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_MUNICIPALITY,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+	}
+
+	/**
+	 * React to individual meta saves for event posts.
+	 * Fires on both added_post_meta and updated_post_meta.
+	 * $meta_value is the raw (unserialized) value passed to update_post_meta.
+	 *
+	 * @param int    $meta_id    Meta row ID (unused).
+	 * @param int    $object_id  Post ID.
+	 * @param string $meta_key   Meta key that was saved.
+	 * @param mixed  $meta_value The value that was just written.
+	 * @return void
+	 */
+	public function on_event_meta_saved( int $meta_id, int $object_id, string $meta_key, mixed $meta_value ): void {
+		if ( get_post_type( $object_id ) !== self::CUSTOMPOSTTYPE ) {
+			return;
+		}
+
+		if ( self::META_MUNICIPALITY === $meta_key ) {
+			$this->assign_region_from_municipality( $object_id, (string) $meta_value );
+		}
+
+		if ( self::META_ROUTES === $meta_key ) {
+			$this->assign_length_from_routes( $object_id, is_array( $meta_value ) ? $meta_value : [] );
+		}
+	}
+
+	/**
+	 * Assign event_region from a municipality name.
+	 *
+	 * @param int    $post_id      Post ID.
+	 * @param string $municipality Municipality name as returned by DAWA.
+	 * @return void
+	 */
+	private function assign_region_from_municipality( int $post_id, string $municipality ): void {
+		if ( empty( $municipality ) ) {
+			wp_set_object_terms( $post_id, [], self::TAX_REGION );
+			return;
+		}
+
+		$map = self::municipality_region_map();
+		$key = mb_strtolower( trim( $municipality ) );
+
+		if ( isset( $map[ $key ] ) ) {
+			wp_set_object_terms( $post_id, [ $map[ $key ] ], self::TAX_REGION );
+		}
+	}
+
+	/**
+	 * Assign event_length terms from a routes array.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $routes  Raw routes array from meta.
+	 * @return void
+	 */
+	private function assign_length_from_routes( int $post_id, array $routes ): void {
+		if ( empty( $routes ) ) {
+			wp_set_object_terms( $post_id, [], self::TAX_LENGTH );
+			return;
+		}
+
+		$terms = [];
+
+		foreach ( $routes as $route ) {
+			$km = isset( $route['distance_km'] ) ? (float) $route['distance_km'] : 0;
+
+			if ( $km > 0 && $km <= 10 ) {
+				$terms[] = 'short';
+			} elseif ( $km > 10 && $km <= 25 ) {
+				$terms[] = 'medium';
+			} elseif ( $km > 25 ) {
+				$terms[] = 'long';
+			}
+		}
+
+		wp_set_object_terms( $post_id, array_unique( $terms ), self::TAX_LENGTH );
+	}
+
+	/**
+	 * Map of Danish municipality names (lowercase) to region slugs.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function municipality_region_map(): array {
+		return [
+			// Hovedstaden.
+			'albertslund'       => 'hovedstaden',
+			'allerød'           => 'hovedstaden',
+			'ballerup'          => 'hovedstaden',
+			'bornholm'          => 'hovedstaden',
+			'brøndby'           => 'hovedstaden',
+			'dragør'            => 'hovedstaden',
+			'egedal'            => 'hovedstaden',
+			'fredensborg'       => 'hovedstaden',
+			'frederiksberg'     => 'hovedstaden',
+			'frederikssund'     => 'hovedstaden',
+			'furesø'            => 'hovedstaden',
+			'gentofte'          => 'hovedstaden',
+			'gladsaxe'          => 'hovedstaden',
+			'glostrup'          => 'hovedstaden',
+			'gribskov'          => 'hovedstaden',
+			'halsnæs'           => 'hovedstaden',
+			'helsingør'         => 'hovedstaden',
+			'herlev'            => 'hovedstaden',
+			'hillerød'          => 'hovedstaden',
+			'hvidovre'          => 'hovedstaden',
+			'høje-taastrup'     => 'hovedstaden',
+			'hørsholm'          => 'hovedstaden',
+			'ishøj'             => 'hovedstaden',
+			'københavn'         => 'hovedstaden',
+			'lyngby-taarbæk'    => 'hovedstaden',
+			'rudersdal'         => 'hovedstaden',
+			'rødovre'           => 'hovedstaden',
+			'tårnby'            => 'hovedstaden',
+			'vallensbæk'        => 'hovedstaden',
+			// Sjælland.
+			'faxe'              => 'sjaelland',
+			'greve'             => 'sjaelland',
+			'guldborgsund'      => 'sjaelland',
+			'holbæk'            => 'sjaelland',
+			'kalundborg'        => 'sjaelland',
+			'køge'              => 'sjaelland',
+			'lejre'             => 'sjaelland',
+			'lolland'           => 'sjaelland',
+			'næstved'           => 'sjaelland',
+			'odsherred'         => 'sjaelland',
+			'ringsted'          => 'sjaelland',
+			'roskilde'          => 'sjaelland',
+			'slagelse'          => 'sjaelland',
+			'solrød'            => 'sjaelland',
+			'sorø'              => 'sjaelland',
+			'stevns'            => 'sjaelland',
+			'vordingborg'       => 'sjaelland',
+			// Syddanmark.
+			'assens'            => 'syddanmark',
+			'billund'           => 'syddanmark',
+			'esbjerg'           => 'syddanmark',
+			'fanø'              => 'syddanmark',
+			'fredericia'        => 'syddanmark',
+			'haderslev'         => 'syddanmark',
+			'kerteminde'        => 'syddanmark',
+			'kolding'           => 'syddanmark',
+			'langeland'         => 'syddanmark',
+			'middelfart'        => 'syddanmark',
+			'nordfyns'          => 'syddanmark',
+			'nyborg'            => 'syddanmark',
+			'odense'            => 'syddanmark',
+			'svendborg'         => 'syddanmark',
+			'sønderborg'        => 'syddanmark',
+			'tønder'            => 'syddanmark',
+			'vejle'             => 'syddanmark',
+			'ærø'               => 'syddanmark',
+			'aabenraa'          => 'syddanmark',
+			// Midtjylland.
+			'favrskov'          => 'midtjylland',
+			'hedensted'         => 'midtjylland',
+			'herning'           => 'midtjylland',
+			'holstebro'         => 'midtjylland',
+			'horsens'           => 'midtjylland',
+			'ikast-brande'      => 'midtjylland',
+			'lemvig'            => 'midtjylland',
+			'norddjurs'         => 'midtjylland',
+			'odder'             => 'midtjylland',
+			'randers'           => 'midtjylland',
+			'ringkøbing-skjern' => 'midtjylland',
+			'samsø'             => 'midtjylland',
+			'silkeborg'         => 'midtjylland',
+			'skanderborg'       => 'midtjylland',
+			'skive'             => 'midtjylland',
+			'struer'            => 'midtjylland',
+			'syddjurs'          => 'midtjylland',
+			'viborg'            => 'midtjylland',
+			'aarhus'            => 'midtjylland',
+			// Nordjylland.
+			'brønderslev'       => 'nordjylland',
+			'frederikshavn'     => 'nordjylland',
+			'hjørring'          => 'nordjylland',
+			'jammerbugt'        => 'nordjylland',
+			'læsø'              => 'nordjylland',
+			'mariagerfjord'     => 'nordjylland',
+			'morsø'             => 'nordjylland',
+			'rebild'            => 'nordjylland',
+			'thisted'           => 'nordjylland',
+			'vesthimmerlands'   => 'nordjylland',
+			'aalborg'           => 'nordjylland',
+		];
 	}
 
 	/**

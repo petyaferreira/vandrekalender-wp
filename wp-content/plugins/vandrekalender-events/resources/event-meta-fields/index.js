@@ -6,21 +6,27 @@ import {
   SelectControl,
   TextControl,
   DatePicker,
+  Spinner,
   __experimentalText as Text,
 } from '@wordpress/components';
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-
-// event_region and event_length are auto-assigned on save — hide their panels.
-dispatch( 'core/edit-post' ).removeEditorPanel( 'taxonomy-panel-event_region' );
-dispatch( 'core/edit-post' ).removeEditorPanel( 'taxonomy-panel-event_length' );
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import {
   format as wpFormat,
   getSettings as getDateSettings,
 } from '@wordpress/date';
 
+// event_region and event_length are auto-assigned on save — hide their panels.
+dispatch('core/edit-post').removeEditorPanel('taxonomy-panel-event_region');
+dispatch('core/edit-post').removeEditorPanel('taxonomy-panel-event_length');
+
 const POST_TYPE = 'event';
+const DAWA_AUTOCOMPLETE =
+  'https://api.dataforsyningen.dk/autocomplete?type=adresse&q=';
+const DAWA_KOMMUNE = 'https://api.dataforsyningen.dk/kommuner/';
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const toISODate = dateLike => {
   const d = dateLike instanceof Date ? dateLike : new Date(dateLike);
@@ -76,26 +82,194 @@ const timeOptions = (() => {
   return opts;
 })();
 
-const EventDocumentFields = () => {
-  const postType = useSelect(
-    select => select('core/editor').getCurrentPostType(),
-    []
+// ── Location panel ────────────────────────────────────────────────────────────
+
+const LocationPanel = ({ meta, setMeta }) => {
+  const [query, setQuery] = useState(meta.event_address || '');
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const setMetaRef = useRef(setMeta);
+  useEffect(() => {
+    setMetaRef.current = setMeta;
+  }, [setMeta]);
+
+  // Keep query in sync if meta is updated externally (e.g. page load).
+  useEffect(() => {
+    setQuery(meta.event_address || '');
+  }, [meta.event_address]);
+
+  // Close dropdown when clicking outside.
+  useEffect(() => {
+    const onClickOutside = e => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
+
+  const onQueryChange = value => {
+    setQuery(value);
+
+    // Clear derived fields when the user edits the address manually.
+    setMeta({
+      event_address: value,
+      event_lat: 0,
+      event_lng: 0,
+      event_municipality: '',
+    });
+
+    clearTimeout(debounceRef.current);
+
+    if (value.length < 3) {
+      setSuggestions([]);
+      setOpen(false);
+      return;
+    }
+
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(DAWA_AUTOCOMPLETE + encodeURIComponent(value));
+        const data = await res.json();
+        setSuggestions(data.slice(0, 8));
+        setOpen(true);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+  };
+
+  const onSelect = suggestion => {
+    const { tekst, data } = suggestion;
+    setQuery(tekst);
+    setOpen(false);
+    setSuggestions([]);
+
+    setMeta({
+      event_address: tekst,
+      event_lat: data.y,
+      event_lng: data.x,
+      event_municipality: '',
+    });
+
+    if (data.kommunekode) {
+      fetch(DAWA_KOMMUNE + data.kommunekode)
+        .then(res => res.json())
+        .then(kommune => {
+          if (kommune.navn) {
+            setMetaRef.current({ event_municipality: kommune.navn });
+          }
+        })
+        .catch(() => {});
+    }
+  };
+
+  const hasCoords = meta.event_lat && meta.event_lng;
+
+  return (
+    <PluginDocumentSettingPanel
+      name="vandrekalender-location"
+      title={__('Location', 'vandrekalender-events')}
+      className="vandrekalender-location"
+      initialOpen={true}
+    >
+      <TextControl
+        label={__('Place name (optional)', 'vandrekalender-events')}
+        value={meta.event_place_name || ''}
+        onChange={value => setMeta({ event_place_name: value })}
+        placeholder={__(
+          'e.g. Dyrehaven or Silkeborg Sti',
+          'vandrekalender-events'
+        )}
+        help={__(
+          'Human-readable name shown on event cards. Falls back to municipality if left empty.',
+          'vandrekalender-events'
+        )}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+      />
+
+      <div ref={wrapperRef} style={{ position: 'relative', marginTop: '16px' }}>
+        <TextControl
+          label={__('Address', 'vandrekalender-events')}
+          value={query}
+          onChange={onQueryChange}
+          placeholder={__('Start typing an address…', 'vandrekalender-events')}
+          __next40pxDefaultSize
+          __nextHasNoMarginBottom
+        />
+
+        {loading && (
+          <div style={{ position: 'absolute', right: '8px', top: '28px' }}>
+            <Spinner />
+          </div>
+        )}
+
+        {open && suggestions.length > 0 && (
+          <ul
+            style={{
+              position: 'absolute',
+              zIndex: 9999,
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: '2px',
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+              width: '100%',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+            }}
+          >
+            {suggestions.map((s, i) => (
+              <li
+                key={i}
+                onMouseDown={() => onSelect(s)}
+                style={{
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  borderBottom:
+                    i < suggestions.length - 1 ? '1px solid #f0f0f0' : 'none',
+                }}
+                onMouseEnter={e =>
+                  (e.currentTarget.style.background = '#f0f6fc')
+                }
+                onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
+              >
+                {s.tekst}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {hasCoords && (
+        <Text
+          variant="muted"
+          isBlock
+          style={{ marginTop: '8px', fontSize: '12px' }}
+        >
+          {meta.event_municipality && `${meta.event_municipality} · `}
+          {`${meta.event_lat.toFixed(5)}, ${meta.event_lng.toFixed(5)}`}
+        </Text>
+      )}
+    </PluginDocumentSettingPanel>
   );
+};
 
-  if (postType !== POST_TYPE) return null;
+// ── Event details panel ───────────────────────────────────────────────────────
 
-  const meta = useSelect(
-    select => select('core/editor').getEditedPostAttribute('meta') || {},
-    []
-  );
-
-  const { editPost } = useDispatch('core/editor');
-  const setMeta = patch => editPost({ meta: { ...meta, ...patch } });
-
+const EventDetailsPanel = ({ meta, setMeta }) => {
   const [expandedIndex, setExpandedIndex] = useState(-1);
 
   const eventDate = meta.event_date || '';
-
   const routes = normalizeRoutes(meta.event_routes);
   const setRoutes = next => setMeta({ event_routes: normalizeRoutes(next) });
 
@@ -169,10 +343,7 @@ const EventDocumentFields = () => {
                 key={route.id}
                 justify="space-between"
                 align="flex-start"
-                style={{
-                  borderTop: '1px solid #e0e0e0',
-                  paddingTop: '8px',
-                }}
+                style={{ borderTop: '1px solid #e0e0e0', paddingTop: '8px' }}
               >
                 <Flex direction="column" gap={1} style={{ width: '100%' }}>
                   {route.distance_km && <Text>{route.distance_km} km</Text>}
@@ -188,7 +359,6 @@ const EventDocumentFields = () => {
                     </Text>
                   )}
                 </Flex>
-
                 <Flex gap={2}>
                   <Button
                     variant="secondary"
@@ -214,10 +384,7 @@ const EventDocumentFields = () => {
               key={route.id}
               direction="column"
               gap={2}
-              style={{
-                borderTop: '1px solid #e0e0e0',
-                paddingTop: '8px',
-              }}
+              style={{ borderTop: '1px solid #e0e0e0', paddingTop: '8px' }}
             >
               <Flex justify="space-between" align="center">
                 <Text style={{ fontWeight: 600 }}>
@@ -301,6 +468,34 @@ const EventDocumentFields = () => {
         {__('Add route', 'vandrekalender-events')}
       </Button>
     </PluginDocumentSettingPanel>
+  );
+};
+
+// ── Root component ────────────────────────────────────────────────────────────
+
+const EventDocumentFields = () => {
+  const postType = useSelect(
+    select => select('core/editor').getCurrentPostType(),
+    []
+  );
+
+  if (postType !== POST_TYPE) return null;
+
+  const meta = useSelect(
+    select => select('core/editor').getEditedPostAttribute('meta') || {},
+    []
+  );
+
+  const { editPost } = useDispatch('core/editor');
+  const setMeta = patch => editPost({ meta: { ...meta, ...patch } });
+
+  console.log('Current meta:', meta);
+
+  return (
+    <>
+      <EventDetailsPanel meta={meta} setMeta={setMeta} />
+      <LocationPanel meta={meta} setMeta={setMeta} />
+    </>
   );
 };
 
