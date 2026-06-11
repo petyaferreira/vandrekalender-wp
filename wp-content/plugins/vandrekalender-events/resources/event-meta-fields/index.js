@@ -38,8 +38,7 @@ const toISODate = dateLike => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const generateRouteId = () =>
-  `route_${window.crypto.randomUUID()}`;
+const generateRouteId = () => `route_${window.crypto.randomUUID()}`;
 
 const emptyRoute = () => ({
   id: generateRouteId(),
@@ -455,6 +454,60 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
   );
 };
 
+// ── Organiser panel ───────────────────────────────────────────────────────────
+
+const OrganiserPanel = ({ meta, setMeta }) => {
+  // PHP strips event_organiser_email from the REST response for non-admins.
+  // If the key is present (even as empty string), the current user is an admin.
+  const isAdmin = 'event_organiser_email' in meta;
+
+  return (
+    <PluginDocumentSettingPanel
+      name="vandrekalender-organiser"
+      title={__('Organiser', 'vandrekalender-events')}
+      className="vandrekalender-organiser"
+      initialOpen={false}
+    >
+      <Flex direction="column" gap={2}>
+        <TextControl
+          label={__('Name', 'vandrekalender-events')}
+          value={meta.event_organiser_name || ''}
+          onChange={value => setMeta({ event_organiser_name: value })}
+          placeholder={__('Organiser or club name', 'vandrekalender-events')}
+          __next40pxDefaultSize
+          __nextHasNoMarginBottom
+        />
+
+        <TextControl
+          label={__('Website', 'vandrekalender-events')}
+          value={meta.event_organiser_url || ''}
+          onChange={value => setMeta({ event_organiser_url: value })}
+          placeholder="https://"
+          type="url"
+          __next40pxDefaultSize
+          __nextHasNoMarginBottom
+        />
+
+        {isAdmin && (
+          <TextControl
+            label={__('Contact email (admin only)', 'vandrekalender-events')}
+            value={meta.event_organiser_email || ''}
+            onChange={value => setMeta({ event_organiser_email: value })}
+            placeholder="contact@example.com"
+            type="email"
+            help={__(
+              'Stored securely. Never shown publicly. Used for the event claim flow.',
+              'vandrekalender-events'
+            )}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+          />
+        )}
+      </Flex>
+    </PluginDocumentSettingPanel>
+  );
+};
+
 // ── Root component ────────────────────────────────────────────────────────────
 
 const EventDocumentFields = () => {
@@ -463,7 +516,8 @@ const EventDocumentFields = () => {
     []
   );
   const meta = useSelect(
-    select => select('core/editor').getEditedPostAttribute('meta') ?? EMPTY_META,
+    select =>
+      select('core/editor').getEditedPostAttribute('meta') ?? EMPTY_META,
     []
   );
   const { editPost } = useDispatch('core/editor');
@@ -472,10 +526,13 @@ const EventDocumentFields = () => {
 
   const setMeta = patch => editPost({ meta: { ...meta, ...patch } });
 
+  console.log('Current meta:', meta); // Debug log to inspect meta structure
+
   return (
     <>
-      <LocationPanel meta={meta} setMeta={setMeta} />
       <EventDetailsPanel meta={meta} setMeta={setMeta} />
+      <LocationPanel meta={meta} setMeta={setMeta} />
+      <OrganiserPanel meta={meta} setMeta={setMeta} />
     </>
   );
 };

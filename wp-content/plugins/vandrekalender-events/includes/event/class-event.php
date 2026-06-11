@@ -28,13 +28,16 @@ class Event {
 	public const TAX_LENGTH = 'event_length';
 
 	// Meta keys.
-	public const META_DATE         = 'event_date';
-	public const META_ROUTES       = 'event_routes';
-	public const META_PLACE_NAME   = 'event_place_name';
-	public const META_ADDRESS      = 'event_address';
-	public const META_LAT          = 'event_lat';
-	public const META_LNG          = 'event_lng';
-	public const META_MUNICIPALITY = 'event_municipality';
+	public const META_DATE            = 'event_date';
+	public const META_ROUTES          = 'event_routes';
+	public const META_PLACE_NAME      = 'event_place_name';
+	public const META_ADDRESS         = 'event_address';
+	public const META_LAT             = 'event_lat';
+	public const META_LNG             = 'event_lng';
+	public const META_MUNICIPALITY    = 'event_municipality';
+	public const META_ORGANISER_NAME  = 'event_organiser_name';
+	public const META_ORGANISER_URL   = 'event_organiser_url';
+	public const META_ORGANISER_EMAIL = 'event_organiser_email';
 
 	/**
 	 * Get the singleton instance.
@@ -56,6 +59,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_taxonomies' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
 		// Hook directly into meta saves — fires at the exact moment each value is
 		// written to the database, regardless of whether the save comes from the
 		// block editor REST API, a scraper, or wp-cli.
@@ -207,6 +211,42 @@ class Event {
 				'single'       => true,
 				'show_in_rest' => true,
 				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_ORGANISER_NAME,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_ORGANISER_URL,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_ORGANISER_EMAIL,
+			[
+				'type'          => 'string',
+				'single'        => true,
+				'show_in_rest'  => true, // Exposed to block editor but stripped for non-admins via rest_prepare filter.
+				'auth_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+				'default'       => '',
 			]
 		);
 	}
@@ -395,6 +435,29 @@ class Event {
 			'vesthimmerlands'   => 'nordjylland',
 			'aalborg'           => 'nordjylland',
 		];
+	}
+
+	/**
+	 * Strip event_organiser_email from REST responses for non-admin users.
+	 * Admins can read and write it via the block editor; everyone else sees nothing.
+	 *
+	 * @param \WP_REST_Response $response The REST response.
+	 * @param \WP_Post          $_post    The post object (unused — required by filter signature).
+	 * @return \WP_REST_Response
+	 */
+	public function hide_organiser_email_in_rest( \WP_REST_Response $response, \WP_Post $_post ): \WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- required by filter signature.
+		if ( current_user_can( 'manage_options' ) ) {
+			return $response;
+		}
+
+		$data = $response->get_data();
+
+		if ( isset( $data['meta'][ self::META_ORGANISER_EMAIL ] ) ) {
+			unset( $data['meta'][ self::META_ORGANISER_EMAIL ] );
+			$response->set_data( $data );
+		}
+
+		return $response;
 	}
 
 	/**
