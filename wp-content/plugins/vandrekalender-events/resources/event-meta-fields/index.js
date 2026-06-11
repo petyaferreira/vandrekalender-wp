@@ -18,10 +18,11 @@ import {
 } from '@wordpress/date';
 
 // event_region and event_length are auto-assigned on save — hide their panels.
-dispatch('core/edit-post').removeEditorPanel('taxonomy-panel-event_region');
-dispatch('core/edit-post').removeEditorPanel('taxonomy-panel-event_length');
+dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_region');
+dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_length');
 
 const POST_TYPE = 'event';
+const EMPTY_META = {};
 const DAWA_AUTOCOMPLETE =
   'https://api.dataforsyningen.dk/autocomplete?type=adresse&q=';
 const DAWA_KOMMUNE = 'https://api.dataforsyningen.dk/kommuner/';
@@ -37,14 +38,8 @@ const toISODate = dateLike => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const generateRouteId = () => {
-  if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
-    return `route_${window.crypto.randomUUID()}`;
-  }
-  return `route_${Date.now().toString(36)}_${Math.random()
-    .toString(36)
-    .slice(2, 10)}`;
-};
+const generateRouteId = () =>
+  `route_${window.crypto.randomUUID()}`;
 
 const emptyRoute = () => ({
   id: generateRouteId(),
@@ -85,21 +80,13 @@ const timeOptions = (() => {
 // ── Location panel ────────────────────────────────────────────────────────────
 
 const LocationPanel = ({ meta, setMeta }) => {
-  const [query, setQuery] = useState(meta.event_address || '');
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef(null);
   const wrapperRef = useRef(null);
   const setMetaRef = useRef(setMeta);
-  useEffect(() => {
-    setMetaRef.current = setMeta;
-  }, [setMeta]);
-
-  // Keep query in sync if meta is updated externally (e.g. page load).
-  useEffect(() => {
-    setQuery(meta.event_address || '');
-  }, [meta.event_address]);
+  setMetaRef.current = setMeta;
 
   // Close dropdown when clicking outside.
   useEffect(() => {
@@ -113,8 +100,6 @@ const LocationPanel = ({ meta, setMeta }) => {
   }, []);
 
   const onQueryChange = value => {
-    setQuery(value);
-
     // Clear derived fields when the user edits the address manually.
     setMeta({
       event_address: value,
@@ -148,7 +133,6 @@ const LocationPanel = ({ meta, setMeta }) => {
 
   const onSelect = suggestion => {
     const { tekst, data } = suggestion;
-    setQuery(tekst);
     setOpen(false);
     setSuggestions([]);
 
@@ -199,7 +183,7 @@ const LocationPanel = ({ meta, setMeta }) => {
       <div ref={wrapperRef} style={{ position: 'relative', marginTop: '16px' }}>
         <TextControl
           label={__('Address', 'vandrekalender-events')}
-          value={query}
+          value={meta.event_address || ''}
           onChange={onQueryChange}
           placeholder={__('Start typing an address…', 'vandrekalender-events')}
           __next40pxDefaultSize
@@ -271,7 +255,7 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
 
   const eventDate = meta.event_date || '';
   const routes = normalizeRoutes(meta.event_routes);
-  const setRoutes = next => setMeta({ event_routes: normalizeRoutes(next) });
+  const setRoutes = next => setMeta({ event_routes: next });
 
   const addRoute = () => {
     const next = [...routes, emptyRoute()];
@@ -478,23 +462,20 @@ const EventDocumentFields = () => {
     select => select('core/editor').getCurrentPostType(),
     []
   );
+  const meta = useSelect(
+    select => select('core/editor').getEditedPostAttribute('meta') ?? EMPTY_META,
+    []
+  );
+  const { editPost } = useDispatch('core/editor');
 
   if (postType !== POST_TYPE) return null;
 
-  const meta = useSelect(
-    select => select('core/editor').getEditedPostAttribute('meta') || {},
-    []
-  );
-
-  const { editPost } = useDispatch('core/editor');
   const setMeta = patch => editPost({ meta: { ...meta, ...patch } });
-
-  console.log('Current meta:', meta);
 
   return (
     <>
-      <EventDetailsPanel meta={meta} setMeta={setMeta} />
       <LocationPanel meta={meta} setMeta={setMeta} />
+      <EventDetailsPanel meta={meta} setMeta={setMeta} />
     </>
   );
 };
