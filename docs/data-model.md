@@ -78,8 +78,8 @@ Address input uses **DAWA** (Danmarks Adressers Web API — `api.dataforsyningen
 |---|---|---|---|---|
 | `event_place_name` | string | — | — | Optional human-readable name e.g. `Dyrehaven` or `Silkeborg Sti ved parkeringen`. Shown on event cards. Falls back to `event_municipality` if not set |
 | `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via DAWA autocomplete |
-| `event_lat` | float | ✅ | — (v2) | Latitude. Derived from DAWA on save. Used for map pin on event page and proximity search in v2 |
-| `event_lng` | float | ✅ | — (v2) | Longitude. Derived from DAWA on save. Used for map pin on event page and proximity search in v2 |
+| `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from DAWA on save. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
+| `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from DAWA on save. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
 | `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from DAWA on save. Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
 
 ### Proximity Search (v2)
