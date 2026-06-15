@@ -154,7 +154,7 @@ const LocationPanel = ({ meta, setMeta }) => {
     }
   };
 
-  const hasCoords = meta.event_lat && meta.event_lng;
+  const hasCoords = Boolean(meta.event_lat && meta.event_lng);
 
   return (
     <PluginDocumentSettingPanel
