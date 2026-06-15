@@ -97,13 +97,28 @@ When a user searches "Valby", DAWA geocodes it to coordinates, then a custom SQL
 
 ---
 
-## Organiser — Post Meta
+## Organiser — Taxonomy & Post Meta
+
+### `organizer` Taxonomy
+
+Custom taxonomy representing organizations (DVL, Mammutmarch, etc.). See `docs/authentication.md` for the full organization model.
+
+Each organizer term carries:
+
+| Meta Key | Type | Notes |
+|---|---|---|
+| `email_domain` | string | Organization's email domain (e.g. `dvl.dk`). Used for automatic user attachment and claim flow validation |
+
+**Archive pages:** taxonomy term archive pages are served as `/arrangor/[slug]` public profile pages (native WordPress).
+
+### Post Meta
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `event_organiser_name` | string | — | Organiser display name. For manually created events defaults to the WP author's `display_name` but can be overridden. For scraped events set by the scraper from the source data |
+| `event_organiser_name` | string | — | Organiser display name. Retained for fallback/display when the organizer taxonomy is not set. For manually created events defaults to the WP author's `display_name`. For scraped events set by the scraper from the source data |
 | `event_organiser_url` | string (url) | — | Organiser's website or Facebook page |
 | `event_organiser_email` | string (email) | — | Contact email. Admin only — never displayed publicly |
+| `post_as` | string (enum) | — | Organization membership posting context. Values: `organization` (default—event attached to the user's organizer term) or `private` (no organizer term attached, event visible only to author). Author-only control — only the post author can change this field |
 
 ---
 
@@ -135,6 +150,14 @@ All scraping fields are admin only — never visible to event creators or the pu
 ---
 
 ## Taxonomies
+
+### `organizer`
+
+Custom taxonomy representing organizations (e.g. DVL, Mammutmarch, individual organizers). Defines shared event ownership and team membership. See `docs/authentication.md` for the full organization and user role model.
+
+- Each event is attached to exactly one organizer term (or none, if posted privately via the `post_as` field)
+- Term meta `email_domain` enables automatic user attachment and claim flow validation
+- Archive pages at `/arrangor/[slug]` are public organizer profile pages
 
 ### `event_region`
 

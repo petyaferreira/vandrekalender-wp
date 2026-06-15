@@ -11,6 +11,7 @@ Walking events calendar for Denmark. Aggregates events from scrapers, Facebook, 
 | Topic | File |
 |---|---|
 | Data model — CPT, meta fields, taxonomies, REST API | `docs/data-model.md` |
+| Authentication — user roles, login methods, organizer taxonomy, team membership | `docs/authentication.md` |
 | Scraping pipeline — sources, patterns, how to add a scraper | `docs/scrapers.md` |
 | Frontend — blocks, templates, filter bar, event cards | `docs/frontend.md` |
 | Sitemap and URL structure | `docs/sitemap.md` |
