@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_NAME=$(grep PROJECT_NAME .env | cut -d '=' -f2)
+PROJECT_NAME=$(grep '^PROJECT_NAME=' .env | cut -d '=' -f2)
 
 if [ -z "$PROJECT_NAME" ]; then
   echo "❌ PROJECT_NAME not found in .env"
