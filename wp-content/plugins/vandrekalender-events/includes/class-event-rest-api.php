@@ -74,10 +74,31 @@ class Vandrekalender_Event_Rest_Api {
 			];
 		}
 
+		$tax_query = [];
+
+		if ( $request->get_param( 'region' ) ) {
+			$tax_query[] = [
+				'taxonomy' => \Vandrekalender\Event::TAX_REGION,
+				'field'    => 'slug',
+				'terms'    => array_map( 'sanitize_title', explode( ',', $request->get_param( 'region' ) ) ),
+			];
+		}
+
+		if ( $request->get_param( 'length' ) ) {
+			$tax_query[] = [
+				'taxonomy' => \Vandrekalender\Event::TAX_LENGTH,
+				'field'    => 'slug',
+				'terms'    => array_map( 'sanitize_title', explode( ',', $request->get_param( 'length' ) ) ),
+			];
+		}
+
+		$per_page = (int) $request->get_param( 'per_page' );
+		$per_page = $per_page > 0 ? min( $per_page, 100 ) : 50;
+
 		$args = [
 			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
-			'posts_per_page' => 50,
+			'posts_per_page' => $per_page,
 			'orderby'        => 'meta_value',
 			'meta_key'       => \Vandrekalender\Event::META_DATE,
 			'order'          => 'ASC',
@@ -87,9 +108,24 @@ class Vandrekalender_Event_Rest_Api {
 			$args['meta_query'] = array_merge( $args['meta_query'] ?? [], $meta_query );
 		}
 
-		$posts = get_posts( $args );
+		if ( ! empty( $tax_query ) ) {
+			$args['tax_query'] = $tax_query;
+		}
 
-		return rest_ensure_response( array_map( [ $this, 'format_event' ], $posts ) );
+		$events = array_map( [ $this, 'format_event' ], get_posts( $args ) );
+
+		// Price lives inside the routes JSON, so the free/paid filter runs in PHP.
+		if ( null !== $request->get_param( 'is_free' ) && '' !== $request->get_param( 'is_free' ) ) {
+			$want_free = rest_sanitize_boolean( $request->get_param( 'is_free' ) );
+			$events    = array_values(
+				array_filter(
+					$events,
+					fn( $event ) => $event['is_free'] === $want_free
+				)
+			);
+		}
+
+		return rest_ensure_response( $events );
 	}
 
 	/**
@@ -117,18 +153,38 @@ class Vandrekalender_Event_Rest_Api {
 	private function format_event( WP_Post $post ) {
 		$date   = get_post_meta( $post->ID, \Vandrekalender\Event::META_DATE, true );
 		$routes = get_post_meta( $post->ID, \Vandrekalender\Event::META_ROUTES, true );
+		$routes = is_array( $routes ) ? $routes : [];
+
+		$distances = [];
+		$prices    = [];
+
+		foreach ( $routes as $route ) {
+			if ( isset( $route['distance_km'] ) && '' !== $route['distance_km'] ) {
+				$distances[] = (float) $route['distance_km'];
+			}
+			if ( isset( $route['price'] ) && '' !== $route['price'] ) {
+				$prices[] = (float) $route['price'];
+			}
+		}
+
+		$price_from = ! empty( $prices ) ? min( $prices ) : null;
 
 		return [
-			'id'          => $post->ID,
-			'title'       => $post->post_title,
-			'description' => apply_filters( 'the_content', $post->post_content ),
-			'permalink'   => get_permalink( $post->ID ),
-			'date'        => $date ? $date : null,
-			'routes'      => is_array( $routes ) ? $routes : [],
-			'taxonomies'  => [
-				'location' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LOCATION, [ 'fields' => 'names' ] ),
-				'format'   => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_FORMAT, [ 'fields' => 'names' ] ),
-				'length'   => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'names' ] ),
+			'id'           => $post->ID,
+			'title'        => $post->post_title,
+			'description'  => apply_filters( 'the_content', $post->post_content ),
+			'permalink'    => get_permalink( $post->ID ),
+			'date'         => $date ? $date : null,
+			'place_name'   => get_post_meta( $post->ID, \Vandrekalender\Event::META_PLACE_NAME, true ),
+			'municipality' => get_post_meta( $post->ID, \Vandrekalender\Event::META_MUNICIPALITY, true ),
+			'organiser'    => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
+			'routes'       => $routes,
+			'distances_km' => $distances,
+			'price_from'   => $price_from,
+			'is_free'      => null !== $price_from && 0.0 === (float) $price_from,
+			'taxonomies'   => [
+				'region' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] ),
+				'length' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'slugs' ] ),
 			],
 		];
 	}
@@ -148,17 +204,19 @@ class Vandrekalender_Event_Rest_Api {
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			'location'  => [
-				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
-			],
-			'format'    => [
+			'region'    => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],
 			'length'    => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'is_free'   => [
+				'type' => 'boolean',
+			],
+			'per_page'  => [
+				'type' => 'integer',
 			],
 		];
 	}

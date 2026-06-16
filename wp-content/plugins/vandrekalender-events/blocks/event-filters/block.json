@@ -7,7 +7,9 @@
     "description": "Filter controls for the event calendar.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
     "style": "file:./style-index.css",
+    "render": "file:./render.php",
     "supports": {
         "html": false
     }

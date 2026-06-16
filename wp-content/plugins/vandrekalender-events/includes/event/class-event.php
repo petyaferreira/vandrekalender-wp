@@ -528,7 +528,7 @@ class Event {
 	 * @return void
 	 */
 	public function register_blocks(): void {
-		foreach ( glob( VANDREKALENDER_EVENTS_DIR . 'build/*/block.json' ) as $block_json ) {
+		foreach ( glob( VANDREKALENDER_EVENTS_DIR . 'build/blocks/*/block.json' ) as $block_json ) {
 			register_block_type( dirname( $block_json ) );
 		}
 	}
@@ -539,7 +539,7 @@ class Event {
 	 * @return void
 	 */
 	public function enqueue_editor_assets(): void {
-		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/event-meta-fields/index.asset.php';
+		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/resources/event-meta-fields/index.asset.php';
 
 		if ( ! file_exists( $asset_file ) ) {
 			return;
@@ -549,7 +549,7 @@ class Event {
 
 		wp_enqueue_script(
 			'vandrekalender-event-meta-fields',
-			VANDREKALENDER_EVENTS_URL . 'build/event-meta-fields/index.js',
+			VANDREKALENDER_EVENTS_URL . 'build/resources/event-meta-fields/index.js',
 			$asset['dependencies'],
 			$asset['version'],
 			true
