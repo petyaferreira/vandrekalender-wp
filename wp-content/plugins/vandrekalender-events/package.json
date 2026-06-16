@@ -5,12 +5,12 @@
     "author": "Petya Ferreira",
     "license": "ISC",
     "scripts": {
-        "build": "npm run build:blocks & npm run build:resources",
-        "build:blocks": "wp-scripts build --source-path=blocks",
-        "build:resources": "wp-scripts build resources/event-meta-fields/index.js --output-path=build/event-meta-fields",
+        "build": "npm run build:blocks && npm run build:resources",
+        "build:blocks": "wp-scripts build --source-path=blocks --output-path=build/blocks",
+        "build:resources": "wp-scripts build resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields",
         "start": "npm run start:blocks & npm run start:resources",
-        "start:blocks": "wp-scripts start --source-path=blocks",
-        "start:resources": "wp-scripts start resources/event-meta-fields/index.js --output-path=build/event-meta-fields"
+        "start:blocks": "wp-scripts start --source-path=blocks --output-path=build/blocks",
+        "start:resources": "wp-scripts start resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields"
     },
     "devDependencies": {
         "@wordpress/scripts": "^30.0.0"
