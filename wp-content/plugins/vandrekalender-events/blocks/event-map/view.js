@@ -158,7 +158,7 @@ async function initMap(root) {
   }
 
   const L = window.L;
-  const map = L.map(canvas, { scrollWheelZoom: false }).setView(center, zoom);
+  const map = L.map(canvas, { scrollWheelZoom: true }).setView(center, zoom);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap',
