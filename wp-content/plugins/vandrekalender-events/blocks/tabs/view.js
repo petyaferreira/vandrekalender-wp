@@ -7,6 +7,20 @@
  */
 
 /**
+ * @param {string} text
+ * @return {string}
+ */
+function slugify( text ) {
+	return text
+		.toLowerCase()
+		.replace( /[æ]/g, 'ae' )
+		.replace( /[ø]/g, 'oe' )
+		.replace( /[å]/g, 'aa' )
+		.replace( /[^a-z0-9]+/g, '-' )
+		.replace( /^-|-$/g, '' );
+}
+
+/**
  * Initialise one tabs container.
  *
  * @param {HTMLElement} root The [data-vk-tabs] element.
@@ -40,9 +54,20 @@ function initTabs( root ) {
 		} );
 	}
 
+	const slugs = tabs.map( ( tab ) => slugify( tab.textContent.trim() ) );
+
 	tabs.forEach( ( tab, index ) => {
-		tab.addEventListener( 'click', () => activate( index ) );
+		tab.addEventListener( 'click', () => {
+			activate( index );
+			history.replaceState( null, '', `#${ slugs[ index ] }` );
+		} );
 	} );
+
+	const hash = location.hash.slice( 1 );
+	const index = slugs.indexOf( hash );
+	if ( index !== -1 ) {
+		activate( index );
+	}
 }
 
 document.addEventListener( 'DOMContentLoaded', () => {
