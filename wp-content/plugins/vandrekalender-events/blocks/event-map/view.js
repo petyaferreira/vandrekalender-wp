@@ -209,7 +209,7 @@ async function initMap( root ) {
 			layer.clearLayers();
 			const points = [];
 			( Array.isArray( events ) ? events : [] ).forEach( ( event ) => {
-				if ( event.lat == null || event.lng == null ) {
+				if ( event.lat == null || event.lng == null || ( event.lat === 0 && event.lng === 0 ) ) {
 					return;
 				}
 				const marker = L.marker( [ event.lat, event.lng ], { icon: pinIcon } );
