@@ -1,9 +1,9 @@
 <?php
 /**
- * Server render for the Event Calendar block.
+ * Server render for the Event Calendar (month grid) block.
  *
- * Outputs a hydration root. The view script fetches events from the
- * REST API and renders the cards client-side, reacting to filter changes.
+ * Outputs a hydration root. The view script fetches events from the REST API,
+ * builds the month grid with a dot per day, and reacts to filter changes.
  *
  * @package Vandrekalender
  */
@@ -17,6 +17,6 @@ $vk_rest_url = esc_url_raw( rest_url( 'vandrekalender/v1/events' ) );
 	data-rest-url="<?php echo esc_attr( $vk_rest_url ); ?>"
 >
 	<p class="vk-calendar__status" role="status"><?php esc_html_e( 'Indlæser vandreture…', 'vandrekalender-events' ); ?></p>
-	<ul class="vk-calendar__list" hidden></ul>
-	<p class="vk-calendar__empty" hidden><?php esc_html_e( 'Ingen vandreture matcher dine filtre.', 'vandrekalender-events' ); ?></p>
+	<div class="vk-calendar__inner" hidden></div>
+	<p class="vk-calendar__error" hidden><?php esc_html_e( 'Kunne ikke indlæse kalenderen. Prøv igen.', 'vandrekalender-events' ); ?></p>
 </div>

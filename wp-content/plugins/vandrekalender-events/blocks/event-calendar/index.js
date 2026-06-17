@@ -1,12 +1,17 @@
+/**
+ * WordPress dependencies.
+ */
 import { registerBlockType } from '@wordpress/blocks';
+
+/**
+ * Internal dependencies.
+ */
+import Edit from './edit';
+import save from './save';
 import metadata from './block.json';
 import './style.scss';
 
 registerBlockType( metadata.name, {
-	edit: () => (
-		<div className="vk-calendar vk-calendar--editor">
-			<p>📅 Event Calendar — events load on the published page.</p>
-		</div>
-	),
-	save: () => null, // dynamic block rendered server-side
+	edit: Edit,
+	save,
 } );

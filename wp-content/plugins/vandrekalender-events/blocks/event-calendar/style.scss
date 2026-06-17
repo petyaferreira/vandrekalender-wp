@@ -1,25 +1,16 @@
 /**
- * Event Calendar + event card styles. Loads on front end and editor.
+ * Event Calendar (month grid) styles. Loads on front end and editor.
  */
 
 .vk-calendar {
 	margin-block: var( --wp--preset--spacing--40, 1.5rem );
 
 	&__status,
-	&__empty {
+	&__error {
 		color: var( --wp--preset--color--pebble, #7a7268 );
 		font-size: var( --wp--preset--font-size--small, 0.875rem );
 		margin: 0;
 		padding-block: 1rem;
-	}
-
-	&__list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		gap: 1rem;
-		grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
 	}
 
 	&--editor {
@@ -28,81 +19,179 @@
 		padding: 1.25rem;
 		color: var( --wp--preset--color--fern, #527a50 );
 	}
-}
 
-.vk-card {
-	background: var( --wp--preset--color--white, #fff );
-	border: 1px solid var( --wp--preset--color--meadow, #c2d9b0 );
-	border-radius: 10px;
-	overflow: hidden;
-	transition: box-shadow 0.15s ease, transform 0.15s ease;
-
-	&:hover {
-		box-shadow: 0 6px 18px rgba( 29, 26, 20, 0.12 );
-		transform: translateY( -2px );
-	}
-
-	&__link {
+	&__header {
 		display: flex;
-		flex-direction: column;
-		gap: 0.35rem;
-		padding: 1.1rem 1.25rem;
-		text-decoration: none;
-		color: var( --wp--preset--color--charcoal, #1d1a14 );
-		height: 100%;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.75rem;
 	}
 
-	&__date {
+	&__month {
+		margin: 0;
+		font-family: var( --wp--preset--font-family--publico, serif );
+		font-size: var( --wp--preset--font-size--large, 1.25rem );
+		color: var( --wp--preset--color--charcoal, #1d1a14 );
+	}
+
+	&__nav {
+		appearance: none;
+		border: 1px solid var( --wp--preset--color--meadow, #c2d9b0 );
+		background: var( --wp--preset--color--white, #fff );
+		color: var( --wp--preset--color--forest, #2d5f3f );
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 50%;
+		font-size: 1.3rem;
+		line-height: 1;
+		cursor: pointer;
+
+		&:hover {
+			background: var( --wp--preset--color--cream, #faf5ec );
+		}
+	}
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat( 7, 1fr );
+		gap: 4px;
+	}
+
+	&__weekday {
+		text-align: center;
 		font-size: var( --wp--preset--font-size--x-small, 0.75rem );
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
-		color: var( --wp--preset--color--amber, #d97535 );
 		font-weight: 600;
-	}
-
-	&__title {
-		font-family: var( --wp--preset--font-family--publico, serif );
-		font-size: var( --wp--preset--font-size--medium, 1.125rem );
-		font-weight: 600;
-		line-height: 1.2;
-	}
-
-	&__place {
-		font-size: var( --wp--preset--font-size--small, 0.875rem );
 		color: var( --wp--preset--color--pebble, #7a7268 );
+		padding-bottom: 0.4rem;
 	}
 
-	&__meta {
+	&__day {
+		appearance: none;
+		border: 1px solid transparent;
+		background: var( --wp--preset--color--cream, #faf5ec );
+		border-radius: 8px;
+		aspect-ratio: 1 / 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.2rem;
+		padding: 0.3rem;
+		color: var( --wp--preset--color--charcoal, #1d1a14 );
+		font: inherit;
+
+		&.is-other-month {
+			background: transparent;
+		}
+
+		&.has-events {
+			cursor: pointer;
+
+			&:hover {
+				border-color: var( --wp--preset--color--fjord, #1e6fa5 );
+			}
+		}
+
+		&.is-today {
+			border-color: var( --wp--preset--color--amber, #d97535 );
+		}
+
+		&.is-selected {
+			background: var( --wp--preset--color--fjord, #1e6fa5 );
+			color: var( --wp--preset--color--white, #fff );
+		}
+
+		&:disabled {
+			cursor: default;
+		}
+	}
+
+	&__num {
+		font-size: var( --wp--preset--font-size--small, 0.875rem );
+	}
+
+	&__dot {
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var( --wp--preset--color--fjord, #1e6fa5 );
+		color: var( --wp--preset--color--white, #fff );
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 11px;
+		font-weight: 500;
+
+		&--sm {
+			width: 18px;
+			height: 18px;
+			font-size: 10px;
+		}
+
+		&--lg {
+			width: 26px;
+			height: 26px;
+			font-size: 12px;
+		}
+	}
+
+	&__day.is-selected &__dot {
+		background: var( --wp--preset--color--white, #fff );
+		color: var( --wp--preset--color--fjord, #1e6fa5 );
+	}
+
+	&__day-events {
+		margin-top: 1.25rem;
+
+		&:empty {
+			margin-top: 0;
+		}
+	}
+
+	&__day-label {
+		font-weight: 600;
+		color: var( --wp--preset--color--forest, #2d5f3f );
+		margin: 0 0 0.5rem;
+	}
+
+	&__event {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
-		margin-top: auto;
-		padding-top: 0.5rem;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.6rem 0.75rem;
+		border: 1px solid var( --wp--preset--color--meadow, #c2d9b0 );
+		border-radius: 8px;
+		margin-bottom: 0.5rem;
+		text-decoration: none;
+		color: var( --wp--preset--color--charcoal, #1d1a14 );
+
+		&:hover {
+			background: var( --wp--preset--color--cream, #faf5ec );
+		}
 	}
 
-	&__distance,
-	&__price,
-	&__region {
+	&__event-title {
+		font-weight: 600;
+		flex: 1 1 auto;
+	}
+
+	&__event-dist,
+	&__event-price {
 		font-size: var( --wp--preset--font-size--x-small, 0.75rem );
 		padding: 0.15rem 0.55rem;
 		border-radius: 999px;
+		background: var( --wp--preset--color--meadow, #c2d9b0 );
+		color: var( --wp--preset--color--forest, #2d5f3f );
 		white-space: nowrap;
 	}
 
-	&__distance {
-		background: var( --wp--preset--color--meadow, #c2d9b0 );
-		color: var( --wp--preset--color--forest, #2d5f3f );
-	}
-
-	&__price {
+	&__event-price {
 		background: var( --wp--preset--color--cream, #faf5ec );
 		color: var( --wp--preset--color--bark, #7a5230 );
 		font-weight: 600;
-	}
-
-	&__region {
-		background: var( --wp--preset--color--forest, #2d5f3f );
-		color: var( --wp--preset--color--white, #fff );
-		text-transform: capitalize;
 	}
 }

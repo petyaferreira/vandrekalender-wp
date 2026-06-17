@@ -4,7 +4,7 @@
     "name": "vandrekalender/event-calendar",
     "title": "Event Calendar",
     "category": "widgets",
-    "description": "Displays a filterable list of walking events.",
+    "description": "A month calendar that marks days with walking events. Click a day to see its events.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
     "viewScript": "file:./view.js",
