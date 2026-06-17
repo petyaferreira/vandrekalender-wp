@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/event-cards",
+    "title": "Event Cards",
+    "category": "widgets",
+    "description": "Displays matching walking events as a grid of cards.",
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    }
+}
