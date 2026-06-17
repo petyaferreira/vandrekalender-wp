@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/tab",
+    "version": "1.0.0",
+    "title": "Tab",
+    "category": "design",
+    "icon": "media-interactive",
+    "description": "A single tab panel. Place any blocks inside. Lives inside a Tabs block.",
+    "parent": ["vandrekalender/tabs"],
+    "example": {},
+    "supports": {},
+    "attributes": {
+        "id": {
+            "type": "string",
+            "default": ""
+        },
+        "label": {
+            "type": "string",
+            "default": "Tab"
+        }
+    },
+    "usesContext": ["vandrekalender/activeTabId"],
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

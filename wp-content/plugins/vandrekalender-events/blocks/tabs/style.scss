@@ -1,0 +1,71 @@
+/**
+ * Tabs block styles. Loads on front end and editor.
+ */
+
+.wp-block-vandrekalender-tabs {
+	margin-block: var( --wp--preset--spacing--40, 1.5rem );
+
+	&__navigation {
+		display: flex;
+		flex-wrap: wrap;
+		border-bottom: 2px solid var( --wp--preset--color--meadow, #c2d9b0 );
+		margin-bottom: 1.25rem;
+	}
+
+	&__navigation-inner {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+		align-items: center;
+	}
+
+	&__navigation-item {
+		appearance: none;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		padding: 0.6rem 1rem;
+		font-size: var( --wp--preset--font-size--small, 0.875rem );
+		font-weight: 600;
+		color: var( --wp--preset--color--pebble, #7a7268 );
+		border-bottom: 3px solid transparent;
+		margin-bottom: -2px;
+		transition: color 0.12s ease, border-color 0.12s ease;
+
+		&:hover {
+			color: var( --wp--preset--color--forest, #2d5f3f );
+		}
+
+		&--active {
+			color: var( --wp--preset--color--forest, #2d5f3f );
+			border-bottom-color: var( --wp--preset--color--forest, #2d5f3f );
+		}
+
+		&:focus-visible {
+			outline: 2px solid var( --wp--preset--color--fjord, #1e6fa5 );
+			outline-offset: 2px;
+		}
+	}
+
+	// Editor only: the "add tab" button.
+	&__navigation-add.components-button {
+		min-width: 2rem;
+		height: 2rem;
+		justify-content: center;
+		align-self: center;
+		margin-bottom: 0.35rem;
+		font-size: 1.25rem;
+		line-height: 1;
+		font-weight: 600;
+		color: var( --wp--preset--color--forest, #2d5f3f );
+		border: 1px solid var( --wp--preset--color--meadow, #c2d9b0 );
+	}
+
+	&__content-item {
+		display: none;
+
+		&--active {
+			display: block;
+		}
+	}
+}
