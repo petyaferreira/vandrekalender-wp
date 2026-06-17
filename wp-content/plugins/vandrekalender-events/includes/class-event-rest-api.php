@@ -169,6 +169,9 @@ class Vandrekalender_Event_Rest_Api {
 
 		$price_from = ! empty( $prices ) ? min( $prices ) : null;
 
+		$lat = get_post_meta( $post->ID, \Vandrekalender\Event::META_LAT, true );
+		$lng = get_post_meta( $post->ID, \Vandrekalender\Event::META_LNG, true );
+
 		return [
 			'id'           => $post->ID,
 			'title'        => $post->post_title,
@@ -178,6 +181,8 @@ class Vandrekalender_Event_Rest_Api {
 			'place_name'   => get_post_meta( $post->ID, \Vandrekalender\Event::META_PLACE_NAME, true ),
 			'municipality' => get_post_meta( $post->ID, \Vandrekalender\Event::META_MUNICIPALITY, true ),
 			'organiser'    => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
+			'lat'          => '' !== $lat ? (float) $lat : null,
+			'lng'          => '' !== $lng ? (float) $lng : null,
 			'routes'       => $routes,
 			'distances_km' => $distances,
 			'price_from'   => $price_from,
