@@ -222,7 +222,26 @@ async function initMap(root) {
           return;
         }
         const marker = L.marker([event.lat, event.lng], { icon: pinIcon });
-        marker.bindPopup(popupHtml(event));
+        marker.bindPopup(popupHtml(event), { closeButton: false });
+
+        let closeTimer;
+        const cancelClose = () => clearTimeout(closeTimer);
+        const scheduleClose = () => {
+          closeTimer = setTimeout(() => marker.closePopup(), 200);
+        };
+
+        marker.on('mouseover', function () {
+          cancelClose();
+          this.openPopup();
+        });
+        marker.on('mouseout', scheduleClose);
+
+        marker.on('popupopen', function () {
+          const popupEl = this.getPopup().getElement();
+          popupEl.addEventListener('mouseenter', cancelClose);
+          popupEl.addEventListener('mouseleave', scheduleClose);
+        });
+
         layer.addLayer(marker);
         points.push([event.lat, event.lng]);
       });
