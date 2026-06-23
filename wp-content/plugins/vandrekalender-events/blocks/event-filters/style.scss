@@ -41,9 +41,19 @@
 		font-size: var( --wp--preset--font-size--small, 0.875rem );
 	}
 
+	&__date-range {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+	}
+
 	&__pills {
 		display: flex;
 		gap: 0.4rem;
+
+		@media ( max-width: 480px ) {
+			flex-direction: column;
+		}
 	}
 
 	&__pill {

@@ -48,14 +48,16 @@ $vk_lengths = [
 		</div>
 	</div>
 
-	<div class="vk-filters__field">
-		<label class="vk-filters__label" for="vk-filter-from"><?php esc_html_e( 'Fra dato', 'vandrekalender-events' ); ?></label>
-		<input class="vk-filters__input" type="date" id="vk-filter-from" data-filter="date_from" />
-	</div>
+	<div class="vk-filters__date-range">
+		<div class="vk-filters__field">
+			<label class="vk-filters__label" for="vk-filter-from"><?php esc_html_e( 'Fra dato', 'vandrekalender-events' ); ?></label>
+			<input class="vk-filters__input" type="date" id="vk-filter-from" data-filter="date_from" />
+		</div>
 
-	<div class="vk-filters__field">
-		<label class="vk-filters__label" for="vk-filter-to"><?php esc_html_e( 'Til dato', 'vandrekalender-events' ); ?></label>
-		<input class="vk-filters__input" type="date" id="vk-filter-to" data-filter="date_to" />
+		<div class="vk-filters__field">
+			<label class="vk-filters__label" for="vk-filter-to"><?php esc_html_e( 'Til dato', 'vandrekalender-events' ); ?></label>
+			<input class="vk-filters__input" type="date" id="vk-filter-to" data-filter="date_to" />
+		</div>
 	</div>
 
 	<div class="vk-filters__field vk-filters__field--check">
