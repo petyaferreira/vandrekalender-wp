@@ -5,6 +5,10 @@
 .vk-calendar {
 	margin-block: var( --wp--preset--spacing--40, 1.5rem );
 
+	@media ( max-width: 480px ) {
+		overflow-x: auto;
+	}
+
 	&__status,
 	&__error {
 		color: var( --wp--preset--color--pebble, #7a7268 );
@@ -56,6 +60,10 @@
 		display: grid;
 		grid-template-columns: repeat( 7, 1fr );
 		gap: 4px;
+
+		@media ( max-width: 480px ) {
+			gap: 2px;
+		}
 	}
 
 	&__weekday {
@@ -66,6 +74,12 @@
 		font-weight: 600;
 		color: var( --wp--preset--color--pebble, #7a7268 );
 		padding-bottom: 0.4rem;
+
+		@media ( max-width: 480px ) {
+			font-size: 0.6rem;
+			letter-spacing: 0;
+			padding-bottom: 0.2rem;
+		}
 	}
 
 	&__day {
@@ -107,10 +121,19 @@
 		&:disabled {
 			cursor: default;
 		}
+
+		@media ( max-width: 480px ) {
+			gap: 0.1rem;
+			padding: 0.15rem;
+		}
 	}
 
 	&__num {
 		font-size: var( --wp--preset--font-size--small, 0.875rem );
+
+		@media ( max-width: 480px ) {
+			font-size: 0.7rem;
+		}
 	}
 
 	&__dot {
@@ -135,6 +158,22 @@
 			width: 26px;
 			height: 26px;
 			font-size: 12px;
+		}
+
+		@media ( max-width: 480px ) {
+			width: 15px;
+			height: 15px;
+			font-size: 8px;
+
+			&--sm {
+				width: 13px;
+				height: 13px;
+			}
+
+			&--lg {
+				width: 17px;
+				height: 17px;
+			}
 		}
 	}
 
