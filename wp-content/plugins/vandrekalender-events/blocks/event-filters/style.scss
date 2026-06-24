@@ -21,6 +21,10 @@
 		&--check {
 			justify-content: center;
 		}
+
+		@media ( max-width: 600px ) {
+			width: 100%;
+		}
 	}
 
 	&__label {
@@ -39,6 +43,10 @@
 		background: var( --wp--preset--color--white, #fff );
 		color: var( --wp--preset--color--charcoal, #1d1a14 );
 		font-size: var( --wp--preset--font-size--small, 0.875rem );
+
+		@media ( max-width: 600px ) {
+			width: 100%;
+		}
 	}
 
 	&__date-range {
@@ -51,7 +59,7 @@
 		display: flex;
 		gap: 0.4rem;
 
-		@media ( max-width: 480px ) {
+		@media ( max-width: 600px ) {
 			flex-direction: column;
 		}
 	}
@@ -69,6 +77,11 @@
 		&[aria-pressed='true'] {
 			background: var( --wp--preset--color--forest, #2d5f3f );
 			color: var( --wp--preset--color--white, #fff );
+		}
+
+		@media ( max-width: 600px ) {
+			width: 100%;
+			text-align: center;
 		}
 	}
 
