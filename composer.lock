@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a121c9bc7bc1d8a072df10886d6ae2a4",
+    "content-hash": "4aaab0bf7b4e42b5c4e103955eb6c9b7",
     "packages": [
         {
             "name": "composer/installers",
@@ -151,6 +151,45 @@
                 }
             ],
             "time": "2024-06-24T20:46:46+00:00"
+        },
+        {
+            "name": "djuric/responsive-block-controls",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/djuric/responsive-block-controls.git",
+                "reference": "9fa794ec4ff691fa49669daaafbea44a4557c5fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/djuric/responsive-block-controls/zipball/9fa794ec4ff691fa49669daaafbea44a4557c5fb",
+                "reference": "9fa794ec4ff691fa49669daaafbea44a4557c5fb",
+                "shasum": ""
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "wp-coding-standards/wpcs": "^3.1"
+            },
+            "type": "wordpress-plugin",
+            "scripts": {
+                "phpcs": [
+                    "./vendor/bin/phpcs"
+                ],
+                "phpcbf": [
+                    "./vendor/bin/phpcbf"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "djuric"
+                }
+            ],
+            "description": "Adds extra responsive design controls to the WordPress block editor",
+            "support": {
+                "source": "https://github.com/djuric/responsive-block-controls/tree/v1.2.0",
+                "issues": "https://github.com/djuric/responsive-block-controls/issues"
+            },
+            "time": "2025-11-20T10:40:23+00:00"
         },
         {
             "name": "wpackagist-plugin/safe-svg",

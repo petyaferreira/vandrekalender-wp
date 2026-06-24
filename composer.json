@@ -10,6 +10,10 @@
         {
             "type": "composer",
             "url": "https://wpackagist.org"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/djuric/responsive-block-controls"
         }
     ],
     "config": {
@@ -36,7 +40,8 @@
     "require": {
         "composer/installers": "^2.3",
         "wpackagist-theme/twentytwentyfive": "^1.0",
-        "wpackagist-plugin/safe-svg": "^2.4"
+        "wpackagist-plugin/safe-svg": "^2.4",
+        "djuric/responsive-block-controls": "^1.2"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.1",
