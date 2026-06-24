@@ -141,7 +141,7 @@ All scraping fields are admin only — never visible to event creators or the pu
 ### Claim Flow
 
 1. Organiser clicks "Claim this event" on the event page and enters their email
-2. System checks that the email domain matches the domain in `event_source_url` — e.g. only a `@mammut-march.dk` email can claim an event scraped from `mammut-march.dk`. Request is rejected if domains don't match
+2. System checks that the email domain matches the domain in `event_source_url` — e.g. only a `@mammutmarch.dk` email can claim an event scraped from `mammutmarch.dk`. Request is rejected if domains don't match
 3. A unique token is generated, stored in `event_claim_token` with a 48-hour expiry in `event_claim_token_expires`, and emailed to the organiser
 4. Organiser clicks the link in the email — system validates the token is correct and not expired
 5. On success: `event_claimed = true`, `event_claimed_by` and `event_claimed_at` set, token fields cleared
@@ -278,8 +278,8 @@ Returns full detail for a single event. Used by the event detail page.
     { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250 }
   ],
   "organiser_name": "Mammutmarch",
-  "organiser_url": "https://mammut-march.dk",
-  "source_url": "https://mammut-march.dk/events/2026"
+  "organiser_url": "https://mammutmarch.dk",
+  "source_url": "https://mammutmarch.dk/shop/mammutmarch-koebenhavn-75-100-km/"
 }
 ```
 

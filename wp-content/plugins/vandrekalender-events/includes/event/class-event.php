@@ -39,6 +39,13 @@ class Event {
 	public const META_ORGANISER_URL   = 'event_organiser_url';
 	public const META_ORGANISER_EMAIL = 'event_organiser_email';
 
+	// Source / scraping meta.
+	public const META_SOURCE      = 'event_source';
+	public const META_SOURCE_URL  = 'event_source_url';
+	public const META_SOURCE_NAME = 'event_source_name';
+	public const META_SCRAPED_AT  = 'event_scraped_at';
+	public const META_CLAIMED     = 'event_claimed';
+
 	/**
 	 * Get the singleton instance.
 	 *
@@ -247,6 +254,61 @@ class Event {
 					return current_user_can( 'manage_options' );
 				},
 				'default'       => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_SOURCE,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => 'manual',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_SOURCE_URL,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_SOURCE_NAME,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_SCRAPED_AT,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
+			]
+		);
+
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_CLAIMED,
+			[
+				'type'         => 'boolean',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => false,
 			]
 		);
 	}

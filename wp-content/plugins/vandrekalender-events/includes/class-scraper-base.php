@@ -50,7 +50,9 @@ abstract class Vandrekalender_Scraper_Base {
 	 * @return bool True if the event was created or updated.
 	 */
 	protected function upsert_event( array $event ): bool {
-		if ( empty( $event['_event_source_url'] ) ) {
+		$source_url_key = \Vandrekalender\Event::META_SOURCE_URL;
+
+		if ( empty( $event[ $source_url_key ] ) ) {
 			return false;
 		}
 
@@ -62,17 +64,17 @@ abstract class Vandrekalender_Scraper_Base {
 				'posts_per_page' => 1,
 				'meta_query'     => [
 					[
-						'key'   => '_event_source_url',
-						'value' => $event['_event_source_url'],
+						'key'   => $source_url_key,
+						'value' => $event[ $source_url_key ],
 					],
 				],
 			]
 		);
 
-		// Skip if already claimed — organiser manages their own data.
+		// Skip if already claimed — the organiser manages their own data.
 		if ( $existing ) {
-			$claim_status = get_post_meta( $existing[0]->ID, '_event_claim_status', true );
-			if ( 'claimed' === $claim_status ) {
+			$claimed = get_post_meta( $existing[0]->ID, \Vandrekalender\Event::META_CLAIMED, true );
+			if ( $claimed ) {
 				return false;
 			}
 		}
@@ -103,8 +105,12 @@ abstract class Vandrekalender_Scraper_Base {
 			}
 		}
 
+		// Source-tracking fields, set by the pipeline rather than each scraper.
+		update_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE, 'scraped' );
+		update_post_meta( $post_id, \Vandrekalender\Event::META_SCRAPED_AT, current_time( 'mysql' ) );
+
 		if ( ! $existing ) {
-			update_post_meta( $post_id, '_event_claim_status', 'unclaimed' );
+			update_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, false );
 		}
 
 		return true;

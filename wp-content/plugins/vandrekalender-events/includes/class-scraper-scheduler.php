@@ -57,7 +57,6 @@ class Vandrekalender_Scraper_Scheduler {
 	 */
 	public function run_all_scrapers() {
 		$scrapers = [
-			new Vandrekalender_Scraper_Loberdk(),
 			new Vandrekalender_Scraper_Mammut(),
 		];
 

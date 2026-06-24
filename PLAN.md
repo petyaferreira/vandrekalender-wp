@@ -81,7 +81,6 @@ vandrekalender-wp/
                 ├── class-scraper-scheduler.php
                 ├── class-scraper-base.php
                 └── scrapers/
-                    ├── class-scraper-loberdk.php
                     └── class-scraper-mammut.php
 ```
 
@@ -305,8 +304,7 @@ File: `includes/class-scraper-base.php`
 - Creates `vandrekalender_event` posts with `_event_claim_status = unclaimed`
 
 ### Initial Scrapers (v1 — 2-3 sources)
-- `class-scraper-loberdk.php` — løber.dk walking events
-- `class-scraper-mammut.php` — mammut-march.dk
+- `class-scraper-mammut.php` — mammutmarch.dk
 
 Each scraper:
 1. Fetches HTML (wp_remote_get)
@@ -407,8 +405,7 @@ Required secrets: `NORDICWAY_SSH_KEY`, `NORDICWAY_SSH_HOST`, `NORDICWAY_SSH_PORT
 
 **Scraping**
 - [ ] Scraper base class + scheduler
-- [ ] løber.dk scraper
-- [ ] mammut-march.dk scraper
+- [ ] mammutmarch.dk scraper
 - [ ] Deduplication logic
 - [ ] Admin UI to view scraper run log
 

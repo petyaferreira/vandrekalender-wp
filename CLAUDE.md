@@ -78,7 +78,6 @@ wp-content/plugins/vandrekalender-events/
     ├── class-scraper-base.php       ← abstract scraper + upsert logic
     ├── class-scraper-scheduler.php  ← WP-Cron setup
     └── scrapers/
-        ├── class-scraper-loberdk.php
         └── class-scraper-mammut.php
 
 wp-content/themes/vandrekalender-theme/

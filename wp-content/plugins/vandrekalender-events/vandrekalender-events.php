@@ -19,7 +19,6 @@ define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-rest-api.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
-require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-loberdk.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
