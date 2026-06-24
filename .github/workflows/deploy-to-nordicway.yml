@@ -83,7 +83,7 @@ jobs:
             --exclude=phpcs.xml \
             --exclude=composer.json \
             --exclude=composer.lock \
-            --exclude=resources
+            --exclude=/resources
 
           rsync -av "wp-content/plugins/$PLUGIN_NAME/" "nordicway/wp-content/plugins/$PLUGIN_NAME" \
             --exclude=node_modules \
@@ -97,8 +97,8 @@ jobs:
             --exclude=composer.json \
             --exclude=composer.lock \
             --exclude=README.md \
-            --exclude=blocks \
-            --exclude=resources
+            --exclude=/blocks \
+            --exclude=/resources
 
           # Composer-managed themes and plugins
           for dir in wp-content/themes/*/; do
@@ -145,13 +145,19 @@ jobs:
         run: |
           echo "Deploying to $USER@$HOST:$DEST (${{ inputs.environment }})"
 
-          # Deploy all themes and plugins from the nordicway staging dir
+          RSH="ssh -i ~/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes"
+
+          # Mirror each theme/plugin into its own remote dir with --delete so
+          # stale files are removed. --delete is scoped per-subdir, so other
+          # themes/plugins on the server are never touched.
           for dir in nordicway/wp-content/themes/*/; do
-            scp -i ~/.ssh/deploy_key -P "$PORT" -r "$dir" "$USER@$HOST:$DEST/themes/"
+            name=$(basename "$dir")
+            rsync -az --delete -e "$RSH" "$dir" "$USER@$HOST:$DEST/themes/$name/"
           done
 
           for dir in nordicway/wp-content/plugins/*/; do
-            scp -i ~/.ssh/deploy_key -P "$PORT" -r "$dir" "$USER@$HOST:$DEST/plugins/"
+            name=$(basename "$dir")
+            rsync -az --delete -e "$RSH" "$dir" "$USER@$HOST:$DEST/plugins/$name/"
           done
 
           echo "✅ Deployment complete → ${{ inputs.environment }}"
