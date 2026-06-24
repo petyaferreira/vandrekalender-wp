@@ -2,7 +2,7 @@
 
 > Source of truth for the scraping pipeline — sources, field mapping, and how to add a new scraper.
 >
-> Reconciled with `data-model.md` and the current plugin code on 2026-06-24. Where this doc describes something **not yet built**, it is marked **Planned**. Everything not marked Planned reflects code that exists in `wp-content/plugins/vandrekalender-events/`.
+> Reconciled with `data-model.md`, the current plugin code, and a live URL check on 2026-06-24. Anything marked **Planned** or **to build** is design intent, not running code. Everything else reflects code in `wp-content/plugins/vandrekalender-events/`.
 
 ---
 
@@ -14,72 +14,60 @@ The scraping pipeline is **scaffolded but not yet live**. What exists today:
 - A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once weekly.
 - One scraper class — `mammutmarch.dk` — with an **empty `parse()` stub** that returns no events yet.
 
-The next milestone is to implement `parse()` for this source and confirm an event reaches the database. Everything in [Field Mapping Strategy](#field-mapping-strategy) below the Layer 1 basics, plus everything in [Planned](#planned--not-yet-built), is design intent, not running code.
+The next milestone is to implement `parse()` for Mammut and confirm an event reaches the database and the front page. To get a scraped event onto the page it also needs coordinates, which means building the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--to-build-for-v1)).
 
 ---
 
 ## Part 1 — Event Sources
 
-All known sources for walking events in Denmark, grouped by type. Priority reflects V1 implementation order: **High** = V1 target, **Medium** = V1 if feasible, **Low** = V2 or later.
+**V1 implementation order.** The full list below is grouped by type. For v1 we build scrapers in this order:
 
-> Note: the only source scaffolded in code so far is `mammutmarch.dk`. The DVL and Sportstiming sources below are the highest-value targets but have no scraper class yet.
+| # | Source | Why |
+|---|---|---|
+| 1 | Mammut March | First target, already scaffolded. Known organiser, easy to eyeball the result |
+| 2 | Sportstiming.dk | Walking events only |
+| 3 | Dansk Vandrelaug (DVL) | Richest, most representative source (free guided walks) |
+
+Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if feasible. Low-value sources have been dropped.
 
 ### Walking organisations
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Dansk Vandrelaug (DVL) | dvl.dk | HTML scrape | High | National walking association. Multiple regional chapters, each with own event pages. Rich data: date, distance, difficulty, meeting point |
-| DVL København | dvl.dk/kobenhavn | HTML scrape | High | Copenhagen chapter. High volume of events |
-| DVL Horsens | dvl.dk/horsens | HTML scrape | High | Already reviewed — structured event listings |
-| DVL other regions | dvl.dk/* | HTML scrape | Medium | Aarhus, Odense, Aalborg and other chapters to be mapped |
+| Dansk Vandrelaug (DVL) | dvl.dk | needs rendered DOM | High | National walking association, many regional chapters with their own event pages. **Site is client-rendered (JS): a plain HTML fetch returns no events**, so this scraper needs a rendered browser or a DVL data feed/API, not `remote_get()`. Checked 2026-06-24 |
+| DVL København | dvl.dk/kobenhavn | needs rendered DOM | High | Copenhagen chapter, high volume. URL pattern still to confirm against the live JS site |
+| DVL Horsens | dvl.dk/horsens | needs rendered DOM | High | Already reviewed. URL pattern still to confirm against the live JS site |
+| DVL other regions | dvl.dk/* | needs rendered DOM | Medium | Aarhus, Odense, Aalborg and other chapters to be mapped |
 
 ### Event timing & registration platforms
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Sportstiming.dk | sportstiming.dk/events | HTML / API check | High | Covers running, walking, cycling, OCR, triathlon. Well-structured listings. Check for public API |
-| Eventyrsport.dk | eventyrsport.dk/events | HTML scrape | Medium | Adventure sports events. Returned 403 on first check — may need headers/session handling |
-| Finishers.com | finishers.com | HTML / API check | Medium | Global race calendar. Has Danish events but limited walking focus. Check for API |
+| Sportstiming.dk | sportstiming.dk/events | HTML / API check | High | Confirmed live 2026-06-24. Has a dedicated **Walk** category. Events at `/events`. Check for a public API |
+| Eventyrsport.dk | eventyrsport.dk/events | HTML scrape | Medium | Adventure sports events. Loaded fine on recheck 2026-06-24 (the earlier 403 did not recur) |
 
 ### March & long-distance walk events
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Mammut March | mammutmarch.dk | HTML scrape | High | Major Danish march. WooCommerce site — events listed as products at `/shop/`. Distances vary per event (e.g. København 75/100 km, Aarhus 30/50 km, 30/42/55 km). **Scaffolded** as `Vandrekalender_Scraper_Mammut` |
-| Riddermarchen | riddermarchen.dk | HTML scrape | High | Well-known Danish military-style march. Structured website |
-| AMA Vandringen | Facebook only | Facebook API | Medium | Exists only on Facebook. 21/42/55 km options. Needs Facebook Graph API or manual entry |
-| Copenhagen Walking Festival | To be found | HTML scrape | Medium | Needs research to find official site |
-
-### Running & multi-sport (walking categories)
-
-| Source | URL | Type | Priority | Notes |
-|---|---|---|---|---|
-| Motionsplan.dk | motionsplan.dk | HTML scrape | Low | Training-plans site — may list events |
-| RunnersDK | To be confirmed | HTML scrape | Low | To be confirmed |
+| Mammut March | mammutmarch.dk | HTML scrape | High | Confirmed live 2026-06-24. 24-hour march ("100 km til fods"). WooCommerce site — events listed as products at `/shop/` (e.g. København 75/100 km, Aarhus 30/50 km, plus 30/42/55 km variants). Distances vary per event. **Scaffolded** as `Vandrekalender_Scraper_Mammut` |
+| Riddermarchen | riddermarchen.dk | HTML scrape | High | Well-known Danish military-style march. Domain resolves but is client-rendered, so content is not visible to a plain fetch. Checked 2026-06-24 |
+| AMA Vandringen | Facebook only | manual (v1) | Medium | Exists only on Facebook. 21/42/55 km options. v1: manual entry or organiser submission. Facebook API deferred to v2 |
 
 ### Facebook
 
-| Source | URL | Type | Priority | Notes |
-|---|---|---|---|---|
-| Facebook Events API | developers.facebook.com | Graph API | Medium | Public events via Graph API. Requires Facebook App approval (several weeks). Limited fields available |
-| Vandring Danmark (FB group) | facebook.com/groups/* | FB API / manual | Low | Private group — API access limited. May need group-admin partnership |
-| Local walking FB groups | Various | FB API / manual | Low | Many small local groups. Assess after Facebook App approval |
-
-### Municipality & nature agencies
+**Deferred to v2.** For v1, Facebook-only events are handled by manual entry or organiser submission/claim — no Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Naturstyrelsen | naturstyrelsen.dk | HTML scrape | Low | Danish Nature Agency. Occasionally lists guided walks and nature events |
-| VisitDenmark | visitdenmark.dk | HTML scrape | Low | Tourism board. Lists some walking tours for tourists |
-| Municipality sites | Various .dk | HTML scrape | Low | Individual municipalities sometimes list local events. Low data consistency |
+| Facebook Events API | developers.facebook.com | Graph API | v2 | Reading public events from Pages/groups you don't own is largely unavailable to third-party apps. Reliable access only for a Page you/the organiser admin, via a Page token. Needs a Developer App, App Review (weeks), and business verification |
+| Vandring Danmark (FB group) | facebook.com/groups/* | manual | v2 (backlog) | Private group — API access effectively gone for outside apps. Manual or group-admin partnership only |
+| Local walking FB groups | Various | manual | v2 (backlog) | Many small local groups. Manual entry or organiser submission |
 
 ### Sources still to research
 
-- Confirm whether Finishers.com and Sportstiming.dk have public APIs.
-- Find the official website for Copenhagen Walking Festival.
-- Map all DVL regional chapter URLs.
-- Research whether Danish orienteering federation (DOF) events include walking categories.
-- Check Motionsplan.dk and RunnersDK for relevance.
+- Confirm whether Sportstiming.dk has a public API.
+- Find a non-JS data source for DVL (feed, API, or rendered-DOM approach) and map the regional chapter URLs.
 
 ---
 
@@ -87,7 +75,7 @@ All known sources for walking events in Denmark, grouped by type. Priority refle
 
 Scraped data rarely maps cleanly to the event schema. Each source structures its events differently — one has a clear distance field, another buries it in a description paragraph, a third does not mention it at all. A three-layer approach handles this consistently across sources.
 
-> **Reconciled with the real schema.** The Word doc this section is based on used flat fields like `event_distance_km`, `event_start_time`, and `event_fee`. Those do **not** exist in the current schema. Per `data-model.md`, distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), `event_is_free` is **derived on save** from those route prices, and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from the route distances. Geocoding uses **DAWA**, not Nominatim. Field names use British spelling (`event_organiser_name`). The tables below use the real schema keys.
+> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `event_is_free` is **derived on save** from route prices, and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA**. Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
 
 ### Layer 1 — Direct field mapping
 
@@ -100,7 +88,7 @@ The simplest case: some fields map cleanly from a specific HTML element to a sch
 | `event_source_url` | The current page URL — always available |
 | `event_place_name` | Meeting-point name or venue, if present |
 | `event_address` | Address / meeting-point text, passed to DAWA in Layer 2 |
-| `event_featured_image` *(if added to schema)* | Main event image `src` |
+| featured image (native WP) | Main event image `src`, sideloaded as the post's featured image |
 | `event_organiser_name` | Organiser or club name field |
 
 Each scraper keeps its own hardcoded selector map specific to that source's markup. When a source changes its design, only that scraper's selector map needs updating.
@@ -115,7 +103,6 @@ Some fields are present but embedded in free text rather than structured element
 | `event_routes[].start_time` | Regex | `"kl. 09:00"` / `"09.00"` / `"kl 9"` |
 | `event_routes[].cutoff_time` | Regex | Stated cut-off / max duration where present |
 | `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value |
-| `event_difficulty` *(if used)* | Keyword match | `"let"` / `"nem"` → Easy · `"moderat"` → Medium · `"svær"` / `"krævende"` → Challenging |
 | `event_address` → `event_lat` / `event_lng` / `event_municipality` | **DAWA** lookup | DAWA geocodes the extracted address string and returns coordinates **and** municipality in one call (`api.dataforsyningen.dk`). Same provider as manual event entry |
 
 `event_is_free` and the `event_length` taxonomy are **not scraped** — they are derived on save from `event_routes`, the same as for manually created events. Let the existing save hooks compute them; the scraper only needs to populate `event_routes` correctly.
@@ -128,11 +115,13 @@ Some fields cannot be extracted from some sources. Rather than guessing or silen
 
 | Missing field | Behaviour |
 |---|---|
-| Non-required optional (e.g. `event_difficulty`) | Field left null. Event still published. Card shows no badge for that field |
+| Optional field (e.g. a route's `start_time`) | Field left null. Event still published. Card shows no badge for that field |
 | `event_routes` distance | Route left without distance, event published, **flagged** for manual enrichment *(flagging UI is Planned)* |
 | `event_lat` / `event_lng` (DAWA failed) | Event held as **draft** — coordinates required for the map view. Admin must resolve |
 | `event_date` | Event held as **draft** — date is a required field |
 | `post_title` | Event **rejected** entirely — not created |
+
+This replaces the confidence-scoring system from the original plan. These Layer 3 rules alone decide publish vs draft vs reject.
 
 ### Field mapping reference
 
@@ -167,21 +156,27 @@ This section describes the code that exists today.
 `Vandrekalender_Scraper_Base` (`includes/class-scraper-base.php`) is abstract. Each source subclasses it and implements two methods:
 
 - `fetch(): string` — retrieves raw HTML. The base class provides `remote_get( $url )`, a `wp_remote_get` wrapper with a 15-second timeout, a `Vandrekalender/1.0` user-agent, and empty-string return on any non-200 / error.
-- `parse( string $html ): array` — applies Layer 1 selectors and returns an array of event arrays. **This is where per-source work happens.** Both current scrapers return `[]` (stub).
+- `parse( string $html ): array` — applies Layer 1 selectors and Layer 2 extraction, returning an array of event arrays. **This is where per-source work happens.** The current scraper (`mammutmarch.dk`) returns `[]` (stub).
 
 The base class then provides:
 
 - `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated.
 - `upsert_event( array $event ): bool` — see Deduplication below.
 
-> **Planned:** the Word doc proposed a third `normalise()` method plus shared `FieldMapper` and `GeocodingService` utilities to hold Layer 2/3 logic. These do not exist yet. Until they do, Layer 2 extraction and DAWA calls live inside each scraper's `parse()`. Extracting them into shared utilities is the right move once a second scraper needs the same regexes.
+> **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
+
+### Geocoding (server-side DAWA helper) — to build for v1
+
+Today's DAWA integration is **browser-only**: it lives in the block editor (`resources/event-meta-fields/index.js`) and runs when an editor types an address. A scraper runs server-side in PHP with no browser, so it **cannot reuse that**. There is no server-side DAWA code in the repo yet.
+
+To build: a small reusable PHP helper that calls DAWA (`api.dataforsyningen.dk`) to turn an address string into `event_lat` / `event_lng` / `event_municipality`, with rate limiting and caching. Every scraper calls it. Without it, scraped events have no coordinates and are held as draft (Layer 3), so they never reach the front page.
 
 ### Adding a new scraper
 
 1. Create `includes/scrapers/class-scraper-{source}.php`.
 2. Extend `Vandrekalender_Scraper_Base`.
 3. Implement `fetch()` — usually `return $this->remote_get( self::SOURCE_URL );`.
-4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, the event date, and the source URL (the dedup key).
+4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key).
 5. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
 
 ### Deduplication
@@ -194,9 +189,11 @@ The base class then provides:
 - Reserved keys (`post_title`, `post_content`, `post_status`, `post_type`, `ID`) become post fields; every other key is written as post meta.
 - After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`.
 
-All meta keys use the **canonical, no-underscore schema keys** registered in `class-event.php` (`Vandrekalender\Event::META_*`) — the same keys the REST API and frontend read. This means a scraped event surfaces through exactly the same path as a manually created one. Writing `event_routes` and `event_municipality` also triggers the derive-on-save hooks, so `event_length` and `event_region` taxonomies are assigned automatically.
+All meta keys use the **canonical, no-underscore schema keys** registered in `class-event.php` (`Vandrekalender\Event::META_*`) — the same keys the REST API and frontend read. A scraped event surfaces through exactly the same path as a manually created one. Writing `event_routes` and `event_municipality` also triggers the derive-on-save hooks, so `event_length` and `event_region` taxonomies are assigned automatically.
 
-> Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered as part of the claim-flow milestone.
+**To build for v1:** archive past events — set events whose `event_date` has passed to an archived status on each run, so the calendar self-cleans. Tombstones (not re-creating admin-deleted events) are deferred to v2.
+
+> Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim-flow milestone.
 
 ### Scheduling
 
@@ -212,21 +209,13 @@ Trigger manually:
 ./wp.sh cron event run vandrekalender_run_scrapers
 ```
 
-> **Planned:** per-source schedules (High-priority sources such as DVL/Sportstiming daily, Medium every 3 days, Low weekly) instead of one shared weekly run. Also planned: skip re-scraping claimed events at the scheduler level (currently the skip happens inside `upsert_event`), and set past events (`event_date` < today) to an archived status on each run.
+> **Planned (v2):** per-source schedules (high-volume sources more often, others weekly) instead of one shared weekly run.
 
 ---
 
-## Planned — not yet built
+## Planned (v2 and later)
 
 None of the following exists in code yet. Kept here as design intent so the roadmap isn't lost.
-
-### Confidence scoring
-
-Score each scraped event by how many fields were extracted, and route it accordingly:
-
-- **High** (all required + 3 or more optional fields) → auto-publish immediately.
-- **Medium** (all required, few/no optional) → publish with gaps, flag for enrichment.
-- **Low** (one or more required fields missing) → save as draft, admin reviews before publishing.
 
 ### Tombstones
 
@@ -234,11 +223,15 @@ Events deleted by an admin should not be re-created on the next scrape. Maintain
 
 ### Admin scraping dashboard
 
-A WP-admin screen showing each registered scraper with last-run time, events found/added/updated, and errors; a queue of flagged events needing manual enrichment with the specific missing field highlighted; a per-scraper "Run now" button; and a log viewer of raw scraper output for debugging.
+A WP-admin screen showing each registered scraper with last-run time, events found/added/updated, and errors; a queue of flagged events needing manual enrichment with the specific missing field highlighted; a per-scraper "Run now" button; and a log viewer of raw scraper output for debugging. For v1, scraper runs log their output to the WordPress debug log instead.
 
 ### Facebook scraping
 
-Facebook event scraping needs a Facebook Developer App with `pages_read_engagement` or `public_content_access`. App Review takes several weeks — **apply early**. Public events from public pages can be fetched without user auth. Private-group events need group-admin cooperation or are out of scope. Available fields: name, description, start_time, end_time, place (name + location), cover photo. Distance and difficulty are almost never structured on Facebook, so Layer 2 regex on the description will usually fall through to Layer 3.
+**Decision (2026-06-24): deferred to v2.** Not worth the cost for v1.
+
+Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) are effectively closed to outside apps.
+
+For v1, Facebook-only events (e.g. AMA Vandringen) are handled by manual entry or by the organiser submitting/claiming the event. Revisit the API only if an organiser partnership makes a Page-token approach worthwhile. If pursued later: available fields are name, description, start_time, end_time, place (name + location), cover photo; distance is almost never structured, so Layer 2 regex on the description usually falls through to Layer 3.
 
 ### LLM extraction (V3)
 
