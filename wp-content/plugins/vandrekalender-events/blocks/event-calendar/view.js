@@ -161,7 +161,7 @@ function initCalendar( root ) {
 			const rows = events
 				.map( ( event ) => {
 					const dist = ( event.distances_km || [] ).length
-						? `<span class="vk-calendar__event-dist">${ event.distances_km.join( ', ' ) } km</span>`
+						? `<span class="vk-calendar__event-dist">${ event.distances_km.sort((a, b) => a - b).join( ', ' ) } km</span>`
 						: '';
 					const price = priceLabel( event );
 					return `<a class="vk-calendar__event" href="${ event.permalink }">
