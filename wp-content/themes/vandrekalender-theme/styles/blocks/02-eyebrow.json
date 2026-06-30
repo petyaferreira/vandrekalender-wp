@@ -1,0 +1,12 @@
+{
+    "version": 2,
+    "title": "Eyebrow",
+    "slug": "eyebrow",
+    "blockTypes": ["core/paragraph"],
+    "styles": {
+        "css": "",
+        "typography": {
+            "textTransform": "uppercase"
+        }
+    }
+}
