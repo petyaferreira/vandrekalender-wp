@@ -45,11 +45,32 @@
 	&__link {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
-		padding: 1.1rem 1.25rem;
 		text-decoration: none;
 		color: var( --wp--preset--color--charcoal, #1d1a14 );
 		height: 100%;
+	}
+
+	&__image {
+		width: 100%;
+		height: 180px;
+		display: block;
+		flex-shrink: 0;
+		background-size: cover;
+		background-position: center;
+		background-image: linear-gradient(
+			135deg,
+			var( --wp--preset--color--meadow, #c2d9b0 ) 0%,
+			var( --wp--preset--color--forest, #2d5f3f ) 100%
+		);
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		padding: 1.1rem 1.25rem;
+		flex: 1;
+		min-width: 0;
 	}
 
 	&__date {

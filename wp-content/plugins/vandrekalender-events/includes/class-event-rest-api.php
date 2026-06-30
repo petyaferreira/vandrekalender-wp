@@ -172,22 +172,25 @@ class Vandrekalender_Event_Rest_Api {
 		$lat = get_post_meta( $post->ID, \Vandrekalender\Event::META_LAT, true );
 		$lng = get_post_meta( $post->ID, \Vandrekalender\Event::META_LNG, true );
 
+		$thumbnail_url = get_the_post_thumbnail_url( $post->ID, 'large' );
+
 		return [
-			'id'           => $post->ID,
-			'title'        => $post->post_title,
-			'description'  => apply_filters( 'the_content', $post->post_content ),
-			'permalink'    => get_permalink( $post->ID ),
-			'date'         => $date ? $date : null,
-			'place_name'   => get_post_meta( $post->ID, \Vandrekalender\Event::META_PLACE_NAME, true ),
-			'municipality' => get_post_meta( $post->ID, \Vandrekalender\Event::META_MUNICIPALITY, true ),
-			'organiser'    => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
-			'lat'          => '' !== $lat ? (float) $lat : null,
-			'lng'          => '' !== $lng ? (float) $lng : null,
-			'routes'       => $routes,
-			'distances_km' => $distances,
-			'price_from'   => $price_from,
-			'is_free'      => null !== $price_from && 0.0 === (float) $price_from,
-			'taxonomies'   => [
+			'id'                 => $post->ID,
+			'title'              => $post->post_title,
+			'description'        => apply_filters( 'the_content', $post->post_content ),
+			'permalink'          => get_permalink( $post->ID ),
+			'featured_image_url' => $thumbnail_url ? $thumbnail_url : null,
+			'date'               => $date ? $date : null,
+			'place_name'         => get_post_meta( $post->ID, \Vandrekalender\Event::META_PLACE_NAME, true ),
+			'municipality'       => get_post_meta( $post->ID, \Vandrekalender\Event::META_MUNICIPALITY, true ),
+			'organiser'          => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
+			'lat'                => '' !== $lat ? (float) $lat : null,
+			'lng'                => '' !== $lng ? (float) $lng : null,
+			'routes'             => $routes,
+			'distances_km'       => $distances,
+			'price_from'         => $price_from,
+			'is_free'            => null !== $price_from && 0.0 === (float) $price_from,
+			'taxonomies'         => [
 				'region' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] ),
 				'length' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'slugs' ] ),
 			],

@@ -61,6 +61,13 @@ function renderCard(event) {
   link.className = 'vk-card__link';
   link.href = event.permalink;
 
+  const img = document.createElement('div');
+  img.className = 'vk-card__image';
+  if (event.featured_image_url) {
+    img.style.backgroundImage = `url(${event.featured_image_url})`;
+  }
+  link.appendChild(img);
+
   let date = '';
   if (event.date) {
     const parsed = new Date(event.date);
@@ -78,7 +85,9 @@ function renderCard(event) {
   const region = (event.taxonomies?.region || [])[0] || '';
   const price = priceLabel(event);
 
-  link.innerHTML = `
+  const body = document.createElement('div');
+  body.className = 'vk-card__body';
+  body.innerHTML = `
 		${date ? `<span class="vk-card__date">${date}</span>` : ''}
 		<span class="vk-card__title">${event.title}</span>
 		${place ? `<span class="vk-card__place">${place}</span>` : ''}
@@ -88,6 +97,7 @@ function renderCard(event) {
 			${region ? `<span class="vk-card__region">${region}</span>` : ''}
 		</span>
 	`;
+  link.appendChild(body);
 
   li.appendChild(link);
   return li;
