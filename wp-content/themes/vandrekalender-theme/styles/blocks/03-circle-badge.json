@@ -1,0 +1,11 @@
+{
+    "version": 3,
+    "title": "Circle badge",
+    "slug": "circle-badge",
+    "blockTypes": ["core/group"],
+    "styles": {
+        "border": {
+            "radius": "50%"
+        }
+    }
+}
