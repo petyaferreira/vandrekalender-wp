@@ -10,14 +10,14 @@
  * @param {string} text
  * @return {string}
  */
-function slugify( text ) {
-	return text
-		.toLowerCase()
-		.replace( /[æ]/g, 'ae' )
-		.replace( /[ø]/g, 'oe' )
-		.replace( /[å]/g, 'aa' )
-		.replace( /[^a-z0-9]+/g, '-' )
-		.replace( /^-|-$/g, '' );
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[æ]/g, 'ae')
+    .replace(/[ø]/g, 'oe')
+    .replace(/[å]/g, 'aa')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 /**
@@ -25,53 +25,51 @@ function slugify( text ) {
  *
  * @param {HTMLElement} root The [data-vk-tabs] element.
  */
-function initTabs( root ) {
-	const tabs = Array.from(
-		root.querySelectorAll( '.wp-block-vandrekalender-tabs__navigation-item' )
-	);
-	const panels = Array.from(
-		root.querySelectorAll( '.wp-block-vandrekalender-tabs__content-item' )
-	);
+function initTabs(root) {
+  const tabs = Array.from(
+    root.querySelectorAll('.wp-block-vandrekalender-tabs__navigation-item')
+  );
+  const panels = Array.from(
+    root.querySelectorAll('.wp-block-vandrekalender-tabs__content-item')
+  );
 
-	if ( ! tabs.length || tabs.length !== panels.length ) {
-		return;
-	}
+  if (!tabs.length || tabs.length !== panels.length) {
+    return;
+  }
 
-	function activate( index ) {
-		tabs.forEach( ( tab, i ) => {
-			const selected = i === index;
-			tab.classList.toggle(
-				'wp-block-vandrekalender-tabs__navigation-item--active',
-				selected
-			);
-			tab.setAttribute( 'aria-selected', selected ? 'true' : 'false' );
-		} );
-		panels.forEach( ( panel, i ) => {
-			panel.classList.toggle(
-				'wp-block-vandrekalender-tabs__content-item--active',
-				i === index
-			);
-		} );
-	}
+  function activate(index) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.classList.toggle(
+        'wp-block-vandrekalender-tabs__navigation-item--active',
+        selected
+      );
+      tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+    });
+    panels.forEach((panel, i) => {
+      panel.classList.toggle(
+        'wp-block-vandrekalender-tabs__content-item--active',
+        i === index
+      );
+    });
+  }
 
-	const slugs = tabs.map( ( tab ) => slugify( tab.textContent.trim() ) );
+  const slugs = tabs.map(tab => slugify(tab.textContent.trim()));
 
-	tabs.forEach( ( tab, index ) => {
-		tab.addEventListener( 'click', () => {
-			activate( index );
-			history.replaceState( null, '', `#${ slugs[ index ] }` );
-		} );
-	} );
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      activate(index);
+      history.replaceState(null, '', `#${slugs[index]}`);
+    });
+  });
 
-	const hash = location.hash.slice( 1 );
-	const index = slugs.indexOf( hash );
-	if ( index !== -1 ) {
-		activate( index );
-	}
+  const hash = location.hash.slice(1);
+  const index = slugs.indexOf(hash);
+  if (index !== -1) {
+    activate(index);
+  }
 }
 
-document.addEventListener( 'DOMContentLoaded', () => {
-	document
-		.querySelectorAll( '[data-vk-tabs]' )
-		.forEach( ( root ) => initTabs( root ) );
-} );
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-vk-tabs]').forEach(root => initTabs(root));
+});

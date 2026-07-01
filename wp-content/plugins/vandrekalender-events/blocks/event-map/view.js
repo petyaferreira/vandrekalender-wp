@@ -126,8 +126,8 @@ function popupHtml(event) {
   const price = event.is_free
     ? 'Gratis'
     : event.price_from != null
-    ? `fra ${Math.round(event.price_from)} kr`
-    : '';
+      ? `fra ${Math.round(event.price_from)} kr`
+      : '';
   const meta = [date, dist, price].filter(Boolean).join(' · ');
 
   return `<div class="vk-map__popup">
