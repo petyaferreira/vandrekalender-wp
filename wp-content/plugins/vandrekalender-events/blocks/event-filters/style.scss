@@ -13,6 +13,14 @@
   border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
   border-radius: 10px;
 
+  // Keep declared min-heights honest: padding and border stay inside the box
+  // so the 44px tap targets don't overflow.
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   @media (max-width: 780px) {
     border-radius: 0;
     border: none;
@@ -42,22 +50,39 @@
 
   &__select,
   &__input {
+    min-height: 44px;
     padding: 0.45rem 0.6rem;
     border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
     border-radius: 6px;
     background: var(--wp--preset--color--white, #fff);
     color: var(--wp--preset--color--charcoal, #1d1a14);
-    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    // 16px minimum: keeps the field text legible and stops iOS Safari from
+    // auto-zooming the page when the field is focused. (Note: this does NOT
+    // resize the native date-picker popup — that grid is fixed browser UI and
+    // isn't stylable. On real phones the OS opens its own large native picker.)
+    font-size: var(--wp--preset--font-size--regular, 1rem);
 
     @media (max-width: 600px) {
       width: 100%;
     }
   }
 
+  // The native date picker's day grid can't be styled, but its indicator (the
+  // button that opens it) can. Give it a comfortable tap target.
+  &__input[type='date']::-webkit-calendar-picker-indicator {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    cursor: pointer;
+  }
+
   &__date-range {
     display: flex;
     gap: 1rem;
-    width: 100%;
+
+    @media (max-width: 600px) {
+      width: 100%;
+    }
   }
 
   &__pills {
@@ -70,6 +95,7 @@
   }
 
   &__pill {
+    min-height: 44px;
     padding: 0.45rem 0.8rem;
     border: 1px solid var(--wp--preset--color--fern, #527a50);
     border-radius: 999px;
@@ -95,15 +121,27 @@
   &__checkbox {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    min-height: 44px;
     font-size: var(--wp--preset--font-size--small, 0.875rem);
     color: var(--wp--preset--color--charcoal, #1d1a14);
     cursor: pointer;
+
+    input[type='checkbox'] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+    }
+  }
+
+  &__pill:not([aria-pressed='true']):hover {
+    background: var(--wp--preset--color--meadow, #c2d9b0);
   }
 
   &__reset {
     margin-left: auto;
     align-self: center;
+    min-height: 44px;
     padding: 0.45rem 0.9rem;
     border: none;
     border-radius: 6px;
@@ -111,6 +149,30 @@
     color: var(--wp--preset--color--white, #fff);
     font-size: var(--wp--preset--font-size--small, 0.875rem);
     cursor: pointer;
+    transition: filter 0.12s ease;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+
+    @media (max-width: 600px) {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  // Visible keyboard focus for every interactive control. Resets often strip the
+  // default outline, so declare it explicitly. :focus-visible keeps it from
+  // showing on mouse clicks.
+  &__select,
+  &__input,
+  &__pill,
+  &__reset,
+  &__checkbox input {
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--forest, #2d5f3f);
+      outline-offset: 2px;
+    }
   }
 
   &--editor {
