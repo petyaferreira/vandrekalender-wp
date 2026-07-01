@@ -189,7 +189,9 @@ class Vandrekalender_Event_Rest_Api {
 			'routes'             => $routes,
 			'distances_km'       => $distances,
 			'price_from'         => $price_from,
-			'is_free'            => null !== $price_from && 0.0 === (float) $price_from,
+			// Free when no route records a real price, or when the cheapest
+			// recorded price is 0. Only a route priced above 0 makes it paid.
+			'is_free'            => null === $price_from || 0.0 === (float) $price_from,
 			'taxonomies'         => [
 				'region' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] ),
 				'length' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'slugs' ] ),
