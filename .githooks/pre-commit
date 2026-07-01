@@ -8,58 +8,104 @@ NC='\033[0m'
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 cd "$PROJECT_ROOT"
 
+HAS_ERRORS=0
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+
+# --- PHPCS: staged PHP files ---------------------------------------------
+
 if [ ! -f "./vendor/bin/phpcs" ]; then
     echo -e "${RED}Error: PHP CodeSniffer not found. Run 'composer install' first.${NC}"
     exit 1
 fi
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$')
+PHP_STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$')
 
-if [ -z "$STAGED_FILES" ]; then
+if [ -z "$PHP_STAGED_FILES" ]; then
     echo -e "${GREEN}No PHP files to check.${NC}"
-    exit 0
+else
+    echo -e "${YELLOW}Checking PHP coding standards for staged files...${NC}"
+
+    for FILE in $PHP_STAGED_FILES; do
+        if [ ! -f "$FILE" ]; then
+            continue
+        fi
+
+        TEMP_FILE="$TEMP_DIR/$(basename "$FILE")"
+        git show ":$FILE" >"$TEMP_FILE" 2>/dev/null
+
+        if [ $? -ne 0 ]; then
+            continue
+        fi
+
+        echo "Checking: $FILE"
+        if ./vendor/bin/phpcs "$TEMP_FILE" --standard=phpcs.xml --report=full; then
+            echo -e "${GREEN}✓ $FILE${NC}"
+            continue
+        fi
+
+        echo -e "${YELLOW}  Auto-fixing: ./vendor/bin/phpcbf $FILE${NC}"
+        ./vendor/bin/phpcbf "$FILE" >/dev/null 2>&1
+        git add "$FILE"
+
+        git show ":$FILE" >"$TEMP_FILE" 2>/dev/null
+        if ./vendor/bin/phpcs "$TEMP_FILE" --standard=phpcs.xml --report=full; then
+            echo -e "${GREEN}✓ $FILE (auto-fixed and re-staged)${NC}"
+        else
+            HAS_ERRORS=1
+            echo -e "${RED}✗ Violations remain in: $FILE (not auto-fixable)${NC}"
+        fi
+    done
 fi
 
-echo -e "${YELLOW}Checking PHP coding standards for staged files...${NC}"
+# --- Prettier: staged JS/SCSS/CSS/JSON files ------------------------------
 
-TEMP_DIR=$(mktemp -d)
-trap "rm -rf $TEMP_DIR" EXIT
+if [ ! -f "./node_modules/.bin/prettier" ]; then
+    echo -e "${RED}Error: Prettier not found. Run 'npm install' first.${NC}"
+    exit 1
+fi
 
-HAS_ERRORS=0
-for FILE in $STAGED_FILES; do
-    if [ ! -f "$FILE" ]; then
-        continue
-    fi
+PRETTIER_STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' '*.jsx' '*.scss' '*.css' '*.json' | grep -v -E '(^|/)(node_modules|build|public)/')
 
-    TEMP_FILE="$TEMP_DIR/$(basename $FILE)"
-    git show ":$FILE" > "$TEMP_FILE" 2>/dev/null
+if [ -z "$PRETTIER_STAGED_FILES" ]; then
+    echo -e "${GREEN}No JS/SCSS/CSS/JSON files to check.${NC}"
+else
+    echo -e "${YELLOW}Checking Prettier formatting for staged files...${NC}"
 
-    if [ $? -ne 0 ]; then
-        continue
-    fi
+    while IFS= read -r FILE; do
+        if [ ! -f "$FILE" ]; then
+            continue
+        fi
 
-    echo "Checking: $FILE"
-    ./vendor/bin/phpcs "$TEMP_FILE" --standard=phpcs.xml --report=full
+        TEMP_FILE="$TEMP_DIR/$(basename "$FILE")"
+        git show ":$FILE" >"$TEMP_FILE" 2>/dev/null
 
-    if [ $? -ne 0 ]; then
-        HAS_ERRORS=1
-        echo -e "${RED}✗ Violations in: $FILE${NC}"
-        echo -e "${YELLOW}  Auto-fix attempt: ./vendor/bin/phpcbf $FILE${NC}"
-    else
-        echo -e "${GREEN}✓ $FILE${NC}"
-    fi
-done
+        if [ $? -ne 0 ]; then
+            continue
+        fi
+
+        if ./node_modules/.bin/prettier --check "$TEMP_FILE" >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ $FILE${NC}"
+            continue
+        fi
+
+        echo -e "${YELLOW}  Auto-fixing: npx prettier --write $FILE${NC}"
+        ./node_modules/.bin/prettier --write "$FILE" >/dev/null 2>&1
+        git add "$FILE"
+        echo -e "${GREEN}✓ $FILE (auto-fixed and re-staged)${NC}"
+    done <<<"$PRETTIER_STAGED_FILES"
+fi
 
 if [ $HAS_ERRORS -eq 1 ]; then
     echo -e "${RED}"
     echo "=================================================="
-    echo "COMMIT REJECTED — fix coding standard violations"
-    echo "  ./vendor/bin/phpcs   — check all"
-    echo "  ./vendor/bin/phpcbf  — auto-fix"
+    echo "COMMIT REJECTED — PHPCS violations that phpcbf can't"
+    echo "auto-fix remain. Fix them manually, then commit again:"
+    echo "  ./vendor/bin/phpcs <file>  — see remaining violations"
     echo "=================================================="
     echo -e "${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}All staged PHP files pass standards. ✓${NC}"
+echo -e "${GREEN}All staged files pass standards. ✓${NC}"
 exit 0

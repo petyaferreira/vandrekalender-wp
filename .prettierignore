@@ -1,0 +1,11 @@
+node_modules/
+vendor/
+wp-content/themes/vandrekalender-theme/public/
+wp-content/themes/vandrekalender-theme/node_modules/
+wp-content/plugins/vandrekalender-events/build/
+wp-content/plugins/vandrekalender-events/node_modules/
+wp-content/uploads/
+*.sql
+*.lock
+composer.lock
+package-lock.json

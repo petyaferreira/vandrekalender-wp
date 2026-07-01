@@ -9,7 +9,6 @@
         "build": "wp-scripts build"
     },
     "devDependencies": {
-        "@wordpress/scripts": "^30.0.0",
-        "prettier": "^3.9.4"
+        "@wordpress/scripts": "^30.0.0"
     }
 }
