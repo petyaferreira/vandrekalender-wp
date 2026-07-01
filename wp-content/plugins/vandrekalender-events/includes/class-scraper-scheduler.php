@@ -58,6 +58,7 @@ class Vandrekalender_Scraper_Scheduler {
 	public function run_all_scrapers() {
 		$scrapers = [
 			new Vandrekalender_Scraper_Mammut(),
+			new Vandrekalender_Scraper_Sportstiming(),
 		];
 
 		foreach ( $scrapers as $scraper ) {

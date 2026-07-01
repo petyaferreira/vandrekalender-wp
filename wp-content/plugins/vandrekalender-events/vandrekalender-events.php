@@ -21,6 +21,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sportstiming.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
 new Vandrekalender_Event_Rest_Api();
