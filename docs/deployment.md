@@ -41,6 +41,55 @@ Currently installed via Composer:
 
 ---
 
+## Scraper cron (production only)
+
+The event scrapers run daily at **02:12 site time (Europe/Copenhagen)**, but only
+on production. Two things enable it: a wp-config flag (turns on the WP-Cron
+schedule) and a real system cron (actually fires it, since WP-Cron alone is
+traffic-triggered). See `docs/scrapers.md` → *Running & scheduling* for the
+application side.
+
+**1. Production `wp-config.php`** — add both constants (above the "stop editing"
+line):
+
+```php
+define( 'VK_ENABLE_SCRAPING', true );  // schedules the daily 02:12 scrape (prod only)
+define( 'DISABLE_WP_CRON', true );     // stop traffic-triggered cron; the system cron drives it
+```
+
+`wp-config.php` lives in the **WordPress root** — one level **above**
+`NORDICWAY_DEST_PATH` (that secret points at `wp-content`). So if the secret is
+`/home/vandreka/public_html/wp-content`, the file is
+`/home/vandreka/public_html/wp-config.php`. It is server-only (never in git, never
+touched by deploys), so edits persist.
+
+Local and staging omit `VK_ENABLE_SCRAPING`, so they never auto-run — locally the
+pipeline is triggered by hand with `./scrape.sh`.
+
+**2. System crontab** (Nordicway is cPanel; use `crontab -e` or cPanel → Cron Jobs).
+The server clock is on Copenhagen time, so cron times equal site times — **no UTC
+conversion needed**:
+
+```cron
+*/15 * * * * cd <wordpress-root> && /usr/local/bin/wp cron event run --due-now >> ~/logs/wp-cron.log 2>&1
+```
+
+Runs the WP-Cron catcher every 15 min; the 02:12 job fires within ~15 min and is
+recorded in **Events → Scraper Log** as a `cron` run. The every-15-min cadence
+also keeps any other scheduled jobs (scheduled posts, core update checks) working.
+`<wordpress-root>` is the directory holding `wp-config.php` — the **parent** of
+`NORDICWAY_DEST_PATH` (which points at `wp-content`), e.g.
+`/home/vandreka/public_html`. Ensure the `~/logs/` directory exists.
+
+**Verify:**
+
+```bash
+wp cron event list                              # 'vandrekalender_run_scrapers' shows next run 02:12
+wp cron event run vandrekalender_run_scrapers   # force one run, then check Events → Scraper Log
+```
+
+---
+
 ## GitHub Actions Workflows
 
 - `ci.yml` — triggers on push to `main`, calls the reusable deploy workflow targeting staging

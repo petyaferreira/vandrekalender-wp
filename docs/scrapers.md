@@ -11,7 +11,7 @@
 The scraping pipeline is **scaffolded but not yet live**. What exists today:
 
 - An abstract base class (`Vandrekalender_Scraper_Base`) with `fetch()`, `parse()`, `run()`, and `upsert_event()`.
-- A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once weekly.
+- A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once daily at 02:12 (site timezone), gated to production by the `VK_ENABLE_SCRAPING` constant. See [Running & scheduling](#running--scheduling).
 - One scraper class — `mammutmarch.dk` — with an **empty `parse()` stub** that returns no events yet.
 
 The next milestone is to implement `parse()` for Mammut and confirm an event reaches the database and the front page. To get a scraped event onto the page it also needs coordinates, which means building the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--to-build-for-v1)).
@@ -223,7 +223,14 @@ Events deleted by an admin should not be re-created on the next scrape. Maintain
 
 ### Admin scraping dashboard
 
-A WP-admin screen showing each registered scraper with last-run time, events found/added/updated, and errors; a queue of flagged events needing manual enrichment with the specific missing field highlighted; a per-scraper "Run now" button; and a log viewer of raw scraper output for debugging. For v1, scraper runs log their output to the WordPress debug log instead.
+**Partly built.** A **Scraper Log** screen now exists under **Events → Scraper Log**
+(`Vandrekalender_Scraper_Admin`), listing recent runs with their trigger
+(cron/manual), duration, total events updated, and per-scraper counts or errors,
+plus the current schedule status. Runs are stored in the `vandrekalender_scraper_runs`
+option (capped, most recent first) by `Vandrekalender_Scraper_Log`.
+
+Still planned: a queue of flagged events needing manual enrichment, and a
+per-scraper "Run now" button in the UI.
 
 ### Facebook scraping
 
@@ -239,14 +246,51 @@ Once the source list grows beyond ~10 sources, hand-maintaining Layer 1 selector
 
 ---
 
+## Running & scheduling
+
+**Automatic (production only).** `Vandrekalender_Scraper_Scheduler` schedules a
+daily WP-Cron job at **02:12 site time** (Europe/Copenhagen), but only where
+`VK_ENABLE_SCRAPING` is defined and truthy. Add to production's `wp-config.php`:
+
+```php
+define( 'VK_ENABLE_SCRAPING', true );
+```
+
+The schedule self-reconciles on `init`: defining the flag schedules the job (no
+reactivation needed); removing it clears the job. Local and staging omit the
+flag, so they never auto-run.
+
+Because WP-Cron only fires on site traffic, production should drive it from a
+real system cron with `DISABLE_WP_CRON` set — e.g. a crontab entry running
+`wp cron event run --due-now` frequently. Note the timezone: the job becomes due
+at 02:12 Copenhagen (= 00:12 UTC), so a UTC crontab should target 00:12 (or run
+every few minutes and let `--due-now` catch it).
+
+**Manual (local / anywhere).** Run the whole pipeline once and record it to the
+Scraper Log:
+
+```bash
+./scrape.sh                          # wrapper around the WP-CLI command
+./wp.sh vandrekalender scrape        # equivalent
+```
+
+Both cron and manual runs go through `Scheduler::execute()`, so both appear in
+**Events → Scraper Log**.
+
 ## Key files
 
 ```
 wp-content/plugins/vandrekalender-events/includes/
 ├── class-scraper-base.php          ← abstract base: fetch/parse/run/upsert_event/remote_get
-├── class-scraper-scheduler.php     ← WP-Cron: weekly hook, runs all scrapers
+├── class-scraper-scheduler.php     ← schedule (daily 02:12, prod-gated) + execute() run/log
+├── class-scraper-log.php           ← rolling run history (vandrekalender_scraper_runs option)
+├── class-scraper-admin.php         ← Events → Scraper Log admin screen
 └── scrapers/
-    └── class-scraper-mammut.php    ← mammutmarch.dk (parse() stub)
+    ├── class-scraper-mammut.php        ← mammutmarch.dk
+    └── class-scraper-sportstiming.php  ← sportstiming.dk
 ```
+
+Manual-run wrapper: `scrape.sh` (repo root). Production flag: `VK_ENABLE_SCRAPING`
+in `wp-config.php`.
 
 Related: `docs/data-model.md` (canonical schema — meta keys, taxonomies, `event_routes` shape, DAWA), `docs/authentication.md` (claim flow and organiser ownership).

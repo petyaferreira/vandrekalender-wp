@@ -19,18 +19,47 @@ define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-rest-api.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-admin.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sportstiming.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
 new Vandrekalender_Event_Rest_Api();
 new Vandrekalender_Scraper_Scheduler();
+new Vandrekalender_Scraper_Admin();
 
 /**
  * Initialize classes.
  */
 \Vandrekalender\Event::instance();
+
+/**
+ * Register the `wp vandrekalender scrape` command for manual runs.
+ *
+ * Runs the full scraping pipeline once and logs it as a manual run, so local
+ * runs (via ./scrape.sh) appear in the Scraper Log alongside production's cron
+ * runs.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender scrape',
+		function () {
+			$entry = Vandrekalender_Scraper_Scheduler::execute( 'manual' );
+
+			foreach ( $entry['scrapers'] as $scraper ) {
+				if ( 'error' === $scraper['status'] ) {
+					WP_CLI::warning( sprintf( '%s: %s', $scraper['name'], $scraper['error'] ) );
+				} else {
+					WP_CLI::log( sprintf( '%s: %d events', $scraper['name'], $scraper['count'] ) );
+				}
+			}
+
+			WP_CLI::success( sprintf( '%d events updated in %ss.', $entry['total'], $entry['duration'] ) );
+		}
+	);
+}
 
 register_activation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'deactivate' ] );

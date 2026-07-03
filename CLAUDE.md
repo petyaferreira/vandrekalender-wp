@@ -51,7 +51,7 @@ npm run build   # production
 ```bash
 ./wp.sh plugin list
 ./wp.sh post list --post_type=event
-./wp.sh cron event run vandrekalender_run_scrapers
+./scrape.sh                          # run all scrapers now, logged to Events → Scraper Log
 ```
 
 ---
