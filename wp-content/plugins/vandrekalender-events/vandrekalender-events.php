@@ -22,13 +22,16 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-admin.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-facebook-importer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sportstiming.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-dvl.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
 new Vandrekalender_Event_Rest_Api();
 new Vandrekalender_Scraper_Scheduler();
 new Vandrekalender_Scraper_Admin();
+new Vandrekalender_Facebook_Importer();
 
 /**
  * Initialize classes.

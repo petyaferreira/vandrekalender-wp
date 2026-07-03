@@ -128,7 +128,7 @@ All scraping fields are admin only — never visible to event creators or the pu
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `event_source` | string (enum) | — | `manual` or `scraped`. Indicates how the event was created. Useful for filtering in WP admin |
+| `event_source` | string (enum) | — | `manual`, `scraped`, or `facebook` (imported via **Events → Add from Facebook**). Indicates how the event was created. Useful for filtering in WP admin |
 | `event_source_url` | string (url) | ✅ (scraped) | Original URL scraped from. Used for deduplication — scraper skips if URL already exists |
 | `event_source_name` | string | — | Human-readable source label e.g. `DVL.dk` or `Mammutmarch`. Shown in WP admin instead of raw URL |
 | `event_scraped_at` | string (datetime) | — | Timestamp of last successful scrape. Useful for identifying stale events |

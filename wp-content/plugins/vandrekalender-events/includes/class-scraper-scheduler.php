@@ -113,8 +113,9 @@ class Vandrekalender_Scraper_Scheduler {
 	 */
 	public static function execute( string $trigger ): array {
 		$scrapers = [
-			'Mammutmarch'  => new Vandrekalender_Scraper_Mammut(),
-			'Sportstiming' => new Vandrekalender_Scraper_Sportstiming(),
+			'Mammutmarch'      => new Vandrekalender_Scraper_Mammut(),
+			'Sportstiming'     => new Vandrekalender_Scraper_Sportstiming(),
+			'Dansk Vandrelaug' => new Vandrekalender_Scraper_DVL(),
 		];
 
 		$started = microtime( true );

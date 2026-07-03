@@ -8,13 +8,13 @@
 
 ## Current status
 
-The scraping pipeline is **scaffolded but not yet live**. What exists today:
+The scraping pipeline is **built and running**. What exists today:
 
 - An abstract base class (`Vandrekalender_Scraper_Base`) with `fetch()`, `parse()`, `run()`, and `upsert_event()`.
 - A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once daily at 02:12 (site timezone), gated to production by the `VK_ENABLE_SCRAPING` constant. See [Running & scheduling](#running--scheduling).
-- One scraper class — `mammutmarch.dk` — with an **empty `parse()` stub** that returns no events yet.
+- Three implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), and `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the national maps feed).
 
-The next milestone is to implement `parse()` for Mammut and confirm an event reaches the database and the front page. To get a scraped event onto the page it also needs coordinates, which means building the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--to-build-for-v1)).
+Coordinates come from the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality.
 
 ---
 
@@ -34,10 +34,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Dansk Vandrelaug (DVL) | dvl.dk | needs rendered DOM | High | National walking association, many regional chapters with their own event pages. **Site is client-rendered (JS): a plain HTML fetch returns no events**, so this scraper needs a rendered browser or a DVL data feed/API, not `remote_get()`. Checked 2026-06-24 |
-| DVL København | dvl.dk/kobenhavn | needs rendered DOM | High | Copenhagen chapter, high volume. URL pattern still to confirm against the live JS site |
-| DVL Horsens | dvl.dk/horsens | needs rendered DOM | High | Already reviewed. URL pattern still to confirm against the live JS site |
-| DVL other regions | dvl.dk/* | needs rendered DOM | Medium | Aarhus, Odense, Aalborg and other chapters to be mapped |
+| Dansk Vandrelaug (DVL) | dvl.dk | JSON feed + HTML | High | **Built** as `Vandrekalender_Scraper_DVL` (2026-07-03). The tour listing is client-rendered, but the public feed at `/wp-json/dvl/v1/maps/data` lists every upcoming tour (~490) with title, exact meeting-point coordinates, and tour URL. Each server-rendered tour page (`/vandreture/<slug>/`) is then fetched for date/time (from the add-to-calendar link), distance, organising chapter (`Arrangør` → `DVL <chapter>` + chapter page URL), meeting point, description, and image. Coordinates come from the feed; only the municipality is reverse-geocoded via DAWA (`Geocoder::municipality_from_coords()`), because meeting points are often landmark names DAWA cannot geocode forward. Day walks are marked free (price 0) only when the page carries the "Turen er gratis for medlemmer" note; paid vandreferier get no price. One scraper covers **all regional chapters** — the feed is national |
 
 ### Event timing & registration platforms
 
@@ -52,11 +49,13 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 |---|---|---|---|---|
 | Mammut March | mammutmarch.dk | HTML scrape | High | Confirmed live 2026-06-24. 24-hour march ("100 km til fods"). WooCommerce site — events listed as products at `/shop/` (e.g. København 75/100 km, Aarhus 30/50 km, plus 30/42/55 km variants). Distances vary per event. **Scaffolded** as `Vandrekalender_Scraper_Mammut` |
 | Riddermarchen | riddermarchen.dk | HTML scrape | High | Well-known Danish military-style march. Domain resolves but is client-rendered, so content is not visible to a plain fetch. Checked 2026-06-24 |
-| AMA Vandringen | Facebook only | manual (v1) | Medium | Exists only on Facebook. 21/42/55 km options. v1: manual entry or organiser submission. Facebook API deferred to v2 |
+| AMA Vandringen | Facebook only | FB importer (v1) | Medium | Exists only on Facebook. 21/42/55 km options. v1: import via **Events → Add from Facebook**. Facebook API deferred to v2 |
 
 ### Facebook
 
-**Deferred to v2.** For v1, Facebook-only events are handled by manual entry or organiser submission/claim — no Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
+**API deferred to v2 — v1 uses the paste-a-link importer.** The **Add from Facebook** admin screen (**Events → Add from Facebook**, `Vandrekalender_Facebook_Importer`) lets an admin paste public `facebook.com/events/…` URLs — one per line, up to 30 per batch. For each **new** URL the importer normalises it, deduplicates against `event_source_url`, fetches the page server-side, and prefills a **draft** event from its Open Graph tags — title, cover image, and (parsed out of Facebook's generated og:description sentence) the **event date** and **organiser name** — with `event_source = facebook` / `event_source_name = Facebook`. The page fetch uses the plain `Vandrekalender/1.0` user-agent (Facebook rejects spoofed browser UAs with HTTP 400 but serves link-preview data to simple ones); the cover image lives on Facebook's lookaside crawler-media endpoint, which only serves image bytes to link-preview crawler UAs, so that one request identifies as `facebookexternalhit`. The admin verifies the date and completes routes and address (DAWA autocomplete in the editor) and publishes — the usual save hooks derive region/length/is-free. If Facebook serves a login wall anyway, the importer still creates the draft with only the source URL set. Already-imported URLs are **skipped untouched** (create-or-skip, never update), so re-pasting a whole list is safe. No Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
+
+**Groups (Vandreture i Danmark, DVL group, …).** A group's event *listing* is only rendered for logged-in browsers (verified 2026-07-03), and Meta shut down the Groups API entirely in April 2024, so listings cannot be fetched automatically by anyone. The importer page therefore ships a **link-collector bookmarklet**: the admin opens the group's events page in their own logged-in browser, clicks the bookmarklet, and every `facebook.com/events/{id}` link on the page is copied to the clipboard for pasting into the batch field. Weekly routine: open each group's events tab → scroll → bookmarklet → paste → complete the new drafts (verify date, add routes and address) → publish.
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
@@ -67,7 +66,6 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 ### Sources still to research
 
 - Confirm whether Sportstiming.dk has a public API.
-- Find a non-JS data source for DVL (feed, API, or rendered-DOM approach) and map the regional chapter URLs.
 
 ---
 
@@ -165,11 +163,9 @@ The base class then provides:
 
 > **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
 
-### Geocoding (server-side DAWA helper) — to build for v1
+### Geocoding (server-side DAWA helper) — built
 
-Today's DAWA integration is **browser-only**: it lives in the block editor (`resources/event-meta-fields/index.js`) and runs when an editor types an address. A scraper runs server-side in PHP with no browser, so it **cannot reuse that**. There is no server-side DAWA code in the repo yet.
-
-To build: a small reusable PHP helper that calls DAWA (`api.dataforsyningen.dk`) to turn an address string into `event_lat` / `event_lng` / `event_municipality`, with rate limiting and caching. Every scraper calls it. Without it, scraped events have no coordinates and are held as draft (Layer 3), so they never reach the front page.
+`Vandrekalender_Geocoder` (`includes/class-geocoder.php`) turns a free-text Danish address into `event_lat` / `event_lng` / `event_municipality` via the DAWA autocomplete endpoint, with transient caching (a month for hits, an hour of negative caching for misses). Scrapers call it server-side; the block editor keeps its own client-side DAWA integration (`resources/event-meta-fields/index.js`).
 
 ### Adding a new scraper
 
@@ -234,7 +230,7 @@ per-scraper "Run now" button in the UI.
 
 ### Facebook scraping
 
-**Decision (2026-06-24): deferred to v2.** Not worth the cost for v1.
+**Decision (2026-06-24): API deferred to v2.** Not worth the cost for v1. **Update (2026-07-03):** v1 instead ships the paste-a-link importer (**Events → Add from Facebook**, see [Facebook](#facebook) above) — no Meta app, best-effort Open Graph prefill into a draft.
 
 Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) are effectively closed to outside apps.
 
@@ -285,9 +281,12 @@ wp-content/plugins/vandrekalender-events/includes/
 ├── class-scraper-scheduler.php     ← schedule (daily 02:12, prod-gated) + execute() run/log
 ├── class-scraper-log.php           ← rolling run history (vandrekalender_scraper_runs option)
 ├── class-scraper-admin.php         ← Events → Scraper Log admin screen
+├── class-geocoder.php              ← server-side DAWA geocoding (address → lat/lng/municipality, coords → municipality)
+├── class-facebook-importer.php     ← Events → Add from Facebook paste-a-link importer
 └── scrapers/
     ├── class-scraper-mammut.php        ← mammutmarch.dk
-    └── class-scraper-sportstiming.php  ← sportstiming.dk
+    ├── class-scraper-sportstiming.php  ← sportstiming.dk
+    └── class-scraper-dvl.php           ← dvl.dk (Dansk Vandrelaug)
 ```
 
 Manual-run wrapper: `scrape.sh` (repo root). Production flag: `VK_ENABLE_SCRAPING`

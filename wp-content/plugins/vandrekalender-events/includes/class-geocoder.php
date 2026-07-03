@@ -84,6 +84,58 @@ class Vandrekalender_Geocoder {
 	}
 
 	/**
+	 * Find the municipality containing a coordinate (reverse geocoding).
+	 *
+	 * For sources that already provide exact coordinates but whose meeting
+	 * points are landmark names DAWA cannot geocode forward ("Birkerød St.").
+	 *
+	 * @param float $lat Latitude (WGS84).
+	 * @param float $lng Longitude (WGS84).
+	 * @return string Municipality name, or empty string on failure.
+	 */
+	public function municipality_from_coords( float $lat, float $lng ): string {
+		// Round to ~100 m so nearby lookups share a cache entry.
+		$cache_key = self::CACHE_PREFIX . 'rev_' . round( $lat, 3 ) . '_' . round( $lng, 3 );
+		$cached    = get_transient( $cache_key );
+		if ( false !== $cached ) {
+			return is_string( $cached ) && 'none' !== $cached ? $cached : '';
+		}
+
+		$url = add_query_arg(
+			[
+				'x' => rawurlencode( (string) $lng ),
+				'y' => rawurlencode( (string) $lat ),
+			],
+			self::KOMMUNE . 'reverse'
+		);
+
+		$response = wp_remote_get(
+			$url,
+			[
+				'timeout'    => 10,
+				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'headers'    => [ 'Accept' => 'application/json' ],
+			]
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			set_transient( $cache_key, 'none', HOUR_IN_SECONDS );
+			return '';
+		}
+
+		$kommune = json_decode( wp_remote_retrieve_body( $response ), true );
+		$name    = isset( $kommune['navn'] ) ? (string) $kommune['navn'] : '';
+
+		if ( '' !== $name ) {
+			set_transient( $cache_key, $name, self::CACHE_TTL );
+		} else {
+			set_transient( $cache_key, 'none', HOUR_IN_SECONDS );
+		}
+
+		return $name;
+	}
+
+	/**
 	 * Resolve a DAWA municipality code to its name, cached.
 	 *
 	 * @param string $kode Four-digit municipality code, e.g. "0751".
