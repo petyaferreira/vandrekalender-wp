@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/event-info-card",
+    "title": "Event Info Card",
+    "category": "widgets",
+    "description": "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with a link to the organiser's booking page.",
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    }
+}

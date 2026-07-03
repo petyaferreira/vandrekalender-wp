@@ -1,0 +1,142 @@
+/**
+ * Event Info Card styles. Loads on front end and editor.
+ */
+
+.vk-info-card {
+  background: var(--wp--preset--color--white, #fff);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(29, 26, 20, 0.08);
+  padding: var(
+    --wp--preset--spacing--medium-clamp,
+    clamp(0.75rem, 1.5vw, 1.5rem)
+  );
+  position: sticky;
+  top: var(--wp--preset--spacing--large, clamp(1rem, 2.5vw, 2rem));
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--wp--preset--spacing--small, 0.75rem);
+    font-family: var(--wp--preset--font-family--publico, serif);
+    font-size: var(--wp--preset--font-size--extra-large, 1.5rem);
+    font-weight: 700;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+  }
+
+  &__price-unit {
+    font-family: var(--wp--preset--font-family--graphik, sans-serif);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    font-weight: 400;
+    color: var(--wp--preset--color--pebble, #7a7268);
+  }
+
+  &__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wp--preset--spacing--small, 0.75rem);
+    margin-top: var(--wp--preset--spacing--regular, 1rem);
+  }
+
+  &__tab {
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid var(--wp--preset--color--fern, #527a50);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--wp--preset--color--forest, #2d5f3f);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    padding: var(--wp--preset--spacing--small, 0.75rem);
+    transition:
+      background 0.12s ease,
+      color 0.12s ease;
+
+    &:hover {
+      background: var(--wp--preset--color--meadow, #c2d9b0);
+    }
+
+    &--active {
+      background: var(--wp--preset--color--forest, #2d5f3f);
+      border-color: var(--wp--preset--color--forest, #2d5f3f);
+      color: var(--wp--preset--color--white, #fff);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--fjord, #1e6fa5);
+      outline-offset: 2px;
+    }
+  }
+
+  &__rows {
+    margin: var(--wp--preset--spacing--medium, 1.5rem) 0;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--wp--preset--spacing--regular, 1rem);
+    padding-block: var(--wp--preset--spacing--small, 0.75rem);
+    border-top: 1px solid var(--wp--preset--color--cream, #faf5ec);
+
+    dt {
+      font-size: var(--wp--preset--font-size--small, 0.875rem);
+      color: var(--wp--preset--color--pebble, #7a7268);
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+      text-align: right;
+      font-weight: 600;
+      color: var(--wp--preset--color--charcoal, #1d1a14);
+    }
+
+    a {
+      display: inline-block;
+      margin-top: var(--wp--preset--spacing--small, 0.75rem);
+      font-size: var(--wp--preset--font-size--small, 0.875rem);
+      font-weight: 600;
+      color: var(--wp--preset--color--forest, #2d5f3f);
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wp--preset--spacing--small, 0.75rem);
+    width: 100%;
+    min-height: 44px;
+    padding: var(--wp--preset--spacing--small, 0.75rem)
+      var(--wp--preset--spacing--regular, 1rem);
+    border-radius: 999px;
+    background: var(--wp--preset--color--forest, #2d5f3f);
+    color: var(--wp--preset--color--white, #fff);
+    font-weight: 600;
+    text-decoration: none;
+    transition: filter 0.12s ease;
+
+    &:hover {
+      filter: brightness(1.08);
+      color: var(--wp--preset--color--white, #fff);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--fjord, #1e6fa5);
+      outline-offset: 2px;
+    }
+  }
+
+  &__note {
+    margin: var(--wp--preset--spacing--small, 0.75rem) 0 0;
+    text-align: center;
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    color: var(--wp--preset--color--pebble, #7a7268);
+  }
+
+  &--editor {
+    border: 1px dashed var(--wp--preset--color--meadow, #c2d9b0);
+    color: var(--wp--preset--color--fern, #527a50);
+    position: static;
+  }
+}
