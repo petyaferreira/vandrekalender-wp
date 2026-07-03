@@ -36,6 +36,66 @@ new Vandrekalender_Scraper_Admin();
 \Vandrekalender\Event::instance();
 
 /**
+ * Inline upcoming-events counter for use inside paragraph text, where a block
+ * cannot be nested. Renders the same number as the Upcoming Events Count block
+ * but inherits the surrounding text colour and size.
+ *
+ * Usage: Over [vk_upcoming_count] ture fra hele landet.
+ */
+add_shortcode(
+	'vk_upcoming_count',
+	function () {
+		$count = Vandrekalender_Event_Rest_Api::count_events(
+			[ 'date_from' => current_time( 'Y-m-d' ) ]
+		);
+
+		return '<span class="vk-upcoming-count">' . esc_html( number_format_i18n( $count ) ) . '</span>';
+	}
+);
+
+/**
+ * Register (but don't enqueue) the filtered-count frontend script, so the
+ * shortcode below can enqueue it only on pages that actually use it.
+ */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		wp_register_script(
+			'vandrekalender-filtered-count',
+			VANDREKALENDER_EVENTS_URL . 'assets/js/filtered-count-view.js',
+			[],
+			VANDREKALENDER_EVENTS_VERSION,
+			true
+		);
+	}
+);
+
+/**
+ * Inline filter-reactive counter for use inside paragraph text. The script
+ * hydrates every .vk-filtered-count element on the page — the number updates
+ * live as filters change, while inheriting the surrounding text colour and
+ * size.
+ *
+ * Usage: Der er [vk_filtered_count] ture.
+ */
+add_shortcode(
+	'vk_filtered_count',
+	function () {
+		$count = Vandrekalender_Event_Rest_Api::count_events(
+			Vandrekalender_Event_Rest_Api::filters_from_query()
+		);
+
+		wp_enqueue_script( 'vandrekalender-filtered-count' );
+
+		return sprintf(
+			'<span class="vk-filtered-count" role="status" data-rest-url="%s">%s</span>',
+			esc_attr( esc_url_raw( rest_url( 'vandrekalender/v1/events/count' ) ) ),
+			esc_html( number_format_i18n( $count ) )
+		);
+	}
+);
+
+/**
  * Register the `wp vandrekalender scrape` command for manual runs.
  *
  * Runs the full scraping pipeline once and logs it as a manual run, so local

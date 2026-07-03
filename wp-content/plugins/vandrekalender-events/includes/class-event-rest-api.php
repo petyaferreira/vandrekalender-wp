@@ -35,6 +35,17 @@ class Vandrekalender_Event_Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/events/count',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_events_count' ],
+				'permission_callback' => '__return_true',
+				'args'                => $this->get_collection_params(),
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/events/(?P<id>\d+)',
 			[
 				'methods'             => WP_REST_Server::READABLE,
@@ -56,61 +67,15 @@ class Vandrekalender_Event_Rest_Api {
 	 * @return WP_REST_Response
 	 */
 	public function get_events( WP_REST_Request $request ) {
-		$meta_query = [];
-
-		if ( $request->get_param( 'date_from' ) ) {
-			$meta_query[] = [
-				'key'     => \Vandrekalender\Event::META_DATE,
-				'value'   => sanitize_text_field( $request->get_param( 'date_from' ) ),
-				'compare' => '>=',
-			];
-		}
-
-		if ( $request->get_param( 'date_to' ) ) {
-			$meta_query[] = [
-				'key'     => \Vandrekalender\Event::META_DATE,
-				'value'   => sanitize_text_field( $request->get_param( 'date_to' ) ),
-				'compare' => '<=',
-			];
-		}
-
-		$tax_query = [];
-
-		if ( $request->get_param( 'region' ) ) {
-			$tax_query[] = [
-				'taxonomy' => \Vandrekalender\Event::TAX_REGION,
-				'field'    => 'slug',
-				'terms'    => array_map( 'sanitize_title', explode( ',', $request->get_param( 'region' ) ) ),
-			];
-		}
-
-		if ( $request->get_param( 'length' ) ) {
-			$tax_query[] = [
-				'taxonomy' => \Vandrekalender\Event::TAX_LENGTH,
-				'field'    => 'slug',
-				'terms'    => array_map( 'sanitize_title', explode( ',', $request->get_param( 'length' ) ) ),
-			];
-		}
-
 		$per_page = (int) $request->get_param( 'per_page' );
 		$per_page = $per_page > 0 ? min( $per_page, 100 ) : 50;
 
-		$args = [
-			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => $per_page,
-			'orderby'        => 'meta_value',
-			'meta_key'       => \Vandrekalender\Event::META_DATE,
-			'order'          => 'ASC',
-		];
+		$args = self::build_query_args( $this->extract_filters( $request ) );
 
-		if ( ! empty( $meta_query ) ) {
-			$args['meta_query'] = array_merge( $args['meta_query'] ?? [], $meta_query );
-		}
-
-		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query;
-		}
+		$args['posts_per_page'] = $per_page;
+		$args['orderby']        = 'meta_value';
+		$args['meta_key']       = \Vandrekalender\Event::META_DATE;
+		$args['order']          = 'ASC';
 
 		$events = array_map( [ $this, 'format_event' ], get_posts( $args ) );
 
@@ -126,6 +91,179 @@ class Vandrekalender_Event_Rest_Api {
 		}
 
 		return rest_ensure_response( $events );
+	}
+
+	/**
+	 * Return the number of published events matching the given filters.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_events_count( WP_REST_Request $request ) {
+		return rest_ensure_response( [ 'count' => self::count_events( $this->extract_filters( $request ) ) ] );
+	}
+
+	/**
+	 * Count published events matching a set of filter values.
+	 *
+	 * Shared by the /events/count endpoint and server-rendered count blocks.
+	 *
+	 * @param array $filters Filter values keyed by REST param name
+	 *                       (date_from, date_to, region, length, is_free).
+	 * @return int
+	 */
+	public static function count_events( array $filters ) {
+		$args = self::build_query_args( $filters );
+
+		$args['posts_per_page'] = -1;
+		$args['fields']         = 'ids';
+
+		$ids = get_posts( $args );
+
+		// Price lives inside the routes JSON, so the free/paid filter runs in PHP.
+		if ( isset( $filters['is_free'] ) && '' !== $filters['is_free'] ) {
+			$want_free = rest_sanitize_boolean( $filters['is_free'] );
+			$ids       = array_filter(
+				$ids,
+				fn( $id ) => self::is_event_free( $id ) === $want_free
+			);
+		}
+
+		return count( $ids );
+	}
+
+	/**
+	 * Read the recognised filter params from the current URL query string.
+	 *
+	 * Filter state lives in the URL (see event-filters/view.js). Used by
+	 * server renders — the Filtered Events Count block and shortcode — so the
+	 * number is correct on first paint before the view script takes over.
+	 *
+	 * @return array Filter values keyed by REST param name.
+	 */
+	public static function filters_from_query() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$filters = [];
+
+		foreach ( [ 'date_from', 'date_to', 'region', 'length', 'is_free' ] as $key ) {
+			if ( isset( $_GET[ $key ] ) && '' !== $_GET[ $key ] ) {
+				$filters[ $key ] = sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		return $filters;
+	}
+
+	/**
+	 * Pull the recognised filter params out of a REST request.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return array Filter values keyed by REST param name.
+	 */
+	private function extract_filters( WP_REST_Request $request ) {
+		$filters = [];
+
+		foreach ( [ 'date_from', 'date_to', 'region', 'length' ] as $key ) {
+			if ( $request->get_param( $key ) ) {
+				$filters[ $key ] = $request->get_param( $key );
+			}
+		}
+
+		if ( null !== $request->get_param( 'is_free' ) && '' !== $request->get_param( 'is_free' ) ) {
+			$filters['is_free'] = $request->get_param( 'is_free' );
+		}
+
+		return $filters;
+	}
+
+	/**
+	 * Build WP_Query args for published events from filter values.
+	 *
+	 * Sanitises every value, so raw query-string input is safe to pass in.
+	 * The is_free filter is not handled here — it runs in PHP after the query.
+	 *
+	 * @param array $filters Filter values keyed by REST param name.
+	 * @return array WP_Query args.
+	 */
+	private static function build_query_args( array $filters ) {
+		// Default to upcoming events: with no date range at all, floor the
+		// query at today. Explicit date params — including a past range —
+		// behave exactly as given, so past events stay reachable on purpose.
+		if ( empty( $filters['date_from'] ) && empty( $filters['date_to'] ) ) {
+			$filters['date_from'] = current_time( 'Y-m-d' );
+		}
+
+		$meta_query = [];
+
+		if ( ! empty( $filters['date_from'] ) ) {
+			$meta_query[] = [
+				'key'     => \Vandrekalender\Event::META_DATE,
+				'value'   => sanitize_text_field( $filters['date_from'] ),
+				'compare' => '>=',
+			];
+		}
+
+		if ( ! empty( $filters['date_to'] ) ) {
+			$meta_query[] = [
+				'key'     => \Vandrekalender\Event::META_DATE,
+				'value'   => sanitize_text_field( $filters['date_to'] ),
+				'compare' => '<=',
+			];
+		}
+
+		$tax_query = [];
+
+		if ( ! empty( $filters['region'] ) ) {
+			$tax_query[] = [
+				'taxonomy' => \Vandrekalender\Event::TAX_REGION,
+				'field'    => 'slug',
+				'terms'    => array_map( 'sanitize_title', explode( ',', $filters['region'] ) ),
+			];
+		}
+
+		if ( ! empty( $filters['length'] ) ) {
+			$tax_query[] = [
+				'taxonomy' => \Vandrekalender\Event::TAX_LENGTH,
+				'field'    => 'slug',
+				'terms'    => array_map( 'sanitize_title', explode( ',', $filters['length'] ) ),
+			];
+		}
+
+		$args = [
+			'post_type'   => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+			'post_status' => 'publish',
+		];
+
+		if ( ! empty( $meta_query ) ) {
+			$args['meta_query'] = $meta_query;
+		}
+
+		if ( ! empty( $tax_query ) ) {
+			$args['tax_query'] = $tax_query;
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Whether an event is free, using the same rule as format_event():
+	 * free when no route records a real price, or the cheapest price is 0.
+	 *
+	 * @param int $post_id The event post ID.
+	 * @return bool
+	 */
+	private static function is_event_free( $post_id ) {
+		$routes = get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true );
+		$prices = [];
+
+		foreach ( ( is_array( $routes ) ? $routes : [] ) as $route ) {
+			if ( isset( $route['price'] ) && '' !== $route['price'] ) {
+				$prices[] = (float) $route['price'];
+			}
+		}
+
+		return empty( $prices ) || 0.0 === min( $prices );
 	}
 
 	/**

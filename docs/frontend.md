@@ -6,9 +6,29 @@
 
 ---
 
+## Where frontend code lives (plugin)
+
+One rule: **code that needs compiling goes through the build; static files ship as-is.**
+
+| Folder | What | Build? |
+|---|---|---|
+| `blocks/` | Gutenberg block sources (block.json, edit.js, view.js, style.scss) | Yes → `build/blocks/`, registered from there |
+| `resources/` | Non-block editor scripts that import `@wordpress/*` packages (e.g. event-meta-fields sidebar) | Yes → `build/resources/` |
+| `assets/` | Plain dependency-free JS/CSS served directly (e.g. `assets/js/filtered-count-view.js`) | No — enqueued as-is, committed to git |
+| `build/` | Compiled output. Gitignored — CI builds it on deploy. Never edit by hand | — |
+
+If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JSX, move it into `resources/` and wire it into `build:resources`.
+
+---
+
 ## Blocks
 
 <!-- List of Gutenberg blocks, what each does, source location go here -->
+
+**Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
+
+- `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.
+- `[vk_filtered_count]` — number of events matching the active filters. Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `assets/js/filtered-count-view.js`).
 
 ---
 

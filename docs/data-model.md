@@ -223,7 +223,7 @@ Returns a filtered list of events. Used by all three frontend views (calendar, c
 
 | Param | Type | Maps to |
 |---|---|---|
-| `date_from` | string (YYYY-MM-DD) | `event_date` meta, `>=` |
+| `date_from` | string (YYYY-MM-DD) | `event_date` meta, `>=`. Defaults to today when neither date param is given, so all views show upcoming events only. An explicit past `date_from` still returns past events |
 | `date_to` | string (YYYY-MM-DD) | `event_date` meta, `<=` |
 | `length` | string | `event_length` taxonomy slug e.g. `short` |
 | `region` | string | `event_region` taxonomy slug e.g. `midtjylland` |
@@ -247,6 +247,18 @@ Returns a filtered list of events. Used by all three frontend views (calendar, c
   "length": ["medium", "long"],
   "region": "hovedstaden"
 }
+```
+
+---
+
+### `GET /events/count`
+
+Returns the number of published events matching the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Used by the `[vk_filtered_count]` shortcode.
+
+**Response shape:**
+
+```json
+{ "count": 26 }
 ```
 
 ---
