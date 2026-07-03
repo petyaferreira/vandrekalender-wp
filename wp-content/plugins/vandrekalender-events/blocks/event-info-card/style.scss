@@ -119,6 +119,15 @@
 
     &:hover {
       filter: brightness(1.08);
+    }
+
+    // The theme's global link styles colour :focus/:active links fjord-deep,
+    // which is unreadable on the solid forest background. Their selector
+    // (a:where(...):focus) outranks a lone class, so pin every state here.
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
       color: var(--wp--preset--color--white, #fff);
     }
 
