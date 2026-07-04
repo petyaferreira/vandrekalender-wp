@@ -151,6 +151,9 @@ $vk_first_route = $vk_routes[0];
 				<dt><?php esc_html_e( 'Sted', 'vandrekalender-events' ); ?></dt>
 				<dd>
 					<?php echo esc_html( $vk_place ); ?>
+					<?php if ( $vk_address && 0 !== strcasecmp( trim( $vk_address ), trim( $vk_place ) ) ) : ?>
+						<span class="vk-info-card__address"><?php echo esc_html( $vk_address ); ?></span>
+					<?php endif; ?>
 					<?php if ( $vk_directions_url ) : ?>
 						<br />
 						<a href="<?php echo esc_url( $vk_directions_url ); ?>" target="_blank" rel="noopener noreferrer">

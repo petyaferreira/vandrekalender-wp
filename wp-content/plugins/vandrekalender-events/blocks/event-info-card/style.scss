@@ -83,6 +83,7 @@
       font-size: var(--wp--preset--font-size--small, 0.875rem);
       color: var(--wp--preset--color--pebble, #7a7268);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     dd {
@@ -90,6 +91,13 @@
       text-align: right;
       font-weight: 600;
       color: var(--wp--preset--color--charcoal, #1d1a14);
+    }
+
+    .vk-info-card__address {
+      display: block;
+      font-size: var(--wp--preset--font-size--small, 0.875rem);
+      font-weight: 400;
+      color: var(--wp--preset--color--pebble, #7a7268);
     }
 
     a {
