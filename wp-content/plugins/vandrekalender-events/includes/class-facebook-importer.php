@@ -242,7 +242,7 @@ class Vandrekalender_Facebook_Importer {
 	 * organiser name are parsed out of it where possible.
 	 *
 	 * @param string $url Canonical event URL.
-	 * @return array{title: string, description: string, image: string, date: string, organiser: string} Extracted fields, each possibly empty. `description` is empty when og:description was only the generated metadata sentence.
+	 * @return array{title: string, description: string, image: string, date: string, organiser: string, place: string} Extracted fields, each possibly empty. `description` is empty when og:description was only the generated metadata sentence.
 	 */
 	private function fetch_open_graph( string $url ): array {
 		$empty = [
@@ -251,6 +251,7 @@ class Vandrekalender_Facebook_Importer {
 			'image'       => '',
 			'date'        => '',
 			'organiser'   => '',
+			'place'       => '',
 		];
 
 		$response = wp_remote_get(
@@ -297,24 +298,28 @@ class Vandrekalender_Facebook_Importer {
 			'image'       => $this->og_content( $html, 'image' ),
 			'date'        => $parsed['date'],
 			'organiser'   => $parsed['organiser'],
+			'place'       => $parsed['place'],
 		];
 	}
 
 	/**
-	 * Parse the event date and organiser name out of Facebook's generated
-	 * og:description sentence.
+	 * Parse the event date, organiser name, and place out of Facebook's
+	 * generated og:description sentence.
 	 *
-	 * Handles both languages Facebook serves here, e.g.
-	 * "Begivenhed af Fur Rundt lørdag, juli 11 2026 med 2,5 tusind …" and
-	 * "Event by Fur Rundt on Saturday, July 11 2026 with 2.5K …".
+	 * Handles the variants Facebook serves in both languages, e.g.
+	 * "Begivenhed af Fur Rundt lørdag, juli 11 2026 med 2,5 tusind …",
+	 * "Begivenhed i Faaborg, Region Syddanmark af Gitte Fogelberg Mangal den
+	 * lørdag, juni 20 2026", and "Event by Fur Rundt on Saturday, July 11
+	 * 2026 with 2.5K …".
 	 *
 	 * @param string $description og:description content.
-	 * @return array{date: string, organiser: string} Date as Y-m-d and organiser name, each empty when not found.
+	 * @return array{date: string, organiser: string, place: string} Date as Y-m-d, organiser name, and place name, each empty when not found.
 	 */
 	private function parse_meta_sentence( string $description ): array {
 		$result = [
 			'date'      => '',
 			'organiser' => '',
+			'place'     => '',
 		];
 
 		if ( '' === $description ) {
@@ -349,12 +354,18 @@ class Vandrekalender_Facebook_Importer {
 			$result['date'] = sprintf( '%04d-%02d-%02d', (int) $matches[3], $month, (int) $matches[2] );
 		}
 
-		$weekdays = 'mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag';
-		if ( preg_match( '~^Begivenhed af (.+?)\s+(?:' . $weekdays . ')~iu', $description, $matches ) ) {
-			$result['organiser'] = trim( $matches[1] );
-		} elseif ( preg_match( '~^Event by (.+?)\s+on\s+~iu', $description, $matches ) ) {
-			$result['organiser'] = trim( $matches[1] );
+		$weekdays = 'mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag|monday|tuesday|wednesday|thursday|friday|saturday|sunday';
+		if ( preg_match( '~^Begivenhed (?:i (.+?) )?af (.+?)(?:\s+den)?\s+(?:' . $weekdays . ')~iu', $description, $matches ) ) {
+			$result['place']     = trim( $matches[1] );
+			$result['organiser'] = trim( $matches[2] );
+		} elseif ( preg_match( '~^Event (?:in (.+?) )?by (.+?)\s+on\s+~iu', $description, $matches ) ) {
+			$result['place']     = trim( $matches[1] );
+			$result['organiser'] = trim( $matches[2] );
 		}
+
+		// The place often carries a ", Region …" suffix — the region is
+		// derived from the address on save, so keep just the place name.
+		$result['place'] = trim( (string) preg_replace( '~,\s*Region\s+.*$~iu', '', $result['place'] ) );
 
 		return $result;
 	}
@@ -416,6 +427,23 @@ class Vandrekalender_Facebook_Importer {
 			return 0;
 		}
 
+		// Seed one route (same shape the editor's route list creates) so the
+		// event surfaces in the calendar views straight away; the admin fills
+		// in distance, start time, and price before publishing.
+		update_post_meta(
+			$post_id,
+			\Vandrekalender\Event::META_ROUTES,
+			[
+				[
+					'id'          => 'route_' . wp_generate_uuid4(),
+					'distance_km' => '',
+					'start_time'  => '',
+					'cutoff_time' => '',
+					'price'       => '',
+				],
+			]
+		);
+
 		update_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE, 'facebook' );
 		update_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_URL, $url );
 		update_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_NAME, 'Facebook' );
@@ -429,6 +457,10 @@ class Vandrekalender_Facebook_Importer {
 
 		if ( '' !== $data['organiser'] ) {
 			update_post_meta( $post_id, \Vandrekalender\Event::META_ORGANISER_NAME, sanitize_text_field( $data['organiser'] ) );
+		}
+
+		if ( '' !== $data['place'] ) {
+			update_post_meta( $post_id, \Vandrekalender\Event::META_PLACE_NAME, sanitize_text_field( $data['place'] ) );
 		}
 
 		if ( '' !== $data['image'] ) {

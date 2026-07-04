@@ -26,6 +26,7 @@ const EMPTY_META = {};
 const DAWA_AUTOCOMPLETE =
   'https://api.dataforsyningen.dk/autocomplete?type=adresse&q=';
 const DAWA_KOMMUNE = 'https://api.dataforsyningen.dk/kommuner/';
+const DAWA_REVERSE = 'https://api.dataforsyningen.dk/adgangsadresser/reverse';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,23 @@ const normalizeRoutes = raw => {
   }));
 };
 
+// Parse a coordinate pair in the formats events are shared with:
+// "56.052777, 9.749856" (Facebook) or "56.8036° N, 9.0192° E" (degree +
+// hemisphere, Danish Ø/V accepted). Dot decimals; comma, semicolon, or
+// space between. S and W/V flip the sign.
+const parseCoords = text => {
+  const m = String(text)
+    .trim()
+    .match(
+      /^(-?\d{1,3}(?:\.\d+)?)\s*°?\s*([NSns])?(?:\s*[,;]\s*|\s+)(-?\d{1,3}(?:\.\d+)?)\s*°?\s*([EWØVewøv])?$/
+    );
+  if (!m) return null;
+  const lat = parseFloat(m[1]) * (/s/i.test(m[2] || '') ? -1 : 1);
+  const lng = parseFloat(m[3]) * (/[wv]/i.test(m[4] || '') ? -1 : 1);
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+  return { lat, lng };
+};
+
 const formatDate = iso => {
   if (!iso) return '';
   const dateFormat = getDateSettings().formats.date;
@@ -82,10 +100,26 @@ const LocationPanel = ({ meta, setMeta }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  // While the user is typing coordinates the field shows their raw text;
+  // otherwise it mirrors the stored meta values.
+  const [coordsDraft, setCoordsDraft] = useState(null);
   const debounceRef = useRef(null);
+  const reverseRef = useRef(null);
   const wrapperRef = useRef(null);
   const setMetaRef = useRef(setMeta);
   setMetaRef.current = setMeta;
+
+  const applyMunicipality = kommunekode => {
+    if (!kommunekode) return;
+    fetch(DAWA_KOMMUNE + kommunekode)
+      .then(res => res.json())
+      .then(kommune => {
+        if (kommune.navn) {
+          setMetaRef.current({ event_municipality: kommune.navn });
+        }
+      })
+      .catch(() => {});
+  };
 
   // Close dropdown when clicking outside.
   useEffect(() => {
@@ -134,6 +168,7 @@ const LocationPanel = ({ meta, setMeta }) => {
     const { tekst, data } = suggestion;
     setOpen(false);
     setSuggestions([]);
+    setCoordsDraft(null);
 
     setMeta({
       event_address: tekst,
@@ -142,19 +177,47 @@ const LocationPanel = ({ meta, setMeta }) => {
       event_municipality: '',
     });
 
-    if (data.kommunekode) {
-      fetch(DAWA_KOMMUNE + data.kommunekode)
-        .then(res => res.json())
-        .then(kommune => {
-          if (kommune.navn) {
-            setMetaRef.current({ event_municipality: kommune.navn });
-          }
-        })
-        .catch(() => {});
-    }
+    applyMunicipality(data.kommunekode);
+  };
+
+  const onCoordsChange = value => {
+    setCoordsDraft(value);
+    clearTimeout(reverseRef.current);
+
+    const parsed = parseCoords(value);
+    if (!parsed) return;
+
+    reverseRef.current = setTimeout(async () => {
+      // The pasted coordinates are the source of truth for the map pin;
+      // the reverse-geocoded nearest address is for display and municipality.
+      setMetaRef.current({ event_lat: parsed.lat, event_lng: parsed.lng });
+
+      try {
+        const res = await fetch(
+          `${DAWA_REVERSE}?x=${parsed.lng}&y=${parsed.lat}&struktur=mini`
+        );
+        const data = await res.json();
+        if (data && data.betegnelse) {
+          setMetaRef.current({ event_address: data.betegnelse });
+        }
+        if (data && data.kommunekode) {
+          applyMunicipality(data.kommunekode);
+        }
+      } catch {
+        // Coordinates are stored even when the address lookup fails.
+      }
+
+      setCoordsDraft(null);
+    }, 600);
   };
 
   const hasCoords = Boolean(meta.event_lat && meta.event_lng);
+  const coordsValue =
+    coordsDraft !== null
+      ? coordsDraft
+      : hasCoords
+        ? `${meta.event_lat}, ${meta.event_lng}`
+        : '';
 
   return (
     <PluginDocumentSettingPanel
@@ -233,14 +296,28 @@ const LocationPanel = ({ meta, setMeta }) => {
         )}
       </div>
 
-      {hasCoords && (
+      <div style={{ marginTop: '16px' }}>
+        <TextControl
+          label={__('Coordinates', 'vandrekalender-events')}
+          value={coordsValue}
+          onChange={onCoordsChange}
+          placeholder="56.052777, 9.749856"
+          help={__(
+            'Filled automatically when an address is chosen. Or paste coordinates as "56.052777, 9.749856" or "56.8036° N, 9.0192° E" and the nearest address is looked up for you.',
+            'vandrekalender-events'
+          )}
+          __next40pxDefaultSize
+          __nextHasNoMarginBottom
+        />
+      </div>
+
+      {Boolean(meta.event_municipality) && (
         <Text
           variant="muted"
           isBlock
           style={{ marginTop: '8px', fontSize: '12px' }}
         >
-          {meta.event_municipality && `${meta.event_municipality} · `}
-          {`${meta.event_lat.toFixed(5)}, ${meta.event_lng.toFixed(5)}`}
+          {meta.event_municipality}
         </Text>
       )}
     </PluginDocumentSettingPanel>
