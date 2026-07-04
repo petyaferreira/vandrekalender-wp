@@ -194,15 +194,16 @@ async function initMap(root) {
 
   async function load() {
     const current = ++requestId;
-    const query = new URLSearchParams({
-      ...readFilters(),
-      per_page: 100,
-    }).toString();
+    const query = new URLSearchParams(readFilters()).toString();
     status.hidden = false;
     status.textContent = 'Indlæser kort…';
 
     try {
-      const response = await fetch(`${restUrl}?${query}`);
+      // The slim locations endpoint returns every matching pin in one
+      // response (no pagination) without the heavy description payloads.
+      const response = await fetch(
+        `${restUrl}/locations${query ? `?${query}` : ''}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }

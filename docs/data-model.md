@@ -275,6 +275,12 @@ Returns per-day event counts for the same filter params as `GET /events` (`date_
 
 ---
 
+### `GET /events/locations`
+
+Returns **all** matching events (same filter params and upcoming-only default as `GET /events`, no pagination) as a slim map-pin payload: `id`, `title`, `permalink`, `date`, `lat`, `lng`, `distances_km`, `price_from`, `is_free`. Powers the map view — pins need every event but only the popup line, so this skips description rendering entirely (~130 KB for 500+ events). Events without usable coordinates (unset or 0/0) are excluded server-side.
+
+---
+
 ### `GET /events/{id}`
 
 Returns full detail for a single event. Used by the event detail page.

@@ -57,6 +57,17 @@ class Vandrekalender_Event_Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/events/locations',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_events_locations' ],
+				'permission_callback' => '__return_true',
+				'args'                => $this->get_collection_params(),
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/events/(?P<id>\d+)',
 			[
 				'methods'             => WP_REST_Server::READABLE,
@@ -175,6 +186,85 @@ class Vandrekalender_Event_Rest_Api {
 
 		// Cast so an empty result serialises as {} rather than [].
 		return rest_ensure_response( (object) $days );
+	}
+
+	/**
+	 * Return every matching event as a slim map-pin payload.
+	 *
+	 * Powers the map view: a pin only needs coordinates and its popup line
+	 * (title, date, distances, price, link), so this returns all matching
+	 * events in one unpaginated response without rendering description HTML —
+	 * a fraction of the size and cost of /events. Events without coordinates
+	 * are skipped server-side; the map cannot place them anyway.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_events_locations( WP_REST_Request $request ) {
+		$filters = $this->extract_filters( $request );
+
+		$args = self::build_query_args( $filters );
+
+		$args['posts_per_page'] = -1;
+		$args['fields']         = 'ids';
+		$args['orderby']        = 'meta_value';
+		$args['meta_key']       = \Vandrekalender\Event::META_DATE;
+		$args['order']          = 'ASC';
+
+		$ids = get_posts( $args );
+		// One query each for posts and meta instead of two per event below.
+		_prime_post_caches( $ids, false, true );
+
+		$want_free = null;
+		if ( isset( $filters['is_free'] ) && '' !== $filters['is_free'] ) {
+			$want_free = rest_sanitize_boolean( $filters['is_free'] );
+		}
+
+		$locations = [];
+		foreach ( $ids as $id ) {
+			$lat = get_post_meta( $id, \Vandrekalender\Event::META_LAT, true );
+			$lng = get_post_meta( $id, \Vandrekalender\Event::META_LNG, true );
+			// Skip events without a usable position (unset, or stored as 0/0
+			// when geocoding found no match) — the map cannot place them.
+			if ( '' === $lat || '' === $lng || ( 0.0 === (float) $lat && 0.0 === (float) $lng ) ) {
+				continue;
+			}
+
+			$routes = get_post_meta( $id, \Vandrekalender\Event::META_ROUTES, true );
+			$routes = is_array( $routes ) ? $routes : [];
+
+			$distances = [];
+			$prices    = [];
+			foreach ( $routes as $route ) {
+				if ( isset( $route['distance_km'] ) && '' !== $route['distance_km'] ) {
+					$distances[] = (float) $route['distance_km'];
+				}
+				if ( isset( $route['price'] ) && '' !== $route['price'] ) {
+					$prices[] = (float) $route['price'];
+				}
+			}
+
+			$price_from = ! empty( $prices ) ? min( $prices ) : null;
+			$is_free    = null === $price_from || 0.0 === (float) $price_from;
+
+			if ( null !== $want_free && $is_free !== $want_free ) {
+				continue;
+			}
+
+			$locations[] = [
+				'id'           => $id,
+				'title'        => get_the_title( $id ),
+				'permalink'    => get_permalink( $id ),
+				'date'         => get_post_meta( $id, \Vandrekalender\Event::META_DATE, true ),
+				'lat'          => (float) $lat,
+				'lng'          => (float) $lng,
+				'distances_km' => $distances,
+				'price_from'   => $price_from,
+				'is_free'      => $is_free,
+			];
+		}
+
+		return rest_ensure_response( $locations );
 	}
 
 	/**
