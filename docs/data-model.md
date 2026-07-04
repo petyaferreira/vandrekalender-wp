@@ -313,13 +313,12 @@ File: `resources/event-meta-fields/index.js`
 
 ### Location panel
 
-To be built.
-
 | Field | UI component | Notes |
 |---|---|---|
 | `event_place_name` | `TextControl` | Optional, free text |
 | `event_address` | `TextControl` with DAWA autocomplete | Triggers geocoding on selection. Populates `event_lat`, `event_lng`, `event_municipality` automatically |
-| `event_lat`, `event_lng`, `event_municipality` | Hidden | Derived from DAWA — not shown to editor |
+| `event_lat`, `event_lng` | `TextControl` (single "Coordinates" field) | Shows the stored pair as `lat, lng`. Auto-filled when an address is chosen. Accepts a pasted `lat, lng` pair (e.g. from a Facebook event page): the pasted coordinates are stored **as-is** for the map pin, and DAWA reverse-geocoding fills `event_address` with the nearest official address plus the municipality |
+| `event_municipality` | Hidden | Derived from DAWA — shown as a muted note under the fields |
 
 ### Organiser panel
 
