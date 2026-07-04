@@ -1,9 +1,11 @@
 /**
  * Event Cards — frontend view.
  *
- * Fetches events from the Vandrekalender REST API and renders them as cards.
- * Re-fetches whenever the Event Filters block broadcasts a `vk:filters-change`
- * event. Filter state lives in the URL query string so it survives reloads and
+ * Fetches events from the Vandrekalender REST API one page at a time and
+ * renders them as cards. A "Vis flere" button appends the next page while the
+ * API's X-WP-TotalPages header says more remain. Re-fetches from page 1
+ * whenever the Event Filters block broadcasts a `vk:filters-change` event.
+ * Filter state lives in the URL query string so it survives reloads and
  * shared links.
  */
 
@@ -112,21 +114,31 @@ function initCards(root) {
   const restUrl = root.dataset.restUrl;
   const status = root.querySelector('.vk-cards__status');
   const list = root.querySelector('.vk-cards__list');
+  const more = root.querySelector('.vk-cards__more');
   const empty = root.querySelector('.vk-cards__empty');
+  let page = 1;
+  let totalPages = 1;
   let requestId = 0;
 
-  async function load() {
+  /**
+   * Fetch one page and append its cards. Page 1 replaces the list.
+   *
+   * @param {number} pageToLoad 1-based page number.
+   */
+  async function load(pageToLoad) {
     const current = ++requestId;
-    const filters = readFilters();
-    const query = new URLSearchParams(filters).toString();
-    const url = query ? `${restUrl}?${query}` : restUrl;
+    const query = new URLSearchParams({
+      ...readFilters(),
+      page: pageToLoad,
+    }).toString();
 
     status.hidden = false;
     status.textContent = 'Indlæser vandreture…';
     empty.hidden = true;
+    more.disabled = true;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(`${restUrl}?${query}`);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -137,33 +149,48 @@ function initCards(root) {
         return;
       }
 
-      list.innerHTML = '';
+      page = pageToLoad;
+      totalPages = parseInt(response.headers.get('X-WP-TotalPages'), 10) || 1;
 
-      if (!Array.isArray(events) || events.length === 0) {
+      if (pageToLoad === 1) {
+        list.innerHTML = '';
+      }
+
+      if (pageToLoad === 1 && (!Array.isArray(events) || events.length === 0)) {
         list.hidden = true;
         status.hidden = true;
+        more.hidden = true;
         empty.hidden = false;
         return;
       }
 
       const fragment = document.createDocumentFragment();
-      events.forEach(event => fragment.appendChild(renderCard(event)));
+      (Array.isArray(events) ? events : []).forEach(event =>
+        fragment.appendChild(renderCard(event))
+      );
       list.appendChild(fragment);
       list.hidden = false;
       status.hidden = true;
+      more.hidden = page >= totalPages;
+      more.disabled = false;
     } catch (error) {
       if (current !== requestId) {
         return;
       }
       status.hidden = false;
       status.textContent = 'Kunne ikke indlæse vandreture. Prøv igen.';
-      list.hidden = true;
-      empty.hidden = true;
+      more.disabled = false;
+      if (pageToLoad === 1) {
+        list.hidden = true;
+        more.hidden = true;
+        empty.hidden = true;
+      }
     }
   }
 
-  document.addEventListener('vk:filters-change', load);
-  load();
+  more.addEventListener('click', () => load(page + 1));
+  document.addEventListener('vk:filters-change', () => load(1));
+  load(1);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

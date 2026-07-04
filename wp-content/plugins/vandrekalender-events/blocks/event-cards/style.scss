@@ -22,6 +22,34 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
+  &__more {
+    display: block;
+    margin: 1.5rem auto 0;
+    min-height: 44px;
+    padding: 0.45rem 1.4rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--wp--preset--color--forest, #2d5f3f);
+    color: var(--wp--preset--color--white, #fff);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    cursor: pointer;
+    transition: filter 0.12s ease;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--forest, #2d5f3f);
+      outline-offset: 2px;
+    }
+  }
+
   &--editor {
     border: 1px dashed var(--wp--preset--color--meadow, #c2d9b0);
     border-radius: 8px;

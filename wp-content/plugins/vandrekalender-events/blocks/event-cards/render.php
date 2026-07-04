@@ -18,5 +18,6 @@ $vk_rest_url = esc_url_raw( rest_url( 'vandrekalender/v1/events' ) );
 >
 	<p class="vk-cards__status" role="status"><?php esc_html_e( 'Indlæser vandreture…', 'vandrekalender-events' ); ?></p>
 	<ul class="vk-cards__list" hidden></ul>
+	<button type="button" class="vk-cards__more" hidden><?php esc_html_e( 'Vis flere vandreture', 'vandrekalender-events' ); ?></button>
 	<p class="vk-cards__empty" hidden><?php esc_html_e( 'Ingen vandreture matcher dine filtre.', 'vandrekalender-events' ); ?></p>
 </div>

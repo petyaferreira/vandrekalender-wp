@@ -217,7 +217,7 @@ Base namespace: `vandrekalender/v1`
 
 ### `GET /events`
 
-Returns a filtered list of events. Used by all three frontend views (calendar, cards, map).
+Returns a filtered, paginated list of events. Used by the cards and map views (and the calendar's clicked-day list). Sorted by `event_date` ascending. Pagination: `per_page` (default 50, max 100) and `page` (1-based); the response carries `X-WP-Total` and `X-WP-TotalPages` headers, which stay exact even with the PHP-side `is_free` filter (IDs are filtered before the page is sliced). The cards block renders page 1 and appends further pages via its "Vis flere vandreture" button until the last page.
 
 **Filter params:**
 
