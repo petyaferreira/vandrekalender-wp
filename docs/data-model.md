@@ -263,6 +263,18 @@ Returns the number of published events matching the same filter params as `GET /
 
 ---
 
+### `GET /events/days`
+
+Returns per-day event counts for the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds) and fetches a single day's full events from `GET /events` only when that day is clicked.
+
+**Response shape** (empty object when no events match):
+
+```json
+{ "2026-08-01": 7, "2026-08-02": 6, "2026-08-05": 12 }
+```
+
+---
+
 ### `GET /events/{id}`
 
 Returns full detail for a single event. Used by the event detail page.

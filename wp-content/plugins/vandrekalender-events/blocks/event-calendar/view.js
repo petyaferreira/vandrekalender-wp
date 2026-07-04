@@ -1,13 +1,15 @@
 /**
  * Event Calendar — month grid view.
  *
- * Fetches events from the REST API, buckets them by date, and renders a
- * month grid where each day with events shows a dot sized by how many events
- * fall on it. Clicking a day lists that day's events below the grid. Month
- * navigation works on the cached data; a filter change refetches.
+ * The grid only needs per-day counts, so each visible month is fetched from
+ * the lightweight /events/days endpoint (cached per month; navigating to an
+ * unseen month fetches it). The full event payloads are only fetched when a
+ * day is clicked — one small /events request for that single date. This keeps
+ * the calendar fast no matter how many events exist.
  *
- * Region / length / free filters are honoured. The bar's date range is ignored
- * here on purpose, because this view has its own month navigation.
+ * Region / length / free filters are honoured (a filter change clears the
+ * caches and refetches). The bar's date range is ignored here on purpose,
+ * because this view has its own month navigation.
  */
 
 const WEEKDAYS = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
@@ -68,12 +70,27 @@ function priceLabel(event) {
 }
 
 /**
+ * Fetch a URL and parse the JSON response, throwing on HTTP errors.
+ *
+ * @param {string} url Request URL.
+ * @return {Promise<*>} Parsed JSON.
+ */
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+/**
  * Initialise one calendar instance.
  *
  * @param {HTMLElement} root The block wrapper element.
  */
 function initCalendar(root) {
   const restUrl = root.dataset.restUrl;
+  const daysUrl = `${restUrl}/days`;
   const status = root.querySelector('.vk-calendar__status');
   const inner = root.querySelector('.vk-calendar__inner');
   const error = root.querySelector('.vk-calendar__error');
@@ -81,10 +98,13 @@ function initCalendar(root) {
   const today = new Date();
   const todayKey = key(today.getFullYear(), today.getMonth(), today.getDate());
 
-  let byDate = {};
+  let countsByDate = {}; // date key -> event count, merged across fetched months.
+  let loadedMonths = new Set(); // "YYYY-MM" keys already fetched.
+  let dayCache = {}; // date key -> events array for clicked days.
   let viewYear = today.getFullYear();
   let viewMonth = today.getMonth();
   let selectedKey = null;
+  let dayLoading = false;
   let requestId = 0;
 
   function render() {
@@ -129,7 +149,7 @@ function initCalendar(root) {
       }
 
       const dateKey = key(viewYear, viewMonth, dayNum);
-      const events = byDate[dateKey] || [];
+      const count = countsByDate[dateKey] || 0;
       day.type = 'button';
       day.dataset.dateKey = dateKey;
 
@@ -141,14 +161,14 @@ function initCalendar(root) {
       }
 
       let dot = '';
-      if (events.length) {
+      if (count) {
         const size =
-          events.length <= 2
+          count <= 2
             ? ' vk-calendar__dot--sm'
-            : events.length > 6
+            : count > 6
               ? ' vk-calendar__dot--lg'
               : '';
-        dot = `<span class="vk-calendar__dot${size}">${events.length}</span>`;
+        dot = `<span class="vk-calendar__dot${size}">${count}</span>`;
         day.classList.add('has-events');
       } else {
         day.disabled = true;
@@ -163,8 +183,10 @@ function initCalendar(root) {
     // Selected day's events.
     const dayEvents = document.createElement('div');
     dayEvents.className = 'vk-calendar__day-events';
-    if (selectedKey && byDate[selectedKey]) {
-      const events = byDate[selectedKey];
+    if (selectedKey && dayLoading) {
+      dayEvents.innerHTML = `<p class="vk-calendar__day-label">${longDateFmt.format(new Date(selectedKey))}…</p>`;
+    } else if (selectedKey && dayCache[selectedKey]) {
+      const events = dayCache[selectedKey];
       const heading = longDateFmt.format(new Date(selectedKey));
       const rows = events
         .map(event => {
@@ -195,46 +217,44 @@ function initCalendar(root) {
           viewYear++;
         }
         selectedKey = null;
-        render();
+        showMonth();
       });
     });
 
     grid.querySelectorAll('.vk-calendar__day.has-events').forEach(day => {
-      day.addEventListener('click', () => {
-        selectedKey =
-          selectedKey === day.dataset.dateKey ? null : day.dataset.dateKey;
-        render();
-      });
+      day.addEventListener('click', () => selectDay(day.dataset.dateKey));
     });
   }
 
-  async function load() {
+  /**
+   * Render the current month, fetching its counts first if unseen.
+   */
+  async function showMonth() {
+    const monthKey = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}`;
+    if (loadedMonths.has(monthKey)) {
+      render();
+      return;
+    }
+
     const current = ++requestId;
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
     const query = new URLSearchParams({
       ...readFilters(),
-      per_page: 100,
+      date_from: key(viewYear, viewMonth, 1),
+      date_to: key(viewYear, viewMonth, daysInMonth),
     }).toString();
 
     status.hidden = false;
     error.hidden = true;
 
     try {
-      const response = await fetch(`${restUrl}?${query}`);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const events = await response.json();
+      const counts = await fetchJson(`${daysUrl}?${query}`);
       if (current !== requestId) {
         return;
       }
 
-      byDate = {};
-      (Array.isArray(events) ? events : []).forEach(event => {
-        if (!event.date) {
-          return;
-        }
-        (byDate[event.date] = byDate[event.date] || []).push(event);
-      });
+      Object.assign(countsByDate, counts || {});
+      loadedMonths.add(monthKey);
 
       status.hidden = true;
       inner.hidden = false;
@@ -249,8 +269,61 @@ function initCalendar(root) {
     }
   }
 
-  document.addEventListener('vk:filters-change', load);
-  load();
+  /**
+   * Toggle a day selection, fetching that day's events on first click.
+   *
+   * @param {string} dateKey The clicked day (YYYY-MM-DD).
+   */
+  async function selectDay(dateKey) {
+    if (selectedKey === dateKey) {
+      selectedKey = null;
+      render();
+      return;
+    }
+
+    selectedKey = dateKey;
+
+    if (!dayCache[dateKey]) {
+      dayLoading = true;
+      render();
+
+      const query = new URLSearchParams({
+        ...readFilters(),
+        date_from: dateKey,
+        date_to: dateKey,
+        per_page: 100,
+      }).toString();
+
+      try {
+        const events = await fetchJson(`${restUrl}?${query}`);
+        dayCache[dateKey] = Array.isArray(events) ? events : [];
+      } catch (err) {
+        dayCache[dateKey] = [];
+      }
+      dayLoading = false;
+
+      // The user may have clicked elsewhere while this was in flight.
+      if (selectedKey !== dateKey) {
+        return;
+      }
+    }
+
+    render();
+  }
+
+  /**
+   * Throw away everything fetched and reload the visible month.
+   */
+  function reload() {
+    countsByDate = {};
+    loadedMonths = new Set();
+    dayCache = {};
+    selectedKey = null;
+    showMonth();
+  }
+
+  document.addEventListener('vk:filters-change', reload);
+  showMonth();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

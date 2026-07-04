@@ -46,6 +46,17 @@ class Vandrekalender_Event_Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/events/days',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_events_days' ],
+				'permission_callback' => '__return_true',
+				'args'                => $this->get_collection_params(),
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/events/(?P<id>\d+)',
 			[
 				'methods'             => WP_REST_Server::READABLE,
@@ -101,6 +112,48 @@ class Vandrekalender_Event_Rest_Api {
 	 */
 	public function get_events_count( WP_REST_Request $request ) {
 		return rest_ensure_response( [ 'count' => self::count_events( $this->extract_filters( $request ) ) ] );
+	}
+
+	/**
+	 * Return per-day event counts for the given filters.
+	 *
+	 * Powers the calendar's month grid: the dots only need how many events
+	 * fall on each date, so this stays a ~1 KB payload no matter how many
+	 * events exist. Response shape: { "2026-08-01": 12, "2026-08-02": 7 }.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_events_days( WP_REST_Request $request ) {
+		$filters = $this->extract_filters( $request );
+
+		$args = self::build_query_args( $filters );
+
+		$args['posts_per_page'] = -1;
+		$args['fields']         = 'ids';
+
+		$ids = get_posts( $args );
+
+		// Price lives inside the routes JSON, so the free/paid filter runs in PHP.
+		if ( isset( $filters['is_free'] ) && '' !== $filters['is_free'] ) {
+			$want_free = rest_sanitize_boolean( $filters['is_free'] );
+			$ids       = array_filter(
+				$ids,
+				fn( $id ) => self::is_event_free( $id ) === $want_free
+			);
+		}
+
+		$days = [];
+		foreach ( $ids as $id ) {
+			$date = get_post_meta( $id, \Vandrekalender\Event::META_DATE, true );
+			if ( $date ) {
+				$days[ $date ] = ( $days[ $date ] ?? 0 ) + 1;
+			}
+		}
+		ksort( $days );
+
+		// Cast so an empty result serialises as {} rather than [].
+		return rest_ensure_response( (object) $days );
 	}
 
 	/**
