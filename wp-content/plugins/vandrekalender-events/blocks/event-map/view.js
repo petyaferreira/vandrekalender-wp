@@ -20,11 +20,12 @@ const LEAFLET_VERSION = '1.9.4';
 const CLUSTER_VERSION = '1.5.3';
 const CDN = 'https://cdnjs.cloudflare.com/ajax/libs';
 
+// Only the scripts load lazily from here. The stylesheets are enqueued
+// server-side in render.php: the interactivity router manages the <head>
+// across client-side navigations, and JS-injected <link> tags come out of
+// that morphing present but no longer applied.
 const ASSETS = {
-  leafletCss: `${CDN}/leaflet/${LEAFLET_VERSION}/leaflet.min.css`,
   leafletJs: `${CDN}/leaflet/${LEAFLET_VERSION}/leaflet.min.js`,
-  clusterCss: `${CDN}/leaflet.markercluster/${CLUSTER_VERSION}/MarkerCluster.min.css`,
-  clusterDefaultCss: `${CDN}/leaflet.markercluster/${CLUSTER_VERSION}/MarkerCluster.Default.min.css`,
   clusterJs: `${CDN}/leaflet.markercluster/${CLUSTER_VERSION}/leaflet.markercluster.min.js`,
 };
 
@@ -38,21 +39,6 @@ const dateFmt = new Intl.DateTimeFormat('da-DK', {
 // map created in callbacks.init. Leaflet objects are not serialisable, so
 // they cannot live in the context itself.
 const instances = new WeakMap();
-
-/**
- * Append a stylesheet once.
- *
- * @param {string} href Stylesheet URL.
- */
-function loadStyle(href) {
-  if (document.querySelector(`link[href="${href}"]`)) {
-    return;
-  }
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = href;
-  document.head.appendChild(link);
-}
 
 /**
  * Load a script once, resolving when ready.
@@ -90,12 +76,9 @@ function loadScript(src) {
  * @return {Promise} Resolves once Leaflet is ready.
  */
 async function ensureLeaflet() {
-  loadStyle(ASSETS.leafletCss);
   if (!window.L) {
     await loadScript(ASSETS.leafletJs);
   }
-  loadStyle(ASSETS.clusterCss);
-  loadStyle(ASSETS.clusterDefaultCss);
   if (window.L && !window.L.markerClusterGroup) {
     try {
       await loadScript(ASSETS.clusterJs);
@@ -158,49 +141,44 @@ store('vandrekalender/event-map', {
       const { ref } = getElement();
       const instance = instances.get(ref.closest('.vk-map'));
       if (instance) {
-        instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
+        instance.map.setView([ctx.lat, ctx.lng], ctx.zoom, { animate: false });
       }
     },
   },
   callbacks: {
     init() {
+      // The island (getElement().ref) is only the small controls strip; the
+      // canvas lives outside it so island re-renders can never wipe Leaflet's
+      // DOM. The context is read-only config, and status/reset visibility are
+      // mutated directly on the elements — a context write would re-render
+      // the island and reset them to their server-rendered state.
       const ctx = getContext();
-      const { ref: root } = getElement();
+      const root = getElement().ref.closest('.vk-map');
       const canvas = root.querySelector('.vk-map__canvas');
+      const statusEl = root.querySelector('.vk-map__status');
+      const resetEl = root.querySelector('.vk-map__reset');
 
       let instance = null;
       let pendingReload = false;
       let cancelled = false;
-      let needsFit = false;
       let requestId = 0;
 
       const setStatus = text => {
-        ctx.statusText = text || '';
-        ctx.statusHidden = !text;
+        statusEl.textContent = text || '';
+        statusEl.hidden = !text;
       };
 
       const readFilters = () => ({ ...readUrlFilters(), ...ctx.presets });
 
-      function fitToPoints() {
-        // Bounds computed against a hidden (zero-size) map would be wrong;
-        // remember to re-fit when the map becomes visible instead.
-        if (canvas.offsetWidth === 0) {
-          needsFit = true;
-          return;
-        }
-        needsFit = false;
-        if (instance.lastPoints.length) {
-          instance.map.fitBounds(instance.lastPoints, {
-            padding: [30, 30],
-            maxZoom: 11,
-          });
-        } else {
-          instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
-        }
-      }
-
       function renderPins(events) {
         const L = window.L;
+        // The camera never follows the pins: this is a Denmark-only map, so
+        // the view stays put and filter changes only swap markers. Moving the
+        // camera here caused a family of bugs — fits computed against a
+        // hidden (zero-size) container, and cluster-layer mutations landing
+        // mid pan/zoom animation freeze Leaflet mid-frame. stop() guards
+        // against a user-initiated pan/zoom still running.
+        instance.map.stop();
         instance.layer.clearLayers();
         const points = [];
         (Array.isArray(events) ? events : []).forEach(event => {
@@ -238,14 +216,11 @@ store('vandrekalender/event-map', {
           points.push([event.lat, event.lng]);
         });
 
-        instance.lastPoints = points;
-        ctx.resetHidden = false;
+        resetEl.hidden = false;
 
         if (points.length) {
           setStatus('');
-          fitToPoints();
         } else {
-          instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
           setStatus('Ingen vandreture med placering matcher dine filtre.');
         }
       }
@@ -286,31 +261,43 @@ store('vandrekalender/event-map', {
       };
       document.addEventListener('vk:filters-change', onFiltersChange);
 
-      // Re-measure when the map becomes visible. Leaflet initialised inside a
-      // hidden tab has zero size, so on the Tabs block's `vk:tab-shown` event
-      // the map re-measures and runs any fit that was deferred while it was
-      // hidden. A ResizeObserver covers non-tab layout changes the same way.
+      // Re-measure when the map becomes visible again, in case the layout
+      // changed while it was hidden (e.g. the window was resized).
       const remeasure = () => {
-        if (!instance || canvas.offsetWidth === 0) {
-          return;
-        }
-        instance.map.invalidateSize();
-        if (needsFit) {
-          fitToPoints();
+        if (instance && canvas.offsetWidth > 0) {
+          instance.map.invalidateSize();
         }
       };
       document.addEventListener('vk:tab-shown', remeasure);
       const observer =
-        'ResizeObserver' in window
-          ? new ResizeObserver(() => {
-              if (needsFit) {
-                remeasure();
-              }
-            })
-          : null;
+        'ResizeObserver' in window ? new ResizeObserver(remeasure) : null;
       if (observer) {
         observer.observe(canvas);
       }
+
+      // Resolve once the canvas has real dimensions. A Leaflet map must never
+      // be created against a hidden (zero-size) container: every later
+      // calculation — cluster maths, panning, tile layout — inherits the
+      // broken geometry and no invalidateSize/setView repairs it. Inside a
+      // hidden tab this waits for the Tabs block's `vk:tab-shown`, with a
+      // slow poll as a safety net for any other way of becoming visible.
+      const waitForVisible = () =>
+        new Promise(resolve => {
+          if (canvas.offsetWidth > 0) {
+            resolve();
+            return;
+          }
+          let timer = null;
+          const check = () => {
+            if (cancelled || canvas.offsetWidth > 0) {
+              document.removeEventListener('vk:tab-shown', check);
+              clearInterval(timer);
+              resolve();
+            }
+          };
+          document.addEventListener('vk:tab-shown', check);
+          timer = setInterval(check, 500);
+        });
 
       (async () => {
         try {
@@ -319,6 +306,7 @@ store('vandrekalender/event-map', {
           setStatus('Kortet kunne ikke indlæses.');
           return;
         }
+        await waitForVisible();
         if (cancelled) {
           return;
         }
@@ -347,7 +335,7 @@ store('vandrekalender/event-map', {
           : L.layerGroup();
         map.addLayer(layer);
 
-        instance = { map, layer, pinIcon, lastPoints: [] };
+        instance = { map, layer, pinIcon };
         instances.set(root, instance);
 
         if (pendingReload) {
