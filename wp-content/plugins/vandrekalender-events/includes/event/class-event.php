@@ -104,7 +104,7 @@ class Event {
 				'show_in_rest'  => true,
 				'has_archive'   => true,
 				'rewrite'       => [
-					'slug'       => 'event',
+					'slug'       => 'begivenhed',
 					'with_front' => false,
 				],
 				'menu_icon'     => 'dashicons-location-alt',
