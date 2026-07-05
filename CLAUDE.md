@@ -96,5 +96,5 @@ wp-content/themes/vandrekalender-theme/
 
 | Project | Path | What to reference |
 |---|---|---|
-| master-of-magic-wp | `/Users/petyanaydenova/it-projects/wordpress/master-of-magic-wp` | Docker setup, Nordicway deploy workflow |
-| paychex-wp | `/Users/petyanaydenova/it-projects/wordpress/paychex-wp` | Composer config, pre-commit hook, build tooling |
+| master-of-magic-wp | not found on this machine (checked July 2026) | Docker setup, Nordicway deploy workflow |
+| paychex-wp | `/Users/petyanaydenova/Documents/paychex` | Composer config, pre-commit hook, build tooling, Interactivity API block patterns (`src/wp-content/plugins/paychex-blocks/`) |

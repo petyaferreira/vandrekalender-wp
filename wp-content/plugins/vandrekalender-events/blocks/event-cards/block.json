@@ -7,11 +7,12 @@
     "description": "Displays matching walking events as a grid of cards.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
-    "viewScript": "file:./view.js",
+    "viewScriptModule": "file:./view.js",
     "style": "file:./style-index.css",
     "render": "file:./render.php",
     "supports": {
         "html": false,
-        "align": ["wide", "full"]
+        "align": ["wide", "full"],
+        "interactivity": true
     }
 }

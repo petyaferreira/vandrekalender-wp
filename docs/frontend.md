@@ -25,6 +25,8 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 
 <!-- List of Gutenberg blocks, what each does, source location go here -->
 
+**Event Cards** (`blocks/event-cards/`) — the filterable card grid. Fully server-rendered for SEO using the Interactivity API: `render.php` queries and renders all cards (cumulative pagination via the `side` URL param, 50 per page, reusing `Vandrekalender_Event_Rest_Api::build_query_args()`), and `view.js` is a `viewScriptModule` store that re-renders by navigating with `@wordpress/interactivity-router`, which swaps the block's `data-wp-router-region`. Reacts to `vk:filters-change` from the Event Filters block (listener attached in `callbacks.init` — the directive parser rejects the colon in the event name, so `data-wp-on-document--` can't be used). Requires the `--experimental-modules` flag on `wp-scripts build`/`start`, already set in `package.json`. New interactive blocks should follow this pattern (see paychex-wp for more examples); the map and calendar blocks are older vanilla-JS fetch-based views.
+
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
 - `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.

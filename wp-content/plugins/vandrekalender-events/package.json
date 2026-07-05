@@ -6,10 +6,10 @@
     "license": "ISC",
     "scripts": {
         "build": "npm run build:blocks && npm run build:resources",
-        "build:blocks": "rm -rf build/blocks && wp-scripts build --source-path=blocks --output-path=build/blocks",
+        "build:blocks": "rm -rf build/blocks && wp-scripts build --source-path=blocks --output-path=build/blocks --experimental-modules",
         "build:resources": "rm -rf build/resources && wp-scripts build resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields",
         "start": "npm run start:blocks & npm run start:resources",
-        "start:blocks": "rm -rf build/blocks && wp-scripts start --source-path=blocks --output-path=build/blocks",
+        "start:blocks": "rm -rf build/blocks && wp-scripts start --source-path=blocks --output-path=build/blocks --experimental-modules",
         "start:resources": "rm -rf build/resources && wp-scripts start resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields"
     },
     "devDependencies": {

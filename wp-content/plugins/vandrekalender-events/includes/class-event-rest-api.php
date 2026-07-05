@@ -346,11 +346,12 @@ class Vandrekalender_Event_Rest_Api {
 	 *
 	 * Sanitises every value, so raw query-string input is safe to pass in.
 	 * The is_free filter is not handled here — it runs in PHP after the query.
+	 * Public because server renders (the Event Cards block) reuse it.
 	 *
 	 * @param array $filters Filter values keyed by REST param name.
 	 * @return array WP_Query args.
 	 */
-	private static function build_query_args( array $filters ) {
+	public static function build_query_args( array $filters ) {
 		// Default to upcoming events: with no date range at all, floor the
 		// query at today. Explicit date params — including a past range —
 		// behave exactly as given, so past events stay reachable on purpose.
@@ -413,11 +414,12 @@ class Vandrekalender_Event_Rest_Api {
 	/**
 	 * Whether an event is free, using the same rule as format_event():
 	 * free when no route records a real price, or the cheapest price is 0.
+	 * Public because server renders (the Event Cards block) reuse it.
 	 *
 	 * @param int $post_id The event post ID.
 	 * @return bool
 	 */
-	private static function is_event_free( $post_id ) {
+	public static function is_event_free( $post_id ) {
 		$routes = get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true );
 		$prices = [];
 

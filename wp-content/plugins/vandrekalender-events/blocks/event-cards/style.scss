@@ -5,7 +5,13 @@
 .vk-cards {
   margin-block: var(--wp--preset--spacing--40, 1.5rem);
 
-  &__status,
+  &.is-loading &__list,
+  &.is-loading &__more {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.12s ease;
+  }
+
   &__empty {
     color: var(--wp--preset--color--pebble, #7a7268);
     font-size: var(--wp--preset--font-size--small, 0.875rem);
