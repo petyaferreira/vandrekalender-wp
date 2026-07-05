@@ -19,9 +19,11 @@ const dateFmt = new Intl.DateTimeFormat('da-DK', {
 /**
  * Read the recognised filter params from the current URL.
  *
+ * @param {Object} presets Fixed filter values that override the URL, e.g. the
+ *                         queried term on a taxonomy archive.
  * @return {Object} Filter values keyed by REST param name.
  */
-function readFilters() {
+function readFilters(presets = {}) {
   const params = new URLSearchParams(window.location.search);
   const filters = {};
   ['region', 'length', 'is_free', 'date_from', 'date_to'].forEach(key => {
@@ -30,7 +32,7 @@ function readFilters() {
       filters[key] = value;
     }
   });
-  return filters;
+  return { ...filters, ...presets };
 }
 
 /**
@@ -112,6 +114,13 @@ function renderCard(event) {
  */
 function initCards(root) {
   const restUrl = root.dataset.restUrl;
+  const presets = {};
+  ['region', 'length'].forEach(key => {
+    const value = root.dataset[`preset${key[0].toUpperCase()}${key.slice(1)}`];
+    if (value) {
+      presets[key] = value;
+    }
+  });
   const status = root.querySelector('.vk-cards__status');
   const list = root.querySelector('.vk-cards__list');
   const more = root.querySelector('.vk-cards__more');
@@ -128,7 +137,7 @@ function initCards(root) {
   async function load(pageToLoad) {
     const current = ++requestId;
     const query = new URLSearchParams({
-      ...readFilters(),
+      ...readFilters(presets),
       page: pageToLoad,
     }).toString();
 

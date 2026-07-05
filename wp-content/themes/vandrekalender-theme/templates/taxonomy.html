@@ -1,0 +1,28 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+  <!-- wp:query-title {"type":"archive","showPrefix":false,"level":1,"style":{"typography":{"textTransform":"capitalize"}}} /-->
+  <!-- wp:term-description /-->
+
+  <!-- wp:vandrekalender/event-cards {"align":"wide"} /-->
+
+  <!-- wp:group {"style":{"spacing":{"margin":{"top":"var:preset|spacing|extra-large"}}},"layout":{"type":"constrained"}} -->
+  <div class="wp-block-group" style="margin-top:var(--wp--preset--spacing--extra-large)">
+    <!-- wp:heading {"level":2} -->
+    <h2 class="wp-block-heading">Find vandreture efter region</h2>
+    <!-- /wp:heading -->
+
+    <!-- wp:tag-cloud {"taxonomy":"event_region","smallestFontSize":"1rem","largestFontSize":"1rem"} /-->
+
+    <!-- wp:heading {"level":2} -->
+    <h2 class="wp-block-heading">Find vandreture efter længde</h2>
+    <!-- /wp:heading -->
+
+    <!-- wp:tag-cloud {"taxonomy":"event_length","smallestFontSize":"1rem","largestFontSize":"1rem"} /-->
+  </div>
+  <!-- /wp:group -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
