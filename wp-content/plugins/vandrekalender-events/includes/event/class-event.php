@@ -553,6 +553,10 @@ class Event {
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'meta_box_cb'       => false,
+				'rewrite'           => [
+					'slug'       => 'region',
+					'with_front' => false,
+				],
 			]
 		);
 	}
@@ -584,6 +588,10 @@ class Event {
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'meta_box_cb'       => false,
+				'rewrite'           => [
+					'slug'       => 'laengde',
+					'with_front' => false,
+				],
 			]
 		);
 	}
