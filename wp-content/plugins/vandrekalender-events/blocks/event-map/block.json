@@ -7,11 +7,12 @@
     "description": "A map of Denmark with a pin for each walking event. Built on Leaflet + OpenStreetMap.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
-    "viewScript": "file:./view.js",
+    "viewScriptModule": "file:./view.js",
     "style": "file:./style-index.css",
     "render": "file:./render.php",
     "supports": {
         "html": false,
-        "align": ["wide", "full"]
+        "align": ["wide", "full"],
+        "interactivity": true
     }
 }

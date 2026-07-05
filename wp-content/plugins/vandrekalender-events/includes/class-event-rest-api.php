@@ -157,8 +157,20 @@ class Vandrekalender_Event_Rest_Api {
 	 * @return WP_REST_Response
 	 */
 	public function get_events_days( WP_REST_Request $request ) {
-		$filters = $this->extract_filters( $request );
+		// Cast so an empty result serialises as {} rather than [].
+		return rest_ensure_response( (object) self::count_events_by_day( $this->extract_filters( $request ) ) );
+	}
 
+	/**
+	 * Count matching events per day.
+	 *
+	 * Shared by the /events/days endpoint and the server-rendered Event
+	 * Calendar block.
+	 *
+	 * @param array $filters Filter values keyed by REST param name.
+	 * @return array Date key (Y-m-d) => event count, sorted by date.
+	 */
+	public static function count_events_by_day( array $filters ) {
 		$args = self::build_query_args( $filters );
 
 		$args['posts_per_page'] = -1;
@@ -184,8 +196,7 @@ class Vandrekalender_Event_Rest_Api {
 		}
 		ksort( $days );
 
-		// Cast so an empty result serialises as {} rather than [].
-		return rest_ensure_response( (object) $days );
+		return $days;
 	}
 
 	/**
@@ -201,8 +212,20 @@ class Vandrekalender_Event_Rest_Api {
 	 * @return WP_REST_Response
 	 */
 	public function get_events_locations( WP_REST_Request $request ) {
-		$filters = $this->extract_filters( $request );
+		return rest_ensure_response( self::locations_payload( $this->extract_filters( $request ) ) );
+	}
 
+	/**
+	 * Build the slim map-pin payload for a set of filter values.
+	 *
+	 * Shared by the /events/locations endpoint and the server-rendered Event
+	 * Map block, which embeds the initial pins so first paint needs no fetch.
+	 *
+	 * @param array $filters Filter values keyed by REST param name.
+	 * @return array List of pin arrays (id, title, permalink, date, lat, lng,
+	 *               distances_km, price_from, is_free).
+	 */
+	public static function locations_payload( array $filters ) {
 		$args = self::build_query_args( $filters );
 
 		$args['posts_per_page'] = -1;
@@ -264,7 +287,7 @@ class Vandrekalender_Event_Rest_Api {
 			];
 		}
 
-		return rest_ensure_response( $locations );
+		return $locations;
 	}
 
 	/**

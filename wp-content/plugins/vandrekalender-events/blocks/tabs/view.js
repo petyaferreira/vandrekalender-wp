@@ -52,6 +52,11 @@ function initTabs(root) {
         i === index
       );
     });
+    // Let embedded blocks react to becoming visible — e.g. the Event Map
+    // re-measures itself, since Leaflet cannot size against a hidden panel.
+    panels[index].dispatchEvent(
+      new CustomEvent('vk:tab-shown', { bubbles: true })
+    );
   }
 
   const slugs = tabs.map(tab => slugify(tab.textContent.trim()));
