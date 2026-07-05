@@ -1,11 +1,20 @@
 /**
- * Event Map — frontend view.
+ * Event Map — frontend view module (Interactivity API).
  *
- * Lazy-loads Leaflet (and the marker-cluster plugin) from a CDN, then renders a
- * Denmark map with one pin per event that has coordinates. Pins are a single
- * brand colour. Reacts to filter changes and works inside a hidden tab
- * (re-measures itself when it becomes visible).
+ * Leaflet needs the client, so unlike the Event Cards block this one only
+ * partially server-renders: render.php embeds the map config and the initial
+ * pin payload in the block context, and this module lazy-loads Leaflet (and
+ * the marker-cluster plugin) from a CDN and drops the embedded pins — no REST
+ * request on first paint. A filter change refetches pins from the
+ * /events/locations endpoint. The map re-measures itself when it becomes
+ * visible (e.g. inside a hidden tab).
+ *
+ * The filters listener is attached in `callbacks.init` rather than a
+ * `data-wp-on-document--` directive because the directive parser rejects the
+ * colon in the event name.
  */
+
+import { store, getContext, getElement } from '@wordpress/interactivity';
 
 const LEAFLET_VERSION = '1.9.4';
 const CLUSTER_VERSION = '1.5.3';
@@ -24,6 +33,11 @@ const dateFmt = new Intl.DateTimeFormat('da-DK', {
   day: 'numeric',
   month: 'short',
 });
+
+// Leaflet instances per block wrapper, so actions (resetView) can reach the
+// map created in callbacks.init. Leaflet objects are not serialisable, so
+// they cannot live in the context itself.
+const instances = new WeakMap();
 
 /**
  * Append a stylesheet once.
@@ -96,7 +110,7 @@ async function ensureLeaflet() {
  *
  * @return {Object} Filter values keyed by REST param name.
  */
-function readFilters() {
+function readUrlFilters() {
   const params = new URLSearchParams(window.location.search);
   const filters = {};
   ['region', 'length', 'is_free', 'date_from', 'date_to'].forEach(key => {
@@ -137,156 +151,226 @@ function popupHtml(event) {
 	</div>`;
 }
 
-/**
- * Initialise one map instance.
- *
- * @param {HTMLElement} root The block wrapper element.
- */
-async function initMap(root) {
-  const canvas = root.querySelector('.vk-map__canvas');
-  const status = root.querySelector('.vk-map__status');
-  const resetBtn = root.querySelector('.vk-map__reset');
-  const restUrl = root.dataset.restUrl;
-  const center = [parseFloat(root.dataset.lat), parseFloat(root.dataset.lng)];
-  const zoom = parseInt(root.dataset.zoom, 10);
-
-  try {
-    await ensureLeaflet();
-  } catch (e) {
-    status.textContent = 'Kortet kunne ikke indlæses.';
-    return;
-  }
-
-  const L = window.L;
-  const map = L.map(canvas, { scrollWheelZoom: true }).setView(center, zoom);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
-    maxZoom: 18,
-  }).addTo(map);
-
-  const pinIcon = L.divIcon({
-    className: 'vk-map__pin-wrap',
-    html: '<span class="vk-map__pin"></span>',
-    iconSize: [22, 22],
-    iconAnchor: [11, 22],
-    popupAnchor: [0, -20],
-  });
-
-  const layer = L.markerClusterGroup ? L.markerClusterGroup() : L.layerGroup();
-  map.addLayer(layer);
-
-  let requestId = 0;
-  let lastPoints = [];
-
-  function fitToPoints() {
-    if (lastPoints.length) {
-      map.fitBounds(lastPoints, { padding: [30, 30], maxZoom: 11 });
-    } else {
-      map.setView(center, zoom);
-    }
-  }
-
-  function resetView() {
-    map.setView(center, zoom);
-  }
-  resetBtn.addEventListener('click', resetView);
-
-  async function load() {
-    const current = ++requestId;
-    const query = new URLSearchParams(readFilters()).toString();
-    status.hidden = false;
-    status.textContent = 'Indlæser kort…';
-
-    try {
-      // The slim locations endpoint returns every matching pin in one
-      // response (no pagination) without the heavy description payloads.
-      const response = await fetch(
-        `${restUrl}/locations${query ? `?${query}` : ''}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+store('vandrekalender/event-map', {
+  actions: {
+    resetView() {
+      const ctx = getContext();
+      const { ref } = getElement();
+      const instance = instances.get(ref.closest('.vk-map'));
+      if (instance) {
+        instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
       }
-      const events = await response.json();
-      if (current !== requestId) {
-        return;
-      }
+    },
+  },
+  callbacks: {
+    init() {
+      const ctx = getContext();
+      const { ref: root } = getElement();
+      const canvas = root.querySelector('.vk-map__canvas');
 
-      layer.clearLayers();
-      const points = [];
-      (Array.isArray(events) ? events : []).forEach(event => {
-        if (
-          event.lat == null ||
-          event.lng == null ||
-          (event.lat === 0 && event.lng === 0)
-        ) {
+      let instance = null;
+      let pendingReload = false;
+      let cancelled = false;
+      let needsFit = false;
+      let requestId = 0;
+
+      const setStatus = text => {
+        ctx.statusText = text || '';
+        ctx.statusHidden = !text;
+      };
+
+      const readFilters = () => ({ ...readUrlFilters(), ...ctx.presets });
+
+      function fitToPoints() {
+        // Bounds computed against a hidden (zero-size) map would be wrong;
+        // remember to re-fit when the map becomes visible instead.
+        if (canvas.offsetWidth === 0) {
+          needsFit = true;
           return;
         }
-        const marker = L.marker([event.lat, event.lng], { icon: pinIcon });
-        marker.bindPopup(popupHtml(event), { closeButton: false });
+        needsFit = false;
+        if (instance.lastPoints.length) {
+          instance.map.fitBounds(instance.lastPoints, {
+            padding: [30, 30],
+            maxZoom: 11,
+          });
+        } else {
+          instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
+        }
+      }
 
-        let closeTimer;
-        const cancelClose = () => clearTimeout(closeTimer);
-        const scheduleClose = () => {
-          closeTimer = setTimeout(() => marker.closePopup(), 200);
-        };
+      function renderPins(events) {
+        const L = window.L;
+        instance.layer.clearLayers();
+        const points = [];
+        (Array.isArray(events) ? events : []).forEach(event => {
+          if (
+            event.lat == null ||
+            event.lng == null ||
+            (event.lat === 0 && event.lng === 0)
+          ) {
+            return;
+          }
+          const marker = L.marker([event.lat, event.lng], {
+            icon: instance.pinIcon,
+          });
+          marker.bindPopup(popupHtml(event), { closeButton: false });
 
-        marker.on('mouseover', function () {
-          cancelClose();
-          this.openPopup();
+          let closeTimer;
+          const cancelClose = () => clearTimeout(closeTimer);
+          const scheduleClose = () => {
+            closeTimer = setTimeout(() => marker.closePopup(), 200);
+          };
+
+          marker.on('mouseover', function () {
+            cancelClose();
+            this.openPopup();
+          });
+          marker.on('mouseout', scheduleClose);
+
+          marker.on('popupopen', function () {
+            const popupEl = this.getPopup().getElement();
+            popupEl.addEventListener('mouseenter', cancelClose);
+            popupEl.addEventListener('mouseleave', scheduleClose);
+          });
+
+          instance.layer.addLayer(marker);
+          points.push([event.lat, event.lng]);
         });
-        marker.on('mouseout', scheduleClose);
 
-        marker.on('popupopen', function () {
-          const popupEl = this.getPopup().getElement();
-          popupEl.addEventListener('mouseenter', cancelClose);
-          popupEl.addEventListener('mouseleave', scheduleClose);
+        instance.lastPoints = points;
+        ctx.resetHidden = false;
+
+        if (points.length) {
+          setStatus('');
+          fitToPoints();
+        } else {
+          instance.map.setView([ctx.lat, ctx.lng], ctx.zoom);
+          setStatus('Ingen vandreture med placering matcher dine filtre.');
+        }
+      }
+
+      async function load() {
+        const current = ++requestId;
+        setStatus('Indlæser kort…');
+
+        try {
+          const query = new URLSearchParams(readFilters()).toString();
+          const response = await fetch(
+            `${ctx.restUrl}${query ? `?${query}` : ''}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const events = await response.json();
+          if (current !== requestId || cancelled) {
+            return;
+          }
+          renderPins(events);
+        } catch (err) {
+          if (current !== requestId || cancelled) {
+            return;
+          }
+          setStatus('Kunne ikke indlæse kortet. Prøv igen.');
+        }
+      }
+
+      const onFiltersChange = () => {
+        if (instance) {
+          load();
+        } else {
+          // Leaflet is still loading; render fresh pins once it is ready
+          // instead of the (now stale) server-embedded ones.
+          pendingReload = true;
+        }
+      };
+      document.addEventListener('vk:filters-change', onFiltersChange);
+
+      // Re-measure when the map becomes visible. Leaflet initialised inside a
+      // hidden tab has zero size, so on the Tabs block's `vk:tab-shown` event
+      // the map re-measures and runs any fit that was deferred while it was
+      // hidden. A ResizeObserver covers non-tab layout changes the same way.
+      const remeasure = () => {
+        if (!instance || canvas.offsetWidth === 0) {
+          return;
+        }
+        instance.map.invalidateSize();
+        if (needsFit) {
+          fitToPoints();
+        }
+      };
+      document.addEventListener('vk:tab-shown', remeasure);
+      const observer =
+        'ResizeObserver' in window
+          ? new ResizeObserver(() => {
+              if (needsFit) {
+                remeasure();
+              }
+            })
+          : null;
+      if (observer) {
+        observer.observe(canvas);
+      }
+
+      (async () => {
+        try {
+          await ensureLeaflet();
+        } catch (e) {
+          setStatus('Kortet kunne ikke indlæses.');
+          return;
+        }
+        if (cancelled) {
+          return;
+        }
+
+        const L = window.L;
+        const map = L.map(canvas, { scrollWheelZoom: true }).setView(
+          [ctx.lat, ctx.lng],
+          ctx.zoom
+        );
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+          maxZoom: 18,
+        }).addTo(map);
+
+        const pinIcon = L.divIcon({
+          className: 'vk-map__pin-wrap',
+          html: '<span class="vk-map__pin"></span>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 22],
+          popupAnchor: [0, -20],
         });
 
-        layer.addLayer(marker);
-        points.push([event.lat, event.lng]);
-      });
+        const layer = L.markerClusterGroup
+          ? L.markerClusterGroup()
+          : L.layerGroup();
+        map.addLayer(layer);
 
-      lastPoints = points;
-      status.hidden = true;
-      resetBtn.hidden = false;
+        instance = { map, layer, pinIcon, lastPoints: [] };
+        instances.set(root, instance);
 
-      if (points.length) {
-        fitToPoints();
-      } else {
-        resetView();
-        status.hidden = false;
-        status.textContent =
-          'Ingen vandreture med placering matcher dine filtre.';
-      }
-    } catch (err) {
-      if (current !== requestId) {
-        return;
-      }
-      status.hidden = false;
-      status.textContent = 'Kunne ikke indlæse kortet. Prøv igen.';
-    }
-  }
+        if (pendingReload) {
+          load();
+        } else {
+          renderPins(ctx.locations);
+        }
+      })();
 
-  // Re-measure when the map becomes visible (e.g. when its tab is opened).
-  // The first time it gets real size, re-fit, because bounds computed while
-  // the container was hidden (zero-size) would be wrong.
-  if ('ResizeObserver' in window) {
-    let sized = false;
-    const observer = new ResizeObserver(() => {
-      if (canvas.offsetWidth > 0 && !sized) {
-        sized = true;
-        map.invalidateSize();
-        fitToPoints();
-      }
-    });
-    observer.observe(canvas);
-  }
-
-  document.addEventListener('vk:filters-change', load);
-  load();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.vk-map').forEach(root => initMap(root));
+      return () => {
+        cancelled = true;
+        requestId++;
+        document.removeEventListener('vk:filters-change', onFiltersChange);
+        document.removeEventListener('vk:tab-shown', remeasure);
+        if (observer) {
+          observer.disconnect();
+        }
+        if (instance) {
+          instance.map.remove();
+          instance = null;
+        }
+        instances.delete(root);
+      };
+    },
+  },
 });

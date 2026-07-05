@@ -10,12 +10,11 @@
     overflow-x: auto;
   }
 
-  &__status,
-  &__error {
-    color: var(--wp--preset--color--pebble, #7a7268);
-    font-size: var(--wp--preset--font-size--small, 0.875rem);
-    margin: 0;
-    padding-block: 1rem;
+  &.is-loading &__grid,
+  &.is-loading &__day-events {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.12s ease;
   }
 
   &--editor {
