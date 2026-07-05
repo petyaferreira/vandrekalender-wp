@@ -3,7 +3,7 @@
  * Server render for the Event Filters block.
  *
  * Renders the filter controls. Region options come from the event_region
- * taxonomy; length options are the fixed short/medium/long buckets. The view
+ * taxonomy; length options are the fixed kort/mellem/lang buckets. The view
  * script reads the controls, writes them to the URL query string, and tells the
  * calendar block to re-fetch.
  *
@@ -21,9 +21,9 @@ $vk_regions = get_terms(
 $vk_regions = is_wp_error( $vk_regions ) ? [] : $vk_regions;
 
 $vk_lengths = [
-	'short'  => __( 'Kort (0–10 km)', 'vandrekalender-events' ),
-	'medium' => __( 'Mellem (10–25 km)', 'vandrekalender-events' ),
-	'long'   => __( 'Lang (25+ km)', 'vandrekalender-events' ),
+	'kort'   => __( 'Kort (0–10 km)', 'vandrekalender-events' ),
+	'mellem' => __( 'Mellem (10–25 km)', 'vandrekalender-events' ),
+	'lang'   => __( 'Lang (25+ km)', 'vandrekalender-events' ),
 ];
 ?>
 <form <?php echo get_block_wrapper_attributes( [ 'class' => 'vk-filters' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>

@@ -378,11 +378,11 @@ class Event {
 			$km = isset( $route['distance_km'] ) ? (float) $route['distance_km'] : 0;
 
 			if ( $km > 0 && $km <= 10 ) {
-				$terms[] = 'short';
+				$terms[] = 'kort';
 			} elseif ( $km > 10 && $km <= 25 ) {
-				$terms[] = 'medium';
+				$terms[] = 'mellem';
 			} elseif ( $km > 25 ) {
-				$terms[] = 'long';
+				$terms[] = 'lang';
 			}
 		}
 
@@ -562,7 +562,7 @@ class Event {
 	}
 
 	/**
-	 * Register the length taxonomy (short / medium / long).
+	 * Register the length taxonomy (kort / mellem / lang).
 	 * Terms are auto-assigned on save — not manually editable.
 	 *
 	 * @return void
