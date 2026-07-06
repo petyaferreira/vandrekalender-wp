@@ -1,6 +1,7 @@
 // Theme frontend styles
 // Design tokens are defined in theme.json; use CSS custom properties here.
 @use 'blocks/circle-badge';
+@use 'fluent-forms';
 
 *,
 *::before,

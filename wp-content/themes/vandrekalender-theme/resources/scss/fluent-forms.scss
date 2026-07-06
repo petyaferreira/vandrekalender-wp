@@ -1,0 +1,25 @@
+// Fluent Forms overrides — plugin ships its own styles, so !important where needed.
+.fluentform {
+  .ff-el-form-control {
+    background-color: var(--wp--preset--color--cream);
+
+    &:focus {
+      background-color: var(--wp--preset--color--cream);
+    }
+  }
+
+  .ff-btn-submit {
+    background-color: var(--wp--preset--color--forest) !important;
+    color: var(--wp--preset--color--white) !important;
+    border: none !important;
+    transition: filter 0.15s ease;
+
+    &:hover {
+      filter: brightness(1.08) !important;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
