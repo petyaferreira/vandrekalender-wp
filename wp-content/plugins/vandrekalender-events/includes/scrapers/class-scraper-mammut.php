@@ -48,6 +48,8 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 				continue;
 			}
 
+			$this->mark_source_url_seen( $url );
+
 			$page = $this->remote_get( $url );
 			if ( '' === $page ) {
 				continue;

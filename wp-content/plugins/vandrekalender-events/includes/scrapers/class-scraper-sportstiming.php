@@ -89,6 +89,7 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 				continue;
 			}
 			$seen[ $source_url ] = true;
+			$this->mark_source_url_seen( $source_url );
 
 			$event = $this->build_event( $page_url, $source_url, (string) ( $item['Name'] ?? '' ), $date );
 			if ( null !== $event ) {

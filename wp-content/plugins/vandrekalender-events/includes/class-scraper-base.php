@@ -10,6 +10,13 @@ defined( 'ABSPATH' ) || exit;
 abstract class Vandrekalender_Scraper_Base {
 
 	/**
+	 * Source URLs seen at the source during the current run, keyed by URL.
+	 *
+	 * @var array
+	 */
+	protected array $seen_source_urls = [];
+
+	/**
 	 * Fetch raw HTML from the event source.
 	 *
 	 * @return string Raw HTML body.
@@ -30,17 +37,100 @@ abstract class Vandrekalender_Scraper_Base {
 	 * @return int Number of events created or updated.
 	 */
 	public function run(): int {
+		$this->seen_source_urls = [];
+
 		$html   = $this->fetch();
 		$events = $this->parse( $html );
 		$count  = 0;
 
 		foreach ( $events as $event ) {
+			$this->mark_source_url_seen( (string) ( $event[ \Vandrekalender\Event::META_SOURCE_URL ] ?? '' ) );
 			if ( $this->upsert_event( $event ) ) {
 				++$count;
 			}
 		}
 
+		$this->unpublish_stale_events();
+
 		return $count;
+	}
+
+	/**
+	 * Record a source URL as still present at the source during this run.
+	 *
+	 * Scrapers should call this for every URL they find in the listing,
+	 * before fetching the detail page, so that a temporarily unreachable
+	 * detail page is not mistaken for a removed event.
+	 *
+	 * @param string $url Source URL.
+	 * @return void
+	 */
+	protected function mark_source_url_seen( string $url ): void {
+		if ( '' !== $url ) {
+			$this->seen_source_urls[ $url ] = true;
+		}
+	}
+
+	/**
+	 * Draft published events that have disappeared from the source.
+	 *
+	 * Every scraper's listing covers all upcoming events at its source, so an
+	 * upcoming event whose source URL was not seen in the current run has
+	 * been cancelled or removed. Such events are drafted rather than deleted:
+	 * the source-URL dedup in upsert_event() matches drafts, so a re-listed
+	 * event is republished by the next run instead of duplicated.
+	 *
+	 * Past events are left alone — they drop out of "upcoming" listings
+	 * naturally — and claimed events stay under organiser control. If the run
+	 * saw no URLs at all (failed fetch or empty listing), nothing is drafted.
+	 *
+	 * @return void
+	 */
+	protected function unpublish_stale_events(): void {
+		if ( empty( $this->seen_source_urls ) || ! defined( static::class . '::SOURCE_NAME' ) ) {
+			return;
+		}
+
+		$candidates = get_posts(
+			[
+				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'   => \Vandrekalender\Event::META_SOURCE_NAME,
+						'value' => (string) constant( static::class . '::SOURCE_NAME' ),
+					],
+					[
+						'key'   => \Vandrekalender\Event::META_SOURCE,
+						'value' => 'scraped',
+					],
+					[
+						'key'     => \Vandrekalender\Event::META_DATE,
+						'value'   => current_time( 'Y-m-d' ),
+						'compare' => '>=',
+					],
+				],
+			]
+		);
+
+		foreach ( $candidates as $post_id ) {
+			$url = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_URL, true );
+			if ( isset( $this->seen_source_urls[ $url ] ) ) {
+				continue;
+			}
+			if ( get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+				continue;
+			}
+
+			wp_update_post(
+				[
+					'ID'          => $post_id,
+					'post_status' => 'draft',
+				]
+			);
+		}
 	}
 
 	/**

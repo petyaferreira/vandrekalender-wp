@@ -158,8 +158,9 @@ This section describes the code that exists today.
 
 The base class then provides:
 
-- `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated.
+- `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated. Afterwards it drafts stale events — see Removal below.
 - `upsert_event( array $event ): bool` — see Deduplication below.
+- `mark_source_url_seen( string $url ): void` — scrapers call this for every URL found in the source's listing, *before* fetching the detail page, so a temporarily unreachable detail page is not mistaken for a removed event. `run()` also marks the source URL of every parsed event automatically.
 
 > **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
 
@@ -172,7 +173,7 @@ The base class then provides:
 1. Create `includes/scrapers/class-scraper-{source}.php`.
 2. Extend `Vandrekalender_Scraper_Base`.
 3. Implement `fetch()` — usually `return $this->remote_get( self::SOURCE_URL );`.
-4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key).
+4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
 5. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
 
 ### Deduplication
@@ -184,6 +185,15 @@ The base class then provides:
 - Otherwise it updates the existing post, or inserts a new one published immediately.
 - Reserved keys (`post_title`, `post_content`, `post_status`, `post_type`, `ID`) become post fields; every other key is written as post meta.
 - After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`.
+
+### Removal (events cancelled at the source)
+
+Every scraper's listing covers **all upcoming events** at its source, so after each run the base class (`unpublish_stale_events()`) moves to **draft** any published event of that source whose URL was not seen during the run — it was cancelled or removed at the source. Guard rails:
+
+- **Past events are never touched** — they drop out of "upcoming" listings naturally, and drafting them would erase the archive. Only events with `event_date` >= today are candidates.
+- **Claimed events are never touched** — the organiser is the source of truth.
+- **A failed or empty fetch drafts nothing** — if the run saw no URLs at all, the source is assumed unreachable rather than empty.
+- **Draft, not delete**: the source-URL dedup matches drafts, so if the source re-lists the event (or the feed had a one-day glitch), the next run republishes the same post instead of creating a duplicate.
 
 All meta keys use the **canonical, no-underscore schema keys** registered in `class-event.php` (`Vandrekalender\Event::META_*`) — the same keys the REST API and frontend read. A scraped event surfaces through exactly the same path as a manually created one. Writing `event_routes` and `event_municipality` also triggers the derive-on-save hooks, so `event_length` and `event_region` taxonomies are assigned automatically.
 

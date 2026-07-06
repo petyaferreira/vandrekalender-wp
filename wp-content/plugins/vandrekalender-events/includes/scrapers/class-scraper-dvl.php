@@ -66,6 +66,7 @@ class Vandrekalender_Scraper_DVL extends Vandrekalender_Scraper_Base {
 				continue;
 			}
 			$seen[ $url ] = true;
+			$this->mark_source_url_seen( $url );
 
 			$page = $this->remote_get( $url );
 			if ( '' === $page ) {
