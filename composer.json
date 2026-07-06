@@ -42,7 +42,8 @@
         "wpackagist-theme/twentytwentyfive": "^1.0",
         "wpackagist-plugin/safe-svg": "^2.4",
         "djuric/responsive-block-controls": "^1.2",
-        "wpackagist-plugin/seo-by-rank-math": "^1.0"
+        "wpackagist-plugin/seo-by-rank-math": "^1.0",
+        "wpackagist-plugin/fluentform": "^6.2"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.1",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc5187d197343a68de91a9b0766cc1c4",
+    "content-hash": "f99802e7a79ac039e6bfc9f1e6f55e24",
     "packages": [
         {
             "name": "composer/installers",
@@ -190,6 +190,24 @@
                 "issues": "https://github.com/djuric/responsive-block-controls/issues"
             },
             "time": "2025-11-20T10:40:23+00:00"
+        },
+        {
+            "name": "wpackagist-plugin/fluentform",
+            "version": "6.2.5",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/fluentform/",
+                "reference": "tags/6.2.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.5.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/fluentform/"
         },
         {
             "name": "wpackagist-plugin/safe-svg",
