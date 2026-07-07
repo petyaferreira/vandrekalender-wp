@@ -365,6 +365,11 @@
             "name": "page-without-gaps",
             "title": "Page (no gaps)",
             "postTypes": ["page"]
+        },
+        {
+            "name": "page-spaced-no-title",
+            "title": "Page (spaced, no title)",
+            "postTypes": ["page"]
         }
     ],
     "templateParts": [
