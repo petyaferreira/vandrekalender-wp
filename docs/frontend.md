@@ -44,7 +44,17 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 
 ## Page Templates
 
-<!-- FSE templates: front-page, calendar page, single event, etc. go here -->
+All page templates share one skeleton — header part → `<main>` → footer part — and are **top-flush**: `<main>` sets `margin-top:0`, so the first content block sits directly under the header. Gaps between sections come from the root `blockGap` (`medium`) in theme.json; templates only ever *remove* structural spacing, never add it (the one exception: the with-title template adds a `medium` top padding above the title).
+
+| Template | Use case |
+|---|---|
+| `page.html` (default) | Pages without a rendered title. Also the hero template: make the first content block a full-width Cover and it sits flush against the header. |
+| `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
+| `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
+| `single-event.html` | Single event view. |
+| `index.html`, `taxonomy.html` | Archive fallbacks. |
+
+There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
 
 ---
 

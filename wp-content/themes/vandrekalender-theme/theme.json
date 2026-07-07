@@ -363,7 +363,7 @@
         },
         {
             "name": "page-without-gaps",
-            "title": "Page without gaps",
+            "title": "Page (no gaps)",
             "postTypes": ["page"]
         }
     ],
