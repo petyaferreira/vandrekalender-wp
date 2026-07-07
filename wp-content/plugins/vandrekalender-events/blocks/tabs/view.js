@@ -72,6 +72,9 @@ function initTabs(root) {
   const index = slugs.indexOf(hash);
   if (index !== -1) {
     activate(index);
+    // The hash matches a tab label, not a real element id, so the browser
+    // has nothing to scroll to on its own — bring the tabs into view.
+    root.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
