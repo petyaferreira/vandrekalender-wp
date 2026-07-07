@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f99802e7a79ac039e6bfc9f1e6f55e24",
+    "content-hash": "3409a7f6218d6c3c2cd0c17bb6e28cdb",
     "packages": [
         {
             "name": "composer/installers",
@@ -208,6 +208,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/fluentform/"
+        },
+        {
+            "name": "wpackagist-plugin/icon-block",
+            "version": "2.0.0",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/icon-block/",
+                "reference": "tags/2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/icon-block.2.0.0.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/icon-block/"
         },
         {
             "name": "wpackagist-plugin/safe-svg",
