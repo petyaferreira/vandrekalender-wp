@@ -1,0 +1,35 @@
+// Neutralise the theme's global link styles (styles.elements.link in
+// theme.json), which target every `a` tag. The a.class selectors are needed
+// to out-rank the theme's `a:where(...):hover` rule.
+a.wp-block-vandrekalender-link-box,
+a.wp-block-vandrekalender-link-box:hover,
+a.wp-block-vandrekalender-link-box:focus,
+a.wp-block-vandrekalender-link-box:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wp-block-vandrekalender-link-box {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  // !important is required to beat the theme's preset color classes and
+  // inline styles from the color supports panel, which both win otherwise.
+  // The `*` variants force the color onto inner elements that have their own
+  // text color set, which would otherwise beat the inherited wrapper color.
+  &.has-hover-text:hover,
+  &.has-hover-text:hover *,
+  &.has-hover-text:focus-visible,
+  &.has-hover-text:focus-visible * {
+    color: var(--link-box-hover-text) !important;
+  }
+
+  &.has-hover-background:hover,
+  &.has-hover-background:focus-visible {
+    background-color: var(--link-box-hover-bg) !important;
+  }
+}

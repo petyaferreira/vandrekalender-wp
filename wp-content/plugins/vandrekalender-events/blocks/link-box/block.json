@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/link-box",
+    "version": "1.0.0",
+    "title": "Link Box",
+    "category": "design",
+    "icon": "admin-links",
+    "description": "A container that turns all of its content into a single link. Don't place other links or buttons inside it.",
+    "example": {},
+    "attributes": {
+        "url": {
+            "type": "string",
+            "default": ""
+        },
+        "opensInNewTab": {
+            "type": "boolean",
+            "default": false
+        },
+        "hoverTextColor": {
+            "type": "string",
+            "default": ""
+        },
+        "hoverBackgroundColor": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true
+        }
+    },
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php"
+}

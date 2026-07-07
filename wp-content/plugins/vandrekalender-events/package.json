@@ -13,6 +13,7 @@
         "start:resources": "rm -rf build/resources && wp-scripts start resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields"
     },
     "devDependencies": {
+        "@wordpress/icons": "^15.1.0",
         "@wordpress/scripts": "^30.0.0"
     }
 }
