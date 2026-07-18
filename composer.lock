@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3409a7f6218d6c3c2cd0c17bb6e28cdb",
+    "content-hash": "8d0e93a4cef510e749dacbed324fa8f1",
     "packages": [
         {
             "name": "composer/installers",
@@ -190,6 +190,24 @@
                 "issues": "https://github.com/djuric/responsive-block-controls/issues"
             },
             "time": "2025-11-20T10:40:23+00:00"
+        },
+        {
+            "name": "wpackagist-plugin/fluent-smtp",
+            "version": "2.2.95",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/fluent-smtp/",
+                "reference": "tags/2.2.95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/fluent-smtp.2.2.95.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/fluent-smtp/"
         },
         {
             "name": "wpackagist-plugin/fluentform",
