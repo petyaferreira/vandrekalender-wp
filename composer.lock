@@ -193,15 +193,15 @@
         },
         {
             "name": "wpackagist-plugin/fluentform",
-            "version": "6.2.5",
+            "version": "6.2.7",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluentform/",
-                "reference": "tags/6.2.5"
+                "reference": "tags/6.2.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.5.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.7.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -247,15 +247,15 @@
         },
         {
             "name": "wpackagist-plugin/seo-by-rank-math",
-            "version": "1.0.273",
+            "version": "1.0.274.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/seo-by-rank-math/",
-                "reference": "tags/1.0.273"
+                "reference": "tags/1.0.274.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.273.zip"
+                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.274.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
