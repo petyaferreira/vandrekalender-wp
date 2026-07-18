@@ -186,18 +186,33 @@ The base class then provides:
 - Reserved keys (`post_title`, `post_content`, `post_status`, `post_type`, `ID`) become post fields; every other key is written as post meta.
 - After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`.
 
+### Recurring events (duplicate titles)
+
+Some sources (DVL) publish a **separate page per occurrence** of a recurring walk — same title, same description, different date and URL. Each occurrence legitimately becomes its own event post (the calendar and filters need one post per date), but identical titles produce near-identical public pages that Google flags as duplicate content.
+
+`upsert_event()` therefore disambiguates titles (`disambiguate_title()`): if another event post already uses the exact same title, the new occurrence's title gets the localised event date appended — `Motionstur fra Hareskov St. – 23. juli 2026` — which also makes the slug WordPress derives from it unique. The **first** occurrence keeps the clean title and URL; only subsequent twins are suffixed. The check runs on every upsert (excluding the post itself), so re-scraping an occurrence keeps its dated title stable.
+
 ### Removal (events cancelled at the source)
 
 Every scraper's listing covers **all upcoming events** at its source, so after each run the base class (`unpublish_stale_events()`) moves to **draft** any published event of that source whose URL was not seen during the run — it was cancelled or removed at the source. Guard rails:
 
-- **Past events are never touched** — they drop out of "upcoming" listings naturally, and drafting them would erase the archive. Only events with `event_date` >= today are candidates.
+- **Past events are never touched by this sweep** — they drop out of "upcoming" listings naturally. Only events with `event_date` >= today are candidates. (Past scraped events are drafted separately, a week after their date — see Past-events cleanup below.)
 - **Claimed events are never touched** — the organiser is the source of truth.
 - **A failed or empty fetch drafts nothing** — if the run saw no URLs at all, the source is assumed unreachable rather than empty.
 - **Draft, not delete**: the source-URL dedup matches drafts, so if the source re-lists the event (or the feed had a one-day glitch), the next run republishes the same post instead of creating a duplicate.
 
 All meta keys use the **canonical, no-underscore schema keys** registered in `class-event.php` (`Vandrekalender\Event::META_*`) — the same keys the REST API and frontend read. A scraped event surfaces through exactly the same path as a manually created one. Writing `event_routes` and `event_municipality` also triggers the derive-on-save hooks, so `event_length` and `event_region` taxonomies are assigned automatically.
 
-**To build for v1:** archive past events — set events whose `event_date` has passed to an archived status on each run, so the calendar self-cleans. Tombstones (not re-creating admin-deleted events) are deferred to v2.
+### Past-events cleanup
+
+After the scrapers run, `Vandrekalender_Scraper_Scheduler::cleanup_past_events()` moves to **draft** every published **scraped, unclaimed** event whose `event_date` is more than **7 days** past. Recurring sources publish a fresh page per occurrence, so without this sweep past occurrences accumulate forever as near-identical public pages (reported by Google Search Console as "Duplicate, Google chose different canonical than user"). Guard rails:
+
+- **Manually created and Facebook-imported events are never touched** — only `event_source = 'scraped'`.
+- **Claimed events are never touched** — the organiser is the source of truth.
+- The week's grace keeps just-finished events visible while still relevant.
+- The sweep is logged as its own row (`Cleanup (past events)`) in the Scraper Log.
+
+Tombstones (not re-creating admin-deleted events) are deferred to v2.
 
 > Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim-flow milestone.
 

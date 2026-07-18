@@ -171,10 +171,16 @@ abstract class Vandrekalender_Scraper_Base {
 
 		$author_id = $this->get_scraper_author_id();
 
+		$title = $this->disambiguate_title(
+			sanitize_text_field( $event['post_title'] ?? '' ),
+			(string) ( $event[ \Vandrekalender\Event::META_DATE ] ?? '' ),
+			$existing ? (int) $existing[0]->ID : 0
+		);
+
 		$post_data = [
 			'post_type'    => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'  => 'publish',
-			'post_title'   => sanitize_text_field( $event['post_title'] ?? '' ),
+			'post_title'   => $title,
 			'post_content' => wp_kses_post( $event['post_content'] ?? '' ),
 			'post_excerpt' => sanitize_textarea_field( $event['post_excerpt'] ?? '' ),
 		];
@@ -224,6 +230,50 @@ abstract class Vandrekalender_Scraper_Base {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Append the event date to the title when another event already uses it.
+	 *
+	 * Sources like DVL publish recurring walks as one page per occurrence,
+	 * with identical titles and descriptions. Left as-is, each occurrence
+	 * becomes a near-identical public page that Google reports as duplicate
+	 * content. Appending the date — "Motionstur fra Hareskov St. – 23. juli
+	 * 2026" — makes the title, and the slug WordPress derives from it for new
+	 * posts, unique per occurrence. Only occurrences after the first are
+	 * suffixed, so events with unique titles keep their clean URLs.
+	 *
+	 * @param string $title   Scraped event title.
+	 * @param string $date    Event date (Y-m-d), may be empty.
+	 * @param int    $self_id Existing post ID for this source URL, or 0.
+	 * @return string Title, possibly suffixed with the localised date.
+	 */
+	protected function disambiguate_title( string $title, string $date, int $self_id ): string {
+		if ( '' === $title || '' === $date ) {
+			return $title;
+		}
+
+		$timestamp = strtotime( $date );
+		if ( false === $timestamp ) {
+			return $title;
+		}
+
+		$twins = get_posts(
+			[
+				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+				'post_status'    => [ 'publish', 'draft', 'future', 'pending' ],
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'title'          => $title,
+				'exclude'        => $self_id > 0 ? [ $self_id ] : [],
+			]
+		);
+
+		if ( empty( $twins ) ) {
+			return $title;
+		}
+
+		return $title . ' – ' . date_i18n( 'j. F Y', $timestamp );
 	}
 
 	/**
