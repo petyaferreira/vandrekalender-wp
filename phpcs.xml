@@ -11,6 +11,24 @@
         </properties>
     </rule>
 
+    <!-- Custom event capabilities registered in Vandrekalender_Roles -->
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="edit_events"/>
+                <element value="edit_others_events"/>
+                <element value="edit_private_events"/>
+                <element value="edit_published_events"/>
+                <element value="publish_events"/>
+                <element value="read_private_events"/>
+                <element value="delete_events"/>
+                <element value="delete_others_events"/>
+                <element value="delete_private_events"/>
+                <element value="delete_published_events"/>
+            </property>
+        </properties>
+    </rule>
+
     <!-- Allow short array syntax -->
     <rule ref="Universal.Arrays.DisallowShortArraySyntax.Found">
         <severity>0</severity>

@@ -13,6 +13,22 @@ body {
   margin: 0;
 }
 
+// Login/out link in the header, styled as an outline pill button. The core
+// loginout block renders a plain link that switches between "Log in" and
+// "Log out" with the user's session state.
+.header-login-button a {
+  display: inline-block;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  padding: 0.5em 1.5em;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
 // On dark/coloured backgrounds that explicitly set white text, links should
 // inherit white rather than the global fjord link colour.
 .has-white-color.has-text-color a,

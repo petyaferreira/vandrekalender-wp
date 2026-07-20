@@ -84,7 +84,7 @@ class Event {
 		register_post_type(
 			self::CUSTOMPOSTTYPE,
 			[
-				'labels'        => [
+				'labels'          => [
 					'name'               => __( 'Events', 'vandrekalender-events' ),
 					'singular_name'      => __( 'Event', 'vandrekalender-events' ),
 					'menu_name'          => __( 'Events', 'vandrekalender-events' ),
@@ -99,16 +99,21 @@ class Event {
 					'not_found_in_trash' => __( 'No events found in trash.', 'vandrekalender-events' ),
 				],
 				// 'custom-fields' enables the meta box panel in the editor.
-				'supports'      => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
-				'public'        => true,
-				'show_in_rest'  => true,
-				'has_archive'   => true,
-				'rewrite'       => [
+				'supports'        => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
+				// Own capability set (edit_events, publish_events, …) so the
+				// event_organizer role can work with events without gaining
+				// access to regular posts. Granted in Vandrekalender_Roles.
+				'capability_type' => [ 'event', 'events' ],
+				'map_meta_cap'    => true,
+				'public'          => true,
+				'show_in_rest'    => true,
+				'has_archive'     => true,
+				'rewrite'         => [
 					'slug'       => 'begivenhed',
 					'with_front' => false,
 				],
-				'menu_icon'     => 'dashicons-location-alt',
-				'menu_position' => 5,
+				'menu_icon'       => 'dashicons-location-alt',
+				'menu_position'   => 5,
 			]
 		);
 	}
