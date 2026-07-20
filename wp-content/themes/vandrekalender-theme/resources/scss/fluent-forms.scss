@@ -8,6 +8,12 @@
     }
   }
 
+  // Accessible tap targets: 44px minimum for inputs and the submit button.
+  .ff-el-form-control,
+  .ff-btn-submit {
+    min-height: 44px;
+  }
+
   .ff-btn-submit {
     background-color: var(--wp--preset--color--forest) !important;
     color: var(--wp--preset--color--white) !important;

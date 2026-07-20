@@ -100,6 +100,12 @@
       color: var(--wp--preset--color--pebble, #7a7268);
     }
 
+    .vk-info-card__directions {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; // accessible tap target
+    }
+
     a {
       display: inline-block;
       margin-top: var(--wp--preset--spacing--small, 0.75rem);

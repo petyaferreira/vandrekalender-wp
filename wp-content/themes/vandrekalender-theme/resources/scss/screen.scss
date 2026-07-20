@@ -17,7 +17,9 @@ body {
 // loginout block renders a plain link that switches between "Log in" and
 // "Log out" with the user's session state.
 .header-login-button a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; // accessible tap target, matches the nav links
   border: 1px solid currentColor;
   border-radius: 9999px;
   padding: 0.5em 1.5em;
@@ -27,6 +29,55 @@ body {
   &:hover {
     background-color: rgba(255, 255, 255, 0.15);
   }
+}
+
+// Collapse the navigation into the burger overlay below 960px. WordPress
+// hardcodes the switch at 600px with no setting to change it, so between
+// 600px and 959px we hide the expanded menu and show the burger button that
+// core only shows below 600px. The open overlay (.is-menu-open) is untouched.
+@media (min-width: 600px) and (max-width: 959.98px) {
+  .wp-block-navigation__responsive-container:not(.hidden-by-default):not(
+      .is-menu-open
+    ) {
+    display: none;
+  }
+
+  .wp-block-navigation__responsive-container-open:not(.always-shown) {
+    display: flex;
+  }
+}
+
+// While the navigation is collapsed into the burger (below 960px), show the
+// login/out button to the LEFT of the burger icon. The two blocks are
+// siblings in the same flex row, so flex order swaps them visually without
+// touching the markup.
+@media (max-width: 959.98px) {
+  .header-login-button {
+    order: -1;
+  }
+}
+
+// Accessible tap targets for navigation links. WCAG 2.2 AA (2.5.8) requires
+// at least 24x24 CSS px; 44x44 is the commonly recommended comfortable size.
+// Navigation links render as bare inline text links, so guarantee the target
+// height on the anchor itself with min-height — unlike em-based padding this
+// holds no matter what font size a menu uses. Applies to the horizontal
+// menu, submenus, and the mobile overlay alike.
+.wp-block-navigation .wp-block-navigation-item__content {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+// The burger open/close toggles are icon-only buttons — give them the same
+// minimum target size.
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 // On dark/coloured backgrounds that explicitly set white text, links should

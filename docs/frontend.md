@@ -21,6 +21,12 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 
 ---
 
+## Accessibility conventions
+
+**Tap targets: every standalone interactive control is at least 44px tall** (nav links, buttons, tabs, icon buttons, form inputs, standalone links). WCAG 2.2 AA only requires 24×24, but 44px is the house standard. Use `min-height: 44px` on the clickable element itself (with `display: inline-flex; align-items: center` for text links) rather than em-based padding — min-height holds at any font size. Links inside running text (paragraphs) are exempt per WCAG and must NOT get a min-height. Existing examples: `.header-login-button a` and the navigation rules in the theme's `screen.scss`, `__navigation-item` in the tabs block, `__nav` in the event-calendar block.
+
+---
+
 ## Blocks
 
 <!-- List of Gutenberg blocks, what each does, source location go here -->

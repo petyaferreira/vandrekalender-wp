@@ -44,8 +44,9 @@
     border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
     background: var(--wp--preset--color--white, #fff);
     color: var(--wp--preset--color--forest, #2d5f3f);
-    width: 2.2rem;
-    height: 2.2rem;
+    // 2.75rem = 44px: accessible tap target
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
     font-size: 1.3rem;
     line-height: 1;

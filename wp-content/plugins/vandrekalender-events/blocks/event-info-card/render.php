@@ -156,7 +156,7 @@ $vk_first_route = $vk_routes[0];
 					<?php endif; ?>
 					<?php if ( $vk_directions_url ) : ?>
 						<br />
-						<a href="<?php echo esc_url( $vk_directions_url ); ?>" target="_blank" rel="noopener noreferrer">
+						<a class="vk-info-card__directions" href="<?php echo esc_url( $vk_directions_url ); ?>" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Vis rutevejledning', 'vandrekalender-events' ); ?> ›
 						</a>
 					<?php endif; ?>

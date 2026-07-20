@@ -24,6 +24,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
+    min-height: 44px; // accessible tap target
     padding: 0.6rem 1rem;
     font-size: var(--wp--preset--font-size--small, 0.875rem);
     font-weight: 600;
