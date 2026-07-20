@@ -80,7 +80,8 @@ const parseCoords = text => {
 const formatDate = iso => {
   if (!iso) return '';
   const dateFormat = getDateSettings().formats.date;
-  return wpFormat(dateFormat, new Date(`${iso}T00:00:00`));
+  // Noon, not midnight — see the DatePicker comment below.
+  return wpFormat(dateFormat, new Date(`${iso}T12:00:00`));
 };
 
 const timeOptions = (() => {
@@ -367,8 +368,12 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
         {__('Event Date', 'vandrekalender-events')}
       </Text>
 
+      {/* Anchor the date-only value at noon: DatePicker normalizes the
+          instant through UTC, so local midnight (22:00 UTC the previous
+          day in Danish summer time) highlights the wrong day. Noon stays
+          on the same calendar day in every timezone. */}
       <DatePicker
-        currentDate={eventDate ? new Date(`${eventDate}T00:00:00`) : new Date()}
+        currentDate={eventDate ? new Date(`${eventDate}T12:00:00`) : new Date()}
         onChange={newDate => setMeta({ event_date: toISODate(newDate) })}
       />
 
