@@ -1,0 +1,529 @@
+.wp-block-vandrekalender-slider {
+  &.swiper {
+    overflow: hidden;
+  }
+
+  position: relative;
+
+  /* ------------------------------ */
+  /* ONLY MARQUEE STYLES            */
+  /* ------------------------------ */
+  &.is-marquee {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      white 10%,
+      white 90%,
+      transparent 100%
+    );
+
+    .swiper-wrapper {
+      transition-timing-function: linear !important;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+
+      @media (max-width: 781px) {
+        gap: 1.5rem;
+      }
+    }
+
+    /* slides (both Swiper + Gutenberg class) */
+    .swiper-slide,
+    .wp-block-vandrekalender-slider-slide {
+      width: auto !important;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+
+      /* remove Gutenberg inline widths */
+      figure,
+      .wp-block-image {
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* fixed logo heights */
+      img,
+      svg {
+        height: 32px !important;
+        width: auto !important;
+        max-height: 32px !important;
+        max-width: none !important;
+        object-fit: contain;
+        display: block;
+
+        @media (max-width: 781px) {
+          height: 24px !important;
+          max-height: 24px !important;
+        }
+      }
+    }
+
+    /* Hide controls in marquee */
+    .swiper-controls {
+      display: none;
+    }
+  }
+
+  /* ------------------------------ */
+  /* Slider controls (normal mode)  */
+  /* ------------------------------ */
+
+  /* Normal slider only */
+  &:not(.is-marquee):not(.is-vertical):not(.is-hero-progress) {
+    /* Equal-height slides */
+    .swiper-wrapper {
+      align-items: stretch;
+    }
+
+    .swiper-slide {
+      height: auto;
+    }
+
+    .wp-block-vandrekalender-slider-slide {
+      display: flex;
+      flex-direction: column;
+
+      > * {
+        flex: 1;
+      }
+    }
+
+    /* Square cover images on mobile */
+    .swiper-slide {
+      @media (max-width: 781px) {
+        > .wp-block-cover,
+        > * > .wp-block-cover {
+          min-height: calc(
+            100vw - 2 * var(--wp--style--root--padding-left, 1rem)
+          ) !important;
+          max-height: calc(
+            100vw - 2 * var(--wp--style--root--padding-left, 1rem)
+          ) !important;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+
+  .swiper-controls {
+    margin-top: 2.5rem;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 0.25rem;
+  }
+
+  .swiper-scrollbar {
+    position: static !important;
+    flex: 1;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 999px;
+    margin-right: 1rem;
+  }
+
+  .swiper-scrollbar-drag {
+    height: 100%;
+    background: currentColor;
+    border-radius: 999px;
+  }
+
+  .swiper-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    position: static !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: #f0f0f0;
+    color: inherit;
+    border: 1px solid #f0f0f0;
+
+    &:hover {
+      background: var(--wp--preset--color--fjord, #1e6fa5);
+      color: white;
+    }
+  }
+
+  /* ------------------------------ */
+  /* Vertical behavior              */
+  /* ------------------------------ */
+  &.is-vertical {
+    height: 610px;
+    overflow: hidden;
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+    align-items: stretch;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      height: auto !important;
+    }
+
+    @media (max-width: 781px) {
+      height: auto !important;
+    }
+
+    /* left text navigation */
+    .swiper-text-nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      grid-column: 1;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      @media (max-width: 1024px) {
+        position: relative;
+        grid-row: 1;
+        grid-column: 1 / -1;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        z-index: 10;
+        scroll-snap-type: x mandatory;
+        padding-top: 1rem;
+        overflow-x: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        li {
+          margin: 0;
+          flex: 0 0 auto;
+        }
+      }
+    }
+
+    .swiper-text-nav__btn {
+      background: none;
+      border: none;
+      padding: 0;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+
+      opacity: 0.6;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      &.is-active {
+        opacity: 1;
+        border-left: 2px solid var(--wp--preset--color--fjord, #1e6fa5);
+        padding-left: 0.5rem;
+      }
+    }
+
+    /* make swiper track live in right column */
+    .swiper-wrapper {
+      grid-column: 2;
+      height: 100%;
+
+      @media (max-width: 1024px) {
+        grid-row: 2;
+        grid-column: 1 / -1;
+      }
+    }
+
+    .swiper-slide {
+      max-width: 850px;
+      width: 100%;
+      margin-inline: auto;
+      height: 530px !important;
+      display: flex;
+      align-items: stretch;
+
+      @media (max-width: 1024px) {
+        height: auto !important;
+        width: 100%;
+        max-width: 100% !important;
+        margin-inline: 0 !important;
+      }
+
+      @media (max-width: 781px) {
+        flex-direction: column;
+        height: auto !important;
+        margin-inline: 0;
+        width: 100%;
+      }
+
+      > * {
+        height: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
+
+        @media (max-width: 1024px) {
+          flex-direction: column;
+          height: auto !important;
+        }
+
+        @media (max-width: 781px) {
+          flex-direction: column;
+          height: auto !important;
+        }
+      }
+
+      .wp-block-columns {
+        align-items: stretch;
+
+        .wp-block-column {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      .wp-block-image,
+      figure {
+        width: 100% !important;
+        height: 100%;
+        margin: 0 !important;
+        display: flex;
+
+        @media (max-width: 1024px) {
+          height: 220px;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+      }
+    }
+  }
+
+  /* ---------------------------------------- */
+  /* Hero with Progress Bar behavior           */
+  /* ---------------------------------------- */
+  &.is-hero-progress {
+    position: relative;
+
+    @media (max-width: 781px) {
+      padding-top: 1.5rem;
+      padding-bottom: 3rem;
+    }
+
+    /* Progress bar — green squares, top-left over slide */
+    .swiper-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .swiper-progress-bar__dot {
+      display: block;
+      width: 8px;
+      height: 8px;
+      background: var(
+        --slider-progress-color,
+        var(--wp--preset--color--meadow, #c2d9b0)
+      );
+      border-radius: 2px;
+      transition:
+        width 0.25s ease,
+        height 0.25s ease;
+
+      &.is-active {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    /* Controls — bottom-left with page counter + arrows */
+    .swiper-controls--hero-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      margin: 0;
+      width: auto;
+      padding: 0;
+    }
+
+    .swiper-page-counter {
+      font-size: 0.875rem;
+      color: inherit;
+    }
+
+    .swiper-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      position: static !important;
+      margin-top: 0 !important;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 999px;
+      background: #f0f0f0;
+      color: inherit;
+      border: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &::after {
+        display: none;
+      }
+
+      .swiper-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        background: var(--wp--preset--color--fjord, #1e6fa5);
+        color: white;
+      }
+    }
+
+    /* Full-width single slide */
+    .swiper-slide {
+      width: 100%;
+
+      @media (max-width: 781px) {
+        .wp-block-cover {
+          min-height: calc(
+            100vw - 2 * var(--wp--style--root--padding-left, 1rem)
+          ) !important;
+          max-height: calc(
+            100vw - 2 * var(--wp--style--root--padding-left, 1rem)
+          ) !important;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ------------------------------ */
+/* Editor-only overrides           */
+/* ------------------------------ */
+.editor-styles-wrapper {
+  .wp-block-vandrekalender-slider {
+    &.is-marquee {
+      .wp-block-vandrekalender-slider-slides,
+      .block-editor-inner-blocks > .block-editor-block-list__layout {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 1rem;
+        overflow-x: auto;
+      }
+
+      .wp-block-vandrekalender-slider-slide {
+        width: auto !important;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      figure,
+      .wp-block-image {
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+      }
+
+      img,
+      svg {
+        height: 32px !important;
+        width: auto !important;
+        max-height: 32px !important;
+        max-width: none !important;
+        object-fit: contain;
+        display: block;
+      }
+
+      @media (max-width: 781px) {
+        img,
+        svg {
+          height: 24px !important;
+          max-height: 24px !important;
+        }
+      }
+    }
+
+    &.is-vertical {
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+
+      .swiper-slide {
+        width: 700px;
+
+        .wp-block-image,
+        figure {
+          flex: initial !important;
+          height: auto !important;
+          display: block !important;
+
+          img {
+            height: auto !important;
+            width: 100% !important;
+            object-fit: contain;
+          }
+        }
+      }
+    }
+  }
+}

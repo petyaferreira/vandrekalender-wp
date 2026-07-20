@@ -76,6 +76,41 @@ add_action(
 );
 
 /**
+ * Register Swiper styles and scripts. This is currently used by slider block.
+ */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		$css_rel = 'assets/vendor/swiper/swiper-bundle.min.css';
+		$js_rel  = 'assets/vendor/swiper/swiper-bundle.min.js';
+
+		$css_path = VANDREKALENDER_EVENTS_DIR . $css_rel;
+		$js_path  = VANDREKALENDER_EVENTS_DIR . $js_rel;
+
+		$css_url = VANDREKALENDER_EVENTS_URL . $css_rel;
+		$js_url  = VANDREKALENDER_EVENTS_URL . $js_rel;
+
+		$css_ver = file_exists( $css_path ) ? filemtime( $css_path ) : null;
+		$js_ver  = file_exists( $js_path ) ? filemtime( $js_path ) : null;
+
+		wp_register_style(
+			'swiper',
+			$css_url,
+			[],
+			$css_ver
+		);
+
+		wp_register_script(
+			'swiper',
+			$js_url,
+			[],
+			$js_ver,
+			true
+		);
+	}
+);
+
+/**
  * Inline filter-reactive counter for use inside paragraph text. The script
  * hydrates every .vk-filtered-count element on the page — the number updates
  * live as filters change, while inheriting the surrounding text colour and

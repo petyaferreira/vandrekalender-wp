@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/slider",
+    "version": "1.0.0",
+    "title": "Slider",
+    "category": "design",
+    "icon": "media-interactive",
+    "description": "Slider block for displaying content in a sliding format.",
+    "example": {},
+    "attributes": {
+        "slidesPerViewDesktop": {
+            "type": "number",
+            "default": 2.5
+        },
+        "slidesPerViewMobile": {
+            "type": "number",
+            "default": 1.5
+        },
+        "behavior": {
+            "type": "string",
+            "default": "normal"
+        },
+        "progressBarColor": {
+            "type": "string",
+            "default": "#C2D9B0"
+        }
+    },
+    "supports": {
+        "interactivity": true,
+        "className": true,
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "align": true,
+        "color": {
+            "background": true,
+            "text": true,
+            "link": true
+        }
+    },
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "style": ["swiper", "file:./style-index.css"],
+    "script": ["swiper"],
+    "viewScriptModule": "file:./view.js",
+    "render": "file:./render.php"
+}

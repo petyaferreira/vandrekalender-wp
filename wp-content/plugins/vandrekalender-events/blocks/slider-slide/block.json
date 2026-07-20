@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/slider-slide",
+    "version": "1.0.0",
+    "title": "Slider Slide",
+    "category": "design",
+    "icon": "media-interactive",
+    "description": "A single slide within slider slides block.",
+    "parent": ["vandrekalender/slider"],
+    "example": {},
+    "attributes": {},
+    "supports": {
+        "className": true,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "link": true
+        }
+    },
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js"
+}
