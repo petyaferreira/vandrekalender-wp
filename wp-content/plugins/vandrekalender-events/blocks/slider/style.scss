@@ -89,12 +89,21 @@
       height: auto;
     }
 
+    /* Uniform slide media: every image is forced into the same box and
+       cropped to fit, so slides stay identical in size regardless of the
+       aspect ratio of the file the user uploads. Override the ratio per
+       slider with --slider-slide-ratio. */
     .wp-block-vandrekalender-slider-slide {
-      display: flex;
-      flex-direction: column;
+      .wp-block-image,
+      figure {
+        margin: 0;
+      }
 
-      > * {
-        flex: 1;
+      img {
+        display: block;
+        width: 100%;
+        aspect-ratio: var(--slider-slide-ratio, 3 / 2);
+        object-fit: cover;
       }
     }
 
