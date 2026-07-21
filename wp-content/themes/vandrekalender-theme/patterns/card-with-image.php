@@ -11,8 +11,8 @@
 ?>
 
 <!-- wp:group {"style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group"><!-- wp:image {"id":1348,"sizeSlug":"large","linkDestination":"none","style":{"border":{"radius":{"topLeft":"1rem","topRight":"1rem"}}}} -->
-<figure class="wp-block-image size-large has-custom-border"><img src="http://localhost:8080/wp-content/uploads/2026/07/pexels-suju-30194750-1024x683.jpg" alt="" class="wp-image-1348" style="border-top-left-radius:1rem;border-top-right-radius:1rem"/></figure>
+<div class="wp-block-group"><!-- wp:image {"linkDestination":"none","style":{"border":{"radius":{"topLeft":"1rem","topRight":"1rem"}}}} -->
+<figure class="wp-block-image has-custom-border"><img alt="" style="border-top-left-radius:1rem;border-top-right-radius:1rem"/></figure>
 <!-- /wp:image -->
 
 <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|small","padding":{"top":"var:preset|spacing|medium-clamp","bottom":"var:preset|spacing|medium-clamp","left":"var:preset|spacing|medium-clamp","right":"var:preset|spacing|medium-clamp"}},"border":{"radius":{"bottomLeft":"1rem","bottomRight":"1rem"}}},"backgroundColor":"cream","layout":{"type":"constrained"}} -->
@@ -26,8 +26,8 @@
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:paragraph {"style":{"typography":{"textAlign":"right","fontStyle":"italic","fontWeight":"400"}}} -->
-<p class="has-text-align-right" style="font-style:italic;font-weight:400">From Petya</p>
+<!-- wp:paragraph {"className":"card-author","style":{"typography":{"textAlign":"right","fontStyle":"italic","fontWeight":"400"}}} -->
+<p class="card-author has-text-align-right" style="font-style:italic;font-weight:400">From Petya</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

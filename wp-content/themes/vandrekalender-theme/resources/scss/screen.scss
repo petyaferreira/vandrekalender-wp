@@ -110,3 +110,22 @@ body {
   width: auto;
   opacity: 0.7;
 }
+
+// Card author line ("From: …") pinned to the bottom of the card body, so it
+// sits on the same baseline however short the description is. The body group
+// is matched by the author it contains, so only the author needs the class.
+// The auto top margin only bites once the body is a flex column.
+.wp-block-group:has(> .card-author) {
+  display: flex;
+  flex-direction: column;
+
+  // Flex items with auto side margins (added by constrained layout) shrink
+  // to fit-content; force full width so text alignment applies as set.
+  > * {
+    width: 100%;
+  }
+}
+
+.card-author {
+  margin-top: auto;
+}
