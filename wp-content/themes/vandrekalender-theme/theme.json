@@ -109,6 +109,13 @@
                 }
             ]
         },
+        "blocks": {
+            "core/paragraph": {
+                "typography": {
+                    "fontWeight": true
+                }
+            }
+        },
         "typography": {
             "defaultFontSizes": false,
             "fluid": true,
