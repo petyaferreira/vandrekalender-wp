@@ -89,11 +89,28 @@
       height: auto;
     }
 
-    /* Uniform slide media: every image is forced into the same box and
-       cropped to fit, so slides stay identical in size regardless of the
-       aspect ratio of the file the user uploads. Override the ratio per
-       slider with --slider-slide-ratio. */
     .wp-block-vandrekalender-slider-slide {
+      /* Make every card fill its (already equal-height) slide, so all cards
+         in a row end at the same bottom edge no matter how much text they
+         hold. The card is the group that directly wraps the image; its
+         content box below the image grows to take up the slack. */
+      display: flex;
+      flex-direction: column;
+
+      .wp-block-group:has(> figure) {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .wp-block-group:has(> figure) > :not(figure) {
+        flex: 1;
+      }
+
+      /* Uniform slide media: every image is forced into the same box and
+         cropped to fit, so slides stay identical in size regardless of the
+         aspect ratio of the file the user uploads. Override the ratio per
+         slider with --slider-slide-ratio. */
       .wp-block-image,
       figure {
         margin: 0;
