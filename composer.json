@@ -45,7 +45,8 @@
         "wpackagist-plugin/seo-by-rank-math": "^1.0",
         "wpackagist-plugin/fluentform": "^6.2",
         "wpackagist-plugin/icon-block": "^2.0",
-        "wpackagist-plugin/fluent-smtp": "^2.2"
+        "wpackagist-plugin/fluent-smtp": "^2.2",
+        "wpackagist-plugin/login-with-google": "^1.4"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.1",

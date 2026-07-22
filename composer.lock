@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d0e93a4cef510e749dacbed324fa8f1",
+    "content-hash": "8fb92fc68d6e1bd13640cbd5dedc7574",
     "packages": [
         {
             "name": "composer/installers",
@@ -244,6 +244,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/icon-block/"
+        },
+        {
+            "name": "wpackagist-plugin/login-with-google",
+            "version": "1.4.2",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/login-with-google/",
+                "reference": "tags/1.4.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/login-with-google.1.4.2.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/login-with-google/"
         },
         {
             "name": "wpackagist-plugin/safe-svg",

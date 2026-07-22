@@ -36,8 +36,8 @@ Currently installed via Composer:
 | Environment | URL | How to deploy |
 |---|---|---|
 | Local | http://localhost:${WORDPRESS_PORT} | `./start.sh` |
-| Staging | Nordicway staging | Push to `main` → GitHub Actions auto-deploys |
-| Production | Nordicway production | GitHub Actions → workflow_dispatch → choose `production` |
+| Staging | https://staging.vandrekalender.dk | Push to `main` → GitHub Actions auto-deploys |
+| Production | https://vandrekalender.dk | GitHub Actions → workflow_dispatch → choose `production` |
 
 ---
 
@@ -87,6 +87,56 @@ also keeps any other scheduled jobs (scheduled posts, core update checks) workin
 wp cron event list                              # 'vandrekalender_run_scrapers' shows next run 02:12
 wp cron event run vandrekalender_run_scrapers   # force one run, then check Events → Scraper Log
 ```
+
+---
+
+## Google login credentials (all environments)
+
+The `login-with-google` plugin (rtCamp) reads its credentials from **wp-config
+constants**, never from the database. When the constants are defined, the plugin
+disables its own fields in Settings → Log in with Google, so wp-admin can never
+silently override the deployed config.
+
+```php
+define( 'WP_GOOGLE_LOGIN_CLIENT_ID', '…apps.googleusercontent.com' );
+define( 'WP_GOOGLE_LOGIN_SECRET', '…' );
+define( 'WP_GOOGLE_LOGIN_USER_REGISTRATION', true );
+```
+
+`WP_GOOGLE_LOGIN_USER_REGISTRATION` is **required for new users**. Without it the
+plugin only logs in people who already have a WordPress account and rejects
+everyone else. New accounts are created with the site's `default_role`, which is
+`event_organizer`.
+
+| Environment | Where the values come from |
+|---|---|
+| Local | `.env` → interpolated into `WORDPRESS_CONFIG_EXTRA` in `docker-compose.yml` |
+| Staging | Added by hand to the server's `wp-config.php` |
+| Production | Added by hand to the server's `wp-config.php` |
+
+Same file placement as the scraper constants above: `wp-config.php` sits in the
+WordPress root, one level **above** `NORDICWAY_DEST_PATH`. It is server-only, so
+deploys never overwrite it.
+
+**One OAuth client covers all three environments** — the same Client ID and
+Secret everywhere. What separates the environments is the redirect URI list on
+the client (Google Cloud console → Clients), which must contain exactly:
+
+```
+http://localhost:8080/wp-login.php
+https://staging.vandrekalender.dk/wp-login.php
+https://vandrekalender.dk/wp-login.php
+```
+
+Plus the matching **Authorized JavaScript origins** (scheme + host only, no
+path) if Google One Tap is enabled.
+
+A missing or mistyped entry fails at login with Google's `redirect_uri_mismatch`
+error rather than anything visible in WordPress — check the client's URI list
+first when Google login breaks on one environment only.
+
+> **Never commit the secret.** `.env` is gitignored; `.env.example` documents the
+> two keys without values.
 
 ---
 
