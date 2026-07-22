@@ -27,6 +27,7 @@ Currently installed via Composer:
 |---|---|---|
 | `wpackagist-plugin/safe-svg` | Plugin | Safe SVG uploads |
 | `wpackagist-plugin/polylang` | Plugin | Multilingual — see `docs/i18n.md` |
+| `wpackagist-plugin/webp-converter-for-media` | Plugin | Serves WebP instead of JPG/PNG — see *Image conversion (WebP)* below |
 | `wpackagist-theme/twentytwentyfive` | Theme | Default WP theme (kept as fallback) |
 
 ---
@@ -38,6 +39,81 @@ Currently installed via Composer:
 | Local | http://localhost:${WORDPRESS_PORT} | `./start.sh` |
 | Staging | https://staging.vandrekalender.dk | Push to `main` → GitHub Actions auto-deploys |
 | Production | https://vandrekalender.dk | GitHub Actions → workflow_dispatch → choose `production` |
+
+---
+
+## Image conversion (WebP)
+
+`webp-converter-for-media` ("Converter for Media") serves WebP versions of
+uploaded JPG/PNG images. Bulk convert and settings live under **Settings →
+Converter for Media** in wp-admin.
+
+### How it delivers WebP — the URL stays `.jpg`
+
+The plugin runs in **Pass Thru** mode. It does *not* rewrite `src`/`srcset` in
+the HTML. Converted files are written to a parallel tree:
+
+```
+wp-content/uploads/2026/05/photo.jpg           ← original
+wp-content/uploads-webpc/uploads/2026/05/photo.jpg.webp   ← converted
+```
+
+Rewrite rules in `wp-content/uploads/.htaccess` intercept the request: if the
+browser sends `Accept: image/webp` and a converted file exists, Apache serves
+the WebP with `Content-Type: image/webp` under the original `.jpg` URL.
+Otherwise the original is served untouched.
+
+**This means the DevTools *Elements* panel will always show `.jpg`. That is
+correct and expected — it is not a sign conversion failed.** To verify, use the
+**Network** tab (tick *Disable cache*, hard-reload) and check the response
+`Content-Type`, or from the terminal:
+
+```bash
+curl -sI -H 'Accept: image/webp' 'http://localhost:8080/wp-content/uploads/2026/05/your-image.jpg'
+```
+
+A working response returns `Content-Type: image/webp` and `Vary: Accept`.
+
+Requires `mod_rewrite` and `AllowOverride` on the uploads directory — both are
+already satisfied locally and on Nordicway.
+
+### Converted files are per-environment
+
+`uploads-webpc/` is **never** transferred between environments and is not in git:
+
+- Not built into the Docker image — the Dockerfile only layers wp-cli and
+  utilities onto `wordpress:php8.4-apache`; the directory is created at runtime.
+- Not deployed — `deploy-to-nordicway.yml` only rsyncs `wp-content/themes/` and
+  `wp-content/plugins/`.
+- Not tracked — excluded by the `/wp-content/*` rule in `.gitignore`.
+
+Each environment converts its own media from its own uploads. New uploads are
+converted on the fly; a bulk convert is only needed for images that predate the
+plugin. On production the directory persists on disk indefinitely — note it is
+excluded from backups that target `uploads/` only, which is harmless since it is
+fully regenerable.
+
+### Local persistence
+
+`uploads-webpc/` is bind-mounted in `docker-compose.yml`:
+
+```yaml
+- "./wp-content/uploads-webpc:/var/www/html/wp-content/uploads-webpc"
+```
+
+Without this mount the directory lives in the container's writable layer and is
+lost on `docker compose down`, forcing a full re-convert on every rebuild. The
+trade-off is that the files (~124 MB, roughly 50–60% of `uploads/`) now sit in
+the project folder rather than Docker's VM disk, so Time Machine and Spotlight
+will see them. Harmless at this scale.
+
+> **If you ever remove or re-add this mount:** copy the existing files out of the
+> container *first*, or mounting an empty host directory will mask them and you
+> will lose the bulk convert.
+>
+> ```bash
+> docker compose cp wordpress:/var/www/html/wp-content/uploads-webpc ./wp-content/uploads-webpc
+> ```
 
 ---
 
