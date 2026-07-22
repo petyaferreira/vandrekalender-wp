@@ -17,11 +17,25 @@ defined( 'ABSPATH' ) || exit;
 class Vandrekalender_Organizer_Dashboard {
 
 	/**
-	 * Option holding the attachment ID of the self-hosted onboarding video.
+	 * The onboarding video, shipped with the plugin.
 	 *
-	 * Self-hosted on purpose: a YouTube or Vimeo embed would load third-party
-	 * trackers before the visitor has accepted the cookie policy. Set directly
-	 * (wp option update) for now — no settings screen yet.
+	 * Deliberately a bundled file rather than a Media Library attachment. An
+	 * attachment ID lives in the database, and deploys only rsync wp-content —
+	 * so an ID can never survive one, and every environment would need setting
+	 * up by hand, forever. As a plugin asset the video deploys like any other
+	 * file: push once, correct on local, staging and production alike.
+	 *
+	 * Self-hosted on purpose either way: a YouTube or Vimeo embed would load
+	 * third-party trackers before the visitor has accepted the cookie policy.
+	 */
+	private const BUNDLED_VIDEO = 'assets/video/onboarding.mp4';
+
+	/**
+	 * Optional per-site override: a Media Library attachment ID.
+	 *
+	 * Unset by default, and nothing needs it — the bundled file above is the
+	 * normal path. Set it (wp option update) only to point one environment at
+	 * a different video without redeploying.
 	 */
 	public const VIDEO_OPTION = 'vandrekalender_onboarding_video_id';
 
@@ -53,6 +67,7 @@ class Vandrekalender_Organizer_Dashboard {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_video_data' ], 20 );
 		add_action( 'admin_head', [ $this, 'print_styles' ] );
 		add_action( 'admin_notices', [ $this, 'render_format_warning' ] );
+		add_filter( 'login_redirect', [ $this, 'redirect_organizers_to_dashboard' ], 10, 3 );
 		add_filter( 'get_user_option_screen_layout_dashboard', [ $this, 'force_single_column' ] );
 		add_filter( 'screen_layout_columns', [ $this, 'force_single_column_option' ] );
 	}
@@ -229,8 +244,20 @@ class Vandrekalender_Organizer_Dashboard {
 	public static function video_data(): ?array {
 		$attachment_id = (int) get_option( self::VIDEO_OPTION );
 
+		// No override configured: use the copy bundled with the plugin. The
+		// mtime query arg busts browser caches when a redeploy replaces it.
 		if ( ! $attachment_id ) {
-			return null;
+			$path = VANDREKALENDER_EVENTS_DIR . self::BUNDLED_VIDEO;
+
+			if ( ! file_exists( $path ) ) {
+				return null;
+			}
+
+			return [
+				'url'    => add_query_arg( 'ver', filemtime( $path ), VANDREKALENDER_EVENTS_URL . self::BUNDLED_VIDEO ),
+				'mime'   => 'video/mp4',
+				'poster' => '',
+			];
 		}
 
 		$url  = wp_get_attachment_url( $attachment_id );
@@ -279,6 +306,40 @@ class Vandrekalender_Organizer_Dashboard {
 	}
 
 	/**
+	 * Land organizers on the dashboard after login, not on their profile.
+	 *
+	 * Core sends any user without edit_posts to profile.php, and the
+	 * event_organizer role has edit_events but deliberately never edit_posts —
+	 * so without this an organizer never sees the onboarding widget they just
+	 * logged in for.
+	 *
+	 * Returns index.php rather than admin_url() on purpose: that fallback is
+	 * keyed on $redirect_to being exactly admin_url(), and this filter runs
+	 * before it, so the bare admin URL would be quietly overwritten.
+	 *
+	 * @param string             $redirect_to Destination core settled on.
+	 * @param string             $requested   Destination asked for in the request.
+	 * @param \WP_User|\WP_Error $user     Logged-in user, or an error.
+	 * @return string
+	 */
+	public function redirect_organizers_to_dashboard( $redirect_to, $requested, $user ) {
+		if ( ! $user instanceof \WP_User || user_can( $user, 'manage_options' ) ) {
+			return $redirect_to;
+		}
+
+		if ( ! in_array( Vandrekalender_Roles::EVENT_ORGANIZER, (array) $user->roles, true ) ) {
+			return $redirect_to;
+		}
+
+		// An explicit destination (a link into a specific screen) still wins.
+		if ( ! empty( $requested ) ) {
+			return $redirect_to;
+		}
+
+		return admin_url( 'index.php' );
+	}
+
+	/**
 	 * Lay the organizer dashboard out in a single full-width column.
 	 *
 	 * There is only one widget, and the how-to video is a full-resolution
@@ -324,22 +385,32 @@ class Vandrekalender_Organizer_Dashboard {
 			return;
 		}
 
-		$attachment_id = (int) get_option( self::VIDEO_OPTION );
-
-		if ( ! $attachment_id || self::video_data() ) {
+		if ( self::video_data() ) {
 			return;
 		}
 
-		$mime = (string) get_post_mime_type( $attachment_id );
+		$attachment_id = (int) get_option( self::VIDEO_OPTION );
 
-		wp_admin_notice(
-			sprintf(
+		if ( $attachment_id ) {
+			$mime = (string) get_post_mime_type( $attachment_id );
+
+			$message = sprintf(
 				/* translators: 1: attachment ID, 2: MIME type of the configured file, 3: option name. */
-				esc_html__( 'The onboarding video (attachment %1$s, %2$s) is not a format browsers can play, so no video is shown to organizers. Re-export it as MP4 (H.264/AAC) and point %3$s at the new attachment.', 'vandrekalender-events' ),
+				esc_html__( 'The onboarding video override (attachment %1$s, %2$s) is not a format browsers can play, so no video is shown to organizers. Re-export it as MP4 (H.264/AAC), or delete the %3$s option to fall back to the video bundled with the plugin.', 'vandrekalender-events' ),
 				esc_html( (string) $attachment_id ),
 				esc_html( $mime ? $mime : __( 'file missing', 'vandrekalender-events' ) ),
 				'<code>' . esc_html( self::VIDEO_OPTION ) . '</code>'
-			),
+			);
+		} else {
+			$message = sprintf(
+				/* translators: %s: expected path of the bundled video file. */
+				esc_html__( 'The onboarding video is missing at %s, so no video is shown to organizers. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it.', 'vandrekalender-events' ),
+				'<code>' . esc_html( self::BUNDLED_VIDEO ) . '</code>'
+			);
+		}
+
+		wp_admin_notice(
+			$message,
 			[
 				'type'               => 'warning',
 				'additional_classes' => [ 'vk-onboarding-warning' ],
