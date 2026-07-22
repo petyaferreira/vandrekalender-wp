@@ -6,6 +6,7 @@ import {
   SelectControl,
   TextControl,
   DatePicker,
+  Modal,
   Spinner,
   __experimentalText as Text,
 } from '@wordpress/components';
@@ -622,3 +623,58 @@ const EventDocumentFields = () => {
 registerPlugin('vandrekalender-event-document-fields', {
   render: EventDocumentFields,
 });
+
+// ── Onboarding video ──────────────────────────────────────────────────────────
+
+/**
+ * "Se hvordan-videoen" help link on the event creation screen.
+ *
+ * Rendered as an editor notice rather than a PHP admin notice: core hides
+ * classic notices on block editor screens. window.vkOnboardingVideo is set
+ * from PHP (Vandrekalender_Organizer_Dashboard) and is only present when an
+ * onboarding video is configured and a new event is being created.
+ */
+const OnboardingVideo = () => {
+  const video = window.vkOnboardingVideo;
+  const [isOpen, setIsOpen] = useState(false);
+  const { createInfoNotice } = useDispatch('core/notices');
+  const noticeShown = useRef(false);
+
+  useEffect(() => {
+    if (!video || noticeShown.current) return;
+    noticeShown.current = true;
+
+    createInfoNotice(__('Ny her?', 'vandrekalender-events'), {
+      id: 'vandrekalender-onboarding-video',
+      isDismissible: true,
+      actions: [
+        {
+          label: __('Se hvordan-videoen', 'vandrekalender-events'),
+          onClick: () => setIsOpen(true),
+        },
+      ],
+    });
+  }, [video, createInfoNotice]);
+
+  if (!video || !isOpen) return null;
+
+  return (
+    <Modal
+      title={__('Se hvordan-videoen', 'vandrekalender-events')}
+      onRequestClose={() => setIsOpen(false)}
+      size="large"
+    >
+      <video
+        controls
+        playsInline
+        preload="metadata"
+        poster={video.poster || undefined}
+        style={{ width: '100%', height: 'auto', display: 'block' }}
+      >
+        <source src={video.url} type={video.mime} />
+      </video>
+    </Modal>
+  );
+};
+
+registerPlugin('vandrekalender-onboarding-video', { render: OnboardingVideo });
