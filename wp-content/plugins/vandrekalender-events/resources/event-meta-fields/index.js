@@ -411,7 +411,11 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                 align="flex-start"
                 style={{ borderTop: '1px solid #e0e0e0', paddingTop: '8px' }}
               >
-                <Flex direction="column" gap={1} style={{ width: '100%' }}>
+                <Flex
+                  direction="column"
+                  gap={1}
+                  style={{ flex: '1 1 auto', minWidth: 0 }}
+                >
                   {route.distance_km && <Text>{route.distance_km} km</Text>}
                   {route.start_time && (
                     <Text>
@@ -425,7 +429,11 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                     </Text>
                   )}
                 </Flex>
-                <Flex gap={2}>
+                {/* flexShrink:0 — the sidebar is ~280px and translated labels
+                    ("Rediger", "Fjern") are longer than the English ones, so
+                    without this the buttons compress until the text collides
+                    with the border. */}
+                <Flex gap={2} style={{ flexShrink: 0, width: 'auto' }}>
                   <Button
                     variant="secondary"
                     onClick={() => setExpandedIndex(index)}
