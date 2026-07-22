@@ -6,6 +6,7 @@
  * Version:     1.0.0
  * Author:      Petya Ferreira
  * Text Domain: vandrekalender-events
+ * Domain Path: /languages
  *
  * @package Vandrekalender
  */

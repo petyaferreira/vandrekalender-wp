@@ -72,7 +72,7 @@ $vk_wrapper_attributes = [
 		data-wp-router-region="vk-event-cards"
 	>
 		<?php if ( empty( $vk_shown_ids ) ) : ?>
-			<p class="vk-cards__empty"><?php esc_html_e( 'Ingen vandreture matcher dine filtre.', 'vandrekalender-events' ); ?></p>
+			<p class="vk-cards__empty"><?php esc_html_e( 'No walks match your filters.', 'vandrekalender-events' ); ?></p>
 		<?php else : ?>
 			<ul class="vk-cards__list">
 				<?php
@@ -103,10 +103,10 @@ $vk_wrapper_attributes = [
 
 					$vk_price_from = ! empty( $vk_prices ) ? min( $vk_prices ) : null;
 					if ( null === $vk_price_from || 0.0 === $vk_price_from ) {
-						$vk_price_label = __( 'Gratis', 'vandrekalender-events' );
+						$vk_price_label = __( 'Free', 'vandrekalender-events' );
 					} else {
 						/* translators: %d: lowest route price in kroner. */
-						$vk_price_label = sprintf( __( 'fra %d kr', 'vandrekalender-events' ), (int) round( $vk_price_from ) );
+						$vk_price_label = sprintf( __( 'from %d kr', 'vandrekalender-events' ), (int) round( $vk_price_from ) );
 					}
 
 					$vk_regions   = wp_get_post_terms( $vk_event_id, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] );
@@ -151,7 +151,7 @@ $vk_wrapper_attributes = [
 				class="vk-cards__more"
 				data-wp-on--click="actions.loadMore"
 				data-wp-bind--disabled="state.isNavigating"
-			><?php esc_html_e( 'Vis flere vandreture', 'vandrekalender-events' ); ?></button>
+			><?php esc_html_e( 'Show more walks', 'vandrekalender-events' ); ?></button>
 		<?php endif; ?>
 	</div>
 </div>

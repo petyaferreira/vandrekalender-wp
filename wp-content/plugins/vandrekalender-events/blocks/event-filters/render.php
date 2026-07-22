@@ -21,16 +21,16 @@ $vk_regions = get_terms(
 $vk_regions = is_wp_error( $vk_regions ) ? [] : $vk_regions;
 
 $vk_lengths = [
-	'kort'   => __( 'Kort (0–10 km)', 'vandrekalender-events' ),
-	'mellem' => __( 'Mellem (10–25 km)', 'vandrekalender-events' ),
-	'lang'   => __( 'Lang (25+ km)', 'vandrekalender-events' ),
+	'kort'   => __( 'Short (0–10 km)', 'vandrekalender-events' ),
+	'mellem' => __( 'Medium (10–25 km)', 'vandrekalender-events' ),
+	'lang'   => __( 'Long (25+ km)', 'vandrekalender-events' ),
 ];
 ?>
 <form <?php echo get_block_wrapper_attributes( [ 'class' => 'vk-filters' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<div class="vk-filters__field">
 		<label class="vk-filters__label" for="vk-filter-region"><?php esc_html_e( 'Region', 'vandrekalender-events' ); ?></label>
 		<select class="vk-filters__select" id="vk-filter-region" data-filter="region">
-			<option value=""><?php esc_html_e( 'Alle regioner', 'vandrekalender-events' ); ?></option>
+			<option value=""><?php esc_html_e( 'All regions', 'vandrekalender-events' ); ?></option>
 			<?php foreach ( $vk_regions as $vk_region ) : ?>
 				<option value="<?php echo esc_attr( $vk_region->slug ); ?>"><?php echo esc_html( $vk_region->name ); ?></option>
 			<?php endforeach; ?>
@@ -38,8 +38,8 @@ $vk_lengths = [
 	</div>
 
 	<div class="vk-filters__field">
-		<span class="vk-filters__label"><?php esc_html_e( 'Længde', 'vandrekalender-events' ); ?></span>
-		<div class="vk-filters__pills" role="group" aria-label="<?php esc_attr_e( 'Længde', 'vandrekalender-events' ); ?>">
+		<span class="vk-filters__label"><?php esc_html_e( 'Length', 'vandrekalender-events' ); ?></span>
+		<div class="vk-filters__pills" role="group" aria-label="<?php esc_attr_e( 'Length', 'vandrekalender-events' ); ?>">
 			<?php foreach ( $vk_lengths as $vk_slug => $vk_label ) : ?>
 				<button type="button" class="vk-filters__pill" data-filter="length" data-value="<?php echo esc_attr( $vk_slug ); ?>" aria-pressed="false">
 					<?php echo esc_html( $vk_label ); ?>
@@ -50,12 +50,12 @@ $vk_lengths = [
 
 	<div class="vk-filters__date-range">
 		<div class="vk-filters__field">
-			<label class="vk-filters__label" for="vk-filter-from"><?php esc_html_e( 'Fra dato', 'vandrekalender-events' ); ?></label>
+			<label class="vk-filters__label" for="vk-filter-from"><?php esc_html_e( 'From date', 'vandrekalender-events' ); ?></label>
 			<input class="vk-filters__input" type="date" id="vk-filter-from" data-filter="date_from" />
 		</div>
 
 		<div class="vk-filters__field">
-			<label class="vk-filters__label" for="vk-filter-to"><?php esc_html_e( 'Til dato', 'vandrekalender-events' ); ?></label>
+			<label class="vk-filters__label" for="vk-filter-to"><?php esc_html_e( 'To date', 'vandrekalender-events' ); ?></label>
 			<input class="vk-filters__input" type="date" id="vk-filter-to" data-filter="date_to" />
 		</div>
 	</div>
@@ -63,11 +63,11 @@ $vk_lengths = [
 	<div class="vk-filters__field vk-filters__field--check">
 		<label class="vk-filters__checkbox">
 			<input type="checkbox" data-filter="is_free" value="true" />
-			<?php esc_html_e( 'Kun gratis', 'vandrekalender-events' ); ?>
+			<?php esc_html_e( 'Free only', 'vandrekalender-events' ); ?>
 		</label>
 	</div>
 
 	<button type="button" class="vk-filters__reset" data-filter-reset>
-		<?php esc_html_e( 'Nulstil', 'vandrekalender-events' ); ?>
+		<?php esc_html_e( 'Reset', 'vandrekalender-events' ); ?>
 	</button>
 </form>

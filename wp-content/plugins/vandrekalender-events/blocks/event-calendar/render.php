@@ -106,13 +106,13 @@ $vk_month_label = function_exists( 'mb_convert_case' )
 	: ucfirst( $vk_month_label );
 
 $vk_weekdays = [
-	__( 'Man', 'vandrekalender-events' ),
-	__( 'Tir', 'vandrekalender-events' ),
-	__( 'Ons', 'vandrekalender-events' ),
-	__( 'Tor', 'vandrekalender-events' ),
-	__( 'Fre', 'vandrekalender-events' ),
-	__( 'Lør', 'vandrekalender-events' ),
-	__( 'Søn', 'vandrekalender-events' ),
+	__( 'Mon', 'vandrekalender-events' ),
+	__( 'Tue', 'vandrekalender-events' ),
+	__( 'Wed', 'vandrekalender-events' ),
+	__( 'Thu', 'vandrekalender-events' ),
+	__( 'Fri', 'vandrekalender-events' ),
+	__( 'Sat', 'vandrekalender-events' ),
+	__( 'Sun', 'vandrekalender-events' ),
 ];
 
 $vk_wrapper_attributes = [
@@ -141,7 +141,7 @@ $vk_wrapper_attributes = [
 				data-month="<?php echo esc_attr( $vk_prev_month ); ?>"
 				data-wp-on--click="actions.goToMonth"
 				data-wp-bind--disabled="state.isNavigating"
-				aria-label="<?php esc_attr_e( 'Forrige måned', 'vandrekalender-events' ); ?>"
+				aria-label="<?php esc_attr_e( 'Previous month', 'vandrekalender-events' ); ?>"
 			>&lsaquo;</button>
 			<h3 class="vk-calendar__month"><?php echo esc_html( $vk_month_label ); ?></h3>
 			<button
@@ -150,7 +150,7 @@ $vk_wrapper_attributes = [
 				data-month="<?php echo esc_attr( $vk_next_month ); ?>"
 				data-wp-on--click="actions.goToMonth"
 				data-wp-bind--disabled="state.isNavigating"
-				aria-label="<?php esc_attr_e( 'Næste måned', 'vandrekalender-events' ); ?>"
+				aria-label="<?php esc_attr_e( 'Next month', 'vandrekalender-events' ); ?>"
 			>&rsaquo;</button>
 		</div>
 
@@ -216,7 +216,7 @@ $vk_wrapper_attributes = [
 					echo esc_html(
 						sprintf(
 							/* translators: 1: long date, 2: number of events. */
-							_n( '%1$s — %2$d vandretur', '%1$s — %2$d vandreture', count( $vk_day_event_ids ), 'vandrekalender-events' ),
+							_n( '%1$s — %2$d walk', '%1$s — %2$d walks', count( $vk_day_event_ids ), 'vandrekalender-events' ),
 							wp_date( 'l j. F', strtotime( $vk_selected ), new DateTimeZone( 'UTC' ) ),
 							count( $vk_day_event_ids )
 						)
@@ -240,10 +240,10 @@ $vk_wrapper_attributes = [
 
 					$vk_price_from = ! empty( $vk_prices ) ? min( $vk_prices ) : null;
 					if ( null === $vk_price_from || 0.0 === $vk_price_from ) {
-						$vk_price_label = __( 'Gratis', 'vandrekalender-events' );
+						$vk_price_label = __( 'Free', 'vandrekalender-events' );
 					} else {
 						/* translators: %d: lowest route price in kroner. */
-						$vk_price_label = sprintf( __( 'fra %d kr', 'vandrekalender-events' ), (int) round( $vk_price_from ) );
+						$vk_price_label = sprintf( __( 'from %d kr', 'vandrekalender-events' ), (int) round( $vk_price_from ) );
 					}
 					?>
 					<a class="vk-calendar__event" href="<?php echo esc_url( get_permalink( $vk_event_id ) ); ?>">

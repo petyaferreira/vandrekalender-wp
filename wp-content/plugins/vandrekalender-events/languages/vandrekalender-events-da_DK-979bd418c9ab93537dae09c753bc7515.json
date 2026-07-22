@@ -1,0 +1,56 @@
+{
+    "translation-revision-date": "YEAR-MO-DA HO:MI+ZONE",
+    "generator": "WP-CLI\/2.12.0",
+    "source": "resources\/event-meta-fields\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "en",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Route": ["Rute"],
+            "\u2014": [""],
+            "Location": ["Placering"],
+            "Place name (optional)": ["Stednavn (valgfrit)"],
+            "e.g. Dyrehaven or Silkeborg Sti": ["f.eks. Dyrehaven eller Silkeborg Sti"],
+            "Human-readable name shown on event cards. Falls back to municipality if left empty.": [
+                "L\u00e6sbart navn der vises p\u00e5 begivenhedskort. Bruger kommunen hvis feltet er tomt."
+            ],
+            "Address": ["Adresse"],
+            "Start typing an address\u2026": ["Begynd at skrive en adresse\u2026"],
+            "Coordinates": ["Koordinater"],
+            "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036\u00b0 N, 9.0192\u00b0 E\" and the nearest address is looked up for you.": [
+                "Udfyldes automatisk n\u00e5r en adresse v\u00e6lges. Eller inds\u00e6t koordinater som \"56.052777, 9.749856\" eller \"56.8036\u00b0 N, 9.0192\u00b0 E\", s\u00e5 sl\u00e5s den n\u00e6rmeste adresse op for dig."
+            ],
+            "Event Details": ["Begivenhedsdetaljer"],
+            "Event Date": ["Dato for begivenhed"],
+            "Routes": ["Ruter"],
+            "No routes added yet.": ["Ingen ruter tilf\u00f8jet endnu."],
+            "Start:": ["Start:"],
+            "Incomplete route": ["Ufuldst\u00e6ndig rute"],
+            "Edit": ["Rediger"],
+            "Remove": ["Fjern"],
+            "Distance (km)": ["Distance (km)"],
+            "Start Time": ["Starttidspunkt"],
+            "Cutoff Time (hours)": ["Makstid (timer)"],
+            "Maximum hours allowed to finish the route.": [
+                "Maksimalt antal timer til at gennemf\u00f8re ruten."
+            ],
+            "Price (DKK)": ["Pris (DKK)"],
+            "Done": ["F\u00e6rdig"],
+            "Add route": ["Tilf\u00f8j rute"],
+            "Organiser": ["Arrang\u00f8r"],
+            "Name": ["Navn"],
+            "Organiser or club name": ["Arrang\u00f8r- eller klubnavn"],
+            "Website": ["Hjemmeside"],
+            "Contact email (admin only)": ["Kontakt-e-mail (kun admin)"],
+            "Stored securely. Never shown publicly. Used for the event claim flow.": [
+                "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
+            ],
+            "New here?": ["Ny her?"],
+            "Watch the how-to video": ["Se hvordan-videoen"]
+        }
+    }
+}

@@ -109,9 +109,10 @@ function readUrlFilters() {
  * Build popup HTML for an event.
  *
  * @param {Object} event Event payload.
+ * @param {Object} i18n  Translated labels from the server-rendered context.
  * @return {string} Popup markup.
  */
-function popupHtml(event) {
+function popupHtml(event, i18n) {
   let date = '';
   if (event.date) {
     const parsed = new Date(event.date);
@@ -121,16 +122,16 @@ function popupHtml(event) {
     ? `${event.distances_km.join(', ')} km`
     : '';
   const price = event.is_free
-    ? 'Gratis'
+    ? i18n.free
     : event.price_from != null
-      ? `fra ${Math.round(event.price_from)} kr`
+      ? i18n.priceFrom.replace('%d', Math.round(event.price_from))
       : '';
   const meta = [date, dist, price].filter(Boolean).join(' · ');
 
   return `<div class="vk-map__popup">
 		<strong>${event.title}</strong>
 		${meta ? `<span class="vk-map__popup-meta">${meta}</span>` : ''}
-		<a href="${event.permalink}">Se detaljer</a>
+		<a href="${event.permalink}">${i18n.details}</a>
 	</div>`;
 }
 
@@ -192,7 +193,7 @@ store('vandrekalender/event-map', {
           const marker = L.marker([event.lat, event.lng], {
             icon: instance.pinIcon,
           });
-          marker.bindPopup(popupHtml(event), { closeButton: false });
+          marker.bindPopup(popupHtml(event, ctx.i18n), { closeButton: false });
 
           let closeTimer;
           const cancelClose = () => clearTimeout(closeTimer);
@@ -221,13 +222,13 @@ store('vandrekalender/event-map', {
         if (points.length) {
           setStatus('');
         } else {
-          setStatus('Ingen vandreture med placering matcher dine filtre.');
+          setStatus(ctx.i18n.noMatches);
         }
       }
 
       async function load() {
         const current = ++requestId;
-        setStatus('Indlæser kort…');
+        setStatus(ctx.i18n.loading);
 
         try {
           const query = new URLSearchParams(readFilters()).toString();
@@ -246,7 +247,7 @@ store('vandrekalender/event-map', {
           if (current !== requestId || cancelled) {
             return;
           }
-          setStatus('Kunne ikke indlæse kortet. Prøv igen.');
+          setStatus(ctx.i18n.loadError);
         }
       }
 
@@ -303,7 +304,7 @@ store('vandrekalender/event-map', {
         try {
           await ensureLeaflet();
         } catch (e) {
-          setStatus('Kortet kunne ikke indlæses.');
+          setStatus(ctx.i18n.initError);
           return;
         }
         await waitForVisible();

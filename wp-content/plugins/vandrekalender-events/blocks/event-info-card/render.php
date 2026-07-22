@@ -48,7 +48,7 @@ $vk_format_price = function ( array $vk_route ) {
 	$vk_price = isset( $vk_route['price'] ) ? (float) $vk_route['price'] : 0.0;
 
 	if ( $vk_price <= 0.0 ) {
-		return __( 'Gratis', 'vandrekalender-events' );
+		return __( 'Free', 'vandrekalender-events' );
 	}
 
 	/* translators: %s: price in Danish kroner */
@@ -67,7 +67,7 @@ $vk_format_start_time = function ( array $vk_route ) {
 	}
 
 	/* translators: %s: start time, e.g. 09:00 */
-	return sprintf( __( 'kl. %s', 'vandrekalender-events' ), $vk_route['start_time'] );
+	return sprintf( __( 'at %s', 'vandrekalender-events' ), $vk_route['start_time'] );
 };
 
 /**
@@ -82,7 +82,7 @@ $vk_format_cutoff = function ( array $vk_route ) {
 	}
 
 	/* translators: %s: number of hours */
-	return sprintf( _n( '%s time', '%s timer', (int) $vk_route['cutoff_time'], 'vandrekalender-events' ), $vk_route['cutoff_time'] );
+	return sprintf( _n( '%s hour', '%s hours', (int) $vk_route['cutoff_time'], 'vandrekalender-events' ), $vk_route['cutoff_time'] );
 };
 
 /**
@@ -93,7 +93,7 @@ $vk_format_cutoff = function ( array $vk_route ) {
  */
 $vk_format_distance = function ( array $vk_route ) {
 	if ( empty( $vk_route['distance_km'] ) ) {
-		return __( 'Rute', 'vandrekalender-events' );
+		return __( 'Route', 'vandrekalender-events' );
 	}
 
 	$vk_km = rtrim( rtrim( sprintf( '%.1f', (float) $vk_route['distance_km'] ), '0' ), '.' );
@@ -107,7 +107,7 @@ $vk_first_route = $vk_routes[0];
 <div <?php echo get_block_wrapper_attributes( [ 'class' => 'vk-info-card' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> data-vk-info-card>
 	<div class="vk-info-card__price">
 		<span data-vk-info-field="price"><?php echo esc_html( $vk_format_price( $vk_first_route ) ); ?></span>
-		<span class="vk-info-card__price-unit"><?php esc_html_e( 'pr. deltager', 'vandrekalender-events' ); ?></span>
+		<span class="vk-info-card__price-unit"><?php esc_html_e( 'per participant', 'vandrekalender-events' ); ?></span>
 	</div>
 
 	<?php if ( count( $vk_routes ) > 1 ) : ?>
@@ -131,24 +131,24 @@ $vk_first_route = $vk_routes[0];
 	<dl class="vk-info-card__rows">
 		<?php if ( $vk_date_label ) : ?>
 			<div class="vk-info-card__row">
-				<dt><?php esc_html_e( 'Dato', 'vandrekalender-events' ); ?></dt>
+				<dt><?php esc_html_e( 'Date', 'vandrekalender-events' ); ?></dt>
 				<dd><?php echo esc_html( $vk_date_label ); ?></dd>
 			</div>
 		<?php endif; ?>
 
 		<div class="vk-info-card__row">
-			<dt><?php esc_html_e( 'Starttid', 'vandrekalender-events' ); ?></dt>
+			<dt><?php esc_html_e( 'Start time', 'vandrekalender-events' ); ?></dt>
 			<dd data-vk-info-field="start-time"><?php echo esc_html( $vk_format_start_time( $vk_first_route ) ); ?></dd>
 		</div>
 
 		<div class="vk-info-card__row">
-			<dt><?php esc_html_e( 'Makstid', 'vandrekalender-events' ); ?></dt>
+			<dt><?php esc_html_e( 'Cutoff time', 'vandrekalender-events' ); ?></dt>
 			<dd data-vk-info-field="cutoff"><?php echo esc_html( $vk_format_cutoff( $vk_first_route ) ); ?></dd>
 		</div>
 
 		<?php if ( $vk_place ) : ?>
 			<div class="vk-info-card__row">
-				<dt><?php esc_html_e( 'Sted', 'vandrekalender-events' ); ?></dt>
+				<dt><?php esc_html_e( 'Place', 'vandrekalender-events' ); ?></dt>
 				<dd>
 					<?php echo esc_html( $vk_place ); ?>
 					<?php if ( $vk_address && 0 !== strcasecmp( trim( $vk_address ), trim( $vk_place ) ) ) : ?>
@@ -157,7 +157,7 @@ $vk_first_route = $vk_routes[0];
 					<?php if ( $vk_directions_url ) : ?>
 						<br />
 						<a class="vk-info-card__directions" href="<?php echo esc_url( $vk_directions_url ); ?>" target="_blank" rel="noopener noreferrer">
-							<?php esc_html_e( 'Vis rutevejledning', 'vandrekalender-events' ); ?> ›
+							<?php esc_html_e( 'Show directions', 'vandrekalender-events' ); ?> ›
 						</a>
 					<?php endif; ?>
 				</dd>
@@ -167,8 +167,8 @@ $vk_first_route = $vk_routes[0];
 
 	<?php if ( $vk_book_url ) : ?>
 		<a class="vk-info-card__cta" href="<?php echo esc_url( $vk_book_url ); ?>" target="_blank" rel="noopener noreferrer">
-			<?php esc_html_e( 'Book din plads', 'vandrekalender-events' ); ?> →
+			<?php esc_html_e( 'Book your place', 'vandrekalender-events' ); ?> →
 		</a>
-		<p class="vk-info-card__note"><?php esc_html_e( 'Tilmelding sker via arrangørens side', 'vandrekalender-events' ); ?></p>
+		<p class="vk-info-card__note"><?php esc_html_e( 'Registration is handled by the organiser', 'vandrekalender-events' ); ?></p>
 	<?php endif; ?>
 </div>

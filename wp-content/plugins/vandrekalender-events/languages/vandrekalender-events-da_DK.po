@@ -1,0 +1,915 @@
+# Copyright (C) 2026 Petya Ferreira
+# This file is distributed under the same license as the Vandrekalender Events plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Vandrekalender Events 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-22T14:07:16+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: vandrekalender-events\n"
+
+#. Plugin Name of the plugin
+#: vandrekalender-events.php
+msgid "Vandrekalender Events"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: vandrekalender-events.php
+msgid "https://vandrekalender.dk"
+msgstr ""
+
+#. Description of the plugin
+#: vandrekalender-events.php
+msgid "Custom post type, blocks, REST API, and scraping pipeline for Vandrekalender."
+msgstr ""
+
+#. Author of the plugin
+#: vandrekalender-events.php
+msgid "Petya Ferreira"
+msgstr ""
+
+#: blocks/event-calendar/render.php:109
+msgid "Mon"
+msgstr "Man"
+
+#: blocks/event-calendar/render.php:110
+msgid "Tue"
+msgstr "Tir"
+
+#: blocks/event-calendar/render.php:111
+msgid "Wed"
+msgstr "Ons"
+
+#: blocks/event-calendar/render.php:112
+msgid "Thu"
+msgstr "Tor"
+
+#: blocks/event-calendar/render.php:113
+msgid "Fri"
+msgstr "Fre"
+
+#: blocks/event-calendar/render.php:114
+msgid "Sat"
+msgstr "Lør"
+
+#: blocks/event-calendar/render.php:115
+msgid "Sun"
+msgstr "Søn"
+
+#: blocks/event-calendar/render.php:144
+msgid "Previous month"
+msgstr "Forrige måned"
+
+#: blocks/event-calendar/render.php:153
+msgid "Next month"
+msgstr "Næste måned"
+
+#. translators: 1: long date, 2: number of events.
+#: blocks/event-calendar/render.php:219
+#, php-format
+msgid "%1$s — %2$d walk"
+msgid_plural "%1$s — %2$d walks"
+msgstr[0] "%1$s — %2$d vandretur"
+msgstr[1] "%1$s — %2$d vandreture"
+
+#: blocks/event-calendar/render.php:243
+#: blocks/event-cards/render.php:106
+#: blocks/event-info-card/render.php:51
+#: blocks/event-map/render.php:72
+msgid "Free"
+msgstr "Gratis"
+
+#. translators: %d: lowest route price in kroner.
+#. translators: %d: lowest price in kroner.
+#: blocks/event-calendar/render.php:246
+#: blocks/event-cards/render.php:109
+#: blocks/event-map/render.php:74
+#, php-format
+msgid "from %d kr"
+msgstr "fra %d kr"
+
+#: blocks/event-cards/render.php:75
+msgid "No walks match your filters."
+msgstr "Ingen vandreture matcher dine filtre."
+
+#: blocks/event-cards/render.php:154
+msgid "Show more walks"
+msgstr "Vis flere vandreture"
+
+#: blocks/event-filters/render.php:24
+msgid "Short (0–10 km)"
+msgstr "Kort (0–10 km)"
+
+#: blocks/event-filters/render.php:25
+msgid "Medium (10–25 km)"
+msgstr "Mellem (10–25 km)"
+
+#: blocks/event-filters/render.php:26
+msgid "Long (25+ km)"
+msgstr "Lang (25+ km)"
+
+#: blocks/event-filters/render.php:31
+#: includes/event/class-event.php:547
+msgid "Region"
+msgstr "Region"
+
+#: blocks/event-filters/render.php:33
+msgid "All regions"
+msgstr "Alle regioner"
+
+#: blocks/event-filters/render.php:41
+#: blocks/event-filters/render.php:42
+#: includes/event/class-event.php:582
+msgid "Length"
+msgstr "Længde"
+
+#: blocks/event-filters/render.php:53
+msgid "From date"
+msgstr "Fra dato"
+
+#: blocks/event-filters/render.php:58
+msgid "To date"
+msgstr "Til dato"
+
+#: blocks/event-filters/render.php:66
+msgid "Free only"
+msgstr "Kun gratis"
+
+#: blocks/event-filters/render.php:71
+msgid "Reset"
+msgstr "Nulstil"
+
+#. translators: %s: price in Danish kroner
+#: blocks/event-info-card/render.php:55
+#, php-format
+msgid "%s kr"
+msgstr "%s kr"
+
+#. translators: %s: start time, e.g. 09:00
+#: blocks/event-info-card/render.php:70
+#, php-format
+msgid "at %s"
+msgstr "kl. %s"
+
+#. translators: %s: number of hours
+#: blocks/event-info-card/render.php:85
+#, php-format
+msgid "%s hour"
+msgid_plural "%s hours"
+msgstr[0] "%s time"
+msgstr[1] "%s timer"
+
+#: blocks/event-info-card/render.php:96
+#: resources/event-meta-fields/index.js:457
+msgid "Route"
+msgstr "Rute"
+
+#. translators: %s: distance in kilometres
+#: blocks/event-info-card/render.php:102
+#, php-format
+msgid "%s km"
+msgstr "%s km"
+
+#: blocks/event-info-card/render.php:110
+msgid "per participant"
+msgstr "pr. deltager"
+
+#: blocks/event-info-card/render.php:134
+msgid "Date"
+msgstr "Dato"
+
+#: blocks/event-info-card/render.php:140
+msgid "Start time"
+msgstr "Starttid"
+
+#: blocks/event-info-card/render.php:145
+msgid "Cutoff time"
+msgstr "Makstid"
+
+#: blocks/event-info-card/render.php:151
+msgid "Place"
+msgstr "Sted"
+
+#: blocks/event-info-card/render.php:160
+msgid "Show directions"
+msgstr "Vis rutevejledning"
+
+#: blocks/event-info-card/render.php:170
+msgid "Book your place"
+msgstr "Book din plads"
+
+#: blocks/event-info-card/render.php:172
+msgid "Registration is handled by the organiser"
+msgstr "Tilmelding sker via arrangørens side"
+
+#: blocks/event-map/render.php:75
+msgid "See details"
+msgstr "Se detaljer"
+
+#: blocks/event-map/render.php:76
+msgid "No walks with a location match your filters."
+msgstr "Ingen vandreture med placering matcher dine filtre."
+
+#: blocks/event-map/render.php:77
+#: blocks/event-map/render.php:104
+msgid "Loading map…"
+msgstr "Indlæser kort…"
+
+#: blocks/event-map/render.php:78
+msgid "Could not load the map. Please try again."
+msgstr "Kunne ikke indlæse kortet. Prøv igen."
+
+#: blocks/event-map/render.php:79
+msgid "The map could not be loaded."
+msgstr "Kortet kunne ikke indlæses."
+
+#: blocks/event-map/render.php:91
+msgid "Map of walking events in Denmark"
+msgstr "Kort over vandreture i Danmark"
+
+#: blocks/event-map/render.php:103
+msgid "Reset map"
+msgstr "Nulstil kort"
+
+#: blocks/slider/render.php:62
+msgid "Slider navigation"
+msgstr "Slidernavigation"
+
+#: blocks/slider/render.php:72
+#: blocks/slider/render.php:98
+msgid "Previous slide"
+msgstr "Forrige slide"
+
+#: blocks/slider/render.php:82
+#: blocks/slider/render.php:110
+msgid "Next slide"
+msgstr "Næste slide"
+
+#: blocks/tabs/render.php:32
+#: blocks/tabs/edit.js:116
+msgid "Tab"
+msgstr "Faneblad"
+
+#: includes/class-event-rest-api.php:468
+msgid "Event not found."
+msgstr "Begivenheden blev ikke fundet."
+
+#: includes/class-facebook-importer.php:46
+#: includes/class-facebook-importer.php:47
+#: includes/class-facebook-importer.php:66
+msgid "Add from Facebook"
+msgstr ""
+
+#: includes/class-facebook-importer.php:70
+msgid "Paste one or more public Facebook event URLs, one per line (e.g. https://www.facebook.com/events/1234567890). Each new URL becomes a draft event prefilled with whatever Facebook exposes (title, date, organiser, cover image); you complete the routes and address in the editor and publish. URLs that were imported before are skipped, so it is safe to re-paste a whole list."
+msgstr ""
+
+#: includes/class-facebook-importer.php:76
+msgid "Facebook event URLs, one per line"
+msgstr ""
+
+#. translators: %d: maximum number of URLs per import.
+#: includes/class-facebook-importer.php:80
+#, php-format
+msgid "Up to %d links per import. Each event is fetched from Facebook, so a large batch takes a little while."
+msgstr ""
+
+#: includes/class-facebook-importer.php:82
+msgid "Create draft events"
+msgstr ""
+
+#: includes/class-facebook-importer.php:104
+msgid "You are not allowed to import events."
+msgstr ""
+
+#: includes/class-facebook-importer.php:418
+msgid "Facebook event (untitled import)"
+msgstr ""
+
+#. translators: %d: number of drafts.
+#: includes/class-facebook-importer.php:569
+#, php-format
+msgid "%d draft created with details from Facebook"
+msgid_plural "%d drafts created with details from Facebook"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of drafts.
+#: includes/class-facebook-importer.php:573
+#, php-format
+msgid "%d empty draft created (Facebook exposed no details — fill in manually)"
+msgid_plural "%d empty drafts created (Facebook exposed no details — fill in manually)"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of events.
+#: includes/class-facebook-importer.php:577
+#, php-format
+msgid "%d already imported and left untouched"
+msgid_plural "%d already imported and left untouched"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of URLs.
+#: includes/class-facebook-importer.php:581
+#, php-format
+msgid "%d line was not a Facebook event URL"
+msgid_plural "%d lines were not Facebook event URLs"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of events.
+#: includes/class-facebook-importer.php:585
+#, php-format
+msgid "%d draft could not be created"
+msgid_plural "%d drafts could not be created"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-facebook-importer.php:592
+msgid "The new drafts are listed below — complete and publish each one."
+msgstr ""
+
+#: includes/class-facebook-importer.php:613
+msgid "Collect links from a Facebook group"
+msgstr ""
+
+#: includes/class-facebook-importer.php:614
+msgid "Group event lists are only visible when you are logged in to Facebook, so they cannot be fetched automatically. Instead, drag this button to your browser's bookmarks bar once:"
+msgstr ""
+
+#: includes/class-facebook-importer.php:615
+msgid "Drag this button to your bookmarks bar instead of clicking it. Then use it while viewing a Facebook events page."
+msgstr ""
+
+#: includes/class-facebook-importer.php:615
+msgid "★ Collect Facebook event links"
+msgstr ""
+
+#: includes/class-facebook-importer.php:616
+msgid "Then, whenever you want to import: open the group's events page on Facebook (e.g. facebook.com/groups/…/events), scroll so the events you want are loaded, click the bookmarklet, and paste the copied links into the field above."
+msgstr ""
+
+#: includes/class-facebook-importer.php:643
+msgid "Recent Facebook imports"
+msgstr ""
+
+#: includes/class-facebook-importer.php:646
+#: includes/event/class-event.php:89
+msgid "Event"
+msgstr ""
+
+#: includes/class-facebook-importer.php:647
+msgid "Status"
+msgstr ""
+
+#: includes/class-facebook-importer.php:648
+msgid "Event date"
+msgstr ""
+
+#: includes/class-facebook-importer.php:649
+msgid "Source"
+msgstr ""
+
+#: includes/class-facebook-importer.php:669
+msgid "View on Facebook"
+msgstr ""
+
+#: includes/class-organizer-dashboard.php:118
+msgid "Vandrekalender"
+msgstr ""
+
+#. translators: %s: user display name.
+#: includes/class-organizer-dashboard.php:142
+#, php-format
+msgid "Hi %s, welcome to Vandrekalender!"
+msgstr "Hej %s, velkommen til Vandrekalender!"
+
+#. translators: %s: user display name.
+#: includes/class-organizer-dashboard.php:144
+#, php-format
+msgid "Hi %s, ready to create your next walk?"
+msgstr "Hej %s, klar til at oprette din næste vandretur?"
+
+#: includes/class-organizer-dashboard.php:156
+msgid "Create your first event"
+msgstr "Opret din første begivenhed"
+
+#: includes/class-organizer-dashboard.php:157
+msgid "Create a new event"
+msgstr "Opret en ny begivenhed"
+
+#: includes/class-organizer-dashboard.php:172
+msgid "How to create an event"
+msgstr "Sådan opretter du en begivenhed"
+
+#: includes/class-organizer-dashboard.php:178
+msgid "Watch the how-to video again"
+msgstr "Se hvordan-videoen igen"
+
+#. translators: %s: number of events the user has created.
+#: includes/class-organizer-dashboard.php:188
+#, php-format
+msgid "You have %s event."
+msgid_plural "You have %s events."
+msgstr[0] "Du har %s begivenhed."
+msgstr[1] "Du har %s begivenheder."
+
+#: includes/class-organizer-dashboard.php:193
+msgid "See your events"
+msgstr "Se dine begivenheder"
+
+#. translators: 1: attachment ID, 2: MIME type of the configured file, 3: option name.
+#: includes/class-organizer-dashboard.php:399
+#, php-format
+msgid "The onboarding video override (attachment %1$s, %2$s) is not a format browsers can play, so no video is shown to organizers. Re-export it as MP4 (H.264/AAC), or delete the %3$s option to fall back to the video bundled with the plugin."
+msgstr ""
+
+#: includes/class-organizer-dashboard.php:401
+msgid "file missing"
+msgstr ""
+
+#. translators: %s: expected path of the bundled video file.
+#: includes/class-organizer-dashboard.php:407
+#, php-format
+msgid "The onboarding video is missing at %s, so no video is shown to organizers. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
+msgstr ""
+
+#: includes/class-roles.php:186
+msgid "Event Organizer"
+msgstr "Arrangør"
+
+#: includes/class-scraper-admin.php:31
+#: includes/class-scraper-admin.php:32
+#: includes/class-scraper-admin.php:52
+msgid "Scraper Log"
+msgstr ""
+
+#: includes/class-scraper-admin.php:57
+msgid "No scraper runs recorded yet."
+msgstr ""
+
+#: includes/class-scraper-admin.php:64
+msgid "When"
+msgstr ""
+
+#: includes/class-scraper-admin.php:65
+msgid "Trigger"
+msgstr ""
+
+#: includes/class-scraper-admin.php:66
+msgid "Duration"
+msgstr ""
+
+#: includes/class-scraper-admin.php:67
+msgid "Events updated"
+msgstr ""
+
+#: includes/class-scraper-admin.php:68
+msgid "Per scraper"
+msgstr ""
+
+#. translators: %s: next scheduled run, formatted in the site timezone.
+#: includes/class-scraper-admin.php:90
+#, php-format
+msgid "Automatic scraping is enabled. Next run: %s."
+msgstr ""
+
+#: includes/class-scraper-admin.php:93
+msgid "Automatic scraping is enabled, but no run is scheduled yet."
+msgstr ""
+
+#: includes/class-scraper-admin.php:95
+msgid "Automatic scraping is disabled here. Runs are triggered manually (./scrape.sh)."
+msgstr ""
+
+#. translators: 1: scraper name, 2: error message.
+#: includes/class-scraper-admin.php:120
+#, php-format
+msgid "%1$s: error — %2$s"
+msgstr ""
+
+#. translators: 1: scraper name, 2: number of events.
+#: includes/class-scraper-admin.php:124
+#, php-format
+msgid "%1$s: %2$d"
+msgstr ""
+
+#: includes/event/class-event.php:88
+#: includes/event/class-event.php:90
+msgid "Events"
+msgstr "Begivenheder"
+
+#: includes/event/class-event.php:91
+msgid "Add New Event"
+msgstr "Tilføj ny begivenhed"
+
+#: includes/event/class-event.php:92
+msgid "Edit Event"
+msgstr "Rediger begivenhed"
+
+#: includes/event/class-event.php:93
+msgid "View Event"
+msgstr "Vis begivenhed"
+
+#: includes/event/class-event.php:94
+msgid "View Events"
+msgstr "Vis begivenheder"
+
+#: includes/event/class-event.php:95
+msgid "Update Event"
+msgstr "Opdater begivenhed"
+
+#: includes/event/class-event.php:96
+msgid "All Events"
+msgstr "Alle begivenheder"
+
+#: includes/event/class-event.php:97
+msgid "Search Events"
+msgstr "Søg i begivenheder"
+
+#: includes/event/class-event.php:98
+msgid "No events found."
+msgstr "Ingen begivenheder fundet."
+
+#: includes/event/class-event.php:99
+msgid "No events found in trash."
+msgstr "Ingen begivenheder fundet i papirkurven."
+
+#: includes/event/class-event.php:546
+#: includes/event/class-event.php:554
+msgid "Regions"
+msgstr "Regioner"
+
+#: includes/event/class-event.php:548
+msgid "Search Regions"
+msgstr "Søg i regioner"
+
+#: includes/event/class-event.php:549
+msgid "All Regions"
+msgstr "Alle regioner"
+
+#: includes/event/class-event.php:550
+msgid "Edit Region"
+msgstr "Rediger region"
+
+#: includes/event/class-event.php:551
+msgid "Update Region"
+msgstr "Opdater region"
+
+#: includes/event/class-event.php:552
+msgid "Add New Region"
+msgstr "Tilføj ny region"
+
+#: includes/event/class-event.php:553
+msgid "New Region Name"
+msgstr "Navn på ny region"
+
+#: includes/event/class-event.php:581
+#: includes/event/class-event.php:589
+msgid "Lengths"
+msgstr "Længder"
+
+#: includes/event/class-event.php:583
+msgid "Search Lengths"
+msgstr "Søg i længder"
+
+#: includes/event/class-event.php:584
+msgid "All Lengths"
+msgstr "Alle længder"
+
+#: includes/event/class-event.php:585
+msgid "Edit Length"
+msgstr "Rediger længde"
+
+#: includes/event/class-event.php:586
+msgid "Update Length"
+msgstr "Opdater længde"
+
+#: includes/event/class-event.php:587
+msgid "Add New Length"
+msgstr "Tilføj ny længde"
+
+#: includes/event/class-event.php:588
+msgid "New Length Name"
+msgstr "Navn på ny længde"
+
+#: blocks/event-calendar/edit.js:16
+msgid "Event Calendar — a month grid with event dots renders on the published page."
+msgstr "Begivenhedskalender — et månedsgitter med prikker vises på den publicerede side."
+
+#: blocks/event-cards/edit.js:14
+msgid "Event Cards — events load as a card grid on the published page."
+msgstr "Begivenhedskort — begivenheder indlæses som et kortgitter på den publicerede side."
+
+#: blocks/event-filters/edit.js:16
+msgid "Event Filters — region, length, date, free. Active on the published page."
+msgstr "Begivenhedsfiltre — region, længde, dato, gratis. Aktive på den publicerede side."
+
+#: blocks/event-info-card/edit.js:16
+msgid "Event Info Card — the price, date, place, and a per-route start/cutoff time switcher render on the published event page."
+msgstr ""
+
+#: blocks/event-map/edit.js:14
+msgid "Event Map — an interactive Denmark map with event pins renders on the published page."
+msgstr "Kort over begivenheder — et interaktivt Danmarkskort med markører vises på den publicerede side."
+
+#: blocks/link-box/edit.js:48
+msgid "Link"
+msgstr "Link"
+
+#: blocks/link-box/edit.js:55
+msgid "Unlink"
+msgstr "Fjern link"
+
+#: blocks/link-box/edit.js:87
+msgid "Hover text"
+msgstr "Hover-tekst"
+
+#: blocks/link-box/edit.js:97
+msgid "Hover background"
+msgstr "Hover-baggrund"
+
+#: blocks/slider/edit.js:35
+msgid "Slider settings"
+msgstr "Slider-indstillinger"
+
+#: blocks/slider/edit.js:39
+msgid "Behavior"
+msgstr "Opførsel"
+
+#: blocks/slider/edit.js:43
+msgid "Normal slider"
+msgstr "Normal slider"
+
+#: blocks/slider/edit.js:47
+msgid "Continuous marquee"
+msgstr "Kontinuerlig marquee"
+
+#: blocks/slider/edit.js:51
+msgid "Vertical"
+msgstr "Lodret"
+
+#: blocks/slider/edit.js:55
+msgid "Hero with Progress Bar"
+msgstr "Hero med statuslinje"
+
+#: blocks/slider/edit.js:66
+msgid "Progress bar color"
+msgstr "Farve på statuslinje"
+
+#: blocks/slider/edit.js:82
+msgid "Slides per view (Desktop)"
+msgstr "Slides pr. visning (desktop)"
+
+#: blocks/slider/edit.js:92
+msgid "Slides per view (Mobile)"
+msgstr "Slides pr. visning (mobil)"
+
+#: blocks/tabs/edit.js:13
+msgid "Tab 1"
+msgstr "Faneblad 1"
+
+#: blocks/tabs/edit.js:14
+msgid "Tab 2"
+msgstr "Faneblad 2"
+
+#: blocks/tabs/edit.js:111
+msgid "Add tab"
+msgstr "Tilføj faneblad"
+
+#: resources/event-meta-fields/index.js:89
+msgid "—"
+msgstr ""
+
+#: resources/event-meta-fields/index.js:227
+msgid "Location"
+msgstr "Placering"
+
+#: resources/event-meta-fields/index.js:232
+msgid "Place name (optional)"
+msgstr "Stednavn (valgfrit)"
+
+#: resources/event-meta-fields/index.js:235
+msgid "e.g. Dyrehaven or Silkeborg Sti"
+msgstr "f.eks. Dyrehaven eller Silkeborg Sti"
+
+#: resources/event-meta-fields/index.js:239
+msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
+msgstr "Læsbart navn der vises på begivenhedskort. Bruger kommunen hvis feltet er tomt."
+
+#: resources/event-meta-fields/index.js:249
+msgid "Address"
+msgstr "Adresse"
+
+#: resources/event-meta-fields/index.js:252
+msgid "Start typing an address…"
+msgstr "Begynd at skrive en adresse…"
+
+#: resources/event-meta-fields/index.js:303
+msgid "Coordinates"
+msgstr "Koordinater"
+
+#: resources/event-meta-fields/index.js:307
+msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
+msgstr "Udfyldes automatisk når en adresse vælges. Eller indsæt koordinater som \"56.052777, 9.749856\" eller \"56.8036° N, 9.0192° E\", så slås den nærmeste adresse op for dig."
+
+#: resources/event-meta-fields/index.js:359
+msgid "Event Details"
+msgstr "Begivenhedsdetaljer"
+
+#: resources/event-meta-fields/index.js:369
+msgid "Event Date"
+msgstr "Dato for begivenhed"
+
+#: resources/event-meta-fields/index.js:393
+msgid "Routes"
+msgstr "Ruter"
+
+#: resources/event-meta-fields/index.js:398
+msgid "No routes added yet."
+msgstr "Ingen ruter tilføjet endnu."
+
+#: resources/event-meta-fields/index.js:418
+msgid "Start:"
+msgstr "Start:"
+
+#: resources/event-meta-fields/index.js:424
+msgid "Incomplete route"
+msgstr "Ufuldstændig rute"
+
+#: resources/event-meta-fields/index.js:434
+msgid "Edit"
+msgstr "Rediger"
+
+#: resources/event-meta-fields/index.js:441
+#: resources/event-meta-fields/index.js:464
+msgid "Remove"
+msgstr "Fjern"
+
+#: resources/event-meta-fields/index.js:469
+msgid "Distance (km)"
+msgstr "Distance (km)"
+
+#: resources/event-meta-fields/index.js:480
+msgid "Start Time"
+msgstr "Starttidspunkt"
+
+#: resources/event-meta-fields/index.js:489
+msgid "Cutoff Time (hours)"
+msgstr "Makstid (timer)"
+
+#: resources/event-meta-fields/index.js:495
+msgid "Maximum hours allowed to finish the route."
+msgstr "Maksimalt antal timer til at gennemføre ruten."
+
+#: resources/event-meta-fields/index.js:504
+msgid "Price (DKK)"
+msgstr "Pris (DKK)"
+
+#: resources/event-meta-fields/index.js:520
+msgid "Done"
+msgstr "Færdig"
+
+#: resources/event-meta-fields/index.js:534
+msgid "Add route"
+msgstr "Tilføj rute"
+
+#: resources/event-meta-fields/index.js:550
+msgid "Organiser"
+msgstr "Arrangør"
+
+#: resources/event-meta-fields/index.js:556
+msgid "Name"
+msgstr "Navn"
+
+#: resources/event-meta-fields/index.js:559
+msgid "Organiser or club name"
+msgstr "Arrangør- eller klubnavn"
+
+#: resources/event-meta-fields/index.js:565
+msgid "Website"
+msgstr "Hjemmeside"
+
+#: resources/event-meta-fields/index.js:576
+msgid "Contact email (admin only)"
+msgstr "Kontakt-e-mail (kun admin)"
+
+#: resources/event-meta-fields/index.js:581
+msgid "Stored securely. Never shown publicly. Used for the event claim flow."
+msgstr "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
+
+#: resources/event-meta-fields/index.js:647
+msgid "New here?"
+msgstr "Ny her?"
+
+#: resources/event-meta-fields/index.js:652
+#: resources/event-meta-fields/index.js:663
+msgid "Watch the how-to video"
+msgstr "Se hvordan-videoen"
+
+#: blocks/event-calendar/block.json
+msgctxt "block title"
+msgid "Event Calendar"
+msgstr "Begivenhedskalender"
+
+#: blocks/event-calendar/block.json
+msgctxt "block description"
+msgid "A month calendar that marks days with walking events. Click a day to see its events."
+msgstr "En månedskalender der markerer dage med vandreture. Klik på en dag for at se dagens begivenheder."
+
+#: blocks/event-cards/block.json
+msgctxt "block title"
+msgid "Event Cards"
+msgstr "Begivenhedskort"
+
+#: blocks/event-cards/block.json
+msgctxt "block description"
+msgid "Displays matching walking events as a grid of cards."
+msgstr "Viser matchende vandreture som et gitter af kort."
+
+#: blocks/event-filters/block.json
+msgctxt "block title"
+msgid "Event Filters"
+msgstr "Begivenhedsfiltre"
+
+#: blocks/event-filters/block.json
+msgctxt "block description"
+msgid "Filter controls for the event calendar."
+msgstr "Filtre til begivenhedskalenderen."
+
+#: blocks/event-info-card/block.json
+msgctxt "block title"
+msgid "Event Info Card"
+msgstr "Begivenhedsinfokort"
+
+#: blocks/event-info-card/block.json
+msgctxt "block description"
+msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with a link to the organiser's booking page."
+msgstr ""
+
+#: blocks/event-map/block.json
+msgctxt "block title"
+msgid "Event Map"
+msgstr "Kort over begivenheder"
+
+#: blocks/event-map/block.json
+msgctxt "block description"
+msgid "A map of Denmark with a pin for each walking event. Built on Leaflet + OpenStreetMap."
+msgstr "Et kort over Danmark med en markør for hver vandretur. Bygget på Leaflet + OpenStreetMap."
+
+#: blocks/link-box/block.json
+msgctxt "block title"
+msgid "Link Box"
+msgstr "Linkboks"
+
+#: blocks/link-box/block.json
+msgctxt "block description"
+msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
+msgstr ""
+
+#: blocks/slider-slide/block.json
+msgctxt "block title"
+msgid "Slider Slide"
+msgstr "Slide"
+
+#: blocks/slider-slide/block.json
+msgctxt "block description"
+msgid "A single slide within slider slides block."
+msgstr ""
+
+#: blocks/slider/block.json
+msgctxt "block title"
+msgid "Slider"
+msgstr "Slider"
+
+#: blocks/slider/block.json
+msgctxt "block description"
+msgid "Slider block for displaying content in a sliding format."
+msgstr ""
+
+#: blocks/tab/block.json
+msgctxt "block title"
+msgid "Tab"
+msgstr "Faneblad"
+
+#: blocks/tab/block.json
+msgctxt "block description"
+msgid "A single tab panel. Place any blocks inside. Lives inside a Tabs block."
+msgstr ""
+
+#: blocks/tabs/block.json
+msgctxt "block title"
+msgid "Tabs"
+msgstr "Faneblade"
+
+#: blocks/tabs/block.json
+msgctxt "block description"
+msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
+msgstr ""

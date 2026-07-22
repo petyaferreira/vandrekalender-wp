@@ -64,6 +64,20 @@ $vk_context = [
 	'zoom'      => 7,
 	'presets'   => (object) $vk_presets,
 	'locations' => Vandrekalender_Event_Rest_Api::locations_payload( $vk_filters ),
+	// Strings the view module writes into popups and the status line. They are
+	// translated here rather than in JS because view.js is a script *module*,
+	// and script modules have no wp_set_script_translations() equivalent — so
+	// the server hands them over already in the visitor's language.
+	'i18n'      => [
+		'free'      => __( 'Free', 'vandrekalender-events' ),
+		/* translators: %d: lowest price in kroner. */
+		'priceFrom' => __( 'from %d kr', 'vandrekalender-events' ),
+		'details'   => __( 'See details', 'vandrekalender-events' ),
+		'noMatches' => __( 'No walks with a location match your filters.', 'vandrekalender-events' ),
+		'loading'   => __( 'Loading map…', 'vandrekalender-events' ),
+		'loadError' => __( 'Could not load the map. Please try again.', 'vandrekalender-events' ),
+		'initError' => __( 'The map could not be loaded.', 'vandrekalender-events' ),
+	],
 ];
 
 ?>
@@ -74,7 +88,7 @@ $vk_context = [
 	// which knows the canvas only as an empty div — would wipe the panes and
 	// controls Leaflet injected into it. Out here the runtime never touches it.
 	?>
-	<div class="vk-map__canvas" role="application" aria-label="<?php esc_attr_e( 'Kort over vandreture i Danmark', 'vandrekalender-events' ); ?>"></div>
+	<div class="vk-map__canvas" role="application" aria-label="<?php esc_attr_e( 'Map of walking events in Denmark', 'vandrekalender-events' ); ?>"></div>
 	<div
 		class="vk-map__ui"
 		data-wp-interactive="vandrekalender/event-map"
@@ -86,7 +100,7 @@ $vk_context = [
 			class="vk-map__reset"
 			data-wp-on--click="actions.resetView"
 			hidden
-		><?php esc_html_e( 'Nulstil kort', 'vandrekalender-events' ); ?></button>
-		<p class="vk-map__status" role="status"><?php esc_html_e( 'Indlæser kort…', 'vandrekalender-events' ); ?></p>
+		><?php esc_html_e( 'Reset map', 'vandrekalender-events' ); ?></button>
+		<p class="vk-map__status" role="status"><?php esc_html_e( 'Loading map…', 'vandrekalender-events' ); ?></p>
 	</div>
 </div>

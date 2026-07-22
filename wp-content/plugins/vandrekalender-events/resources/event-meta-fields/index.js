@@ -627,7 +627,7 @@ registerPlugin('vandrekalender-event-document-fields', {
 // ── Onboarding video ──────────────────────────────────────────────────────────
 
 /**
- * "Se hvordan-videoen" help link on the event creation screen.
+ * "Watch the how-to video" help link on the event creation screen.
  *
  * Rendered as an editor notice rather than a PHP admin notice: core hides
  * classic notices on block editor screens. window.vkOnboardingVideo is set
@@ -644,12 +644,12 @@ const OnboardingVideo = () => {
     if (!video || noticeShown.current) return;
     noticeShown.current = true;
 
-    createInfoNotice(__('Ny her?', 'vandrekalender-events'), {
+    createInfoNotice(__('New here?', 'vandrekalender-events'), {
       id: 'vandrekalender-onboarding-video',
       isDismissible: true,
       actions: [
         {
-          label: __('Se hvordan-videoen', 'vandrekalender-events'),
+          label: __('Watch the how-to video', 'vandrekalender-events'),
           onClick: () => setIsOpen(true),
         },
       ],
@@ -660,7 +660,7 @@ const OnboardingVideo = () => {
 
   return (
     <Modal
-      title={__('Se hvordan-videoen', 'vandrekalender-events')}
+      title={__('Watch the how-to video', 'vandrekalender-events')}
       onRequestClose={() => setIsOpen(false)}
       size="large"
     >

@@ -139,9 +139,9 @@ class Vandrekalender_Organizer_Dashboard {
 				sprintf(
 					$first
 						/* translators: %s: user display name. */
-						? __( 'Hej %s, velkommen til Vandrekalender!', 'vandrekalender-events' )
+						? __( 'Hi %s, welcome to Vandrekalender!', 'vandrekalender-events' )
 						/* translators: %s: user display name. */
-						: __( 'Hej %s, klar til at oprette din næste vandretur?', 'vandrekalender-events' ),
+						: __( 'Hi %s, ready to create your next walk?', 'vandrekalender-events' ),
 					$user->display_name
 				)
 			)
@@ -153,8 +153,8 @@ class Vandrekalender_Organizer_Dashboard {
 			esc_url( admin_url( 'post-new.php?post_type=' . \Vandrekalender\Event::CUSTOMPOSTTYPE ) ),
 			esc_html(
 				$first
-					? __( 'Opret din første begivenhed', 'vandrekalender-events' )
-					: __( 'Opret en ny begivenhed', 'vandrekalender-events' )
+					? __( 'Create your first event', 'vandrekalender-events' )
+					: __( 'Create a new event', 'vandrekalender-events' )
 			)
 		);
 
@@ -169,13 +169,13 @@ class Vandrekalender_Organizer_Dashboard {
 			if ( '' !== $video ) {
 				printf(
 					'<h3 class="vk-onboarding__video-heading">%s</h3>',
-					esc_html__( 'Sådan opretter du en begivenhed', 'vandrekalender-events' )
+					esc_html__( 'How to create an event', 'vandrekalender-events' )
 				);
 			}
 
 			echo $video; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in video_html().
 		} else {
-			echo self::video_html( __( 'Se hvordan-videoen igen', 'vandrekalender-events' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in video_html().
+			echo self::video_html( __( 'Watch the how-to video again', 'vandrekalender-events' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in video_html().
 		}
 
 		// Section D — my events.
@@ -185,12 +185,12 @@ class Vandrekalender_Organizer_Dashboard {
 				esc_html(
 					sprintf(
 						/* translators: %s: number of events the user has created. */
-						_n( 'Du har %s begivenhed.', 'Du har %s begivenheder.', $count, 'vandrekalender-events' ),
+						_n( 'You have %s event.', 'You have %s events.', $count, 'vandrekalender-events' ),
 						number_format_i18n( $count )
 					)
 				),
 				esc_url( admin_url( 'edit.php?post_type=' . \Vandrekalender\Event::CUSTOMPOSTTYPE ) ),
-				esc_html__( 'Se dine begivenheder', 'vandrekalender-events' )
+				esc_html__( 'See your events', 'vandrekalender-events' )
 			);
 		}
 
