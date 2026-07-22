@@ -111,12 +111,24 @@ everyone else. New accounts are created with the site's `default_role`, which is
 | Environment | Where the values come from |
 |---|---|
 | Local | `.env` → interpolated into `WORDPRESS_CONFIG_EXTRA` in `docker-compose.yml` |
-| Staging | Added by hand to the server's `wp-config.php` |
-| Production | Added by hand to the server's `wp-config.php` |
+| Staging | GitHub Environment secrets → generated mu-plugin (automatic) |
+| Production | GitHub Environment secrets → generated mu-plugin (automatic) |
 
-Same file placement as the scraper constants above: `wp-config.php` sits in the
-WordPress root, one level **above** `NORDICWAY_DEST_PATH`. It is server-only, so
-deploys never overwrite it.
+On the servers the constants are **not** in `wp-config.php`. The deploy workflow
+writes `wp-content/mu-plugins/00-vk-google-login.php` from the `staging` /
+`production` environment secrets `GOOGLE_LOGIN_CLIENT_ID` and
+`GOOGLE_LOGIN_SECRET`. Must-plugins load before regular plugins, so the
+constants exist by the time `login-with-google` reads them.
+
+Consequences worth knowing:
+
+- The file is **regenerated on every deploy** — editing it on the server is
+  pointless. Change the value in GitHub → Settings → Environments, then re-deploy.
+- If either secret is missing for the target environment the deploy **fails
+  loudly** rather than shipping a half-configured login.
+- Rebuilding or migrating a server restores the config on the next deploy; there
+  is nothing hand-placed to remember.
+- Unlike the scraper constants below, no SSH session is needed.
 
 **One OAuth client covers all three environments** — the same Client ID and
 Secret everywhere. What separates the environments is the redirect URI list on
@@ -154,7 +166,8 @@ first when Google login breaks on one environment only.
 5. rsync theme + plugin into staging dir (excludes node_modules, src, resources, webpack configs)
 6. Write SSH key + known_hosts
 7. SCP to `NORDICWAY_DEST_PATH`
-8. Post-deploy SSH sanity check
+8. Write `mu-plugins/00-vk-google-login.php` from the environment's Google secrets
+9. Post-deploy SSH sanity check
 
 ---
 
@@ -174,6 +187,8 @@ Set in repo Settings → Environments (`staging`, `production`):
 - `NORDICWAY_SSH_HOST`
 - `NORDICWAY_SSH_PORT`
 - `NORDICWAY_SSH_USERNAME`
+- `GOOGLE_LOGIN_CLIENT_ID`
+- `GOOGLE_LOGIN_SECRET`
 - `NORDICWAY_DEST_PATH`
 
 ---
