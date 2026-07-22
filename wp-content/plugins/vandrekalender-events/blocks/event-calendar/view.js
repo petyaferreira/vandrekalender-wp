@@ -28,7 +28,12 @@ function* navigate(url) {
   state.isNavigating = true;
   try {
     const { actions } = yield import('@wordpress/interactivity-router');
-    yield actions.navigate(url);
+    // `force` skips the router's page cache. The filters block rewrites the
+    // URL (history.replaceState) before it dispatches, so if the router module
+    // happens to initialise after that — it is imported lazily, on the first
+    // navigation — it caches the current, unfiltered DOM under the new URL and
+    // a plain navigate would replay that stale page instead of fetching.
+    yield actions.navigate(url, { force: true });
   } finally {
     state.isNavigating = false;
   }

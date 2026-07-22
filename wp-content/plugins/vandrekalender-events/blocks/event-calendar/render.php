@@ -8,8 +8,9 @@
  * `@wordpress/interactivity-router` (see view.js) using the `maaned` (YYYY-MM)
  * and `dag` (YYYY-MM-DD) URL params, so the markup lives in one place — here.
  *
- * The filter bar's date range is ignored on purpose: this view has its own
- * month navigation.
+ * The filter bar's date range limits which days can show events and, since the
+ * filter bar drops `maaned` when it republishes the URL, decides which month
+ * the calendar opens on. Once the user navigates months, `maaned` takes over.
  *
  * @package Vandrekalender
  */
@@ -21,8 +22,33 @@ $vk_month_param = isset( $_GET['maaned'] ) ? sanitize_text_field( wp_unslash( $_
 $vk_day_param   = isset( $_GET['dag'] ) ? sanitize_text_field( wp_unslash( $_GET['dag'] ) ) : '';
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
+// On a taxonomy archive, pin the queried term so the calendar only counts
+// that region/length regardless of URL query params.
+$vk_presets = [];
+foreach ( [
+	'region' => \Vandrekalender\Event::TAX_REGION,
+	'length' => \Vandrekalender\Event::TAX_LENGTH,
+] as $vk_filter_key => $vk_taxonomy ) {
+	if ( is_tax( $vk_taxonomy ) ) {
+		$vk_presets[ $vk_filter_key ] = get_queried_object()->slug;
+	}
+}
+
+$vk_filters = array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $vk_presets );
+
+// The filter bar's date range narrows the days that can show events, but the
+// month shown is this view's own state: `maaned` wins, and without it the
+// calendar opens on the month the range starts in.
+$vk_range_from = isset( $vk_filters['date_from'] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $vk_filters['date_from'] )
+	? $vk_filters['date_from']
+	: '';
+$vk_range_to   = isset( $vk_filters['date_to'] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $vk_filters['date_to'] )
+	? $vk_filters['date_to']
+	: '';
+unset( $vk_filters['date_from'], $vk_filters['date_to'] );
+
 if ( ! preg_match( '/^\d{4}-(0[1-9]|1[0-2])$/', $vk_month_param ) ) {
-	$vk_month_param = current_time( 'Y-m' );
+	$vk_month_param = $vk_range_from ? substr( $vk_range_from, 0, 7 ) : current_time( 'Y-m' );
 }
 
 $vk_first_ts      = strtotime( $vk_month_param . '-01' );
@@ -41,30 +67,25 @@ if ( preg_match( '/^\d{4}-\d{2}-(\d{2})$/', $vk_day_param, $vk_day_match )
 	$vk_selected = $vk_day_param;
 }
 
-// On a taxonomy archive, pin the queried term so the calendar only counts
-// that region/length regardless of URL query params.
-$vk_presets = [];
-foreach ( [
-	'region' => \Vandrekalender\Event::TAX_REGION,
-	'length' => \Vandrekalender\Event::TAX_LENGTH,
-] as $vk_filter_key => $vk_taxonomy ) {
-	if ( is_tax( $vk_taxonomy ) ) {
-		$vk_presets[ $vk_filter_key ] = get_queried_object()->slug;
-	}
+// Days outside the filter range stay empty, so intersect the two ranges.
+$vk_month_from = $vk_month_param . '-01';
+$vk_month_to   = sprintf( '%s-%02d', $vk_month_param, $vk_days_in_month );
+
+$vk_counts     = [];
+$vk_count_from = ( $vk_range_from && $vk_range_from > $vk_month_from ) ? $vk_range_from : $vk_month_from;
+$vk_count_to   = ( $vk_range_to && $vk_range_to < $vk_month_to ) ? $vk_range_to : $vk_month_to;
+
+if ( $vk_count_from <= $vk_count_to ) {
+	$vk_counts = Vandrekalender_Event_Rest_Api::count_events_by_day(
+		array_merge(
+			$vk_filters,
+			[
+				'date_from' => $vk_count_from,
+				'date_to'   => $vk_count_to,
+			]
+		)
+	);
 }
-
-$vk_filters = array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $vk_presets );
-unset( $vk_filters['date_from'], $vk_filters['date_to'] );
-
-$vk_counts = Vandrekalender_Event_Rest_Api::count_events_by_day(
-	array_merge(
-		$vk_filters,
-		[
-			'date_from' => $vk_month_param . '-01',
-			'date_to'   => sprintf( '%s-%02d', $vk_month_param, $vk_days_in_month ),
-		]
-	)
-);
 
 // The selected day's events, if any day is selected.
 $vk_day_event_ids = [];
