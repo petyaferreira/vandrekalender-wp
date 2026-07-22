@@ -123,7 +123,7 @@ $vk_wrapper_attributes = [
 							></div>
 							<div class="vk-card__body">
 								<?php if ( $vk_date ) : ?>
-									<span class="vk-card__date"><?php echo esc_html( wp_date( 'D j. M Y', strtotime( $vk_date ), new DateTimeZone( 'UTC' ) ) ); ?></span>
+									<span class="vk-card__date"><?php echo esc_html( wp_date( get_option( 'date_format' ), strtotime( $vk_date ), new DateTimeZone( 'UTC' ) ) ); ?></span>
 								<?php endif; ?>
 								<span class="vk-card__title"><?php echo esc_html( get_the_title( $vk_event_id ) ); ?></span>
 								<?php if ( $vk_place ) : ?>

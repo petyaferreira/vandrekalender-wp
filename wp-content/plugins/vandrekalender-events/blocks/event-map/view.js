@@ -29,12 +29,6 @@ const ASSETS = {
   clusterJs: `${CDN}/leaflet.markercluster/${CLUSTER_VERSION}/leaflet.markercluster.min.js`,
 };
 
-const dateFmt = new Intl.DateTimeFormat('da-DK', {
-  weekday: 'short',
-  day: 'numeric',
-  month: 'short',
-});
-
 // Leaflet instances per block wrapper, so actions (resetView) can reach the
 // map created in callbacks.init. Leaflet objects are not serialisable, so
 // they cannot live in the context itself.
@@ -113,11 +107,9 @@ function readUrlFilters() {
  * @return {string} Popup markup.
  */
 function popupHtml(event, i18n) {
-  let date = '';
-  if (event.date) {
-    const parsed = new Date(event.date);
-    date = isNaN(parsed) ? event.date : dateFmt.format(parsed);
-  }
+  // Preformatted server-side from Settings → General, so the popup matches
+  // event cards and the info card. Falls back to the raw date if absent.
+  const date = event.date_label || event.date || '';
   const dist = (event.distances_km || []).length
     ? `${event.distances_km.join(', ')} km`
     : '';

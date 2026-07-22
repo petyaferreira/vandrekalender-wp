@@ -274,11 +274,17 @@ class Vandrekalender_Event_Rest_Api {
 				continue;
 			}
 
+			$date = get_post_meta( $id, \Vandrekalender\Event::META_DATE, true );
+
 			$locations[] = [
 				'id'           => $id,
 				'title'        => get_the_title( $id ),
 				'permalink'    => get_permalink( $id ),
-				'date'         => get_post_meta( $id, \Vandrekalender\Event::META_DATE, true ),
+				'date'         => $date,
+				// Formatted here rather than in the map's view module: dates
+				// belong to Settings → General, and a script module cannot read
+				// that. 'date' stays raw for any client-side comparisons.
+				'date_label'   => $date ? wp_date( get_option( 'date_format' ), strtotime( $date ), new DateTimeZone( 'UTC' ) ) : '',
 				'lat'          => (float) $lat,
 				'lng'          => (float) $lng,
 				'distances_km' => $distances,

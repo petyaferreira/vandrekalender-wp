@@ -35,7 +35,7 @@ $vk_organiser_url = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ORGA
 $vk_book_url = $vk_source_url ? $vk_source_url : $vk_organiser_url;
 $vk_place    = $vk_place_name ? $vk_place_name : $vk_municipality;
 
-$vk_date_label     = $vk_date ? date_i18n( 'D. j. M. Y', strtotime( $vk_date ) ) : '';
+$vk_date_label     = $vk_date ? date_i18n( get_option( 'date_format' ), strtotime( $vk_date ) ) : '';
 $vk_directions_url = $vk_address ? 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $vk_address ) : '';
 
 /**
