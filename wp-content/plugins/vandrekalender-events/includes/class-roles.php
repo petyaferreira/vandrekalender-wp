@@ -61,6 +61,43 @@ class Vandrekalender_Roles {
 		add_action( 'init', [ $this, 'maybe_setup_roles' ] );
 		add_action( 'pre_get_posts', [ $this, 'restrict_event_list_to_own' ] );
 		add_filter( 'map_meta_cap', [ $this, 'allow_reading_global_styles' ], 10, 4 );
+		add_filter( 'map_meta_cap', [ $this, 'allow_editing_own_attachments' ], 10, 4 );
+	}
+
+	/**
+	 * Let uploaders edit the attachments they uploaded.
+	 *
+	 * Attachments use capability_type 'post', and a parentless attachment
+	 * reports its status as 'publish', so core maps editing one to
+	 * edit_posts + edit_published_posts — blog-post capabilities the
+	 * event_organizer role deliberately lacks. Without them the media modal
+	 * renders alt text, title, caption and description read-only, so an
+	 * organizer can upload a featured image but never describe it (an
+	 * accessibility problem, not just an inconvenience). Scope is the user's
+	 * own uploads; other people's media stay untouchable.
+	 *
+	 * @param string[] $caps    Primitive capabilities required.
+	 * @param string   $cap     Requested meta capability.
+	 * @param int      $user_id User being checked.
+	 * @param array    $args    Context; $args[0] is the post ID.
+	 * @return string[] Possibly remapped capabilities.
+	 */
+	public function allow_editing_own_attachments( array $caps, string $cap, int $user_id, array $args ): array {
+		if ( 'edit_post' !== $cap || empty( $args[0] ) ) {
+			return $caps;
+		}
+
+		$post = get_post( $args[0] );
+
+		if ( ! $post || 'attachment' !== $post->post_type ) {
+			return $caps;
+		}
+
+		if ( (int) $post->post_author !== $user_id ) {
+			return $caps;
+		}
+
+		return [ 'upload_files' ];
 	}
 
 	/**
