@@ -46,7 +46,8 @@
         "wpackagist-plugin/fluentform": "^6.2",
         "wpackagist-plugin/icon-block": "^2.0",
         "wpackagist-plugin/fluent-smtp": "^2.2",
-        "wpackagist-plugin/login-with-google": "^1.4"
+        "wpackagist-plugin/login-with-google": "^1.4",
+        "wpackagist-plugin/webp-converter-for-media": "^6.6"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.1",
