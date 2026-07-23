@@ -47,6 +47,8 @@ npm run start   # dev watch
 npm run build   # production
 ```
 
+**Email (local):** every `wp_mail()` is caught by Mailpit instead of being delivered — read it at `http://localhost:${MAILPIT_PORT}` (8025). Wired at the PHP level (`sendmail_path` in the Dockerfile), so there is no SMTP plugin to activate and nothing in the database. See `docs/deployment.md` → Email.
+
 **WP-CLI:**
 ```bash
 ./wp.sh plugin list
@@ -75,6 +77,9 @@ wp-content/plugins/vandrekalender-events/
 └── includes/
     ├── event/class-event.php        ← CPT, taxonomies, meta registration
     ├── class-event-rest-api.php     ← REST endpoints
+    ├── class-event-attendees.php    ← wp_event_attendees table + join rules
+    ├── class-event-join.php         ← "Jeg kommer" flow, login gate, join/cancel REST
+    ├── class-event-join-mailer.php  ← attendee + organiser join emails
     ├── class-scraper-base.php       ← abstract scraper + upsert logic
     ├── class-scraper-scheduler.php  ← WP-Cron setup
     └── scrapers/

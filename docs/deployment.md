@@ -117,6 +117,59 @@ will see them. Harmless at this scale.
 
 ---
 
+## Email
+
+The site sends real email from two places: WordPress core (registration, password
+reset) and the join flow (sign-up and cancellation confirmations to both the
+attendee and the organiser — see `docs/authentication.md`). Everything goes
+through `wp_mail()`, so the transport is configured once, per environment, and
+nothing in the plugin needs to know about it.
+
+### Local — Mailpit catches everything
+
+Nothing is delivered locally. The `mailpit` service in `docker-compose.yml` runs
+an SMTP sink, and the Dockerfile points PHP's `sendmail_path` at Mailpit's
+sendmail-compatible binary:
+
+```
+sendmail_path = "/usr/local/bin/mailpit sendmail -S mailpit:1025 -t -i"
+```
+
+Read the caught mail — subject, headers, full body — at
+`http://localhost:${MAILPIT_PORT}` (default **8025**).
+
+Deliberately configured in PHP rather than in WordPress:
+
+- **No SMTP plugin to activate**, and no settings in the database, so a
+  `mysql-import.sh` of the production database cannot replace the local mail
+  config with the production one and start firing real email at real people from
+  a dev machine.
+- **It cannot reach production.** `deploy-to-nordicway.yml` only rsyncs
+  `wp-content/themes/` and `wp-content/plugins/`; the Dockerfile and
+  `docker-compose.yml` are local-only files.
+- It catches *every* `wp_mail()`, including core's password resets — not only the
+  plugin's own mail.
+
+`MAILPIT_PORT` is in `.env.example`; add it to your `.env` and re-run
+`./start.sh` (the WordPress image rebuilds).
+
+> **Known local wrinkle, unrelated to Mailpit:** mail sent with WordPress's
+> *default* From address fails locally, because that address is derived from the
+> site host and becomes `wordpress@localhost` — no TLD, which PHPMailer rejects
+> as invalid. The join emails are unaffected: they set their own valid From
+> (`vandrekalender_join_email_from`, defaulting to the admin email). Core's
+> password-reset mail does hit it.
+
+### Production — needs a real transport
+
+`wp_mail()` on Nordicway falls through to PHP `mail()`, which sends as
+`wordpress@vandrekalender.dk` and will not pass SPF/DKIM — expect spam foldering
+or silent drops. FluentSMTP ships with the site (currently **inactive**);
+activate it and point it at the `kontakt@vandrekalender.dk` mailbox. No code
+change is needed — every `wp_mail()` call picks it up automatically.
+
+---
+
 ## Scraper cron (production only)
 
 The event scrapers run daily at **02:12 site time (Europe/Copenhagen)**, but only

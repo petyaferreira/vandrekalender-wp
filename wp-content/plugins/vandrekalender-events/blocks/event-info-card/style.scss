@@ -149,6 +149,43 @@
       outline: 2px solid var(--wp--preset--color--fjord, #1e6fa5);
       outline-offset: 2px;
     }
+
+    // Sign-up variant: a <button> rather than the <a> above, so it needs the
+    // form-control resets the link never did.
+    &--join {
+      border: 0;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+
+      &.is-busy {
+        cursor: progress;
+        opacity: 0.7;
+      }
+
+      // Signed up: same shape, lighter green, still a live button because
+      // pressing it again is how you cancel.
+      &.is-attending {
+        background: var(--wp--preset--color--meadow, #c2d9b0);
+        color: var(--wp--preset--color--forest, #2d5f3f);
+        filter: none;
+
+        &:hover {
+          filter: brightness(0.97);
+        }
+      }
+    }
+  }
+
+  &__join {
+    margin: 0;
+  }
+
+  &__error {
+    margin: var(--wp--preset--spacing--small, 0.75rem) 0 0;
+    text-align: center;
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    color: #b3261e;
   }
 
   &__note {
@@ -162,5 +199,80 @@
     border: 1px dashed var(--wp--preset--color--meadow, #c2d9b0);
     color: var(--wp--preset--color--fern, #527a50);
     position: static;
+  }
+}
+
+/**
+ * Cancellation confirmation, shown by join.js via dialog.showModal().
+ *
+ * A native <dialog> rather than a hand-built overlay: the backdrop, focus trap
+ * and Escape-to-close all come for free and behave correctly with a screen
+ * reader. It sits at the top layer, so it is not affected by the card's
+ * position:sticky.
+ */
+.vk-cancel-dialog {
+  max-width: min(28rem, calc(100vw - 2rem));
+  padding: var(--wp--preset--spacing--regular, 1.5rem);
+  border: 0;
+  border-radius: 14px;
+  background: var(--wp--preset--color--white, #fff);
+  color: var(--wp--preset--color--charcoal, #1d1a14);
+  box-shadow: 0 20px 50px rgba(29, 26, 20, 0.25);
+
+  &::backdrop {
+    background: rgba(29, 26, 20, 0.45);
+  }
+
+  &__title {
+    margin: 0 0 var(--wp--preset--spacing--small, 0.75rem);
+    font-family: var(--wp--preset--font-family--publico, serif);
+    font-size: var(--wp--preset--font-size--large, 1.25rem);
+  }
+
+  &__text {
+    margin: 0 0 var(--wp--preset--spacing--regular, 1rem);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    color: var(--wp--preset--color--pebble, #7a7268);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wp--preset--spacing--small, 0.75rem);
+
+    button {
+      flex: 1 1 10rem;
+      min-height: 44px;
+      padding: var(--wp--preset--spacing--small, 0.75rem)
+        var(--wp--preset--spacing--regular, 1rem);
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--wp--preset--color--fjord, #1e6fa5);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  // Keeping the place is the safe default, so it carries the solid weight and
+  // cancelling is the quieter of the two.
+  &__keep {
+    border: 0;
+    background: var(--wp--preset--color--forest, #2d5f3f);
+    color: var(--wp--preset--color--white, #fff);
+  }
+
+  &__confirm {
+    border: 1px solid var(--wp--preset--color--pebble, #7a7268);
+    background: transparent;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: progress;
+    }
   }
 }

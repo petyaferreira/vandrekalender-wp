@@ -41,6 +41,19 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 - **The map canvas lives outside the island** (plain sibling div) and the context is read-only: island re-renders would wipe or reset DOM the runtime didn't render. Status/reset visibility is mutated directly on the elements.
 - **The map is never created against a hidden (zero-size) container** — cluster maths and tile layout inherit the broken geometry and nothing repairs it. `view.js` waits for the canvas to have real size (the Tabs block dispatches a bubbling `vk:tab-shown` on the activated panel; a slow poll is the fallback — ResizeObserver alone proved unreliable for the display-none→block flip).
 
+**Event Info Card** (`blocks/event-info-card/`) — the sticky summary in the single event sidebar. Two scripts on purpose: `view.js` is a plain `viewScript` for the route tabs (they swap values the runtime never rendered), and `join.js` is the `viewScriptModule` holding the "Jeg kommer" CTA (Interactivity API).
+
+The bottom CTA slot holds exactly one of two things, decided server-side:
+
+- `Vandrekalender_Event_Attendees::is_joinable()` → the sign-up button. Server-rendered with its final label, so first paint is right: "Jeg kommer" in forest, or "Deltager" in meadow (the lighter green) when the visitor is already signed up.
+- Otherwise, the original "Book din plads" link out to `event_source_url`/`event_organiser_url`.
+
+The card normally returns early when the event has no routes; a joinable event skips that early return, since the card is now the only place the button can live. The price and start/cutoff rows are guarded individually instead.
+
+**How the button behaves.** It is a real `<form>` posting to `admin-post.php`, and the server handler is a **toggle** — it joins when you are not attending and cancels when you are — so both directions work with JavaScript off. `data-wp-on--submit` is attached **only when a user is logged in**: a logged-out submit has to reach the server so the pending-join cookie is set before the login redirect (see `docs/authentication.md`). With JavaScript, joining is a `POST` to `/vandrekalender/v1/events/{id}/join`, and cancelling first opens a confirmation before the `DELETE` — so the destructive direction is never one stray click. Per-block values (event ID, attending, busy, confirming, note) live in `data-wp-context`; translated labels and the REST URL/nonce are global `wp_interactivity_state()`.
+
+The confirmation is a native `<dialog>` driven from `callbacks.toggleDialog`, which calls `showModal()`/`close()` in a `data-wp-watch` on `context.confirming`. `showModal()` is the only way to get the backdrop, focus trap and Escape handling, and it cannot be expressed as an attribute binding — the bare `open` attribute renders a non-modal box. The top layer also means the card's `position: sticky` cannot clip it.
+
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
 - `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.
@@ -78,4 +91,8 @@ There is deliberately no `front-page.html` — the front page uses `page.html` l
 
 ## Single Event Page
 
-<!-- Layout, map, routes tab switcher, sign-up CTA go here -->
+<!-- Layout, map, routes tab switcher go here -->
+
+**Sign-up CTA.** One button in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there; a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
+
+> `single-event.html` also exists as a **user customisation in the database** (`wp_template` post `single-event`). Editing the theme file alone changes nothing on a site that has one — the DB copy wins. Add new blocks in the Site Editor, or update both.

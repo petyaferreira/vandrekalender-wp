@@ -20,6 +20,9 @@ define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-roles.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-organizer-dashboard.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-rest-api.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-attendees.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join-mailer.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
@@ -34,6 +37,8 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 new Vandrekalender_Roles();
 new Vandrekalender_Organizer_Dashboard();
 new Vandrekalender_Event_Rest_Api();
+new Vandrekalender_Event_Attendees();
+new Vandrekalender_Event_Join();
 new Vandrekalender_Scraper_Scheduler();
 new Vandrekalender_Scraper_Admin();
 new Vandrekalender_Facebook_Importer();
@@ -163,6 +168,33 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		}
 	);
 }
+
+/**
+ * Fall back to the admin address when WordPress's default From is invalid.
+ *
+ * The default From is `wordpress@` + the site host (minus a leading `www.`). On
+ * a real domain that is already a valid address and this filter is a no-op —
+ * production keeps sending as `wordpress@vandrekalender.dk`, unchanged. Locally
+ * the host is `localhost`, so the default becomes `wordpress@localhost`: no TLD,
+ * which PHPMailer rejects outright, and every core email (password reset,
+ * new-user notification) fails before it can reach Mailpit. Swapping in the
+ * admin address — which always carries a real domain — makes those mails
+ * deliverable in local dev without altering production behaviour.
+ *
+ * Runs at priority 1 so a mail-transport plugin (FluentSMTP) setting its own
+ * From at the default priority still wins. The join emails set their own From
+ * (see class-event-join-mailer.php) and never depend on this.
+ *
+ * @param string $from The From address WordPress computed.
+ * @return string A valid From address.
+ */
+add_filter(
+	'wp_mail_from',
+	function ( $from ) {
+		return is_email( $from ) ? $from : get_option( 'admin_email' );
+	},
+	1
+);
 
 register_activation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'deactivate' ] );

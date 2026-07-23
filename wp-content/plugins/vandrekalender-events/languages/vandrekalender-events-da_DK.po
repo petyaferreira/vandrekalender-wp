@@ -1,5 +1,3 @@
-# Copyright (C) 2026 Petya Ferreira
-# This file is distributed under the same license as the Vandrekalender Events plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
@@ -11,6 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-07-22T14:07:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: \n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
 
@@ -34,60 +33,60 @@ msgstr ""
 msgid "Petya Ferreira"
 msgstr ""
 
-#: blocks/event-calendar/render.php:109
+#: blocks/event-calendar/render.php:130
 msgid "Mon"
 msgstr "Man"
 
-#: blocks/event-calendar/render.php:110
+#: blocks/event-calendar/render.php:131
 msgid "Tue"
 msgstr "Tir"
 
-#: blocks/event-calendar/render.php:111
+#: blocks/event-calendar/render.php:132
 msgid "Wed"
 msgstr "Ons"
 
-#: blocks/event-calendar/render.php:112
+#: blocks/event-calendar/render.php:133
 msgid "Thu"
 msgstr "Tor"
 
-#: blocks/event-calendar/render.php:113
+#: blocks/event-calendar/render.php:134
 msgid "Fri"
 msgstr "Fre"
 
-#: blocks/event-calendar/render.php:114
+#: blocks/event-calendar/render.php:135
 msgid "Sat"
 msgstr "Lør"
 
-#: blocks/event-calendar/render.php:115
+#: blocks/event-calendar/render.php:136
 msgid "Sun"
 msgstr "Søn"
 
-#: blocks/event-calendar/render.php:144
+#: blocks/event-calendar/render.php:165
 msgid "Previous month"
 msgstr "Forrige måned"
 
-#: blocks/event-calendar/render.php:153
+#: blocks/event-calendar/render.php:174
 msgid "Next month"
 msgstr "Næste måned"
 
 #. translators: 1: long date, 2: number of events.
-#: blocks/event-calendar/render.php:219
+#: blocks/event-calendar/render.php:240
 #, php-format
 msgid "%1$s — %2$d walk"
 msgid_plural "%1$s — %2$d walks"
 msgstr[0] "%1$s — %2$d vandretur"
 msgstr[1] "%1$s — %2$d vandreture"
 
-#: blocks/event-calendar/render.php:243
+#: blocks/event-calendar/render.php:264
 #: blocks/event-cards/render.php:106
-#: blocks/event-info-card/render.php:51
+#: blocks/event-info-card/render.php:57
 #: blocks/event-map/render.php:72
 msgid "Free"
 msgstr "Gratis"
 
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
-#: blocks/event-calendar/render.php:246
+#: blocks/event-calendar/render.php:267
 #: blocks/event-cards/render.php:109
 #: blocks/event-map/render.php:74
 #, php-format
@@ -146,65 +145,65 @@ msgid "Reset"
 msgstr "Nulstil"
 
 #. translators: %s: price in Danish kroner
-#: blocks/event-info-card/render.php:55
+#: blocks/event-info-card/render.php:61
 #, php-format
 msgid "%s kr"
 msgstr "%s kr"
 
 #. translators: %s: start time, e.g. 09:00
-#: blocks/event-info-card/render.php:70
+#: blocks/event-info-card/render.php:76
 #, php-format
 msgid "at %s"
 msgstr "kl. %s"
 
 #. translators: %s: number of hours
-#: blocks/event-info-card/render.php:85
+#: blocks/event-info-card/render.php:91
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] "%s time"
 msgstr[1] "%s timer"
 
-#: blocks/event-info-card/render.php:96
-#: resources/event-meta-fields/index.js:457
+#: blocks/event-info-card/render.php:102
+#: resources/event-meta-fields/index.js:465
 msgid "Route"
 msgstr "Rute"
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:102
+#: blocks/event-info-card/render.php:108
 #, php-format
 msgid "%s km"
 msgstr "%s km"
 
-#: blocks/event-info-card/render.php:110
+#: blocks/event-info-card/render.php:164
 msgid "per participant"
 msgstr "pr. deltager"
 
-#: blocks/event-info-card/render.php:134
+#: blocks/event-info-card/render.php:189
 msgid "Date"
 msgstr "Dato"
 
-#: blocks/event-info-card/render.php:140
+#: blocks/event-info-card/render.php:196
 msgid "Start time"
 msgstr "Starttid"
 
-#: blocks/event-info-card/render.php:145
+#: blocks/event-info-card/render.php:201
 msgid "Cutoff time"
 msgstr "Makstid"
 
-#: blocks/event-info-card/render.php:151
+#: blocks/event-info-card/render.php:208
 msgid "Place"
 msgstr "Sted"
 
-#: blocks/event-info-card/render.php:160
+#: blocks/event-info-card/render.php:217
 msgid "Show directions"
 msgstr "Vis rutevejledning"
 
-#: blocks/event-info-card/render.php:170
+#: blocks/event-info-card/render.php:285
 msgid "Book your place"
 msgstr "Book din plads"
 
-#: blocks/event-info-card/render.php:172
+#: blocks/event-info-card/render.php:287
 msgid "Registration is handled by the organiser"
 msgstr "Tilmelding sker via arrangørens side"
 
@@ -256,7 +255,7 @@ msgstr "Næste slide"
 msgid "Tab"
 msgstr "Faneblad"
 
-#: includes/class-event-rest-api.php:468
+#: includes/class-event-rest-api.php:474
 msgid "Event not found."
 msgstr "Begivenheden blev ikke fundet."
 
@@ -736,81 +735,81 @@ msgstr "Ruter"
 msgid "No routes added yet."
 msgstr "Ingen ruter tilføjet endnu."
 
-#: resources/event-meta-fields/index.js:418
+#: resources/event-meta-fields/index.js:422
 msgid "Start:"
 msgstr "Start:"
 
-#: resources/event-meta-fields/index.js:424
+#: resources/event-meta-fields/index.js:428
 msgid "Incomplete route"
 msgstr "Ufuldstændig rute"
 
-#: resources/event-meta-fields/index.js:434
+#: resources/event-meta-fields/index.js:442
 msgid "Edit"
 msgstr "Rediger"
 
-#: resources/event-meta-fields/index.js:441
-#: resources/event-meta-fields/index.js:464
+#: resources/event-meta-fields/index.js:449
+#: resources/event-meta-fields/index.js:472
 msgid "Remove"
 msgstr "Fjern"
 
-#: resources/event-meta-fields/index.js:469
+#: resources/event-meta-fields/index.js:477
 msgid "Distance (km)"
 msgstr "Distance (km)"
 
-#: resources/event-meta-fields/index.js:480
+#: resources/event-meta-fields/index.js:488
 msgid "Start Time"
 msgstr "Starttidspunkt"
 
-#: resources/event-meta-fields/index.js:489
+#: resources/event-meta-fields/index.js:497
 msgid "Cutoff Time (hours)"
 msgstr "Makstid (timer)"
 
-#: resources/event-meta-fields/index.js:495
+#: resources/event-meta-fields/index.js:503
 msgid "Maximum hours allowed to finish the route."
 msgstr "Maksimalt antal timer til at gennemføre ruten."
 
-#: resources/event-meta-fields/index.js:504
+#: resources/event-meta-fields/index.js:512
 msgid "Price (DKK)"
 msgstr "Pris (DKK)"
 
-#: resources/event-meta-fields/index.js:520
+#: resources/event-meta-fields/index.js:528
 msgid "Done"
 msgstr "Færdig"
 
-#: resources/event-meta-fields/index.js:534
+#: resources/event-meta-fields/index.js:542
 msgid "Add route"
 msgstr "Tilføj rute"
 
-#: resources/event-meta-fields/index.js:550
+#: resources/event-meta-fields/index.js:558
 msgid "Organiser"
 msgstr "Arrangør"
 
-#: resources/event-meta-fields/index.js:556
+#: resources/event-meta-fields/index.js:564
 msgid "Name"
 msgstr "Navn"
 
-#: resources/event-meta-fields/index.js:559
+#: resources/event-meta-fields/index.js:567
 msgid "Organiser or club name"
 msgstr "Arrangør- eller klubnavn"
 
-#: resources/event-meta-fields/index.js:565
+#: resources/event-meta-fields/index.js:573
 msgid "Website"
 msgstr "Hjemmeside"
 
-#: resources/event-meta-fields/index.js:576
+#: resources/event-meta-fields/index.js:584
 msgid "Contact email (admin only)"
 msgstr "Kontakt-e-mail (kun admin)"
 
-#: resources/event-meta-fields/index.js:581
+#: resources/event-meta-fields/index.js:589
 msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
 
-#: resources/event-meta-fields/index.js:647
+#: resources/event-meta-fields/index.js:655
 msgid "New here?"
 msgstr "Ny her?"
 
-#: resources/event-meta-fields/index.js:652
-#: resources/event-meta-fields/index.js:663
+#: resources/event-meta-fields/index.js:660
+#: resources/event-meta-fields/index.js:671
 msgid "Watch the how-to video"
 msgstr "Se hvordan-videoen"
 
@@ -848,11 +847,6 @@ msgstr "Filtre til begivenhedskalenderen."
 msgctxt "block title"
 msgid "Event Info Card"
 msgstr "Begivenhedsinfokort"
-
-#: blocks/event-info-card/block.json
-msgctxt "block description"
-msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with a link to the organiser's booking page."
-msgstr ""
 
 #: blocks/event-map/block.json
 msgctxt "block title"
@@ -913,3 +907,153 @@ msgstr "Faneblade"
 msgctxt "block description"
 msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
 msgstr ""
+
+#: blocks/event-info-card/render.php:119
+msgid "I'm going"
+msgstr "Jeg kommer"
+
+#: blocks/event-info-card/render.php:120
+msgid "Attending"
+msgstr "Deltager"
+
+#: blocks/event-info-card/render.php:129
+msgid "Sign-up failed. Please try again."
+msgstr "Tilmelding mislykkedes. Prøv igen."
+
+#: blocks/event-info-card/render.php:121
+msgid "You are signed up — we have emailed you a confirmation."
+msgstr "Du er tilmeldt — vi har sendt dig en bekræftelse på mail."
+
+#: blocks/event-info-card/render.php:140
+msgid "You are signed up for this walk."
+msgstr "Du er tilmeldt denne tur."
+
+#: blocks/event-info-card/render.php:142
+msgid "You need an account to sign up. We will bring you straight back here."
+msgstr "Du skal have en konto for at tilmelde dig. Vi sender dig direkte tilbage hertil."
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:41
+#, php-format
+msgid "You are going to %s"
+msgstr "Du er tilmeldt %s"
+
+#. translators: %s: attendee first name or display name
+#: includes/class-event-join-mailer.php:45
+#: includes/class-event-join-mailer.php:125
+#, php-format
+msgid "Hi %s"
+msgstr "Hej %s"
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:48
+#, php-format
+msgid "You have signed up for %s. The organiser has been notified."
+msgstr "Du har tilmeldt dig %s. Arrangøren har fået besked."
+
+#: includes/class-event-join-mailer.php:52
+msgid "See you on the trail!"
+msgstr "Vi ses på turen!"
+
+#. translators: 1: attendee name, 2: event title
+#: includes/class-event-join-mailer.php:81
+#, php-format
+msgid "%1$s is coming to %2$s"
+msgstr "%1$s kommer til %2$s"
+
+#. translators: 1: attendee name, 2: attendee email, 3: event title
+#: includes/class-event-join-mailer.php:87
+#, php-format
+msgid "%1$s (%2$s) has signed up for %3$s."
+msgstr "%1$s (%2$s) har tilmeldt sig %3$s."
+
+#. translators: %d: number of people signed up
+#: includes/class-event-join-mailer.php:90
+#, php-format
+msgid "%d person has signed up so far."
+msgid_plural "%d people have signed up so far."
+msgstr[0] "%d person har tilmeldt sig indtil videre."
+msgstr[1] "%d personer har tilmeldt sig indtil videre."
+
+#. translators: %s: event date
+#: includes/class-event-join-mailer.php:235
+#, php-format
+msgid "Date: %s"
+msgstr "Dato: %s"
+
+#. translators: %s: start time, e.g. 09:00
+#: includes/class-event-join-mailer.php:240
+#, php-format
+msgid "Start time: %s"
+msgstr "Starttid: %s"
+
+#. translators: %s: place name
+#: includes/class-event-join-mailer.php:245
+#, php-format
+msgid "Place: %s"
+msgstr "Sted: %s"
+
+#: includes/class-event-join.php:251
+msgid "This event does not accept sign-ups."
+msgstr "Denne begivenhed tager ikke imod tilmeldinger."
+
+#: blocks/event-info-card/render.php:130
+msgid "Cancellation failed. Please try again."
+msgstr "Afmelding mislykkedes. Prøv igen."
+
+#: blocks/event-info-card/render.php:265
+msgid "Cancel your sign-up?"
+msgstr "Vil du afmelde dig?"
+
+#: blocks/event-info-card/render.php:266
+msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
+msgstr "Du bliver fjernet fra listen til denne tur. Du kan tilmelde dig igen senere, hvis du skifter mening."
+
+#: blocks/event-info-card/render.php:270
+msgid "No, keep my place"
+msgstr "Nej, behold min plads"
+
+#: blocks/event-info-card/render.php:278
+msgid "Yes, cancel"
+msgstr "Ja, afmeld mig"
+
+#: blocks/event-info-card/block.json
+msgctxt "block description"
+msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with either a \"Jeg kommer\" sign-up or a link to the organiser's booking page."
+msgstr "Fastgjort opsummering for en enkelt begivenhed: pris, dato, sted og et ruteskift for starttid og makstid, med enten en \"Jeg kommer\"-tilmelding eller et link til arrangørens bookingside."
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:121
+#, php-format
+msgid "Your sign-up for %s is cancelled"
+msgstr "Din tilmelding til %s er annulleret"
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:128
+#, php-format
+msgid "We have taken you off the list for %s. The organiser has been notified."
+msgstr "Vi har fjernet dig fra listen til %s. Arrangøren har fået besked."
+
+#: includes/class-event-join-mailer.php:132
+msgid "Changed your mind? You are welcome to sign up again."
+msgstr "Skiftet mening? Du er velkommen til at tilmelde dig igen."
+
+#. translators: 1: attendee name, 2: event title
+#: includes/class-event-join-mailer.php:164
+#, php-format
+msgid "%1$s has cancelled for %2$s"
+msgstr "%1$s har afmeldt sig %2$s"
+
+#. translators: 1: attendee name, 2: attendee email, 3: event title
+#: includes/class-event-join-mailer.php:170
+#, php-format
+msgid "%1$s (%2$s) has cancelled their sign-up for %3$s."
+msgstr "%1$s (%2$s) har afmeldt sin tilmelding til %3$s."
+
+#. translators: %d: number of people signed up
+#: includes/class-event-join-mailer.php:173
+#, php-format
+msgid "%d person is signed up now."
+msgid_plural "%d people are signed up now."
+msgstr[0] "%d person er tilmeldt nu."
+msgstr[1] "%d personer er tilmeldt nu."

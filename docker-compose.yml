@@ -2,6 +2,7 @@ services:
   wordpress:
     depends_on:
       - db
+      - mailpit
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,6 +29,15 @@ services:
       - "./wp-content/uploads:/var/www/html/wp-content/uploads"
       - "./wp-content/uploads-webpc:/var/www/html/wp-content/uploads-webpc"
       - "./custom.ini:/usr/local/etc/php/conf.d/custom.ini"
+
+  # Catches every email the site sends locally — join and cancellation
+  # confirmations, password resets, form notifications — and shows them in a
+  # web inbox instead of delivering them to real addresses.
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: on-failure
+    ports:
+      - ${MAILPIT_PORT}:8025
 
   db:
     image: mariadb:10.6.4-focal

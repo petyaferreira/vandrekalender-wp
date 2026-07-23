@@ -188,6 +188,31 @@ add_action('pre_get_posts', function ($query) {
 
 Profiles stay strictly personal per user: avatar, display name, language preference, and password are managed on the user's own profile page (`/min-konto` / wp-admin profile), independent of organization membership.
 
+## The Join Gate — logging in mid-action
+
+The "Jeg kommer" button (in the Event Info Card, only on events with `event_source = manual`) is the first place an anonymous visitor is asked to have an account. The flow must not lose what they were doing.
+
+1. The button is a real form posting to `admin-post.php?action=vk_join_event`, so it works without JavaScript — and, more importantly, so the logged-out branch runs server-side.
+2. Logged out: `Vandrekalender_Event_Join` sets a 30-minute, HttpOnly, `SameSite=Lax` cookie `vk_pending_join = <event_id>` and redirects to `wp_login_url( <event permalink> )`. Lax is deliberate and is the strictest setting that survives Google's callback, which arrives as a cross-site top-level navigation.
+3. **One hook covers both login methods.** Login with Google runs through the standard `authenticate` filter on `wp-login.php`, so `wp_login` fires for Google exactly as it does for a native login. `process_pending_join()` (priority 5, ahead of the Google plugin's own redirect) reads the cookie, records the join, sends both emails, and clears the cookie. There is no separate OAuth callback handler to keep in sync.
+4. Destination: `redirect_to` on the login URL already points at the event, which the Google plugin copies into its OAuth `state`. The `login_redirect` filter (priority 20, after the organizer dashboard's) is the belt-and-braces for the native path. Either way the visitor lands on the event page with `?joined=1`, never in wp-admin.
+5. No pending cookie → every one of these hooks is a no-op and login behaves exactly as before.
+
+The logged-out branch deliberately skips the nonce check: it changes nothing but a cookie, and a logged-out nonce baked into page-cached HTML would go stale and greet real visitors with "Are you sure you want to do this?". The logged-in branch checks the nonce normally.
+
+**Cancelling.** The same button cancels once you are signed up. The `admin-post.php` handler is a toggle, so the no-JS path works in both directions; with JavaScript a confirmation dialog stands in front of the `DELETE`. Cancelling is never gated on `is_joinable()` — an event that stops accepting sign-ups must not trap the people already on the list.
+
+**Emails.** Four in total, all plain text through `wp_mail()` (`Vandrekalender_Event_Join_Mailer`), and only ever sent when the database actually changed — a repeated click is silent:
+
+| Event | To attendee | To organiser |
+|---|---|---|
+| Join | Confirmation + event details | Who joined, plus the running total |
+| Cancel | Confirmation they are off the list | Who cancelled, plus the **updated** total |
+
+The organiser address is `event_organiser_email`, falling back to the event's author (on a manually created event, that is the person running the walk). From defaults to the site admin address rather than WordPress's `wordpress@<domain>`, which rarely passes SPF; Reply-To is crossed over so the two can simply reply to each other. Transport per environment is in `docs/deployment.md` → Email.
+
+Because email verification is not yet enforced (see above), a join today only proves control of the account, not of the address. When verification lands, the pending-join cookie should be consumed *after* the verification step, not before.
+
 ## Interaction with the Claim Flow
 
 When a scraped event is claimed (domain-matched token email, per DataModel v3), the claim attaches the event to the **organizer term**, not just to the claiming individual. Every member of that organization then benefits from the claim. `event_claimed_by` still records which individual performed the claim.

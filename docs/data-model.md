@@ -315,6 +315,43 @@ Returns full detail for a single event. Used by the event detail page.
 
 ---
 
+## Attendees — custom table `wp_event_attendees`
+
+Backs the "Jeg kommer" join button. One row per join, **not** a list in post meta: two people pressing the button in the same second would each read the same meta array and write it back, and the second write would silently drop the first person.
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | bigint unsigned, AI | Primary key |
+| `event_id` | bigint unsigned | Event post ID |
+| `user_id` | bigint unsigned | WordPress user ID |
+| `joined_at` | datetime | UTC |
+
+`UNIQUE KEY event_user (event_id, user_id)` is what actually prevents double joins — `Vandrekalender_Event_Attendees::add()` uses `INSERT IGNORE` and reports whether a row was really created, and only a genuinely new join sends the emails. A second key on `user_id` covers the future "my walks" list.
+
+Created by `Vandrekalender_Event_Attendees::maybe_install_table()` through `dbDelta`, gated on the `vandrekalender_attendees_schema_version` option — the same versioned-option pattern as the roles setup, because deploys are a file sync and an activation hook never runs again.
+
+**Joinable events only.** `Vandrekalender_Event_Attendees::is_joinable()` requires `post_status = publish` and `event_source` of `manual` (or empty, for rows that predate the meta default). Scraped and Facebook-imported events are run by external organisers who never see our attendee list, so they keep their "book with the organiser" link instead. Filterable via `vandrekalender_event_is_joinable`.
+
+### `POST` / `DELETE /events/{id}/join`
+
+Signs the **current user** up for an event, or cancels their sign-up. Both require a logged-in user (`X-WP-Nonce` with the `wp_rest` nonce).
+
+`POST` returns 403 `vandrekalender_event_not_joinable` if the event does not accept sign-ups, and is idempotent — joining twice returns `created: false` and sends no second email.
+
+```json
+{ "attending": true, "created": true, "count": 4 }
+```
+
+`DELETE` deliberately has **no** joinable check: if an event stops accepting sign-ups, the people already on the list must still be able to get off it. It sends no email (see the open question in `docs/authentication.md`).
+
+```json
+{ "attending": false, "removed": true, "count": 3 }
+```
+
+Only used once JavaScript has taken over. The no-JS and logged-out paths go through `admin-post.php?action=vk_join_event`, where a single handler toggles in whichever direction applies; see `docs/authentication.md`.
+
+---
+
 ## Block Editor Implementation
 
 All custom fields are added as panels in the block editor sidebar via `PluginDocumentSettingPanel`. The post content area is left free for the event description and images.

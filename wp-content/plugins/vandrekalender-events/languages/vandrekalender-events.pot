@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-22T14:07:16+00:00\n"
+"POT-Creation-Date: 2026-07-22T20:50:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -34,60 +34,60 @@ msgstr ""
 msgid "Petya Ferreira"
 msgstr ""
 
-#: blocks/event-calendar/render.php:109
+#: blocks/event-calendar/render.php:130
 msgid "Mon"
 msgstr ""
 
-#: blocks/event-calendar/render.php:110
+#: blocks/event-calendar/render.php:131
 msgid "Tue"
 msgstr ""
 
-#: blocks/event-calendar/render.php:111
+#: blocks/event-calendar/render.php:132
 msgid "Wed"
 msgstr ""
 
-#: blocks/event-calendar/render.php:112
+#: blocks/event-calendar/render.php:133
 msgid "Thu"
 msgstr ""
 
-#: blocks/event-calendar/render.php:113
+#: blocks/event-calendar/render.php:134
 msgid "Fri"
 msgstr ""
 
-#: blocks/event-calendar/render.php:114
+#: blocks/event-calendar/render.php:135
 msgid "Sat"
 msgstr ""
 
-#: blocks/event-calendar/render.php:115
+#: blocks/event-calendar/render.php:136
 msgid "Sun"
 msgstr ""
 
-#: blocks/event-calendar/render.php:144
+#: blocks/event-calendar/render.php:165
 msgid "Previous month"
 msgstr ""
 
-#: blocks/event-calendar/render.php:153
+#: blocks/event-calendar/render.php:174
 msgid "Next month"
 msgstr ""
 
 #. translators: 1: long date, 2: number of events.
-#: blocks/event-calendar/render.php:219
+#: blocks/event-calendar/render.php:240
 #, php-format
 msgid "%1$s — %2$d walk"
 msgid_plural "%1$s — %2$d walks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/event-calendar/render.php:243
+#: blocks/event-calendar/render.php:264
 #: blocks/event-cards/render.php:106
-#: blocks/event-info-card/render.php:51
+#: blocks/event-info-card/render.php:57
 #: blocks/event-map/render.php:72
 msgid "Free"
 msgstr ""
 
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
-#: blocks/event-calendar/render.php:246
+#: blocks/event-calendar/render.php:267
 #: blocks/event-cards/render.php:109
 #: blocks/event-map/render.php:74
 #, php-format
@@ -146,65 +146,109 @@ msgid "Reset"
 msgstr ""
 
 #. translators: %s: price in Danish kroner
-#: blocks/event-info-card/render.php:55
+#: blocks/event-info-card/render.php:61
 #, php-format
 msgid "%s kr"
 msgstr ""
 
 #. translators: %s: start time, e.g. 09:00
-#: blocks/event-info-card/render.php:70
+#: blocks/event-info-card/render.php:76
 #, php-format
 msgid "at %s"
 msgstr ""
 
 #. translators: %s: number of hours
-#: blocks/event-info-card/render.php:85
+#: blocks/event-info-card/render.php:91
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/event-info-card/render.php:96
-#: resources/event-meta-fields/index.js:457
+#: blocks/event-info-card/render.php:102
+#: resources/event-meta-fields/index.js:465
 msgid "Route"
 msgstr ""
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:102
+#: blocks/event-info-card/render.php:108
 #, php-format
 msgid "%s km"
 msgstr ""
 
-#: blocks/event-info-card/render.php:110
-msgid "per participant"
+#: blocks/event-info-card/render.php:119
+msgid "I'm going"
 msgstr ""
 
-#: blocks/event-info-card/render.php:134
-msgid "Date"
+#: blocks/event-info-card/render.php:120
+msgid "Attending"
+msgstr ""
+
+#: blocks/event-info-card/render.php:121
+msgid "You are signed up — we have emailed you a confirmation."
+msgstr ""
+
+#: blocks/event-info-card/render.php:129
+msgid "Sign-up failed. Please try again."
+msgstr ""
+
+#: blocks/event-info-card/render.php:130
+msgid "Cancellation failed. Please try again."
 msgstr ""
 
 #: blocks/event-info-card/render.php:140
+msgid "You are signed up for this walk."
+msgstr ""
+
+#: blocks/event-info-card/render.php:142
+msgid "You need an account to sign up. We will bring you straight back here."
+msgstr ""
+
+#: blocks/event-info-card/render.php:164
+msgid "per participant"
+msgstr ""
+
+#: blocks/event-info-card/render.php:189
+msgid "Date"
+msgstr ""
+
+#: blocks/event-info-card/render.php:196
 msgid "Start time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:145
+#: blocks/event-info-card/render.php:201
 msgid "Cutoff time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:151
+#: blocks/event-info-card/render.php:208
 msgid "Place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:160
+#: blocks/event-info-card/render.php:217
 msgid "Show directions"
 msgstr ""
 
-#: blocks/event-info-card/render.php:170
+#: blocks/event-info-card/render.php:265
+msgid "Cancel your sign-up?"
+msgstr ""
+
+#: blocks/event-info-card/render.php:266
+msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
+msgstr ""
+
+#: blocks/event-info-card/render.php:270
+msgid "No, keep my place"
+msgstr ""
+
+#: blocks/event-info-card/render.php:278
+msgid "Yes, cancel"
+msgstr ""
+
+#: blocks/event-info-card/render.php:285
 msgid "Book your place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:172
+#: blocks/event-info-card/render.php:287
 msgid "Registration is handled by the organiser"
 msgstr ""
 
@@ -256,7 +300,108 @@ msgstr ""
 msgid "Tab"
 msgstr ""
 
-#: includes/class-event-rest-api.php:468
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:41
+#, php-format
+msgid "You are going to %s"
+msgstr ""
+
+#. translators: %s: attendee first name or display name
+#: includes/class-event-join-mailer.php:45
+#: includes/class-event-join-mailer.php:125
+#, php-format
+msgid "Hi %s"
+msgstr ""
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:48
+#, php-format
+msgid "You have signed up for %s. The organiser has been notified."
+msgstr ""
+
+#: includes/class-event-join-mailer.php:52
+msgid "See you on the trail!"
+msgstr ""
+
+#. translators: 1: attendee name, 2: event title
+#: includes/class-event-join-mailer.php:81
+#, php-format
+msgid "%1$s is coming to %2$s"
+msgstr ""
+
+#. translators: 1: attendee name, 2: attendee email, 3: event title
+#: includes/class-event-join-mailer.php:87
+#, php-format
+msgid "%1$s (%2$s) has signed up for %3$s."
+msgstr ""
+
+#. translators: %d: number of people signed up
+#: includes/class-event-join-mailer.php:90
+#, php-format
+msgid "%d person has signed up so far."
+msgid_plural "%d people have signed up so far."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:121
+#, php-format
+msgid "Your sign-up for %s is cancelled"
+msgstr ""
+
+#. translators: %s: event title
+#: includes/class-event-join-mailer.php:128
+#, php-format
+msgid "We have taken you off the list for %s. The organiser has been notified."
+msgstr ""
+
+#: includes/class-event-join-mailer.php:132
+msgid "Changed your mind? You are welcome to sign up again."
+msgstr ""
+
+#. translators: 1: attendee name, 2: event title
+#: includes/class-event-join-mailer.php:164
+#, php-format
+msgid "%1$s has cancelled for %2$s"
+msgstr ""
+
+#. translators: 1: attendee name, 2: attendee email, 3: event title
+#: includes/class-event-join-mailer.php:170
+#, php-format
+msgid "%1$s (%2$s) has cancelled their sign-up for %3$s."
+msgstr ""
+
+#. translators: %d: number of people signed up
+#: includes/class-event-join-mailer.php:173
+#, php-format
+msgid "%d person is signed up now."
+msgid_plural "%d people are signed up now."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: event date
+#: includes/class-event-join-mailer.php:235
+#, php-format
+msgid "Date: %s"
+msgstr ""
+
+#. translators: %s: start time, e.g. 09:00
+#: includes/class-event-join-mailer.php:240
+#, php-format
+msgid "Start time: %s"
+msgstr ""
+
+#. translators: %s: place name
+#: includes/class-event-join-mailer.php:245
+#, php-format
+msgid "Place: %s"
+msgstr ""
+
+#: includes/class-event-join.php:251
+msgid "This event does not accept sign-ups."
+msgstr ""
+
+#: includes/class-event-rest-api.php:474
 msgid "Event not found."
 msgstr ""
 
@@ -736,81 +881,81 @@ msgstr ""
 msgid "No routes added yet."
 msgstr ""
 
-#: resources/event-meta-fields/index.js:418
+#: resources/event-meta-fields/index.js:422
 msgid "Start:"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:424
+#: resources/event-meta-fields/index.js:428
 msgid "Incomplete route"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:434
+#: resources/event-meta-fields/index.js:442
 msgid "Edit"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:441
-#: resources/event-meta-fields/index.js:464
+#: resources/event-meta-fields/index.js:449
+#: resources/event-meta-fields/index.js:472
 msgid "Remove"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:469
+#: resources/event-meta-fields/index.js:477
 msgid "Distance (km)"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:480
+#: resources/event-meta-fields/index.js:488
 msgid "Start Time"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:489
+#: resources/event-meta-fields/index.js:497
 msgid "Cutoff Time (hours)"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:495
+#: resources/event-meta-fields/index.js:503
 msgid "Maximum hours allowed to finish the route."
 msgstr ""
 
-#: resources/event-meta-fields/index.js:504
+#: resources/event-meta-fields/index.js:512
 msgid "Price (DKK)"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:520
+#: resources/event-meta-fields/index.js:528
 msgid "Done"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:534
+#: resources/event-meta-fields/index.js:542
 msgid "Add route"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:550
+#: resources/event-meta-fields/index.js:558
 msgid "Organiser"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:556
+#: resources/event-meta-fields/index.js:564
 msgid "Name"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:559
+#: resources/event-meta-fields/index.js:567
 msgid "Organiser or club name"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:565
+#: resources/event-meta-fields/index.js:573
 msgid "Website"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:576
+#: resources/event-meta-fields/index.js:584
 msgid "Contact email (admin only)"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:581
+#: resources/event-meta-fields/index.js:589
 msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr ""
 
-#: resources/event-meta-fields/index.js:647
+#: resources/event-meta-fields/index.js:655
 msgid "New here?"
 msgstr ""
 
-#: resources/event-meta-fields/index.js:652
-#: resources/event-meta-fields/index.js:663
+#: resources/event-meta-fields/index.js:660
+#: resources/event-meta-fields/index.js:671
 msgid "Watch the how-to video"
 msgstr ""
 
@@ -851,7 +996,7 @@ msgstr ""
 
 #: blocks/event-info-card/block.json
 msgctxt "block description"
-msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with a link to the organiser's booking page."
+msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with either a \"Jeg kommer\" sign-up or a link to the organiser's booking page."
 msgstr ""
 
 #: blocks/event-map/block.json
