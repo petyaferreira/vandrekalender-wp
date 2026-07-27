@@ -78,6 +78,27 @@ class Vandrekalender_Event_Join {
 	}
 
 	/**
+	 * Whether a user is the organiser (author) of an event.
+	 *
+	 * The organiser runs the walk, so under our model they are not one of its
+	 * attendees — the button becomes an informational line for them, and a
+	 * self-join is refused server-side (see join()). "Organiser" here means the
+	 * `post_author`; the shared-ownership organizer taxonomy is a separate,
+	 * later question (see docs/authentication.md).
+	 *
+	 * @param int $event_id Event post ID.
+	 * @param int $user_id  WordPress user ID.
+	 * @return bool
+	 */
+	public static function is_event_organiser( int $event_id, int $user_id ): bool {
+		if ( $event_id <= 0 || $user_id <= 0 ) {
+			return false;
+		}
+
+		return (int) get_post_field( 'post_author', $event_id ) === $user_id;
+	}
+
+	/**
 	 * The event URL a completed join lands on.
 	 *
 	 * @param int $event_id Event post ID.
@@ -141,7 +162,11 @@ class Vandrekalender_Event_Join {
 			exit;
 		}
 
-		if ( ! Vandrekalender_Event_Attendees::is_joinable( $event_id ) ) {
+		// The organiser has no button in the UI; a crafted POST would be a no-op
+		// in join() anyway, but redirect them to the plain event page so the URL
+		// never claims a sign-up that did not happen.
+		if ( ! Vandrekalender_Event_Attendees::is_joinable( $event_id )
+			|| self::is_event_organiser( $event_id, $user_id ) ) {
 			wp_safe_redirect( $target );
 			exit;
 		}
@@ -253,6 +278,14 @@ class Vandrekalender_Event_Join {
 			);
 		}
 
+		if ( self::is_event_organiser( $event_id, get_current_user_id() ) ) {
+			return new WP_Error(
+				'vandrekalender_event_own',
+				__( 'You are the organiser of this event.', 'vandrekalender-events' ),
+				[ 'status' => 403 ]
+			);
+		}
+
 		$created = $this->join( $event_id, get_current_user_id() );
 
 		return rest_ensure_response(
@@ -326,6 +359,14 @@ class Vandrekalender_Event_Join {
 	 */
 	private function join( int $event_id, int $user_id ): bool {
 		if ( ! Vandrekalender_Event_Attendees::is_joinable( $event_id ) ) {
+			return false;
+		}
+
+		// The organiser runs the walk; they are not one of its attendees. This
+		// is the authoritative guard — the UI hides the button for them, but
+		// every entry point (form, REST, pending-cookie login) lands here, so a
+		// crafted request cannot make an organiser sign up to their own event.
+		if ( self::is_event_organiser( $event_id, $user_id ) ) {
 			return false;
 		}
 

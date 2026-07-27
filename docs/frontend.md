@@ -43,10 +43,13 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 
 **Event Info Card** (`blocks/event-info-card/`) — the sticky summary in the single event sidebar. Two scripts on purpose: `view.js` is a plain `viewScript` for the route tabs (they swap values the runtime never rendered), and `join.js` is the `viewScriptModule` holding the "Jeg kommer" CTA (Interactivity API).
 
-The bottom CTA slot holds exactly one of two things, decided server-side:
+The bottom CTA slot holds exactly one of three things, decided server-side:
 
-- `Vandrekalender_Event_Attendees::is_joinable()` → the sign-up button. Server-rendered with its final label, so first paint is right: "Jeg kommer" in forest, or "Deltager" in meadow (the lighter green) when the visitor is already signed up.
+- `Vandrekalender_Event_Attendees::is_joinable()` **and the viewer is the event's organiser** (`Vandrekalender_Event_Join::is_event_organiser()`, i.e. the `post_author`) → a non-interactive line, "Du er arrangør af denne tur". The organiser runs the walk, so they are not one of its attendees; none of the interactive join state is set up for them (no `data-wp-interactive`, no dialog). The self-join is also refused in the backend (see below), so this is a UI mirror of a real rule, not just a hidden button.
+- `is_joinable()` for anyone else → the sign-up button. Server-rendered with its final label, so first paint is right: "Jeg kommer" in forest, or "Deltager" in meadow (the lighter green) when the visitor is already signed up.
 - Otherwise, the original "Book din plads" link out to `event_source_url`/`event_organiser_url`.
+
+> "Organiser" here is the individual `post_author`. The shared-ownership `organizer` taxonomy — where a teammate who did not create the event could also count as its organiser — is a deliberately separate, later question (`docs/authentication.md`).
 
 The card normally returns early when the event has no routes; a joinable event skips that early return, since the card is now the only place the button can live. The price and start/cutoff rows are guarded individually instead.
 
@@ -93,6 +96,6 @@ There is deliberately no `front-page.html` — the front page uses `page.html` l
 
 <!-- Layout, map, routes tab switcher go here -->
 
-**Sign-up CTA.** One button in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there; a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
+**Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
 
 > `single-event.html` also exists as a **user customisation in the database** (`wp_template` post `single-event`). Editing the theme file alone changes nothing on a site that has one — the DB copy wins. Add new blocks in the Site Editor, or update both.

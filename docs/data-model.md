@@ -336,7 +336,7 @@ Created by `Vandrekalender_Event_Attendees::maybe_install_table()` through `dbDe
 
 Signs the **current user** up for an event, or cancels their sign-up. Both require a logged-in user (`X-WP-Nonce` with the `wp_rest` nonce).
 
-`POST` returns 403 `vandrekalender_event_not_joinable` if the event does not accept sign-ups, and is idempotent — joining twice returns `created: false` and sends no second email.
+`POST` returns 403 `vandrekalender_event_not_joinable` if the event does not accept sign-ups, or 403 `vandrekalender_event_own` if the current user is the event's organiser (they run the walk, they do not attend it). It is idempotent — joining twice returns `created: false` and sends no second email.
 
 ```json
 { "attending": true, "created": true, "count": 4 }

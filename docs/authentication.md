@@ -200,6 +200,8 @@ The "Jeg kommer" button (in the Event Info Card, only on events with `event_sour
 
 The logged-out branch deliberately skips the nonce check: it changes nothing but a cookie, and a logged-out nonce baked into page-cached HTML would go stale and greet real visitors with "Are you sure you want to do this?". The logged-in branch checks the nonce normally.
 
+**The organiser is not an attendee.** When the logged-in viewer is the event's `post_author`, the button is replaced by a plain line ("Du er arrangør af denne tur") — they run the walk, they do not sign up for it. This is enforced in `Vandrekalender_Event_Join::join()`, which every entry point (form, REST, pending-cookie login) funnels through, so a crafted request cannot make an organiser an attendee of their own event; the REST route returns `vandrekalender_event_own` (403). "Organiser" is the individual author here, not the shared `organizer` taxonomy — see the note under the Event Info Card in `docs/frontend.md`.
+
 **Cancelling.** The same button cancels once you are signed up. The `admin-post.php` handler is a toggle, so the no-JS path works in both directions; with JavaScript a confirmation dialog stands in front of the `DELETE`. Cancelling is never gated on `is_joinable()` — an event that stops accepting sign-ups must not trap the people already on the list.
 
 **Emails.** Four in total, all plain text through `wp_mail()` (`Vandrekalender_Event_Join_Mailer`), and only ever sent when the database actually changed — a repeated click is silent:

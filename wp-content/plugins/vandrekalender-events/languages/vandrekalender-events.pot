@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-22T20:50:09+00:00\n"
+"POT-Creation-Date: 2026-07-27T05:07:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -176,79 +176,83 @@ msgstr ""
 msgid "%s km"
 msgstr ""
 
-#: blocks/event-info-card/render.php:119
+#: blocks/event-info-card/render.php:125
 msgid "I'm going"
 msgstr ""
 
-#: blocks/event-info-card/render.php:120
+#: blocks/event-info-card/render.php:126
 msgid "Attending"
 msgstr ""
 
-#: blocks/event-info-card/render.php:121
+#: blocks/event-info-card/render.php:127
 msgid "You are signed up — we have emailed you a confirmation."
 msgstr ""
 
-#: blocks/event-info-card/render.php:129
+#: blocks/event-info-card/render.php:135
 msgid "Sign-up failed. Please try again."
 msgstr ""
 
-#: blocks/event-info-card/render.php:130
+#: blocks/event-info-card/render.php:136
 msgid "Cancellation failed. Please try again."
 msgstr ""
 
-#: blocks/event-info-card/render.php:140
+#: blocks/event-info-card/render.php:146
 msgid "You are signed up for this walk."
 msgstr ""
 
-#: blocks/event-info-card/render.php:142
+#: blocks/event-info-card/render.php:148
 msgid "You need an account to sign up. We will bring you straight back here."
 msgstr ""
 
-#: blocks/event-info-card/render.php:164
+#: blocks/event-info-card/render.php:170
 msgid "per participant"
 msgstr ""
 
-#: blocks/event-info-card/render.php:189
+#: blocks/event-info-card/render.php:195
 msgid "Date"
 msgstr ""
 
-#: blocks/event-info-card/render.php:196
+#: blocks/event-info-card/render.php:202
 msgid "Start time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:201
+#: blocks/event-info-card/render.php:207
 msgid "Cutoff time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:208
+#: blocks/event-info-card/render.php:214
 msgid "Place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:217
+#: blocks/event-info-card/render.php:223
 msgid "Show directions"
 msgstr ""
 
-#: blocks/event-info-card/render.php:265
+#: blocks/event-info-card/render.php:233
+msgid "You are the organiser of this walk"
+msgstr ""
+
+#: blocks/event-info-card/render.php:275
 msgid "Cancel your sign-up?"
 msgstr ""
 
-#: blocks/event-info-card/render.php:266
+#: blocks/event-info-card/render.php:276
 msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
 msgstr ""
 
-#: blocks/event-info-card/render.php:270
+#: blocks/event-info-card/render.php:280
 msgid "No, keep my place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:278
+#: blocks/event-info-card/render.php:288
 msgid "Yes, cancel"
 msgstr ""
 
-#: blocks/event-info-card/render.php:285
+#: blocks/event-info-card/render.php:295
 msgid "Book your place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:287
+#: blocks/event-info-card/render.php:297
 msgid "Registration is handled by the organiser"
 msgstr ""
 
@@ -397,8 +401,12 @@ msgstr ""
 msgid "Place: %s"
 msgstr ""
 
-#: includes/class-event-join.php:251
+#: includes/class-event-join.php:276
 msgid "This event does not accept sign-ups."
+msgstr ""
+
+#: includes/class-event-join.php:284
+msgid "You are the organiser of this event."
 msgstr ""
 
 #: includes/class-event-rest-api.php:474

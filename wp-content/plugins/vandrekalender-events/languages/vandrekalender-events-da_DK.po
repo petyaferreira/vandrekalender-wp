@@ -175,35 +175,35 @@ msgstr "Rute"
 msgid "%s km"
 msgstr "%s km"
 
-#: blocks/event-info-card/render.php:164
+#: blocks/event-info-card/render.php:170
 msgid "per participant"
 msgstr "pr. deltager"
 
-#: blocks/event-info-card/render.php:189
+#: blocks/event-info-card/render.php:195
 msgid "Date"
 msgstr "Dato"
 
-#: blocks/event-info-card/render.php:196
+#: blocks/event-info-card/render.php:202
 msgid "Start time"
 msgstr "Starttid"
 
-#: blocks/event-info-card/render.php:201
+#: blocks/event-info-card/render.php:207
 msgid "Cutoff time"
 msgstr "Makstid"
 
-#: blocks/event-info-card/render.php:208
+#: blocks/event-info-card/render.php:214
 msgid "Place"
 msgstr "Sted"
 
-#: blocks/event-info-card/render.php:217
+#: blocks/event-info-card/render.php:223
 msgid "Show directions"
 msgstr "Vis rutevejledning"
 
-#: blocks/event-info-card/render.php:285
+#: blocks/event-info-card/render.php:295
 msgid "Book your place"
 msgstr "Book din plads"
 
-#: blocks/event-info-card/render.php:287
+#: blocks/event-info-card/render.php:297
 msgid "Registration is handled by the organiser"
 msgstr "Tilmelding sker via arrangørens side"
 
@@ -908,27 +908,27 @@ msgctxt "block description"
 msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
 msgstr ""
 
-#: blocks/event-info-card/render.php:119
+#: blocks/event-info-card/render.php:125
 msgid "I'm going"
 msgstr "Jeg kommer"
 
-#: blocks/event-info-card/render.php:120
+#: blocks/event-info-card/render.php:126
 msgid "Attending"
 msgstr "Deltager"
 
-#: blocks/event-info-card/render.php:129
+#: blocks/event-info-card/render.php:135
 msgid "Sign-up failed. Please try again."
 msgstr "Tilmelding mislykkedes. Prøv igen."
 
-#: blocks/event-info-card/render.php:121
+#: blocks/event-info-card/render.php:127
 msgid "You are signed up — we have emailed you a confirmation."
 msgstr "Du er tilmeldt — vi har sendt dig en bekræftelse på mail."
 
-#: blocks/event-info-card/render.php:140
+#: blocks/event-info-card/render.php:146
 msgid "You are signed up for this walk."
 msgstr "Du er tilmeldt denne tur."
 
-#: blocks/event-info-card/render.php:142
+#: blocks/event-info-card/render.php:148
 msgid "You need an account to sign up. We will bring you straight back here."
 msgstr "Du skal have en konto for at tilmelde dig. Vi sender dig direkte tilbage hertil."
 
@@ -993,27 +993,27 @@ msgstr "Starttid: %s"
 msgid "Place: %s"
 msgstr "Sted: %s"
 
-#: includes/class-event-join.php:251
+#: includes/class-event-join.php:276
 msgid "This event does not accept sign-ups."
 msgstr "Denne begivenhed tager ikke imod tilmeldinger."
 
-#: blocks/event-info-card/render.php:130
+#: blocks/event-info-card/render.php:136
 msgid "Cancellation failed. Please try again."
 msgstr "Afmelding mislykkedes. Prøv igen."
 
-#: blocks/event-info-card/render.php:265
+#: blocks/event-info-card/render.php:275
 msgid "Cancel your sign-up?"
 msgstr "Vil du afmelde dig?"
 
-#: blocks/event-info-card/render.php:266
+#: blocks/event-info-card/render.php:276
 msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
 msgstr "Du bliver fjernet fra listen til denne tur. Du kan tilmelde dig igen senere, hvis du skifter mening."
 
-#: blocks/event-info-card/render.php:270
+#: blocks/event-info-card/render.php:280
 msgid "No, keep my place"
 msgstr "Nej, behold min plads"
 
-#: blocks/event-info-card/render.php:278
+#: blocks/event-info-card/render.php:288
 msgid "Yes, cancel"
 msgstr "Ja, afmeld mig"
 
@@ -1057,3 +1057,11 @@ msgid "%d person is signed up now."
 msgid_plural "%d people are signed up now."
 msgstr[0] "%d person er tilmeldt nu."
 msgstr[1] "%d personer er tilmeldt nu."
+
+#: blocks/event-info-card/render.php:233
+msgid "You are the organiser of this walk"
+msgstr "Du er arrangør af denne tur"
+
+#: includes/class-event-join.php:284
+msgid "You are the organiser of this event."
+msgstr "Du er arrangør af denne tur."

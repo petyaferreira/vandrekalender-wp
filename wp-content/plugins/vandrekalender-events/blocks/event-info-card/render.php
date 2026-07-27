@@ -112,8 +112,14 @@ $vk_first_route = $vk_routes ? $vk_routes[0] : [];
 
 $vk_wrapper_attributes = [ 'class' => 'vk-info-card' ];
 
-if ( $vk_joinable ) {
-	$vk_logged_in = is_user_logged_in();
+$vk_logged_in    = is_user_logged_in();
+$vk_is_organiser = $vk_joinable && $vk_logged_in
+	&& Vandrekalender_Event_Join::is_event_organiser( $vk_post_id, get_current_user_id() );
+
+// The organiser runs the walk, so they never see the sign-up button — the CTA
+// slot shows an informational line instead, and none of the interactive join
+// state is set up for them.
+if ( $vk_joinable && ! $vk_is_organiser ) {
 	$vk_attending = $vk_logged_in && Vandrekalender_Event_Attendees::is_attending( $vk_post_id, get_current_user_id() );
 
 	$vk_join_label      = __( "I'm going", 'vandrekalender-events' );
@@ -222,7 +228,11 @@ if ( $vk_joinable ) {
 		<?php endif; ?>
 	</dl>
 
-	<?php if ( $vk_joinable ) : ?>
+	<?php if ( $vk_is_organiser ) : ?>
+		<p class="vk-info-card__organiser">
+			<?php esc_html_e( 'You are the organiser of this walk', 'vandrekalender-events' ); ?>
+		</p>
+	<?php elseif ( $vk_joinable ) : ?>
 		<form
 			class="vk-info-card__join"
 			method="post"
