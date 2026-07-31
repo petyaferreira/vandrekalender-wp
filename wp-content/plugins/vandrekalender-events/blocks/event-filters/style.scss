@@ -70,13 +70,28 @@
     }
   }
 
-  // The native date picker's day grid can't be styled, but its indicator (the
-  // button that opens it) can. Give it a comfortable tap target.
-  &__input[type='date']::-webkit-calendar-picker-indicator {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    cursor: pointer;
+  // Native date fields render wider than their content, leaving a big gap
+  // between the dd/mm/yyyy text and the calendar icon. Trim the horizontal
+  // padding and pull the icon in against the text so the two fields fit side
+  // by side on small screens without forcing the page to scroll.
+  &__input[type='date'] {
+    padding-inline: 0.4rem;
+
+    // The editable date text carries its own default padding.
+    &::-webkit-datetime-edit {
+      padding: 0;
+    }
+
+    // The native date picker's day grid can't be styled, but its indicator
+    // (the button that opens it) can. Keep a comfortable tap target while
+    // removing the default gap that separates it from the date text.
+    &::-webkit-calendar-picker-indicator {
+      width: 24px;
+      height: 24px;
+      margin-inline-start: 0.15rem;
+      padding: 0;
+      cursor: pointer;
+    }
   }
 
   &__date-range {
