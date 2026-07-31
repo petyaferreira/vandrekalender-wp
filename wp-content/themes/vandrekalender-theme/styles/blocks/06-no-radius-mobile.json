@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "title": "No border radius on mobile",
+    "slug": "no-radius-mobile",
+    "blockTypes": ["core/group", "core/cover", "core/image", "core/columns", "core/column"],
+    "styles": {
+        "css": ""
+    }
+}

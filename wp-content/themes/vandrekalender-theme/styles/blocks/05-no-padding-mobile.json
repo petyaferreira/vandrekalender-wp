@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "title": "No padding on mobile",
+    "slug": "no-padding-mobile",
+    "blockTypes": ["core/group", "core/columns", "core/column"],
+    "styles": {
+        "css": ""
+    }
+}

@@ -129,3 +129,28 @@ body {
 .card-author {
   margin-top: auto;
 }
+
+// "No padding on mobile" block style. The style itself is registered as a
+// JSON partial (styles/blocks/05-no-padding-mobile.json) so editors can pick
+// it from the Group block's Styles panel, but the media query lives here:
+// WordPress strips @media rules out of block-style JSON `css`, so the mobile
+// override cannot go there. The block's padding is set inline via its
+// dimension controls, so !important is required to beat it.
+@media (max-width: 599.98px) {
+  .is-style-no-padding-mobile {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// "No border radius on mobile" block style, registered as a JSON partial
+// (styles/blocks/06-no-radius-mobile.json) for the same reason as above — the
+// @media rule can't live in block-style JSON. The img selector covers Image
+// blocks, where core applies the radius to the inner <img> rather than the
+// wrapper; the bare selector covers Group and Cover.
+@media (max-width: 599.98px) {
+  .is-style-no-radius-mobile,
+  .is-style-no-radius-mobile img {
+    border-radius: 0 !important;
+  }
+}
