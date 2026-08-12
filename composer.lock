@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fb704339a2f0b7c9d138db17fe455b8",
+    "content-hash": "108a00a59d61f6dc824587f2e14907b7",
     "packages": [
         {
             "name": "composer/installers",
@@ -262,6 +262,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/login-with-google/"
+        },
+        {
+            "name": "wpackagist-plugin/polylang",
+            "version": "3.8.6",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/polylang/",
+                "reference": "tags/3.8.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.6.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/polylang/"
         },
         {
             "name": "wpackagist-plugin/safe-svg",
