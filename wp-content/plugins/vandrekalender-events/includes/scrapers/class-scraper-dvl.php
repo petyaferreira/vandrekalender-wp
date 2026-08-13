@@ -129,7 +129,7 @@ class Vandrekalender_Scraper_DVL extends Vandrekalender_Scraper_Base {
 		}
 
 		// Day walks carry a "Turen er gratis for medlemmer" note — price 0 keeps
-		// the derived event_is_free flag accurate. Pages without it (typically
+		// the derived free/paid state accurate. Pages without it (typically
 		// paid multi-day vandreferier) get no price rather than a wrong one.
 		$is_free = (bool) preg_match( '/Turen er gratis|gratis for medlemmer/iu', $html );
 

@@ -62,11 +62,9 @@ Example:
 
 Route display name is derived at render time — never stored: `{post_title} {distance_km} km` e.g. "Mammutmarch 50 km".
 
-### `event_is_free`
+### `is_free` (derived — **not** a stored meta field)
 
-| Field | Type | Derived | Filter? | Notes |
-|---|---|---|---|---|
-| `event_is_free` | boolean | ✅ Yes — on save | ✅ Yes | `false` if any route in `event_routes` has `price > 0`, otherwise `true`. Used as free/paid toggle filter on the frontend |
+`is_free` is **not** post meta and is never written to the database. It is computed on the fly by `Vandrekalender_Event_Rest_Api::is_event_free()`: an event is free when no route in `event_routes` records a real price, or the cheapest recorded price is `0`. Exposed in REST responses and consumed by the free/paid toggle filter, which runs in PHP after the query (price lives inside the routes JSON, so it cannot be a SQL `meta_query`).
 
 ---
 
@@ -199,7 +197,7 @@ All filters for the frontend event listing. Each filter maps to either a meta fi
 | `event_date` | Date range picker | Presets: This weekend, This month, Next 3 months. Uses `meta_query` with `type: DATE` |
 | `event_length` | Pills / checkboxes | Short / Medium / Long. Multiple selectable. Taxonomy query |
 | `event_region` | Dropdown | 5 Danish regions. Taxonomy query |
-| `event_is_free` | Toggle | Show free only / show all. Meta query |
+| `is_free` | Toggle | Show free only / show all. Derived from `event_routes` prices, filtered in PHP (not a meta query) |
 
 ### Deferred to v2
 
@@ -227,7 +225,7 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 | `date_to` | string (YYYY-MM-DD) | `event_date` meta, `<=` |
 | `length` | string | `event_length` taxonomy slug e.g. `short` |
 | `region` | string | `event_region` taxonomy slug e.g. `midtjylland` |
-| `is_free` | boolean | `event_is_free` meta |
+| `is_free` | boolean | Derived from `event_routes` prices (computed in PHP, not a meta field) |
 | `lang` | string | `da` or `en`. Passed to Polylang via `WP_Query` `lang` arg |
 
 **Response shape per event:**
@@ -364,7 +362,7 @@ File: `resources/event-meta-fields/index.js`
 |---|---|---|
 | `event_date` | `DatePicker` | Stores as `YYYY-MM-DD` |
 | `event_routes` | Custom add/edit/remove list | Each route has `distance_km`, `start_time`, `cutoff_time`, `price`. Display name derived at render time as `{post_title} {distance_km} km` |
-| `event_is_free` | Read-only derived display | Auto-derived from routes on save — not editable directly |
+| `is_free` | Read-only derived display | Computed from route prices at read time — not stored, not editable |
 
 ### Location panel
 

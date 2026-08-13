@@ -73,7 +73,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 Scraped data rarely maps cleanly to the event schema. Each source structures its events differently — one has a clear distance field, another buries it in a description paragraph, a third does not mention it at all. A three-layer approach handles this consistently across sources.
 
-> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `event_is_free` is **derived on save** from route prices, and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA**. Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
+> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA**. Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
 
 ### Layer 1 — Direct field mapping
 
@@ -103,7 +103,7 @@ Some fields are present but embedded in free text rather than structured element
 | `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value |
 | `event_address` → `event_lat` / `event_lng` / `event_municipality` | **DAWA** lookup | DAWA geocodes the extracted address string and returns coordinates **and** municipality in one call (`api.dataforsyningen.dk`). Same provider as manual event entry |
 
-`event_is_free` and the `event_length` taxonomy are **not scraped** — they are derived on save from `event_routes`, the same as for manually created events. Let the existing save hooks compute them; the scraper only needs to populate `event_routes` correctly.
+The free/paid state (`is_free`) and the `event_length` taxonomy are **not scraped** — `is_free` is computed at read time from `event_routes` prices and `event_length` is auto-assigned on save from route distances, the same as for manually created events. The scraper only needs to populate `event_routes` correctly; the save hook handles `event_length` and nothing needs to store `is_free`.
 
 Pattern extraction runs after direct mapping. If a pattern matches, the field is populated; if not, the field is left null and passed to Layer 3.
 
@@ -136,7 +136,7 @@ This replaces the confidence-scoring system from the original plan. These Layer 
 | `event_address` | 2 | HTML / regex | Passed to DAWA |
 | `event_lat` / `event_lng` | 2 | DAWA | Geocoded from address |
 | `event_municipality` | 2 | DAWA | Returned alongside coordinates |
-| `event_is_free` | — | Derived on save | From `event_routes` prices — not scraped |
+| `is_free` | — | Computed at read time | From `event_routes` prices — not stored, not scraped |
 | `event_length` | — | Derived on save | Taxonomy auto-assigned from route distances — not scraped |
 | `event_region` | — | Derived on save | Taxonomy assigned from `event_municipality` — not scraped |
 | `event_lat` / `event_lng` | 3 | Draft if missing | Required for map view |
