@@ -112,19 +112,21 @@ class Vandrekalender_Event_Schema {
 			return [];
 		}
 
+		$status = $this->event_status( $post_id );
+
 		$schema = [
 			'@context'            => 'https://schema.org',
 			'@type'               => 'Event',
 			'name'                => get_the_title( $post_id ),
 			'startDate'           => $this->start_date( $start_day, $routes ),
 			'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
-			'eventStatus'         => 'https://schema.org/EventScheduled',
+			'eventStatus'         => $status,
 			'description'         => $this->description( $post_id ),
 			'url'                 => get_permalink( $post_id ),
 			'image'               => get_the_post_thumbnail_url( $post_id, 'full' ) ? get_the_post_thumbnail_url( $post_id, 'full' ) : '',
 			'location'            => $location,
 			'organizer'           => $this->build_organizer( $meta ),
-			'offers'              => $this->build_offers( $post_id, $meta, $routes ),
+			'offers'              => $this->build_offers( $post_id, $meta, $routes, $status ),
 		];
 
 		$schema = $this->prune( $schema );
@@ -261,17 +263,43 @@ class Vandrekalender_Event_Schema {
 	}
 
 	/**
+	 * Map an event to a schema.org event status URL.
+	 *
+	 * There is no cancellation/postponement field — organisers signal it only in
+	 * the title text (mirroring the source site), e.g. "AFLYST – …" (cancelled)
+	 * or "UDSAT – …" (postponed). A leading marker maps to the matching status;
+	 * everything else is EventScheduled.
+	 *
+	 * @param int $post_id The event post ID.
+	 * @return string A schema.org event status URL.
+	 */
+	private function event_status( int $post_id ): string {
+		$title = trim( get_the_title( $post_id ) );
+
+		if ( preg_match( '/^aflyst\b/iu', $title ) ) {
+			return 'https://schema.org/EventCancelled';
+		}
+
+		if ( preg_match( '/^udsat\b/iu', $title ) ) {
+			return 'https://schema.org/EventPostponed';
+		}
+
+		return 'https://schema.org/EventScheduled';
+	}
+
+	/**
 	 * Build the offers node, or [] when no real price data exists.
 	 *
 	 * A recorded price of 0 is reliable "free" and is emitted. An absence of any
 	 * recorded price is unknown, and offers is omitted rather than guessed.
 	 *
-	 * @param int   $post_id The event post ID.
-	 * @param array $meta    Raw meta row.
-	 * @param array $routes  Event routes.
+	 * @param int    $post_id The event post ID.
+	 * @param array  $meta    Raw meta row.
+	 * @param array  $routes  Event routes.
+	 * @param string $status  The event's schema.org status URL.
 	 * @return array
 	 */
-	private function build_offers( int $post_id, array $meta, array $routes ): array {
+	private function build_offers( int $post_id, array $meta, array $routes, string $status ): array {
 		$prices = [];
 
 		foreach ( $routes as $route ) {
@@ -287,13 +315,21 @@ class Vandrekalender_Event_Schema {
 		$source_url = trim( (string) $this->meta_single( $meta, \Vandrekalender\Event::META_SOURCE_URL ) );
 		$url        = ( '' !== $source_url && filter_var( $source_url, FILTER_VALIDATE_URL ) ) ? $source_url : get_permalink( $post_id );
 
-		return [
+		$offer = [
 			'@type'         => 'Offer',
 			'price'         => rtrim( rtrim( sprintf( '%.2f', min( $prices ) ), '0' ), '.' ),
 			'priceCurrency' => 'DKK',
-			'availability'  => 'https://schema.org/InStock',
-			'url'           => $url,
 		];
+
+		// Only assert availability for a scheduled event — a cancelled or
+		// postponed event is not "in stock".
+		if ( 'https://schema.org/EventScheduled' === $status ) {
+			$offer['availability'] = 'https://schema.org/InStock';
+		}
+
+		$offer['url'] = $url;
+
+		return $offer;
 	}
 
 	/**
