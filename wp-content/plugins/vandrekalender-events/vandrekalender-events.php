@@ -33,6 +33,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-facebook-importer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sportstiming.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-dvl.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagverden.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
 new Vandrekalender_Roles();

@@ -202,10 +202,29 @@ abstract class Vandrekalender_Scraper_Base {
 			return false;
 		}
 
-		$reserved = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'ID', 'featured_image_url' ];
+		$reserved = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'ID', 'featured_image_url', 'tax_terms' ];
 		foreach ( $event as $key => $value ) {
 			if ( ! in_array( $key, $reserved, true ) ) {
 				update_post_meta( $post_id, $key, $value );
+			}
+		}
+
+		// Taxonomy terms a scraper assigns directly, e.g. a region derived from
+		// the source URL when geocoding could not supply a municipality. Terms
+		// normally derive on save from meta (municipality -> region, routes ->
+		// length); this is the escape hatch for what meta cannot express.
+		if ( ! empty( $event['tax_terms'] ) && is_array( $event['tax_terms'] ) ) {
+			$has_municipality = '' !== (string) get_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, true );
+			foreach ( $event['tax_terms'] as $taxonomy => $terms ) {
+				// The URL-derived region is only a stand-in for a missing
+				// municipality. If the post already has a resolved municipality
+				// (from this run or preserved from a prior successful geocode
+				// when the current run failed), its municipality-derived region
+				// is authoritative — don't let the coarser fallback overwrite it.
+				if ( \Vandrekalender\Event::TAX_REGION === $taxonomy && $has_municipality ) {
+					continue;
+				}
+				wp_set_object_terms( $post_id, $terms, (string) $taxonomy );
 			}
 		}
 
