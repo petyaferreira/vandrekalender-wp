@@ -159,16 +159,25 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 		// natural features ("Stevns Klint"), not street addresses, so DAWA's
 		// place-name register is tried first and the coordinates are the
 		// feature's representative point — approximate, but in the right place.
-		$geo = $this->resolve_location( $title, $place );
+		$geo          = $this->resolve_location( $title, $place );
+		$municipality = ( null !== $geo ) ? $geo['municipality'] : '';
+
 		if ( null !== $geo ) {
-			$event[ \Vandrekalender\Event::META_LAT ]          = $geo['lat'];
-			$event[ \Vandrekalender\Event::META_LNG ]          = $geo['lng'];
-			$event[ \Vandrekalender\Event::META_MUNICIPALITY ] = $geo['municipality'];
+			// Coordinates are usable even when the representative point does not
+			// fall inside a kommune polygon (coastal/island landmarks), so keep
+			// them regardless of whether a municipality was resolved.
+			$event[ \Vandrekalender\Event::META_LAT ] = $geo['lat'];
+			$event[ \Vandrekalender\Event::META_LNG ] = $geo['lng'];
+		}
+
+		if ( '' !== $municipality ) {
+			$event[ \Vandrekalender\Event::META_MUNICIPALITY ] = $municipality;
 		} else {
-			// No coordinates: the event still publishes (the map endpoint skips
-			// events without a position) but would miss its region filter, since
-			// region normally derives from the municipality. Fall back to the
-			// region encoded in the source URL so it stays discoverable.
+			// No municipality (geocoding failed outright, or the point resolved
+			// outside any kommune). Region normally derives from the
+			// municipality, so writing an empty value would clear the region
+			// term; instead fall back to the region encoded in the source URL
+			// so the event still publishes and stays discoverable in filters.
 			$region = $this->region_from_url( $url );
 			if ( '' !== $region ) {
 				$event['tax_terms'] = [ \Vandrekalender\Event::TAX_REGION => [ $region ] ];
