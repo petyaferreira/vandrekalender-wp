@@ -193,15 +193,15 @@
         },
         {
             "name": "wpackagist-plugin/fluent-smtp",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluent-smtp/",
-                "reference": "tags/2.3.0"
+                "reference": "tags/2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluent-smtp.2.3.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluent-smtp.2.3.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -247,15 +247,15 @@
         },
         {
             "name": "wpackagist-plugin/login-with-google",
-            "version": "1.4.3",
+            "version": "1.4.4",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/login-with-google/",
-                "reference": "tags/1.4.3"
+                "reference": "tags/1.4.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/login-with-google.1.4.3.zip"
+                "url": "https://downloads.wordpress.org/plugin/login-with-google.1.4.4.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -265,15 +265,15 @@
         },
         {
             "name": "wpackagist-plugin/polylang",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/polylang/",
-                "reference": "tags/3.8.6"
+                "reference": "tags/3.8.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.6.zip"
+                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.7.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -319,15 +319,15 @@
         },
         {
             "name": "wpackagist-plugin/webp-converter-for-media",
-            "version": "6.6.4",
+            "version": "6.6.5",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/webp-converter-for-media/",
-                "reference": "tags/6.6.4"
+                "reference": "tags/6.6.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/webp-converter-for-media.6.6.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/webp-converter-for-media.6.6.5.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
