@@ -20,6 +20,7 @@ defined( 'ABSPATH' ) || exit;
 class Vandrekalender_Geocoder {
 
 	const AUTOCOMPLETE = 'https://api.dataforsyningen.dk/autocomplete';
+	const STEDNAVNE    = 'https://api.dataforsyningen.dk/stednavne2';
 	const KOMMUNE      = 'https://api.dataforsyningen.dk/kommuner/';
 	const CACHE_PREFIX = 'vk_geocode_';
 	const CACHE_TTL    = MONTH_IN_SECONDS;
@@ -77,6 +78,71 @@ class Vandrekalender_Geocoder {
 			'lat'          => (float) $match['y'],
 			'lng'          => (float) $match['x'],
 			'municipality' => $this->kommune_name( (string) ( $match['kommunekode'] ?? '' ) ),
+		];
+
+		set_transient( $cache_key, $result, self::CACHE_TTL );
+		return $result;
+	}
+
+	/**
+	 * Geocode a Danish landmark or place name via DAWA's place-name register.
+	 *
+	 * For sources whose meeting point is a natural feature or area rather than a
+	 * street address ("Stevns Klint", "Mols Bjerge", "Tisvilde Hegn") — which the
+	 * address autocomplete cannot resolve. Returns the feature's representative
+	 * point (visueltcenter) and the municipality that point falls in.
+	 *
+	 * @param string $name Place name, e.g. "Stevns Klint".
+	 * @return array|null Array of { lat: float, lng: float, municipality: string }, or null on failure.
+	 */
+	public function geocode_place( string $name ): ?array {
+		$name = trim( $name );
+		if ( '' === $name ) {
+			return null;
+		}
+
+		$cache_key = self::CACHE_PREFIX . 'sted_' . md5( $name );
+		$cached    = get_transient( $cache_key );
+		if ( false !== $cached ) {
+			return is_array( $cached ) ? $cached : null;
+		}
+
+		$url = add_query_arg(
+			[
+				'q'        => rawurlencode( $name ),
+				'per_side' => 1,
+				'struktur' => 'flad',
+			],
+			self::STEDNAVNE
+		);
+
+		$response = wp_remote_get(
+			$url,
+			[
+				'timeout'    => 10,
+				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'headers'    => [ 'Accept' => 'application/json' ],
+			]
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			set_transient( $cache_key, 'none', HOUR_IN_SECONDS );
+			return null;
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! isset( $data[0]['sted_visueltcenter_x'], $data[0]['sted_visueltcenter_y'] ) ) {
+			set_transient( $cache_key, 'none', HOUR_IN_SECONDS );
+			return null;
+		}
+
+		$lat    = (float) $data[0]['sted_visueltcenter_y'];
+		$lng    = (float) $data[0]['sted_visueltcenter_x'];
+		$result = [
+			'lat'          => $lat,
+			'lng'          => $lng,
+			'municipality' => $this->municipality_from_coords( $lat, $lng ),
 		];
 
 		set_transient( $cache_key, $result, self::CACHE_TTL );

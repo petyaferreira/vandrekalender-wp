@@ -12,9 +12,9 @@ The scraping pipeline is **built and running**. What exists today:
 
 - An abstract base class (`Vandrekalender_Scraper_Base`) with `fetch()`, `parse()`, `run()`, and `upsert_event()`.
 - A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once daily at 02:12 (site timezone), gated to production by the `VK_ENABLE_SCRAPING` constant. See [Running & scheduling](#running--scheduling).
-- Three implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), and `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the national maps feed).
+- Four implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the national maps feed), and `opdagverden.dk` (`Vandrekalender_Scraper_Opdagverden` — day walks).
 
-Coordinates come from the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality.
+Coordinates come from the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality. Opdag Verden exposes only a landmark name (not a street address), so it geocodes via DAWA's **place-name register** (`Geocoder::geocode_place()`).
 
 ---
 
@@ -34,6 +34,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
+| Opdag Verden | opdagverden.dk | HTML scrape | High | **Built** as `Vandrekalender_Scraper_Opdagverden` (2026-08-19). Membership outdoor community. Day walks listed at `/ture/dagsvandring` (a Joomla "Events Booking" site) as a table of cards linking to `/ture/dagsvandring/<region>/<slug>-<id>`. Each detail page carries a consistent "Begivenhedsoversigt" table (Startdato → date + time, Pris → price, Det foregår → location) parsed alongside `og:title` (title + distance) and `og:image`. The full tour description is members-only (paywalled), so only the structured summary is scraped — `post_content` is left empty. Meeting points are **landmark names** ("Stevns Klint", "Æbelø"), not street addresses, so coordinates come from DAWA's place-name register (`Geocoder::geocode_place()`), trying candidates derived from the title and the "Det foregår" value; the coordinate is the feature's representative point (approximate) and the municipality is reverse-geocoded from it. Events whose landmark does not resolve still **publish** (the map endpoint already skips positionless events, so they simply get no pin while staying in list/calendar/filter views) — and since region normally derives from the municipality, the scraper falls back to the **region encoded in the source URL** (`region_from_url()`, passed through the base class's `tax_terms` hook) so those events keep their region filter |
 | Dansk Vandrelaug (DVL) | dvl.dk | JSON feed + HTML | High | **Built** as `Vandrekalender_Scraper_DVL` (2026-07-03). The tour listing is client-rendered, but the public feed at `/wp-json/dvl/v1/maps/data` lists every upcoming tour (~490) with title, exact meeting-point coordinates, and tour URL. Each server-rendered tour page (`/vandreture/<slug>/`) is then fetched for date/time (from the add-to-calendar link), distance, organising chapter (`Arrangør` → `DVL <chapter>` + chapter page URL), meeting point, description, and image. Coordinates come from the feed; only the municipality is reverse-geocoded via DAWA (`Geocoder::municipality_from_coords()`), because meeting points are often landmark names DAWA cannot geocode forward. Day walks are marked free (price 0) only when the page carries the "Turen er gratis for medlemmer" note; paid vandreferier get no price. One scraper covers **all regional chapters** — the feed is national |
 
 ### Event timing & registration platforms
@@ -167,6 +168,8 @@ The base class then provides:
 ### Geocoding (server-side DAWA helper) — built
 
 `Vandrekalender_Geocoder` (`includes/class-geocoder.php`) turns a free-text Danish address into `event_lat` / `event_lng` / `event_municipality` via the DAWA autocomplete endpoint, with transient caching (a month for hits, an hour of negative caching for misses). Scrapers call it server-side; the block editor keeps its own client-side DAWA integration (`resources/event-meta-fields/index.js`).
+
+For sources whose meeting point is a **landmark/place name** rather than a street address (Opdag Verden), `Geocoder::geocode_place()` queries DAWA's place-name register (`stednavne2`, `struktur=flad`) and returns the feature's representative point (`visueltcenter`) plus the municipality reverse-geocoded from that point. `Geocoder::municipality_from_coords()` remains the reverse-only helper for sources (DVL) that already carry exact coordinates.
 
 ### Adding a new scraper
 
@@ -311,7 +314,8 @@ wp-content/plugins/vandrekalender-events/includes/
 └── scrapers/
     ├── class-scraper-mammut.php        ← mammutmarch.dk
     ├── class-scraper-sportstiming.php  ← sportstiming.dk
-    └── class-scraper-dvl.php           ← dvl.dk (Dansk Vandrelaug)
+    ├── class-scraper-dvl.php           ← dvl.dk (Dansk Vandrelaug)
+    └── class-scraper-opdagverden.php   ← opdagverden.dk (Opdag Verden day walks)
 ```
 
 Manual-run wrapper: `scrape.sh` (repo root). Production flag: `VK_ENABLE_SCRAPING`

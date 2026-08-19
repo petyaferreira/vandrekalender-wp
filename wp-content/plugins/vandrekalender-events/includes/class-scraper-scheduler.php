@@ -116,6 +116,7 @@ class Vandrekalender_Scraper_Scheduler {
 			'Mammutmarch'      => new Vandrekalender_Scraper_Mammut(),
 			'Sportstiming'     => new Vandrekalender_Scraper_Sportstiming(),
 			'Dansk Vandrelaug' => new Vandrekalender_Scraper_DVL(),
+			'Opdag Verden'     => new Vandrekalender_Scraper_Opdagverden(),
 		];
 
 		$started = microtime( true );

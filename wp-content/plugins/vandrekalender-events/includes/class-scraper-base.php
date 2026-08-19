@@ -202,10 +202,20 @@ abstract class Vandrekalender_Scraper_Base {
 			return false;
 		}
 
-		$reserved = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'ID', 'featured_image_url' ];
+		$reserved = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'ID', 'featured_image_url', 'tax_terms' ];
 		foreach ( $event as $key => $value ) {
 			if ( ! in_array( $key, $reserved, true ) ) {
 				update_post_meta( $post_id, $key, $value );
+			}
+		}
+
+		// Taxonomy terms a scraper assigns directly, e.g. a region derived from
+		// the source URL when geocoding could not supply a municipality. Terms
+		// normally derive on save from meta (municipality -> region, routes ->
+		// length); this is the escape hatch for what meta cannot express.
+		if ( ! empty( $event['tax_terms'] ) && is_array( $event['tax_terms'] ) ) {
+			foreach ( $event['tax_terms'] as $taxonomy => $terms ) {
+				wp_set_object_terms( $post_id, $terms, (string) $taxonomy );
 			}
 		}
 
