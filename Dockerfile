@@ -16,5 +16,17 @@ COPY --from=axllent/mailpit:latest /mailpit /usr/local/bin/mailpit
 RUN printf 'sendmail_path = "/usr/local/bin/mailpit sendmail -S mailpit:1025 -t -i"\n' \
     > /usr/local/etc/php/conf.d/mailpit.ini
 
+# The official WordPress image bundles two plugins we don't use — Hello Dolly
+# (hello.php) and Akismet. On every start the entrypoint seeds wp-content from
+# this pristine copy at /usr/src/wordpress into the (bind-mounted) document root,
+# copying only files that don't already exist — which is why deleting them from
+# wp-admin or disk never sticks: the next start copies them straight back.
+# Removing them from the seed source here means the entrypoint has nothing to
+# copy, so they never reappear — without overriding the container command, which
+# would disable the entrypoint's core-copy and leave core missing after a
+# `docker compose down` (it removes the anonymous /var/www/html volume).
+RUN rm -f /usr/src/wordpress/wp-content/plugins/hello.php \
+ && rm -rf /usr/src/wordpress/wp-content/plugins/akismet
+
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
