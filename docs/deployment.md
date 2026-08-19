@@ -30,6 +30,31 @@ Currently installed via Composer:
 | `wpackagist-plugin/webp-converter-for-media` | Plugin | Serves WebP instead of JPG/PNG — see *Image conversion (WebP)* below |
 | `wpackagist-theme/twentytwentyfive` | Theme | Default WP theme (kept as fallback) |
 
+### Bundled core plugins (Hello Dolly & Akismet) are auto-removed
+
+The official `wordpress` Docker image ships two plugins we don't use — **Hello
+Dolly** (`hello.php`) and **Akismet** — inside the image at `/usr/src/wordpress`.
+On every container start, the image's entrypoint copies WordPress core into the
+bind-mounted `wp-content/plugins/` folder, restoring any core files that are
+missing. That's why deleting Hello Dolly from wp-admin or disk never stuck: the
+next `./start.sh` copied it right back. Neither plugin is managed by Composer
+(they come from core, not WPackagist) and both are gitignored.
+
+The fix lives in `docker-compose.yml` as a `command` override on the `wordpress`
+service. The image entrypoint runs first and copies core, then execs our command,
+which deletes both plugins *after* the copy and then starts Apache:
+
+```yaml
+command: >
+  bash -c "rm -f /var/www/html/wp-content/plugins/hello.php;
+  rm -rf /var/www/html/wp-content/plugins/akismet;
+  exec apache2-foreground"
+```
+
+So they're stripped on every startup and stay gone — no manual deletion needed.
+(This mirrors the Composer `remove-default-themes` script, which does the same
+for the bundled `twentytwentythree`/`twentytwentyfour` themes.)
+
 ---
 
 ## Environments

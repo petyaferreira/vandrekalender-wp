@@ -29,6 +29,18 @@ services:
       - "./wp-content/uploads:/var/www/html/wp-content/uploads"
       - "./wp-content/uploads-webpc:/var/www/html/wp-content/uploads-webpc"
       - "./custom.ini:/usr/local/etc/php/conf.d/custom.ini"
+    # The official WordPress image bundles two plugins we don't use — Hello Dolly
+    # (hello.php) and Akismet — and its entrypoint copies WordPress core into the
+    # bind-mounted plugins folder on every start, restoring any that are missing.
+    # That's why deleting them from wp-admin or disk never sticks: the next start
+    # copies them right back. Neither is managed by Composer (they ship with core,
+    # not wpackagist) and both are gitignored, so this is the only place to remove
+    # them for good. The image entrypoint runs first and copies core; it then
+    # execs this command, so the rm happens *after* the copy, then Apache starts.
+    command: >
+      bash -c "rm -f /var/www/html/wp-content/plugins/hello.php;
+      rm -rf /var/www/html/wp-content/plugins/akismet;
+      exec apache2-foreground"
 
   # Catches every email the site sends locally — join and cancellation
   # confirmations, password resets, form notifications — and shows them in a
