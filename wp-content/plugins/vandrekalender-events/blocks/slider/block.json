@@ -24,6 +24,14 @@
         "progressBarColor": {
             "type": "string",
             "default": "#C2D9B0"
+        },
+        "marqueeGap": {
+            "type": "number",
+            "default": 3
+        },
+        "marqueeSpeed": {
+            "type": "number",
+            "default": 6000
         }
     },
     "supports": {

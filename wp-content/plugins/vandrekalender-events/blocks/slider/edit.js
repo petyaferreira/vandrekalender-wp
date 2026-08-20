@@ -2,6 +2,7 @@ import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import {
   TextControl,
   SelectControl,
+  RangeControl,
   PanelBody,
   ColorPalette,
   BaseControl,
@@ -11,15 +12,21 @@ import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
 
 function Edit({ attributes, setAttributes }) {
-  const blockProps = useBlockProps({
-    className: `swiper is-${attributes.behavior || 'normal'}`,
-  });
   const {
     slidesPerViewDesktop,
     slidesPerViewMobile,
     behavior,
     progressBarColor,
+    marqueeGap,
+    marqueeSpeed,
   } = attributes;
+  const blockProps = useBlockProps({
+    className: `swiper is-${behavior || 'normal'}`,
+    style:
+      behavior === 'marquee'
+        ? { '--marquee-gap': `${marqueeGap}rem` }
+        : undefined,
+  });
   const ALLOWED_BLOCKS = ['vandrekalender/slider-slide'];
 
   const themeColors = useSelect(select => {
@@ -74,6 +81,37 @@ function Edit({ attributes, setAttributes }) {
                 }
               />
             </BaseControl>
+          )}
+
+          {behavior === 'marquee' && (
+            <>
+              <RangeControl
+                label={__(
+                  'Spacing between slides (rem)',
+                  'vandrekalender-events'
+                )}
+                value={marqueeGap}
+                onChange={value => setAttributes({ marqueeGap: value ?? 3 })}
+                min={0}
+                max={8}
+                step={0.25}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+              />
+              <RangeControl
+                label={__('Marquee speed', 'vandrekalender-events')}
+                help={__('Higher = slower scroll.', 'vandrekalender-events')}
+                value={marqueeSpeed}
+                onChange={value =>
+                  setAttributes({ marqueeSpeed: value || 6000 })
+                }
+                min={2000}
+                max={20000}
+                step={500}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+              />
+            </>
           )}
 
           {behavior === 'normal' && (
