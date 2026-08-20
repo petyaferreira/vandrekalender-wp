@@ -46,7 +46,7 @@ class Vandrekalender_Geocoder {
 		$url = add_query_arg(
 			[
 				'type' => 'adresse',
-				'q'    => $address,
+				'q'    => rawurlencode( $address ),
 			],
 			self::AUTOCOMPLETE
 		);
