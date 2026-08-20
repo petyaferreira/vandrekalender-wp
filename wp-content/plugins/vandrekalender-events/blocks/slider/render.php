@@ -18,6 +18,16 @@ if ( ! $progress_bar_color ) {
 	$progress_bar_color = '#C2D9B0';
 }
 
+	$marquee_gap   = (float) ( $attributes['marqueeGap'] ?? 3 );
+	$marquee_speed = (int) ( $attributes['marqueeSpeed'] ?? 6000 );
+
+	$wrapper_style = '';
+if ( 'hero-progress' === $behavior ) {
+	$wrapper_style = '--slider-progress-color:' . esc_attr( $progress_bar_color ) . ';';
+} elseif ( 'marquee' === $behavior ) {
+	$wrapper_style = '--marquee-gap:' . esc_attr( $marquee_gap ) . 'rem;';
+}
+
 ?>
 
 <div
@@ -27,9 +37,7 @@ if ( ! $progress_bar_color ) {
 	echo get_block_wrapper_attributes(
 		[
 			'class' => $classes,
-			'style' => $behavior === 'hero-progress'
-				? '--slider-progress-color:' . esc_attr( $progress_bar_color ) . ';'
-				: '',
+			'style' => $wrapper_style,
 		]
 	);
 	?>
@@ -43,6 +51,7 @@ if ( ! $progress_bar_color ) {
 				'slidesPerViewDesktop' => $attributes['slidesPerViewDesktop'] ?? 2.5,
 				'slidesPerViewMobile'  => $attributes['slidesPerViewMobile'] ?? 1.5,
 				'behavior'             => $behavior,
+				'marqueeSpeed'         => $marquee_speed,
 			]
 		);
 		?>

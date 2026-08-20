@@ -26,9 +26,11 @@ const ensureSwiperAvailable = () => {
 /**
  * Behavior option builders
  */
-const buildMarqueeOptions = (ref, baseOptions) => {
+const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
   const wrapper = q(ref, '.wp-block-vandrekalender-slider-slides');
   if (!wrapper) return null;
+
+  const speed = Number(ctx.marqueeSpeed) || 6000;
 
   // Remove old duplicates if re-init happens
   wrapper.querySelectorAll('.is-duplicate').forEach(n => n.remove());
@@ -52,7 +54,7 @@ const buildMarqueeOptions = (ref, baseOptions) => {
   return {
     ...baseOptions,
     slidesPerView: 'auto',
-    speed: 6000,
+    speed,
     watchOverflow: false,
     allowTouchMove: false,
 
