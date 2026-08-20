@@ -28,5 +28,14 @@ RUN printf 'sendmail_path = "/usr/local/bin/mailpit sendmail -S mailpit:1025 -t 
 RUN rm -f /usr/src/wordpress/wp-content/plugins/hello.php \
  && rm -rf /usr/src/wordpress/wp-content/plugins/akismet
 
+# Same story for the bundled default themes. The image ships twentytwentythree,
+# -four and -five; we only use -five (installed via Composer/wpackagist). The
+# entrypoint would otherwise re-seed all three into the bind-mounted themes dir
+# on every start — which is why they kept reappearing after `./start.sh` even
+# though the Composer `remove-default-themes` script deletes them at install
+# time. Stripping them from the seed source here means there is nothing to copy.
+RUN rm -rf /usr/src/wordpress/wp-content/themes/twentytwentythree \
+ && rm -rf /usr/src/wordpress/wp-content/themes/twentytwentyfour
+
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

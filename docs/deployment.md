@@ -30,30 +30,48 @@ Currently installed via Composer:
 | `wpackagist-plugin/webp-converter-for-media` | Plugin | Serves WebP instead of JPG/PNG — see *Image conversion (WebP)* below |
 | `wpackagist-theme/twentytwentyfive` | Theme | Default WP theme (kept as fallback) |
 
-### Bundled core plugins (Hello Dolly & Akismet) are auto-removed
+### Bundled core plugins & themes are stripped from the image seed
 
-The official `wordpress` Docker image ships two plugins we don't use — **Hello
-Dolly** (`hello.php`) and **Akismet** — inside the image at `/usr/src/wordpress`.
-On every container start, the image's entrypoint copies WordPress core into the
-bind-mounted `wp-content/plugins/` folder, restoring any core files that are
-missing. That's why deleting Hello Dolly from wp-admin or disk never stuck: the
-next `./start.sh` copied it right back. Neither plugin is managed by Composer
-(they come from core, not WPackagist) and both are gitignored.
+The official `wordpress` Docker image ships extras we don't use — the **Hello
+Dolly** (`hello.php`) and **Akismet** plugins, plus the **twentytwentythree** and
+**twentytwentyfour** default themes — inside the image at `/usr/src/wordpress`.
+On every container start, the image's entrypoint copies anything missing from
+that pristine copy into the bind-mounted `wp-content/` folders. That's why
+deleting them from wp-admin or disk never stuck: the next `./start.sh` copied
+them right back. None of them are managed by Composer and all are gitignored.
 
-The fix lives in `docker-compose.yml` as a `command` override on the `wordpress`
-service. The image entrypoint runs first and copies core, then execs our command,
-which deletes both plugins *after* the copy and then starts Apache:
+The fix lives in the `Dockerfile`: we `rm` them from the seed source at
+`/usr/src/wordpress` when building the image, so the entrypoint has nothing to
+copy and they never reappear:
 
-```yaml
-command: >
-  bash -c "rm -f /var/www/html/wp-content/plugins/hello.php;
-  rm -rf /var/www/html/wp-content/plugins/akismet;
-  exec apache2-foreground"
+```dockerfile
+RUN rm -f /usr/src/wordpress/wp-content/plugins/hello.php \
+ && rm -rf /usr/src/wordpress/wp-content/plugins/akismet
+RUN rm -rf /usr/src/wordpress/wp-content/themes/twentytwentythree \
+ && rm -rf /usr/src/wordpress/wp-content/themes/twentytwentyfour
 ```
 
-So they're stripped on every startup and stay gone — no manual deletion needed.
-(This mirrors the Composer `remove-default-themes` script, which does the same
-for the bundled `twentytwentythree`/`twentytwentyfour` themes.)
+The container command is left as the image default (`apache2-foreground`) so the
+entrypoint's core-copy still runs and repopulates `/var/www/html` after a
+`docker compose down`. The Composer `remove-default-themes` script deletes the
+same two themes at install/update time, covering non-Docker checkouts.
+
+**Because the strip happens at build time, it only applies after the image is
+rebuilt.** This is why `start.sh` runs `docker compose up --build` rather than
+plain `up`: a cached image would silently keep the old seed, so a Dockerfile
+edit (or a refreshed base image) would never take effect until someone rebuilt
+by hand. A fully-cached `--build` adds ~1s to startup; only changed layers
+actually rebuild.
+
+Two gotchas when changing what gets stripped:
+
+- **Rebuild is required** — `docker compose build` (or `up --build`, which
+  `start.sh` now does). Recreate the container afterwards so the new seed runs:
+  `docker compose up -d --force-recreate wordpress`.
+- **Files already on the host bind-mount are not removed by the rebuild.** The
+  entrypoint only *adds* missing files, it never deletes. Anything already sitting
+  in `wp-content/themes/` or `wp-content/plugins/` must be deleted from disk once:
+  `rm -rf wp-content/themes/twentytwentythree wp-content/themes/twentytwentyfour`.
 
 ---
 
