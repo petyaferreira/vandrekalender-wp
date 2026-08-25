@@ -211,15 +211,15 @@
         },
         {
             "name": "wpackagist-plugin/fluentform",
-            "version": "6.2.12",
+            "version": "6.2.13",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluentform/",
-                "reference": "tags/6.2.12"
+                "reference": "tags/6.2.13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.12.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.13.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
