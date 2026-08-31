@@ -301,15 +301,15 @@
         },
         {
             "name": "wpackagist-plugin/seo-by-rank-math",
-            "version": "1.0.276",
+            "version": "1.0.277.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/seo-by-rank-math/",
-                "reference": "tags/1.0.276"
+                "reference": "tags/1.0.277.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.276.zip"
+                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.277.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
