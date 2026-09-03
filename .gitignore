@@ -33,3 +33,6 @@ node_modules/
 
 # IDE
 .vscode/settings.json
+
+# WP plugin test sandbox (disposable, not part of the project)
+wp-sandbox/
