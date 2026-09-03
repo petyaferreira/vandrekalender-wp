@@ -50,3 +50,51 @@ function vandrekalender_editor_styles() {
 	);
 }
 add_action( 'after_setup_theme', 'vandrekalender_editor_styles' );
+
+/**
+ * Hand the editor canvas the theme.json styles up front.
+ *
+ * In a block theme the server does not style the editor canvas. The editor
+ * fetches the global styles record over the REST API and generates that CSS in
+ * the browser. Both the 800px content width and the Publico headings come from
+ * there.
+ *
+ * Administrators never see the difference, because WordPress embeds a copy of
+ * that record in the page before the editor starts, so the canvas is styled on
+ * its very first paint. Users who cannot edit theme options do not get the
+ * benefit of that embedded copy and their editor has to make the request.
+ * Measured on production as an Event Organizer: the canvas paints the post at
+ * 918 ms, the request for /wp/v2/global-styles runs from 1299 to 1450 ms, and
+ * the theme styles land at 1470 ms. Those 552 ms are the visible jump from raw
+ * left-aligned HTML to the real layout, and they are why organizers see it and
+ * admins do not.
+ *
+ * Adding the same CSS to the editor settings here closes the gap: the canvas
+ * has it before it paints. The editor still generates its own copy a moment
+ * later, but the rules are identical and land in the same place in the
+ * cascade, so nothing moves when they arrive.
+ *
+ * @param array $settings Block editor settings.
+ * @return array Settings with the global stylesheet appended.
+ */
+function vandrekalender_editor_global_styles( array $settings ): array {
+	// Administrators already get this embedded in the page by core.
+	if ( current_user_can( 'edit_theme_options' ) ) {
+		return $settings;
+	}
+
+	$css = wp_get_global_stylesheet();
+
+	if ( ! $css ) {
+		return $settings;
+	}
+
+	$settings['styles'][] = [
+		'css'            => $css,
+		'__unstableType' => 'theme',
+		'isGlobalStyles' => false,
+	];
+
+	return $settings;
+}
+add_filter( 'block_editor_settings_all', 'vandrekalender_editor_global_styles' );
