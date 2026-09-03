@@ -89,6 +89,26 @@ function vandrekalender_editor_global_styles( array $settings ): array {
 		return $settings;
 	}
 
+	/*
+	 * isGlobalStyles must stay false, however wrong that looks.
+	 *
+	 * The flag does not mean "this is global styles CSS". It marks the slot
+	 * the editor reserves for the copy it generates itself. Both consumers in
+	 * @wordpress/editor drop every flagged entry:
+	 *
+	 *   global-styles-renderer/index.js  filter( ( style ) => ! style.isGlobalStyles )
+	 *   global-styles/index.js           filter( ( style ) => ! style.isGlobalStyles )
+	 *
+	 * The second one builds the server CSS handed to the canvas, so flagging
+	 * this entry true removes it before it is ever used and the delay this
+	 * function exists to remove comes straight back. Measured both ways on the
+	 * same machine: false gives 0 ms in every run, true gives 118 to 229 ms,
+	 * the same as deleting the function.
+	 *
+	 * The cost of false is that this copy stays in the canvas next to the one
+	 * the editor generates. It is appended before them, so their rules win the
+	 * cascade and nothing moves when they arrive.
+	 */
 	$settings['styles'][] = [
 		'css'            => $css,
 		'__unstableType' => 'theme',
