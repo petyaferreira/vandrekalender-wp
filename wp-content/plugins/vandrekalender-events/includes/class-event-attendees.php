@@ -189,7 +189,7 @@ class Vandrekalender_Event_Attendees {
 	/**
 	 * Whether an event accepts joins at all.
 	 *
-	 * Only events created on vandrekalender.dk qualify. A scraped or Facebook
+	 * Only events created on our own site qualify. A scraped or Facebook
 	 * event is run by an external organiser who never sees our attendee list,
 	 * so a join there would promise the visitor a registration that does not
 	 * exist — those events keep their "book with the organiser" link instead.

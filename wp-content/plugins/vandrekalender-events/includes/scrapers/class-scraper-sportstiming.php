@@ -34,7 +34,7 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 			self::API_URL,
 			[
 				'timeout'    => 20,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'    => [
 					'Accept'           => 'application/json',
 					'X-Requested-With' => 'XMLHttpRequest',

@@ -259,7 +259,7 @@ class Vandrekalender_Facebook_Importer {
 			[
 				'timeout'     => 15,
 				'redirection' => 5,
-				'user-agent'  => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent'  => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'     => [
 					'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 					'Accept-Language' => 'da-DK,da;q=0.9,en;q=0.8',

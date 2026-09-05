@@ -55,7 +55,7 @@ class Vandrekalender_Geocoder {
 			$url,
 			[
 				'timeout'    => 10,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'    => [ 'Accept' => 'application/json' ],
 			]
 		);
@@ -120,7 +120,7 @@ class Vandrekalender_Geocoder {
 			$url,
 			[
 				'timeout'    => 10,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'    => [ 'Accept' => 'application/json' ],
 			]
 		);
@@ -179,7 +179,7 @@ class Vandrekalender_Geocoder {
 			$url,
 			[
 				'timeout'    => 10,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'    => [ 'Accept' => 'application/json' ],
 			]
 		);
@@ -222,7 +222,7 @@ class Vandrekalender_Geocoder {
 			self::KOMMUNE . rawurlencode( $kode ),
 			[
 				'timeout'    => 10,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 				'headers'    => [ 'Accept' => 'application/json' ],
 			]
 		);
