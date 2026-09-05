@@ -143,6 +143,17 @@ body {
   }
 }
 
+// Resized Image blocks pin a fixed pixel height while the surrounding column
+// constrains width to 100%. A bare <img> stretches to fill that box, breaking
+// the aspect ratio (the image looks squashed). object-fit: cover fills the
+// fixed-height box by cropping the overflow instead of distorting the photo.
+.wp-block-image.is-resized img,
+.wp-block-image.has-custom-border img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 // "No border radius on mobile" block style, registered as a JSON partial
 // (styles/blocks/06-no-radius-mobile.json) for the same reason as above — the
 // @media rule can't live in block-style JSON. The img selector covers Image
