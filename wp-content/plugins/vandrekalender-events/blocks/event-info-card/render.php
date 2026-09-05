@@ -21,7 +21,7 @@ if ( ! $vk_post_id || \Vandrekalender\Event::CUSTOMPOSTTYPE !== get_post_type( $
 $vk_routes = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ROUTES, true );
 $vk_routes = is_array( $vk_routes ) ? array_values( array_filter( $vk_routes ) ) : [];
 
-// Events created on vandrekalender.dk sign people up here instead of linking
+// Events created on our own site sign people up here instead of linking
 // out to an organiser's booking page.
 $vk_joinable = Vandrekalender_Event_Attendees::is_joinable( $vk_post_id );
 

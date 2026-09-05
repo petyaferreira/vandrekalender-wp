@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Vandrekalender Events
- * Plugin URI:  https://vandrekalender.dk
+ * Plugin URI:  https://allevandreture.dk
  * Description: Custom post type, blocks, REST API, and scraping pipeline for Vandrekalender.
  * Version:     1.0.0
  * Author:      Petya Ferreira
@@ -177,7 +177,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  *
  * The default From is `wordpress@` + the site host (minus a leading `www.`). On
  * a real domain that is already a valid address and this filter is a no-op —
- * production keeps sending as `wordpress@vandrekalender.dk`, unchanged. Locally
+ * production keeps sending as `wordpress@allevandreture.dk`, unchanged. Locally
  * the host is `localhost`, so the default becomes `wordpress@localhost`: no TLD,
  * which PHPMailer rejects outright, and every core email (password reset,
  * new-user notification) fails before it can reach Mailpit. Swapping in the

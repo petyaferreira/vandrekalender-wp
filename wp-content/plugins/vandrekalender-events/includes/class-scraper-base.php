@@ -316,9 +316,9 @@ abstract class Vandrekalender_Scraper_Base {
 			[
 				'user_login'   => $login,
 				'user_pass'    => wp_generate_password( 32, true, true ),
-				'user_email'   => 'robot@vandrekalender.dk',
-				'display_name' => 'Vandrekalender Robot',
-				'nickname'     => 'Vandrekalender Robot',
+				'user_email'   => 'robot@allevandreture.dk',
+				'display_name' => 'Alle Vandreture Robot',
+				'nickname'     => 'Alle Vandreture Robot',
 				'role'         => 'author',
 			]
 		);
@@ -367,7 +367,7 @@ abstract class Vandrekalender_Scraper_Base {
 			$url,
 			[
 				'timeout'    => 15,
-				'user-agent' => 'Vandrekalender/1.0 (+https://vandrekalender.dk)',
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
 			]
 		);
 
