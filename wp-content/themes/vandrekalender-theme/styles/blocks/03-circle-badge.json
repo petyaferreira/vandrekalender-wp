@@ -6,6 +6,11 @@
     "styles": {
         "border": {
             "radius": "50%"
-        }
+        },
+        "typography": {
+            "fontWeight": "600",
+            "lineHeight": "1"
+        },
+        "css": "width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; & p { margin: 0; }"
     }
 }
