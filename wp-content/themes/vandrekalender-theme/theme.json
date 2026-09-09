@@ -122,58 +122,58 @@
             "fontWeight": false,
             "fontFamilies": [
                 {
-                    "fontFamily": "Publico, serif",
-                    "name": "Publico",
-                    "slug": "publico",
+                    "fontFamily": "Newsreader, Georgia, serif",
+                    "name": "Newsreader",
+                    "slug": "newsreader",
                     "fontFace": [
                         {
-                            "fontFamily": "Publico",
+                            "fontFamily": "Newsreader",
                             "fontWeight": "300",
                             "fontStyle": "normal",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/PublicoHeadline-Light.woff2"]
+                            "src": ["file:./assets/fonts/Newsreader-Light.woff2"]
                         },
                         {
-                            "fontFamily": "Publico",
+                            "fontFamily": "Newsreader",
                             "fontWeight": "300",
                             "fontStyle": "italic",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/PublicoHeadline-LightItalic.woff2"]
+                            "src": ["file:./assets/fonts/Newsreader-LightItalic.woff2"]
                         }
                     ]
                 },
                 {
-                    "fontFamily": "Graphik, sans-serif",
-                    "name": "Graphik",
-                    "slug": "graphik",
+                    "fontFamily": "Inter, system-ui, sans-serif",
+                    "name": "Inter",
+                    "slug": "inter",
                     "fontFace": [
                         {
-                            "fontFamily": "Graphik",
+                            "fontFamily": "Inter",
                             "fontWeight": "400",
                             "fontStyle": "normal",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/Graphik-Regular.woff2"]
+                            "src": ["file:./assets/fonts/Inter-Regular.woff2"]
                         },
                         {
-                            "fontFamily": "Graphik",
+                            "fontFamily": "Inter",
                             "fontWeight": "400",
                             "fontStyle": "italic",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/Graphik-RegularItalic.woff2"]
+                            "src": ["file:./assets/fonts/Inter-Italic.woff2"]
                         },
                         {
-                            "fontFamily": "Graphik",
+                            "fontFamily": "Inter",
                             "fontWeight": "600",
                             "fontStyle": "normal",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/Graphik-Semibold.woff2"]
+                            "src": ["file:./assets/fonts/Inter-SemiBold.woff2"]
                         },
                         {
-                            "fontFamily": "Graphik",
+                            "fontFamily": "Inter",
                             "fontWeight": "600",
                             "fontStyle": "italic",
                             "fontDisplay": "swap",
-                            "src": ["file:./assets/fonts/Graphik-SemiboldItalic.woff2"]
+                            "src": ["file:./assets/fonts/Inter-SemiBoldItalic.woff2"]
                         }
                     ]
                 }
@@ -285,7 +285,7 @@
         },
         "css": "& { font-variant-ligatures: no-contextual; }",
         "typography": {
-            "fontFamily": "var:preset|font-family|graphik",
+            "fontFamily": "var:preset|font-family|inter",
             "fontSize": "var:preset|font-size|regular",
             "fontWeight": "400",
             "lineHeight": "1.5"
@@ -297,7 +297,7 @@
         "elements": {
             "heading": {
                 "typography": {
-                    "fontFamily": "var:preset|font-family|publico",
+                    "fontFamily": "var:preset|font-family|newsreader",
                     "fontWeight": "300"
                 },
                 "color": {
