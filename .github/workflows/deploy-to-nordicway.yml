@@ -66,6 +66,36 @@ jobs:
           npm ci || npm install
           npm run build
 
+      # WordPress caches the theme's pattern list in a site transient and only
+      # rescans the /patterns directory when the theme's Version header changes
+      # (WP_Theme::get_block_patterns). A theme that ships inside WordPress, like
+      # Twenty Twenty-Five, gets that for free: its files only change when its
+      # version does. We deploy on every push, so our files change while the
+      # version sits still, and a newly added pattern stays invisible until
+      # someone bumps it by hand. That cost us a missing header logo on staging.
+      #
+      # Stamping the run number onto the version restores the property core
+      # assumes. The repo keeps its real version for releases; only the
+      # deployed copy is stamped, and it ships in the same rsync as the change
+      # it belongs to, so no second push is ever needed.
+      #
+      # The grep is not decoration. The failure mode of a silent stamp is that
+      # your change deploys and simply does not appear, which is very hard to
+      # recognise. Failing the build here makes that impossible.
+      - name: Stamp theme version (busts the WordPress pattern cache)
+        run: |
+          STYLE="wp-content/themes/$THEME_NAME/style.css"
+          BASE=$(grep -m1 '^Version:' "$STYLE" | sed 's/^Version:[[:space:]]*//' | tr -d '\r')
+          if [ -z "$BASE" ]; then
+            echo "::error::No Version header found in $STYLE"
+            exit 1
+          fi
+          STAMPED="${BASE}.${GITHUB_RUN_NUMBER}"
+          sed -i "s|^Version:.*|Version: ${STAMPED}|" "$STYLE"
+          grep -q "^Version: ${STAMPED}$" "$STYLE" \
+            || { echo "::error::Theme version stamp failed - patterns would not refresh"; exit 1; }
+          echo "Theme version: ${BASE} -> ${STAMPED}"
+
       - name: Prepare Nordicway deploy structure
         run: |
           mkdir -p nordicway/wp-content/themes/$THEME_NAME
