@@ -10,81 +10,65 @@
 
 ?>
 
-<!-- wp:group {"metadata":{"name":"Sådan fungerer det"},"align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|extra-large","bottom":"var:preset|spacing|extra-large"}}},"backgroundColor":"cream","layout":{"type":"constrained"}} -->
-<div class="wp-block-group alignfull has-cream-background-color has-background" style="padding-top:var(--wp--preset--spacing--extra-large);padding-bottom:var(--wp--preset--spacing--extra-large)">
+<!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignwide"><!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignwide"><!-- wp:paragraph {"className":"is-style-eyebrow","style":{"elements":{"link":{"color":{"text":"var:preset|color|forest"}}},"typography":{"textAlign":"center"}},"textColor":"forest"} -->
+<p class="has-text-align-center is-style-eyebrow has-forest-color has-text-color has-link-color">kom godt i gang</p>
+<!-- /wp:paragraph -->
 
-	<!-- wp:heading {"textAlign":"center","fontSize":"2-extra-large"} -->
-	<h2 class="wp-block-heading has-text-align-center has-2-extra-large-font-size">Sådan fungerer det</h2>
-	<!-- /wp:heading -->
-
-	<!-- wp:spacer {"height":"var:preset|spacing|medium"} -->
-	<div style="height:var(--wp--preset--spacing--medium)" aria-hidden="true" class="wp-block-spacer"></div>
-	<!-- /wp:spacer -->
-
-	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|large","left":"var:preset|spacing|large"}}}} -->
-	<div class="wp-block-columns alignwide">
-
-	<!-- wp:column -->
-	<div class="wp-block-column">
-		<!-- wp:group {"className":"is-style-circle-badge","backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
-		<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background">
-		<!-- wp:paragraph -->
-		<p>1</p>
-		<!-- /wp:paragraph -->
-		</div>
-		<!-- /wp:group -->
-
-		<!-- wp:heading {"level":3,"fontSize":"large"} -->
-		<h3 class="wp-block-heading has-large-font-size">Find</h3>
-		<!-- /wp:heading -->
-
-		<!-- wp:paragraph -->
-		<p>Brug filtrene til at finde ture nær dig.</p>
-		<!-- /wp:paragraph -->
-	</div>
-	<!-- /wp:column -->
-
-	<!-- wp:column -->
-	<div class="wp-block-column">
-		<!-- wp:group {"className":"is-style-circle-badge","backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
-		<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background">
-		<!-- wp:paragraph -->
-		<p>2</p>
-		<!-- /wp:paragraph -->
-		</div>
-		<!-- /wp:group -->
-
-		<!-- wp:heading {"level":3,"fontSize":"large"} -->
-		<h3 class="wp-block-heading has-large-font-size">Deltag</h3>
-		<!-- /wp:heading -->
-
-		<!-- wp:paragraph -->
-		<p>Se detaljer og mød op på startstedet.</p>
-		<!-- /wp:paragraph -->
-	</div>
-	<!-- /wp:column -->
-
-	<!-- wp:column -->
-	<div class="wp-block-column">
-		<!-- wp:group {"className":"is-style-circle-badge","backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
-		<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background">
-		<!-- wp:paragraph -->
-		<p>3</p>
-		<!-- /wp:paragraph -->
-		</div>
-		<!-- /wp:group -->
-
-		<!-- wp:heading {"level":3,"fontSize":"large"} -->
-		<h3 class="wp-block-heading has-large-font-size">Opret</h3>
-		<!-- /wp:heading -->
-
-		<!-- wp:paragraph -->
-		<p>Arrangér din egen tur og invitér andre.</p>
-		<!-- /wp:paragraph -->
-	</div>
-	<!-- /wp:column -->
-
-	</div>
-	<!-- /wp:columns -->
-</div>
+<!-- wp:heading {"style":{"typography":{"textAlign":"center"}}} -->
+<h2 class="wp-block-heading has-text-align-center">Tre skridt til din næste tur</h2>
+<!-- /wp:heading --></div>
 <!-- /wp:group -->
+
+<!-- wp:columns {"align":"wide"} -->
+<div class="wp-block-columns alignwide"><!-- wp:column {"style":{"border":{"radius":{"topLeft":"1rem","topRight":"1rem","bottomLeft":"1rem","bottomRight":"1rem"},"width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|medium-clamp","bottom":"var:preset|spacing|medium-clamp","left":"var:preset|spacing|medium-clamp","right":"var:preset|spacing|medium-clamp"},"blockGap":"var:preset|spacing|small"}},"backgroundColor":"cream","borderColor":"meadow"} -->
+<div class="wp-block-column has-border-color has-meadow-border-color has-cream-background-color has-background" style="border-width:1px;border-top-left-radius:1rem;border-top-right-radius:1rem;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;padding-top:var(--wp--preset--spacing--medium-clamp);padding-right:var(--wp--preset--spacing--medium-clamp);padding-bottom:var(--wp--preset--spacing--medium-clamp);padding-left:var(--wp--preset--spacing--medium-clamp)"><!-- wp:group {"className":"is-style-circle-badge","style":{"elements":{"link":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
+<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background has-link-color"><!-- wp:paragraph -->
+<p>1</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Find</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Brug filtrene til at finde ture nær dig — efter region, dato, distance og sværhedsgrad.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"border":{"radius":{"topLeft":"1rem","topRight":"1rem","bottomLeft":"1rem","bottomRight":"1rem"},"width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|medium-clamp","bottom":"var:preset|spacing|medium-clamp","left":"var:preset|spacing|medium-clamp","right":"var:preset|spacing|medium-clamp"},"blockGap":"var:preset|spacing|small"}},"backgroundColor":"cream","borderColor":"meadow"} -->
+<div class="wp-block-column has-border-color has-meadow-border-color has-cream-background-color has-background" style="border-width:1px;border-top-left-radius:1rem;border-top-right-radius:1rem;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;padding-top:var(--wp--preset--spacing--medium-clamp);padding-right:var(--wp--preset--spacing--medium-clamp);padding-bottom:var(--wp--preset--spacing--medium-clamp);padding-left:var(--wp--preset--spacing--medium-clamp)"><!-- wp:group {"className":"is-style-circle-badge","style":{"elements":{"link":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
+<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background has-link-color"><!-- wp:paragraph -->
+<p>2</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Deltag</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Se detaljer, ruter og mødested — og mød op på startstedet på dagen.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"border":{"radius":{"topLeft":"1rem","topRight":"1rem","bottomLeft":"1rem","bottomRight":"1rem"},"width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|medium-clamp","bottom":"var:preset|spacing|medium-clamp","left":"var:preset|spacing|medium-clamp","right":"var:preset|spacing|medium-clamp"},"blockGap":"var:preset|spacing|small"}},"backgroundColor":"cream","borderColor":"meadow"} -->
+<div class="wp-block-column has-border-color has-meadow-border-color has-cream-background-color has-background" style="border-width:1px;border-top-left-radius:1rem;border-top-right-radius:1rem;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;padding-top:var(--wp--preset--spacing--medium-clamp);padding-right:var(--wp--preset--spacing--medium-clamp);padding-bottom:var(--wp--preset--spacing--medium-clamp);padding-left:var(--wp--preset--spacing--medium-clamp)"><!-- wp:group {"className":"is-style-circle-badge","style":{"elements":{"link":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"forest","textColor":"white","layout":{"type":"constrained"}} -->
+<div class="wp-block-group is-style-circle-badge has-white-color has-forest-background-color has-text-color has-background has-link-color"><!-- wp:paragraph -->
+<p>3</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Opret</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Arrangér din egen tur, tilføj ruter og distancer, og invitér andre med.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
