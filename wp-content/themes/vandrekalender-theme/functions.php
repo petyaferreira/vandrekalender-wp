@@ -56,7 +56,7 @@ add_action( 'after_setup_theme', 'vandrekalender_editor_styles' );
  *
  * In a block theme the server does not style the editor canvas. The editor
  * fetches the global styles record over the REST API and generates that CSS in
- * the browser. Both the 800px content width and the Publico headings come from
+ * the browser. Both the 800px content width and the Newsreader headings come from
  * there.
  *
  * Administrators never see the difference, because WordPress embeds a copy of
@@ -118,3 +118,38 @@ function vandrekalender_editor_global_styles( array $settings ): array {
 	return $settings;
 }
 add_filter( 'block_editor_settings_all', 'vandrekalender_editor_global_styles' );
+
+/**
+ * Return an SVG file from the theme as markup, ready to inline.
+ *
+ * Inlining keeps the logo in the repository instead of the media library. The
+ * Site Logo block stores an attachment ID in the database, which means the
+ * logo has to be uploaded separately on local, staging and production, and
+ * each one gets a different ID. A file in the theme deploys with the code, so
+ * all three environments are identical and there is no URL in the output that
+ * could point at the wrong host. The browser also makes no extra request for
+ * it.
+ *
+ * The file is read once per request and kept in a static, so using the same
+ * mark in both the header and the footer costs a single disk read.
+ *
+ * Pass a path written in theme code, never anything from user input: the
+ * contents are echoed unescaped, which is only safe for files we ship.
+ *
+ * @param string $relative_path Path inside the theme, e.g. 'assets/img/logo.svg'.
+ * @return string The SVG markup, or an empty string if the file is missing.
+ */
+function vandrekalender_inline_svg( string $relative_path ): string {
+	static $cache = [];
+
+	if ( ! isset( $cache[ $relative_path ] ) ) {
+		$file = get_theme_file_path( $relative_path );
+
+		$cache[ $relative_path ] = is_readable( $file )
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			? (string) file_get_contents( $file )
+			: '';
+	}
+
+	return $cache[ $relative_path ];
+}
