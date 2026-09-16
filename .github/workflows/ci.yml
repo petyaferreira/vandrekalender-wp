@@ -54,11 +54,16 @@ jobs:
   # switch. The guard exists only because this workflow now also runs on pull
   # requests, and an unmerged pull request must not reach staging.
   #
+  # Written as "not a pull request" rather than "is a push" so that
+  # workflow_dispatch keeps working. Manually redeploying staging on demand is
+  # the reason that trigger is in the on: block, and == 'push' would have made
+  # a manual run build and then silently do nothing.
+  #
   # It does not wait for the build above: the deploy builds again in its own
   # workspace, so broken code cannot ship either way, and waiting would only
   # make deploys slower.
   setup-build-deploy-staging:
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/deploy-to-nordicway.yml
     with:
       environment: staging
