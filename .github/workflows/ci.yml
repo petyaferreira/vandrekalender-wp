@@ -4,10 +4,66 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 jobs:
+  # Runs on every push and every pull request. Needs no secrets and deploys
+  # nowhere: it proves composer resolves and both bundles build on a clean
+  # machine. Before this existed, nothing verified a pull request until after it
+  # was merged and the deploy either worked or did not.
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      THEME_NAME: vandrekalender-theme
+      PLUGIN_NAME: vandrekalender-events
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Composer packages
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            wp-content/themes/${{ env.THEME_NAME }}/package-lock.json
+            wp-content/plugins/${{ env.PLUGIN_NAME }}/package-lock.json
+
+      - name: Build theme
+        working-directory: wp-content/themes/${{ env.THEME_NAME }}
+        run: |
+          rm -rf public
+          npm ci || npm install
+          npm run build
+
+      - name: Build plugin
+        working-directory: wp-content/plugins/${{ env.PLUGIN_NAME }}
+        run: |
+          rm -rf build
+          npm ci || npm install
+          npm run build
+
+  # Unchanged except for the event guard. This is a live site with hosting
+  # configured, so it deploys on every push to main and has no DEPLOY_ENABLED
+  # switch. The guard exists only because this workflow now also runs on pull
+  # requests, and an unmerged pull request must not reach staging.
+  #
+  # Written as "not a pull request" rather than "is a push" so that
+  # workflow_dispatch keeps working. Manually redeploying staging on demand is
+  # the reason that trigger is in the on: block, and == 'push' would have made
+  # a manual run build and then silently do nothing.
+  #
+  # It does not wait for the build above: the deploy builds again in its own
+  # workspace, so broken code cannot ship either way, and waiting would only
+  # make deploys slower.
   setup-build-deploy-staging:
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/deploy-to-nordicway.yml
     with:
       environment: staging
