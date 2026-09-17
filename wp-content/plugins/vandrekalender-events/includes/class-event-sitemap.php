@@ -75,19 +75,22 @@ class Vandrekalender_Event_Sitemap {
 	}
 
 	/**
-	 * One query: published events with a series key whose event_date is in
-	 * the past, that have a published sibling in the same series dated
-	 * today or later — the same criteria
+	 * One query: pairs of (past event, candidate next event) sharing a series
+	 * key, where the past one's event_date is behind today and the
+	 * candidate's is today or later — the same base criteria
 	 * Vandrekalender_Event_Past_Events::find_next_occurrence() redirects on.
+	 * Language is then checked in PHP against the actual Polylang API (see
+	 * post_language()) rather than reimplemented against Polylang's internal
+	 * tables here, so the two places can't drift out of agreement.
 	 *
-	 * @return int[] Post IDs.
+	 * @return int[] Post IDs of past events with a same-language next occurrence.
 	 */
 	private function compute_redirecting_event_ids(): array {
 		global $wpdb;
 
 		$sql = $wpdb->prepare(
 			"
-			SELECT DISTINCT past_key.post_id
+			SELECT DISTINCT past_key.post_id AS past_id, next_key.post_id AS next_id
 			FROM {$wpdb->postmeta} AS past_key
 			INNER JOIN {$wpdb->posts} AS past
 				ON past.ID = past_key.post_id
@@ -123,7 +126,46 @@ class Vandrekalender_Event_Sitemap {
 		);
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- built with $wpdb->prepare() above (only hardcoded identifiers sit outside the placeholders); result is cached in a transient by the caller, not per-call.
-		return array_map( 'intval', $wpdb->get_col( $sql ) );
+		$pairs = $wpdb->get_results( $sql );
+
+		$redirecting = [];
+
+		foreach ( $pairs as $pair ) {
+			$past_id = (int) $pair->past_id;
+
+			if ( isset( $redirecting[ $past_id ] ) ) {
+				continue;
+			}
+
+			// Mirrors find_next_occurrence(): no language on the past post
+			// means no restriction (matches how it skips adding 'lang' to
+			// the query in that case); otherwise the candidate must match.
+			$past_lang = $this->post_language( $past_id );
+
+			if ( '' === $past_lang || $past_lang === $this->post_language( (int) $pair->next_id ) ) {
+				$redirecting[ $past_id ] = true;
+			}
+		}
+
+		return array_keys( $redirecting );
+	}
+
+	/**
+	 * The Polylang language slug for a post, or '' when Polylang is inactive
+	 * or the post has none. Mirrors
+	 * Vandrekalender_Event_Past_Events::post_language().
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string
+	 */
+	private function post_language( int $post_id ): string {
+		if ( ! function_exists( 'pll_get_post_language' ) ) {
+			return '';
+		}
+
+		$lang = pll_get_post_language( $post_id );
+
+		return is_string( $lang ) ? $lang : '';
 	}
 
 	/**

@@ -126,7 +126,11 @@ class Vandrekalender_Event_Past_Events {
 		$args = [
 			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
-			'posts_per_page' => 1,
+			// A generous candidate pool, not just 1: the earliest-dated
+			// occurrence isn't necessarily the first one in this event's
+			// language, and the 'lang' query arg can't be trusted to filter
+			// this for us (see post_language()'s docblock).
+			'posts_per_page' => 20,
 			'fields'         => 'ids',
 			'post__not_in'   => [ $exclude_id ],
 			'orderby'        => [ 'date_clause' => 'ASC' ],
@@ -145,13 +149,14 @@ class Vandrekalender_Event_Past_Events {
 		];
 
 		$lang = $this->post_language( $exclude_id );
-		if ( $lang ) {
-			$args['lang'] = $lang;
+
+		foreach ( get_posts( $args ) as $candidate_id ) {
+			if ( '' === $lang || $lang === $this->post_language( (int) $candidate_id ) ) {
+				return (int) $candidate_id;
+			}
 		}
 
-		$found = get_posts( $args );
-
-		return $found ? (int) $found[0] : 0;
+		return 0;
 	}
 
 	/**
@@ -196,10 +201,16 @@ class Vandrekalender_Event_Past_Events {
 	 * @return int[] Post IDs.
 	 */
 	private function nearby_upcoming_events( int $post_id ): array {
+		// A generous candidate pool, not just NEARBY_COUNT: the 'lang' query
+		// arg can't be trusted to filter this for us (see post_language()'s
+		// docblock), so language filtering happens in PHP below and needs
+		// more rows to pick NEARBY_COUNT matches from.
+		$pool_size = self::NEARBY_COUNT * 6;
+
 		$base_args = [
 			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
-			'posts_per_page' => self::NEARBY_COUNT,
+			'posts_per_page' => $pool_size,
 			'fields'         => 'ids',
 			'post__not_in'   => [ $post_id ],
 			'meta_key'       => \Vandrekalender\Event::META_DATE, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- one row per singular page load, not a listing query.
@@ -216,9 +227,6 @@ class Vandrekalender_Event_Past_Events {
 		];
 
 		$lang = $this->post_language( $post_id );
-		if ( $lang ) {
-			$base_args['lang'] = $lang;
-		}
 
 		$region_terms = wp_get_post_terms( $post_id, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'ids' ] );
 		$region_terms = is_wp_error( $region_terms ) ? [] : $region_terms;
@@ -232,19 +240,50 @@ class Vandrekalender_Event_Past_Events {
 					'terms'    => $region_terms,
 				],
 			];
-			$regional                   = get_posts( $regional_args );
+			$regional                   = $this->filter_by_language( get_posts( $regional_args ), $lang );
 
 			if ( count( $regional ) >= self::NEARBY_MIN ) {
-				return array_map( 'intval', $regional );
+				return array_slice( $regional, 0, self::NEARBY_COUNT );
 			}
 		}
 
-		return array_map( 'intval', get_posts( $base_args ) );
+		return array_slice( $this->filter_by_language( get_posts( $base_args ), $lang ), 0, self::NEARBY_COUNT );
+	}
+
+	/**
+	 * Keep only the IDs matching $lang (all of them when $lang is empty —
+	 * no language on the reference post means no restriction).
+	 *
+	 * @param array<int|string> $post_ids Candidate post IDs.
+	 * @param string            $lang     Language slug to match, or ''.
+	 * @return int[]
+	 */
+	private function filter_by_language( array $post_ids, string $lang ): array {
+		if ( '' === $lang ) {
+			return array_map( 'intval', $post_ids );
+		}
+
+		$matched = [];
+
+		foreach ( $post_ids as $post_id ) {
+			if ( $lang === $this->post_language( (int) $post_id ) ) {
+				$matched[] = (int) $post_id;
+			}
+		}
+
+		return $matched;
 	}
 
 	/**
 	 * The Polylang language slug for a post, or '' when Polylang is inactive
 	 * or the post has none.
+	 *
+	 * Used to filter candidates in PHP after the fact, rather than passing
+	 * 'lang' as a get_posts()/WP_Query arg: the `language` taxonomy's
+	 * query_var is registered but 'public' => false, and in this environment
+	 * that WP_Query arg silently applies no restriction at all (confirmed by
+	 * inspecting the generated SQL) — so a redirect built on it could send a
+	 * Danish past page to an English next occurrence with no error anywhere.
 	 *
 	 * @param int $post_id Post ID.
 	 * @return string
