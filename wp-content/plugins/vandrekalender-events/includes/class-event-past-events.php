@@ -36,6 +36,12 @@ class Vandrekalender_Event_Past_Events {
 	 * @return void
 	 */
 	public function maybe_redirect_to_next_occurrence(): void {
+		// An editor previewing unsaved changes must see the preview, not get
+		// bounced to the next occurrence.
+		if ( is_preview() ) {
+			return;
+		}
+
 		if ( ! is_singular( \Vandrekalender\Event::CUSTOMPOSTTYPE ) ) {
 			return;
 		}
