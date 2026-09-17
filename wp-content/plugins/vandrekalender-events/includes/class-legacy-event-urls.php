@@ -18,6 +18,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Vandrekalender_Legacy_Event_Urls {
 
+	use Vandrekalender_Polylang_Language;
+
 	/**
 	 * Constructor.
 	 */
@@ -92,24 +94,5 @@ class Vandrekalender_Legacy_Event_Urls {
 		}
 
 		return (int) $candidates[0];
-	}
-
-	/**
-	 * The Polylang language slug for a post, or '' when Polylang is inactive
-	 * or the post has none. See
-	 * Vandrekalender_Event_Past_Events::post_language() for why this is
-	 * checked directly rather than via a 'lang' query arg.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return string
-	 */
-	private function post_language( int $post_id ): string {
-		if ( ! function_exists( 'pll_get_post_language' ) ) {
-			return '';
-		}
-
-		$lang = pll_get_post_language( $post_id );
-
-		return is_string( $lang ) ? $lang : '';
 	}
 }

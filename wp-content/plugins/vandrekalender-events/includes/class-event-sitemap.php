@@ -18,6 +18,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Vandrekalender_Event_Sitemap {
 
+	use Vandrekalender_Polylang_Language;
+
 	const CACHE_KEY = 'vandrekalender_sitemap_redirecting_events';
 	const CACHE_TTL = HOUR_IN_SECONDS;
 
@@ -137,6 +139,12 @@ class Vandrekalender_Event_Sitemap {
 				continue;
 			}
 
+			// Claimed events are never redirected — see the matching guard
+			// in Vandrekalender_Event_Past_Events::maybe_redirect_to_next_occurrence().
+			if ( get_post_meta( $past_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+				continue;
+			}
+
 			// Mirrors find_next_occurrence(): no language on the past post
 			// means no restriction (matches how it skips adding 'lang' to
 			// the query in that case); otherwise the candidate must match.
@@ -148,24 +156,6 @@ class Vandrekalender_Event_Sitemap {
 		}
 
 		return array_keys( $redirecting );
-	}
-
-	/**
-	 * The Polylang language slug for a post, or '' when Polylang is inactive
-	 * or the post has none. Mirrors
-	 * Vandrekalender_Event_Past_Events::post_language().
-	 *
-	 * @param int $post_id Post ID.
-	 * @return string
-	 */
-	private function post_language( int $post_id ): string {
-		if ( ! function_exists( 'pll_get_post_language' ) ) {
-			return '';
-		}
-
-		$lang = pll_get_post_language( $post_id );
-
-		return is_string( $lang ) ? $lang : '';
 	}
 
 	/**

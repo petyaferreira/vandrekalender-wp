@@ -24,6 +24,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-attendees.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join-mailer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-schema.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/trait-polylang-language.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-past-events.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
