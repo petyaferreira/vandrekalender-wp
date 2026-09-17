@@ -173,6 +173,74 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 /**
+ * Register the `wp vandrekalender backfill-series-key` command.
+ *
+ * Sets event_series_key on scraped, unclaimed events created before the
+ * meta existed, so the past-event redirect (see docs/past-events-brief.md)
+ * can find sibling occurrences for posts scraped before this change.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender backfill-series-key',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+
+			// Build the "strip a trailing date suffix" pattern from the site's
+			// own month names — disambiguate_title() appended the suffix with
+			// date_i18n(), so this matches whatever locale wrote the title.
+			$months = [];
+			for ( $m = 1; $m <= 12; $m++ ) {
+				$months[] = preg_quote( date_i18n( 'F', mktime( 0, 0, 0, $m, 1 ) ), '/' );
+			}
+			$suffix_pattern = '/\s+–\s+\d{1,2}\.\s+(?:' . implode( '|', $months ) . ')\s+\d{4}$/u';
+
+			$post_ids = get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-off migration command, not a request-time query.
+						[
+							'key'   => \Vandrekalender\Event::META_SOURCE,
+							'value' => 'scraped',
+						],
+					],
+				]
+			);
+
+			$updated = 0;
+			$skipped = 0;
+
+			foreach ( $post_ids as $post_id ) {
+				if ( get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+					++$skipped;
+					continue;
+				}
+
+				$source_name = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_NAME, true );
+				$base_title  = preg_replace( $suffix_pattern, '', get_the_title( $post_id ) );
+				$series_key  = sanitize_title( $source_name . ' ' . $base_title );
+
+				if ( $dry_run ) {
+					WP_CLI::log( sprintf( '%d: "%s" -> %s', $post_id, $base_title, $series_key ) );
+				} else {
+					update_post_meta( $post_id, \Vandrekalender\Event::META_SERIES_KEY, $series_key );
+				}
+
+				++$updated;
+			}
+
+			if ( $dry_run ) {
+				WP_CLI::success( sprintf( '%d scraped events would be updated, %d claimed events skipped.', $updated, $skipped ) );
+			} else {
+				WP_CLI::success( sprintf( '%d scraped events updated, %d claimed events skipped.', $updated, $skipped ) );
+			}
+		}
+	);
+}
+
+/**
  * Fall back to the admin address when WordPress's default From is invalid.
  *
  * The default From is `wordpress@` + the site host (minus a leading `www.`). On
