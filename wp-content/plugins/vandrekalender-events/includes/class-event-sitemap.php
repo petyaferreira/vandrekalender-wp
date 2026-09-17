@@ -145,12 +145,23 @@ class Vandrekalender_Event_Sitemap {
 				continue;
 			}
 
+			$next_id = (int) $pair->next_id;
+
+			// Mirrors future_occurrences_in_series(): a claimed post is no
+			// longer touched by the scraper, so it isn't safe to treat as
+			// this series' authoritative next occurrence either. Don't mark
+			// $past_id resolved from this pair — a different, unclaimed
+			// pair for the same $past_id may still turn up.
+			if ( get_post_meta( $next_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+				continue;
+			}
+
 			// Mirrors find_next_occurrence(): no language on the past post
 			// means no restriction (matches how it skips adding 'lang' to
 			// the query in that case); otherwise the candidate must match.
 			$past_lang = $this->post_language( $past_id );
 
-			if ( '' === $past_lang || $past_lang === $this->post_language( (int) $pair->next_id ) ) {
+			if ( '' === $past_lang || $past_lang === $this->post_language( $next_id ) ) {
 				$redirecting[ $past_id ] = true;
 			}
 		}

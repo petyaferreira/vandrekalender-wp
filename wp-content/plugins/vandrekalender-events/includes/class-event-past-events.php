@@ -249,9 +249,19 @@ class Vandrekalender_Event_Past_Events {
 
 		$result = [];
 		foreach ( $ids as $id ) {
+			$id = (int) $id;
+
+			// A claimed post is no longer touched by the scraper, so its
+			// event_date and event_series_key can go stale or get
+			// repurposed by the organiser — not safe to treat as this
+			// series' authoritative next occurrence.
+			if ( get_post_meta( $id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+				continue;
+			}
+
 			$result[] = [
-				'id'   => (int) $id,
-				'lang' => $this->post_language( (int) $id ),
+				'id'   => $id,
+				'lang' => $this->post_language( $id ),
 			];
 		}
 
