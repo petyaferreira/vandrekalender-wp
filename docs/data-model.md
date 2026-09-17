@@ -135,6 +135,7 @@ All scraping fields are admin only — never visible to event creators or the pu
 | `event_claimed_at` | string (datetime) | — | Timestamp when the event was claimed |
 | `event_claim_token` | string | — | Single-use random token emailed to the organiser during the claim flow. Cleared after successful claim |
 | `event_claim_token_expires` | string (datetime) | — | Expiry timestamp for the claim token. Token is invalid after 48 hours |
+| `event_series_key` | string | — | `sanitize_title( event_source_name . ' ' . base_title )`, set on every scraped, unclaimed event. Groups recurring occurrences of the same walk (e.g. DVL's weekly walks) so a past occurrence can 301-redirect to the next upcoming one instead of being drafted. Empty for manually created and claimed events — they are never redirected. See `docs/past-events-brief.md` |
 
 ### Claim Flow
 

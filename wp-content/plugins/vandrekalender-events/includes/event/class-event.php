@@ -45,6 +45,7 @@ class Event {
 	public const META_SOURCE_NAME = 'event_source_name';
 	public const META_SCRAPED_AT  = 'event_scraped_at';
 	public const META_CLAIMED     = 'event_claimed';
+	public const META_SERIES_KEY  = 'event_series_key';
 
 	/**
 	 * Get the singleton instance.
@@ -314,6 +315,20 @@ class Event {
 				'single'       => true,
 				'show_in_rest' => true,
 				'default'      => false,
+			]
+		);
+
+		// Groups recurring occurrences of the same walk (e.g. DVL's weekly
+		// walks) so a past one can redirect to the next. Set only by the
+		// scraper pipeline; manually created and claimed events have none.
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_SERIES_KEY,
+			[
+				'type'         => 'string',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '',
 			]
 		);
 	}

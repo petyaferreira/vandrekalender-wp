@@ -171,10 +171,19 @@ abstract class Vandrekalender_Scraper_Base {
 
 		$author_id = $this->get_scraper_author_id();
 
+		$base_title = sanitize_text_field( $event['post_title'] ?? '' );
+
 		$title = $this->disambiguate_title(
-			sanitize_text_field( $event['post_title'] ?? '' ),
+			$base_title,
 			(string) ( $event[ \Vandrekalender\Event::META_DATE ] ?? '' ),
 			$existing ? (int) $existing[0]->ID : 0
+		);
+
+		// Groups recurring occurrences of the same walk (same source, same
+		// title before the date suffix) so a past one can redirect to the
+		// next. See docs/past-events-brief.md.
+		$event[ \Vandrekalender\Event::META_SERIES_KEY ] = sanitize_title(
+			( $event[ \Vandrekalender\Event::META_SOURCE_NAME ] ?? '' ) . ' ' . $base_title
 		);
 
 		$post_data = [

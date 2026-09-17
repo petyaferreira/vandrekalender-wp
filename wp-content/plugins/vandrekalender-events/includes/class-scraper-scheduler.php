@@ -143,8 +143,6 @@ class Vandrekalender_Scraper_Scheduler {
 			}
 		}
 
-		$results[] = self::cleanup_past_events();
-
 		$entry = [
 			'time'     => current_time( 'mysql' ),
 			'trigger'  => 'cron' === $trigger ? 'cron' : 'manual',
@@ -158,63 +156,9 @@ class Vandrekalender_Scraper_Scheduler {
 		return $entry;
 	}
 
-	/**
-	 * Draft scraped, unclaimed events whose date is more than a week past.
-	 *
-	 * Recurring sources (e.g. DVL's weekly walks) publish a fresh page per
-	 * occurrence, so past occurrences would otherwise accumulate forever as
-	 * near-identical public pages — which Google flags as duplicate content.
-	 * A week's grace keeps just-finished events visible; manually created and
-	 * organiser-claimed events are never touched.
-	 *
-	 * @return array Log row (name, count, status, error) matching scraper rows.
-	 */
-	private static function cleanup_past_events(): array {
-		$cutoff = ( new DateTimeImmutable( 'now', wp_timezone() ) )
-			->modify( '-7 days' )
-			->format( 'Y-m-d' );
-
-		$candidates = get_posts(
-			[
-				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => [
-					[
-						'key'   => \Vandrekalender\Event::META_SOURCE,
-						'value' => 'scraped',
-					],
-					[
-						'key'     => \Vandrekalender\Event::META_DATE,
-						'value'   => $cutoff,
-						'compare' => '<',
-						'type'    => 'DATE',
-					],
-				],
-			]
-		);
-
-		$count = 0;
-		foreach ( $candidates as $post_id ) {
-			if ( get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
-				continue;
-			}
-
-			wp_update_post(
-				[
-					'ID'          => $post_id,
-					'post_status' => 'draft',
-				]
-			);
-			++$count;
-		}
-
-		return [
-			'name'   => 'Cleanup (past events)',
-			'count'  => $count,
-			'status' => 'ok',
-			'error'  => '',
-		];
-	}
+	// Past events are no longer drafted after their date passes — they stay
+	// published. See docs/scrapers.md ("Past-events cleanup") and
+	// docs/past-events-brief.md for why, and how duplicate-content risk from
+	// recurring occurrences is handled instead (redirect to the next
+	// occurrence, in Vandrekalender_Event_Past_Events).
 }

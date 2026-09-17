@@ -24,6 +24,10 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-attendees.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join-mailer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-join.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-schema.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/trait-polylang-language.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-past-events.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
@@ -42,6 +46,9 @@ new Vandrekalender_Event_Rest_Api();
 new Vandrekalender_Event_Attendees();
 new Vandrekalender_Event_Join();
 new Vandrekalender_Event_Schema();
+new Vandrekalender_Event_Past_Events();
+new Vandrekalender_Event_Sitemap();
+new Vandrekalender_Legacy_Event_Urls();
 new Vandrekalender_Scraper_Scheduler();
 new Vandrekalender_Scraper_Admin();
 new Vandrekalender_Facebook_Importer();
@@ -168,6 +175,185 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			}
 
 			WP_CLI::success( sprintf( '%d events updated in %ss.', $entry['total'], $entry['duration'] ) );
+		}
+	);
+}
+
+/**
+ * Register the `wp vandrekalender backfill-series-key` command.
+ *
+ * Sets event_series_key on scraped, unclaimed events created before the
+ * meta existed, so the past-event redirect (see docs/past-events-brief.md)
+ * can find sibling occurrences for posts scraped before this change.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender backfill-series-key',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+
+			// Build the "strip a trailing date suffix" pattern from the site's
+			// own month names — disambiguate_title() appended the suffix with
+			// date_i18n(), so this matches whatever locale wrote the title.
+			$months = [];
+			for ( $m = 1; $m <= 12; $m++ ) {
+				$months[] = preg_quote( date_i18n( 'F', mktime( 0, 0, 0, $m, 1 ) ), '/' );
+			}
+			$suffix_pattern = '/\s+–\s+\d{1,2}\.\s+(?:' . implode( '|', $months ) . ')\s+\d{4}$/u';
+
+			$post_ids = get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-off migration command, not a request-time query.
+						[
+							'key'   => \Vandrekalender\Event::META_SOURCE,
+							'value' => 'scraped',
+						],
+					],
+				]
+			);
+
+			$updated = 0;
+			$skipped = 0;
+
+			foreach ( $post_ids as $post_id ) {
+				if ( get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+					++$skipped;
+					continue;
+				}
+
+				$source_name = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_NAME, true );
+				$base_title  = preg_replace( $suffix_pattern, '', get_the_title( $post_id ) );
+				$series_key  = sanitize_title( $source_name . ' ' . $base_title );
+
+				if ( $dry_run ) {
+					WP_CLI::log( sprintf( '%d: "%s" -> %s', $post_id, $base_title, $series_key ) );
+				} else {
+					update_post_meta( $post_id, \Vandrekalender\Event::META_SERIES_KEY, $series_key );
+				}
+
+				++$updated;
+			}
+
+			if ( $dry_run ) {
+				WP_CLI::success( sprintf( '%d scraped events would be updated, %d claimed events skipped.', $updated, $skipped ) );
+			} else {
+				WP_CLI::success( sprintf( '%d scraped events updated, %d claimed events skipped.', $updated, $skipped ) );
+			}
+		}
+	);
+}
+
+/**
+ * Register the `wp vandrekalender restore-past-drafts` command.
+ *
+ * Republishes scraped, unclaimed past events that cleanup_past_events()
+ * drafted before it was removed (see docs/past-events-brief.md) — that
+ * method drafted every unclaimed scraped event more than a week past its
+ * date, turning already-indexed URLs into 404s. A draft whose event_date
+ * is on or after its own post_modified date was drafted for a different
+ * reason (cancelled at the source, via unpublish_stale_events()) and is
+ * left alone.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender restore-past-drafts',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+			$today   = current_time( 'Y-m-d' );
+
+			$candidates = get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'draft',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-off migration command, not a request-time query.
+						[
+							'key'   => \Vandrekalender\Event::META_SOURCE,
+							'value' => 'scraped',
+						],
+						[
+							'key'     => \Vandrekalender\Event::META_DATE,
+							'value'   => $today,
+							'compare' => '<',
+							'type'    => 'DATE',
+						],
+					],
+				]
+			);
+
+			$restored          = 0;
+			$skipped_claimed   = 0;
+			$skipped_cancelled = 0;
+			$slug_changes      = [];
+			$sample            = [];
+
+			foreach ( $candidates as $post_id ) {
+				if ( get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+					WP_CLI::log( sprintf( 'Skipped %d: claimed', $post_id ) );
+					++$skipped_claimed;
+					continue;
+				}
+
+				$post          = get_post( $post_id );
+				$event_date    = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_DATE, true );
+				$modified_date = substr( $post->post_modified, 0, 10 );
+				$days_after    = ( strtotime( $modified_date ) - strtotime( $event_date ) ) / DAY_IN_SECONDS;
+
+				// Cleanup drafted 7+ days after the event. A draft whose event_date
+				// is on or after its own last-modified date wasn't touched by
+				// cleanup — it was drafted as cancelled — so leave it alone.
+				if ( $days_after < 6 ) {
+					WP_CLI::log( sprintf( 'Skipped %d: cancelled, not cleanup (event_date %s, modified %s)', $post_id, $event_date, $modified_date ) );
+					++$skipped_cancelled;
+					continue;
+				}
+
+				if ( $dry_run ) {
+					$sample[] = $post_id;
+					++$restored;
+					continue;
+				}
+
+				$original_slug = $post->post_name;
+
+				wp_update_post(
+					[
+						'ID'          => $post_id,
+						'post_status' => 'publish',
+					]
+				);
+
+				$new_slug = get_post_field( 'post_name', $post_id );
+
+				if ( $new_slug !== $original_slug ) {
+					$slug_changes[] = [ $post_id, $original_slug, $new_slug ];
+				}
+
+				++$restored;
+			}
+
+			if ( $dry_run && $sample ) {
+				WP_CLI::log( 'Sample: ' . implode( ', ', array_slice( $sample, 0, 10 ) ) );
+			}
+
+			foreach ( $slug_changes as $change ) {
+				WP_CLI::warning( sprintf( 'Post %d slug changed on restore: "%s" -> "%s"', $change[0], $change[1], $change[2] ) );
+			}
+
+			WP_CLI::success(
+				sprintf(
+					'%d events %s, %d skipped (cancelled), %d skipped (claimed).',
+					$restored,
+					$dry_run ? 'would be restored' : 'restored',
+					$skipped_cancelled,
+					$skipped_claimed
+				)
+			);
 		}
 	);
 }
