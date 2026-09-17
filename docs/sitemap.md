@@ -90,6 +90,17 @@ Users with "Event Organizer" role access these WordPress native pages. No custom
 - Event slugs auto-generated from titles: lowercase, hyphens, Danish characters (æ→ae, ø→oe, å→aa)
 - No trailing slashes
 - No date or ID in event URLs — slug only
+- The pre-Polylang `/event/[slug]` base (used before the Danish permalink moved to `/begivenhed/[slug]`) 301-redirects to the current URL. See `docs/past-events-brief.md`.
+
+---
+
+## Past Events
+
+**Past events stay published at their existing `/begivenhed/[slug]` URL** — a passed date never drafts a page. See `docs/scrapers.md` → "Past-events cleanup" and `docs/past-events-brief.md` for the full picture.
+
+- A **recurring occurrence** (a walk a source republishes as one page per date, e.g. DVL's weekly walks) 301-redirects once its date passes to the next upcoming occurrence of the same walk, if one exists. This is the duplicate-content fix — old occurrences funnel forward instead of accumulating as near-identical pages.
+- A **one-off event**, or a recurring one with no next occurrence yet, stays on its own URL with a "this walk has taken place" notice and nearby upcoming walks.
+- The Rank Math XML sitemap excludes a redirecting past occurrence (it would only send crawlers into the redirect above); a past one-off event stays in the sitemap.
 
 ---
 

@@ -199,7 +199,7 @@ Some sources (DVL) publish a **separate page per occurrence** of a recurring wal
 
 Every scraper's listing covers **all upcoming events** at its source, so after each run the base class (`unpublish_stale_events()`) moves to **draft** any published event of that source whose URL was not seen during the run — it was cancelled or removed at the source. Guard rails:
 
-- **Past events are never touched by this sweep** — they drop out of "upcoming" listings naturally. Only events with `event_date` >= today are candidates. (Past scraped events are drafted separately, a week after their date — see Past-events cleanup below.)
+- **Past events are never touched by this sweep** — they drop out of "upcoming" listings naturally. Only events with `event_date` >= today are candidates. (Past events stay published — see Past-events cleanup below.)
 - **Claimed events are never touched** — the organiser is the source of truth.
 - **A failed or empty fetch drafts nothing** — if the run saw no URLs at all, the source is assumed unreachable rather than empty.
 - **Draft, not delete**: the source-URL dedup matches drafts, so if the source re-lists the event (or the feed had a one-day glitch), the next run republishes the same post instead of creating a duplicate.
@@ -208,14 +208,18 @@ All meta keys use the **canonical, no-underscore schema keys** registered in `cl
 
 ### Past-events cleanup
 
-After the scrapers run, `Vandrekalender_Scraper_Scheduler::cleanup_past_events()` moves to **draft** every published **scraped, unclaimed** event whose `event_date` is more than **7 days** past. Recurring sources publish a fresh page per occurrence, so without this sweep past occurrences accumulate forever as near-identical public pages (reported by Google Search Console as "Duplicate, Google chose different canonical than user"). Guard rails:
+**Past events stay published.** Nothing drafts an event just because its date passed — `Vandrekalender_Scraper_Scheduler` no longer runs a cleanup sweep. That sweep (`cleanup_past_events()`, removed 2026-09-17) used to move every published, scraped, unclaimed event to **draft** once its `event_date` was more than 7 days past. It solved the duplicate-content problem recurring sources create (a fresh page per occurrence), but at the cost of turning every already-indexed URL into a 404 — Search Console showed hundreds of `Not found (404)` rows for it. See `docs/past-events-brief.md` for the full incident writeup.
 
-- **Manually created and Facebook-imported events are never touched** — only `event_source = 'scraped'`.
-- **Claimed events are never touched** — the organiser is the source of truth.
-- The week's grace keeps just-finished events visible while still relevant.
-- The sweep is logged as its own row (`Cleanup (past events)`) in the Scraper Log.
+Recurring occurrences are deduplicated differently instead, without touching publish status:
 
-Tombstones (not re-creating admin-deleted events) are deferred to v2.
+- **Series key.** `upsert_event()` sets `event_series_key` (`\Vandrekalender\Event::META_SERIES_KEY`) on every scraped event: `sanitize_title( event_source_name . ' ' . base_title )`, where `base_title` is the scraped title before `disambiguate_title()`'s date suffix. Recurring occurrences of the same walk share the same key. Manually created and claimed events never get one — they are never redirected. `wp vandrekalender backfill-series-key [--dry-run]` backfills posts scraped before this existed.
+- **Redirect to the next occurrence.** On `template_redirect`, `Vandrekalender_Event_Past_Events` checks a singular past event for a series key; if a published sibling with the same key has `event_date >= today`, it 301-redirects there (same Polylang language only). This is what keeps recurring series from accumulating near-identical public pages — the old ones funnel forward instead of piling up.
+- **One-off past events, and recurring ones with no next occurrence yet**, render normally: `Vandrekalender_Event_Past_Events` appends a "this walk has taken place" notice plus 3–5 upcoming walks nearby (same region, falling back to nationwide) via the `the_content` filter, so it's server-rendered and crawlable. The "Jeg kommer" join button is hidden on any past event via the existing `vandrekalender_event_is_joinable` filter.
+- **Sitemap.** `Vandrekalender_Event_Sitemap` excludes redirecting past events (has a series key and a later published occurrence) from Rank Math's XML sitemap via `rank_math/sitemap/entry`, so crawlers aren't sent into a redirect. The ID set is computed with one query and cached, not derived per entry. Past one-off events stay in the sitemap.
+- **Old `/event/` base.** `Vandrekalender_Legacy_Event_Urls` 301-redirects the pre-Polylang `/event/{slug}/` URLs (still indexed, still hit) to the current `/begivenhed/{slug}/` permalink; a second hop into the redirect above is expected and fine.
+- **Restoring what the old sweep already drafted.** `wp vandrekalender restore-past-drafts [--dry-run]` republishes scraped, unclaimed drafts the old cleanup created — distinguished from a draft caused by the removal sweep above (`event_date` on or after `post_modified` means cancelled at the source, left alone) by `event_date` being at least 6 days before `post_modified` (the cleanup ran 7+ days after the event). It publishes with `wp_update_post` and verifies `post_name` didn't change.
+
+Tombstones (not re-creating admin-deleted events) are deferred to v2. Deleting events older than ~12 months and answering 410 Gone is also deferred — see `docs/past-events-brief.md` → Later.
 
 > Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim-flow milestone.
 
