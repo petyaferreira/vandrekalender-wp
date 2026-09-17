@@ -132,11 +132,16 @@ class Vandrekalender_Event_Past_Events {
 		$args = [
 			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
-			// A generous candidate pool, not just 1: the earliest-dated
-			// occurrence isn't necessarily the first one in this event's
-			// language, and the 'lang' query arg can't be trusted to filter
-			// this for us (see post_language()'s docblock).
-			'posts_per_page' => 20,
+			// Not capped: this is scoped to one series_key, so the result set
+			// is bounded by that walk's own publishing cadence, not a sitewide
+			// scan. It must be exhaustive — the earliest-dated occurrence isn't
+			// necessarily the first one in this event's language (the 'lang'
+			// query arg can't be trusted to filter this for us, see
+			// post_language()'s docblock), and a capped pool could miss a
+			// same-language match that Vandrekalender_Event_Sitemap's
+			// uncapped SQL does find, leaving the two disagreeing on whether
+			// this event redirects.
+			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			'post__not_in'   => [ $exclude_id ],
 			'orderby'        => [ 'date_clause' => 'ASC' ],
