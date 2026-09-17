@@ -20,7 +20,6 @@ class Vandrekalender_Event_Past_Events {
 
 	const NEARBY_COUNT            = 5;
 	const NEARBY_MIN              = 3;
-	const NEARBY_POOL_SIZE        = 50;
 	const CACHE_TTL               = HOUR_IN_SECONDS;
 	const CACHE_GENERATION_OPTION = 'vandrekalender_past_events_cache_gen';
 
@@ -319,14 +318,19 @@ class Vandrekalender_Event_Past_Events {
 	}
 
 	/**
-	 * Up to NEARBY_POOL_SIZE published, upcoming event IDs, ordered by date,
-	 * optionally restricted to $region_terms.
+	 * All published, upcoming events, each as ['id' => int, 'lang' => string],
+	 * ordered by date ascending, optionally restricted to $region_terms.
 	 *
-	 * Cached per region-term set (see clear_cache()) for the same reason as
-	 * future_occurrences_in_series(): this runs on every past-event page load.
+	 * Not capped: capping before pick_nearby() applies the language filter
+	 * would mean a minority-language page (e.g. English, the smaller of the
+	 * two per docs/i18n.md) could see a short or empty list purely because
+	 * its matches sort past the cap, even when plenty exist further down.
+	 * Cached (see clear_cache()), so an uncapped fetch costs nothing per
+	 * request — it's the same trade a bounded per-request query would make,
+	 * just paid once per cache generation instead of on every page load.
 	 *
 	 * @param int[] $region_terms Region term IDs, or [] for nationwide.
-	 * @return int[]
+	 * @return array<int, array{id: int, lang: string}>
 	 */
 	private function upcoming_events_pool( array $region_terms ): array {
 		sort( $region_terms );
@@ -340,7 +344,7 @@ class Vandrekalender_Event_Past_Events {
 		$args = [
 			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
 			'post_status'    => 'publish',
-			'posts_per_page' => self::NEARBY_POOL_SIZE,
+			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			'meta_key'       => \Vandrekalender\Event::META_DATE, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- cached, see upcoming_events_pool().
 			'orderby'        => 'meta_value',
@@ -365,32 +369,38 @@ class Vandrekalender_Event_Past_Events {
 			];
 		}
 
-		$ids = array_map( 'intval', get_posts( $args ) );
+		$result = [];
+		foreach ( get_posts( $args ) as $id ) {
+			$result[] = [
+				'id'   => (int) $id,
+				'lang' => $this->post_language( (int) $id ),
+			];
+		}
 
-		set_transient( $cache_key, $ids, self::CACHE_TTL );
+		set_transient( $cache_key, $result, self::CACHE_TTL );
 
-		return $ids;
+		return $result;
 	}
 
 	/**
 	 * Filter a cached candidate pool down to up to NEARBY_COUNT matches in
 	 * $lang (or any, when $lang is empty), excluding $post_id itself.
 	 *
-	 * @param int[]  $pool    Candidate post IDs.
-	 * @param int    $post_id The event the list is being built for.
-	 * @param string $lang    $post_id's language, or ''.
+	 * @param array<int, array{id: int, lang: string}> $pool    Candidate events.
+	 * @param int                                      $post_id The event the list is being built for.
+	 * @param string                                   $lang    $post_id's language, or ''.
 	 * @return int[]
 	 */
 	private function pick_nearby( array $pool, int $post_id, string $lang ): array {
 		$matched = [];
 
-		foreach ( $pool as $candidate_id ) {
-			if ( $candidate_id === $post_id ) {
+		foreach ( $pool as $candidate ) {
+			if ( $candidate['id'] === $post_id ) {
 				continue;
 			}
 
-			if ( '' === $lang || $lang === $this->post_language( $candidate_id ) ) {
-				$matched[] = $candidate_id;
+			if ( '' === $lang || $lang === $candidate['lang'] ) {
+				$matched[] = $candidate['id'];
 
 				if ( count( $matched ) >= self::NEARBY_COUNT ) {
 					break;
