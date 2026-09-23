@@ -242,9 +242,5 @@ jobs:
           PORT: ${{ secrets.NORDICWAY_SSH_PORT }}
           DEST: ${{ secrets.NORDICWAY_DEST_PATH }}
         run: |
-          ssh -T -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=yes "$USER@$HOST" <<'SSHCMDS'
-            echo '--- Themes ---'
-            ls -lah "${DEST}/themes" || true
-            echo '--- Plugins ---'
-            ls -lah "${DEST}/plugins" || true
-          SSHCMDS
+          ssh -T -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=yes "$USER@$HOST" \
+            "set -e; echo '--- Themes ---'; ls -lah '$DEST/themes'; echo '--- Plugins ---'; ls -lah '$DEST/plugins'"
