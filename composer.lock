@@ -193,15 +193,15 @@
         },
         {
             "name": "wpackagist-plugin/fluent-smtp",
-            "version": "2.3.1",
+            "version": "2.4.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluent-smtp/",
-                "reference": "tags/2.3.1"
+                "reference": "tags/2.4.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluent-smtp.2.3.1.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluent-smtp.2.4.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -211,15 +211,15 @@
         },
         {
             "name": "wpackagist-plugin/fluentform",
-            "version": "6.2.13",
+            "version": "6.2.14",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluentform/",
-                "reference": "tags/6.2.13"
+                "reference": "tags/6.2.14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.13.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.14.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -229,15 +229,15 @@
         },
         {
             "name": "wpackagist-plugin/icon-block",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/icon-block/",
-                "reference": "tags/2.0.0"
+                "reference": "tags/2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/icon-block.2.0.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/icon-block.2.1.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -265,15 +265,15 @@
         },
         {
             "name": "wpackagist-plugin/polylang",
-            "version": "3.8.7",
+            "version": "3.8.10",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/polylang/",
-                "reference": "tags/3.8.7"
+                "reference": "tags/3.8.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.7.zip"
+                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.10.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -283,15 +283,15 @@
         },
         {
             "name": "wpackagist-plugin/safe-svg",
-            "version": "2.4.0",
+            "version": "2.5.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/safe-svg/",
-                "reference": "tags/2.4.0"
+                "reference": "tags/2.5.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/safe-svg.2.4.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/safe-svg.2.5.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -301,15 +301,15 @@
         },
         {
             "name": "wpackagist-plugin/seo-by-rank-math",
-            "version": "1.0.277.2",
+            "version": "1.0.279",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/seo-by-rank-math/",
-                "reference": "tags/1.0.277.2"
+                "reference": "tags/1.0.279"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.277.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/seo-by-rank-math.1.0.279.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
