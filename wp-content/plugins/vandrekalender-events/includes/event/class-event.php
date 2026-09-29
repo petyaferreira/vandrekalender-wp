@@ -581,16 +581,33 @@ class Event {
 			return $response;
 		}
 
-		foreach ( $data['meta'][ self::META_ROUTES ] as &$route ) {
+		$data['meta'][ self::META_ROUTES ] = self::strip_gpx_source_url( $data['meta'][ self::META_ROUTES ] );
+
+		$response->set_data( $data );
+
+		return $response;
+	}
+
+	/**
+	 * Remove gpx_source_url from every route in a routes array.
+	 *
+	 * Shared by the core `rest_prepare_event` filter above and by
+	 * Vandrekalender_Event_Rest_Api::format_event(), which also puts the raw
+	 * `event_routes` meta into its own public response. Both need the same
+	 * "never public" rule from docs/route-gpx-plan.md.
+	 *
+	 * @param array $routes A route array, as stored in event_routes meta.
+	 * @return array The same routes with gpx_source_url removed from each.
+	 */
+	public static function strip_gpx_source_url( array $routes ): array {
+		foreach ( $routes as &$route ) {
 			if ( is_array( $route ) ) {
 				unset( $route['gpx_source_url'] );
 			}
 		}
 		unset( $route );
 
-		$response->set_data( $data );
-
-		return $response;
+		return $routes;
 	}
 
 	/**
