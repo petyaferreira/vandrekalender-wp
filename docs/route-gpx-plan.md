@@ -116,9 +116,14 @@ In the editor, after a GPX is selected, fetch the file URL, parse the `trkpt` po
 - One code path on the frontend: everything is an attachment ID, whether uploaded or scraped. Scrapers download the file instead of linking to the source, so the map does not break when the source site changes or blocks hotlinking.
 - Fields live inside the existing route objects, not as new meta keys, because a GPX belongs to a distance, not to the event.
 - Leaflet and leaflet-gpx from cdnjs, consistent with the Event Map block and the CSP already allowing cdnjs.
+- Map in the main column, GPX download public, no route icon on cards yet (see Decisions made below).
 
-## Open questions for Petya
+## Decisions made (29 September 2026)
 
-1. Map placement: under the description in the main column (planned) or inside the info card sidebar? The main column gives it width; the sidebar is where the route tabs are.
-2. Should the GPX be downloadable by anyone, or only logged in users? Planned: anyone.
-3. Should the calendar and cards show a small "route map" icon on events that have a GPX? Cheap to add later.
+- Map placement: in the main column, under the event description (`wp:post-content`), not in the info card sidebar. It gets more width and is easier to see. The route tabs stay in the info card and control the map through the `vk:route-change` event (PR 3c).
+- Download access: anyone can download the GPX, no login needed. The `gpx_url` is public in the REST API. `gpx_source_url` stays private.
+- Route map icon on calendar and cards: not now. Cheap to add later once events have GPX files.
+
+## Open questions
+
+None at the moment.

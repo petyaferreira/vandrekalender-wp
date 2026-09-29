@@ -18,6 +18,7 @@ Walking events calendar for Denmark. Aggregates events from scrapers, Facebook, 
 | Monetisation and business model | `docs/monetisation.md` |
 | Deployment, CI/CD, environments | `docs/deployment.md` |
 | Internationalisation — Polylang, translation functions, REST API lang filtering | `docs/i18n.md` |
+| Route GPX feature — planned PR by PR, in order | `docs/route-gpx-plan.md` |
 
 ---
 
@@ -66,6 +67,33 @@ composer run phpcbf   # auto-fix
 ```
 
 WordPress-Extra ruleset. Text domains: `vandrekalender-theme`, `vandrekalender-events`. Pre-commit hook blocks violations on staged PHP files.
+
+---
+
+## Working on a planned feature (PR workflow)
+
+Used for features that are split into small steps in a plan file, for example `docs/route-gpx-plan.md`. Do one PR (one step) at a time.
+
+**Branches and PRs**
+- Never merge a PR, never push to `main`, never force push. Petya merges.
+- Branch names: `feature/<feature>-<step number>-<short name>`, for example `feature/gpx-1-uploads`.
+- Step 1 branches from `main` and its PR targets `main`.
+- Every later step branches from the previous step's branch, and its PR targets that branch (`gh pr create --base <previous branch>`). This is a stacked PR, so each PR only shows its own changes.
+- Only do the step you were asked to do. Do not start the next step.
+
+**Before opening a PR**
+- `composer run phpcs` must pass (it runs on the host, not in Docker).
+- `npm run build` must pass in the plugin (and the theme if it was touched).
+- Test the change on the local Docker stack as the plan describes. Use `./wp.sh` for WP-CLI and `curl` against `http://localhost:8080` for pages and REST. Say clearly in the PR description which tests you ran and which ones you could not run (for example anything that needs clicking in the browser).
+- Update the docs that the plan names (for example `docs/data-model.md`).
+
+**Review loop**
+- Opening or updating a PR starts the automatic review (`.github/workflows/claude-code-review.yml`). Wait for it with `gh pr checks <number> --watch`.
+- Read the review: the summary with `gh pr view <number> --comments` and the inline comments with `gh api repos/petyaferreira/vandrekalender-wp/pulls/<number>/comments`.
+- Treat review comments as suggestions, not orders. Fix the ones that are correct. If you disagree, reply on the comment with the reason and do not change the code.
+- Push the fixes to the same branch, then check the review again.
+- Stop after 3 review rounds per PR and ask Petya what to do.
+- If an earlier PR in the stack changes after later PRs exist, tell Petya and rebase the later branches on top of it.
 
 ---
 
