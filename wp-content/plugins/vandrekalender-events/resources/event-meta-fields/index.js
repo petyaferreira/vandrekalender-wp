@@ -597,7 +597,19 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                   })
                 }
                 onRemove={() =>
-                  updateRoute(index, { gpx_id: '', gpx_name: '' })
+                  // gpx_source_url is cleared too, not just gpx_id/gpx_name:
+                  // PR 4's scraper re-attaches whenever gpx_source_url is set
+                  // but gpx_id no longer points to a real attachment, so
+                  // leaving it would silently undo this Remove on the next
+                  // scrape. Replace (onSelect above) leaves gpx_source_url
+                  // alone on purpose — the new gpx_id is a real attachment,
+                  // so the scraper's "keep it" check already respects the
+                  // organiser's replacement without needing this.
+                  updateRoute(index, {
+                    gpx_id: '',
+                    gpx_name: '',
+                    gpx_source_url: '',
+                  })
                 }
               />
 
