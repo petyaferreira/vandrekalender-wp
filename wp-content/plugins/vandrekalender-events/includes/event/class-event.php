@@ -68,6 +68,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
+		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 2 );
 		// Hook directly into meta saves — fires at the exact moment each value is
 		// written to the database, regardless of whether the save comes from the
 		// block editor REST API, a scraper, or wp-cli.
@@ -545,6 +546,37 @@ class Event {
 			unset( $data['meta'][ self::META_ORGANISER_EMAIL ] );
 			$response->set_data( $data );
 		}
+
+		return $response;
+	}
+
+	/**
+	 * Strip gpx_source_url from every route in REST responses.
+	 *
+	 * Scrapers set it to avoid re-downloading a GPX file already sideloaded
+	 * for the same route (see docs/route-gpx-plan.md); the editor never reads
+	 * or writes it, and it points at a third-party URL, so it has no reason
+	 * to leave the server via REST for anyone, admins included.
+	 *
+	 * @param \WP_REST_Response $response The REST response.
+	 * @param \WP_Post          $_post    The post object (unused — required by filter signature).
+	 * @return \WP_REST_Response
+	 */
+	public function hide_gpx_source_url_in_rest( \WP_REST_Response $response, \WP_Post $_post ): \WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- required by filter signature.
+		$data = $response->get_data();
+
+		if ( empty( $data['meta'][ self::META_ROUTES ] ) || ! is_array( $data['meta'][ self::META_ROUTES ] ) ) {
+			return $response;
+		}
+
+		foreach ( $data['meta'][ self::META_ROUTES ] as &$route ) {
+			if ( is_array( $route ) ) {
+				unset( $route['gpx_source_url'] );
+			}
+		}
+		unset( $route );
+
+		$response->set_data( $data );
 
 		return $response;
 	}

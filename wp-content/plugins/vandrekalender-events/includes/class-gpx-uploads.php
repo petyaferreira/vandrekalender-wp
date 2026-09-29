@@ -119,15 +119,23 @@ class Vandrekalender_Gpx_Uploads {
 	 * @return bool True if the file has a `gpx` root element and at least one point.
 	 */
 	private function is_valid_gpx( string $path ): bool {
+		$previous_entity_loader = null;
+
 		if ( PHP_VERSION_ID < 80000 && function_exists( 'libxml_disable_entity_loader' ) ) {
 			// External entity loading is off by default from PHP 8 on; only
-			// PHP 7 needs it disabled explicitly to avoid XXE.
-			libxml_disable_entity_loader( true ); // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- only reached on PHP < 8, where the function still exists and is not deprecated.
+			// PHP 7 needs it disabled explicitly to avoid XXE. The function
+			// returns the previous setting, restored below so this does not
+			// leak global state into whatever else runs later in the request.
+			$previous_entity_loader = libxml_disable_entity_loader( true ); // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- only reached on PHP < 8, where the function still exists and is not deprecated.
 		}
 
 		$previous_errors = libxml_use_internal_errors( true );
 		$xml             = simplexml_load_file( $path, 'SimpleXMLElement', LIBXML_NONET );
 		libxml_use_internal_errors( $previous_errors );
+
+		if ( null !== $previous_entity_loader ) {
+			libxml_disable_entity_loader( $previous_entity_loader ); // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- only reached on PHP < 8.
+		}
 
 		if ( false === $xml ) {
 			return false;
