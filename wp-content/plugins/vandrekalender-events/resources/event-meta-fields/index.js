@@ -362,6 +362,7 @@ const RouteGpxField = ({ route, onSelect, onRemove }) => (
         <MediaUploadCheck>
           <MediaUpload
             allowedTypes={['application/gpx+xml']}
+            value={Number(route.gpx_id)}
             onSelect={onSelect}
             render={({ open }) => (
               <Button variant="secondary" onClick={open} __next40pxDefaultSize>
