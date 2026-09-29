@@ -51,7 +51,7 @@ Each route object:
 | `cutoff_time` | int | Maximum allowed completion time in hours e.g. `8` |
 | `price` | float | Price in DKK. `0` = free |
 | `gpx_id` | string | Attachment ID of the GPX file in the Media Library. Empty string when none. Set by the editor or a scraper |
-| `gpx_source_url` | string | The URL on the source site the GPX was downloaded from. Set by scrapers only, to avoid re-downloading on every run. Empty for organiser uploads. Never exposed in REST |
+| `gpx_source_url` | string | The URL on the source site the GPX was downloaded from. Set by scrapers only, to avoid re-downloading on every run. Empty for organiser uploads. Stripped from public (`view` context) REST responses via `rest_prepare_event`; still present in `edit` context so the block editor round-trips it on save without erasing it |
 | `gpx_name` | string | Original GPX filename, for display and the download link. Set by the editor or a scraper |
 
 Example:

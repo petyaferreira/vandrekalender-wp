@@ -68,7 +68,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
-		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 2 );
+		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
 		// Hook directly into meta saves — fires at the exact moment each value is
 		// written to the database, regardless of whether the save comes from the
 		// block editor REST API, a scraper, or wp-cli.
@@ -551,18 +551,30 @@ class Event {
 	}
 
 	/**
-	 * Strip gpx_source_url from every route in REST responses.
+	 * Strip gpx_source_url from public REST responses.
 	 *
 	 * Scrapers set it to avoid re-downloading a GPX file already sideloaded
-	 * for the same route (see docs/route-gpx-plan.md); the editor never reads
-	 * or writes it, and it points at a third-party URL, so it has no reason
-	 * to leave the server via REST for anyone, admins included.
+	 * for the same route (see docs/route-gpx-plan.md); it points at a
+	 * third-party URL, so it has no reason to reach a public REST client.
+	 *
+	 * Only the default `view` context is stripped. The block editor requests
+	 * `context=edit` (which core already restricts to users who can edit the
+	 * post) to load post data, including meta, before a save — routes are
+	 * stored as a single meta array, so if `edit` context did not carry
+	 * gpx_source_url through, the next editor save would send the routes
+	 * back without it and silently erase it. `context=edit` is never public,
+	 * so this still meets the "not public" requirement.
 	 *
 	 * @param \WP_REST_Response $response The REST response.
 	 * @param \WP_Post          $_post    The post object (unused — required by filter signature).
+	 * @param \WP_REST_Request  $request  The REST request.
 	 * @return \WP_REST_Response
 	 */
-	public function hide_gpx_source_url_in_rest( \WP_REST_Response $response, \WP_Post $_post ): \WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- required by filter signature.
+	public function hide_gpx_source_url_in_rest( \WP_REST_Response $response, \WP_Post $_post, \WP_REST_Request $request ): \WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- required by filter signature.
+		if ( 'edit' === $request->get_param( 'context' ) ) {
+			return $response;
+		}
+
 		$data = $response->get_data();
 
 		if ( empty( $data['meta'][ self::META_ROUTES ] ) || ! is_array( $data['meta'][ self::META_ROUTES ] ) ) {

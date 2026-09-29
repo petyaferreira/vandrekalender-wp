@@ -145,6 +145,13 @@ class Vandrekalender_Gpx_Uploads {
 			return false;
 		}
 
-		return isset( $xml->trk->trkseg->trkpt ) || isset( $xml->rte->rtept ) || isset( $xml->wpt );
+		// Property access (e.g. $xml->trk->trkseg->trkpt) only looks at the
+		// first trk and its first trkseg, so a file with several tracks or
+		// segments would wrongly fail if points are not in the first one.
+		// xpath() with local-name() finds a point anywhere in the document,
+		// regardless of nesting or which GPX namespace variant declared it.
+		$points = $xml->xpath( '//*[local-name()="trkpt" or local-name()="rtept" or local-name()="wpt"]' );
+
+		return ! empty( $points );
 	}
 }
