@@ -68,6 +68,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
+		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
 		// Hook directly into meta saves — fires at the exact moment each value is
 		// written to the database, regardless of whether the save comes from the
 		// block editor REST API, a scraper, or wp-cli.
@@ -159,11 +160,14 @@ class Event {
 							'type'                 => 'object',
 							'additionalProperties' => false,
 							'properties'           => [
-								'id'          => [ 'type' => 'string' ],
-								'distance_km' => [ 'type' => 'string' ],
-								'start_time'  => [ 'type' => 'string' ],
-								'cutoff_time' => [ 'type' => 'string' ],
-								'price'       => [ 'type' => 'string' ],
+								'id'             => [ 'type' => 'string' ],
+								'distance_km'    => [ 'type' => 'string' ],
+								'start_time'     => [ 'type' => 'string' ],
+								'cutoff_time'    => [ 'type' => 'string' ],
+								'price'          => [ 'type' => 'string' ],
+								'gpx_id'         => [ 'type' => 'string' ],
+								'gpx_source_url' => [ 'type' => 'string' ],
+								'gpx_name'       => [ 'type' => 'string' ],
 							],
 						],
 					],
@@ -544,6 +548,66 @@ class Event {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Strip gpx_source_url from public REST responses.
+	 *
+	 * Scrapers set it to avoid re-downloading a GPX file already sideloaded
+	 * for the same route (see docs/route-gpx-plan.md); it points at a
+	 * third-party URL, so it has no reason to reach a public REST client.
+	 *
+	 * Only the default `view` context is stripped. The block editor requests
+	 * `context=edit` (which core already restricts to users who can edit the
+	 * post) to load post data, including meta, before a save — routes are
+	 * stored as a single meta array, so if `edit` context did not carry
+	 * gpx_source_url through, the next editor save would send the routes
+	 * back without it and silently erase it. `context=edit` is never public,
+	 * so this still meets the "not public" requirement.
+	 *
+	 * @param \WP_REST_Response $response The REST response.
+	 * @param \WP_Post          $_post    The post object (unused — required by filter signature).
+	 * @param \WP_REST_Request  $request  The REST request.
+	 * @return \WP_REST_Response
+	 */
+	public function hide_gpx_source_url_in_rest( \WP_REST_Response $response, \WP_Post $_post, \WP_REST_Request $request ): \WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- required by filter signature.
+		if ( 'edit' === $request->get_param( 'context' ) ) {
+			return $response;
+		}
+
+		$data = $response->get_data();
+
+		if ( empty( $data['meta'][ self::META_ROUTES ] ) || ! is_array( $data['meta'][ self::META_ROUTES ] ) ) {
+			return $response;
+		}
+
+		$data['meta'][ self::META_ROUTES ] = self::strip_gpx_source_url( $data['meta'][ self::META_ROUTES ] );
+
+		$response->set_data( $data );
+
+		return $response;
+	}
+
+	/**
+	 * Remove gpx_source_url from every route in a routes array.
+	 *
+	 * Shared by the core `rest_prepare_event` filter above and by
+	 * Vandrekalender_Event_Rest_Api::format_event(), which also puts the raw
+	 * `event_routes` meta into its own public response. Both need the same
+	 * "never public" rule from docs/route-gpx-plan.md.
+	 *
+	 * @param array $routes A route array, as stored in event_routes meta.
+	 * @return array The same routes with gpx_source_url removed from each.
+	 */
+	public static function strip_gpx_source_url( array $routes ): array {
+		foreach ( $routes as &$route ) {
+			if ( is_array( $route ) ) {
+				unset( $route['gpx_source_url'] );
+			}
+		}
+		unset( $route );
+
+		return $routes;
 	}
 
 	/**

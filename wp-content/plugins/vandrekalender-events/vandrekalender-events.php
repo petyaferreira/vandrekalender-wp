@@ -18,6 +18,7 @@ define( 'VANDREKALENDER_EVENTS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-roles.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-gpx-uploads.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-organizer-dashboard.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-rest-api.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-attendees.php';
@@ -41,6 +42,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagv
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 
 new Vandrekalender_Roles();
+new Vandrekalender_Gpx_Uploads();
 new Vandrekalender_Organizer_Dashboard();
 new Vandrekalender_Event_Rest_Api();
 new Vandrekalender_Event_Attendees();

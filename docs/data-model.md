@@ -50,13 +50,16 @@ Each route object:
 | `start_time` | string | Departure time. Format: `HH:MM` |
 | `cutoff_time` | int | Maximum allowed completion time in hours e.g. `8` |
 | `price` | float | Price in DKK. `0` = free |
+| `gpx_id` | string | Attachment ID of the GPX file in the Media Library. Empty string when none. Set by the editor or a scraper |
+| `gpx_source_url` | string | The URL on the source site the GPX was downloaded from. Set by scrapers only, to avoid re-downloading on every run. Empty for organiser uploads. Stripped by `Event::strip_gpx_source_url()` from every public response — the core `view`-context REST output (`rest_prepare_event`) and the custom `/vandrekalender/v1/events` endpoints (`class-event-rest-api.php`). Still present in `edit` context so the block editor round-trips it on save without erasing it |
+| `gpx_name` | string | Original GPX filename, for display and the download link. Set by the editor or a scraper |
 
 Example:
 
 ```json
 [
-  { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0 },
-  { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250 }
+  { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0, "gpx_id": "", "gpx_source_url": "", "gpx_name": "" },
+  { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "", "gpx_source_url": "", "gpx_name": "" }
 ]
 ```
 
