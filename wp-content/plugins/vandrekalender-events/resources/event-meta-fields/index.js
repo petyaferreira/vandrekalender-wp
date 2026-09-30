@@ -43,6 +43,12 @@ const toISODate = dateLike => {
 
 const generateRouteId = () => `route_${window.crypto.randomUUID()}`;
 
+// Keeps the Replace/Remove buttons from being squeezed off the row by a
+// long GPX filename — short names show in full, longer ones are cut to
+// 10 characters plus an ellipsis.
+const truncateFilename = (name, max = 10) =>
+  name.length > max ? `${name.slice(0, max)}…` : name;
+
 const emptyRoute = () => ({
   id: generateRouteId(),
   distance_km: '',
@@ -349,15 +355,10 @@ const RouteGpxField = ({ route, onSelect, onRemove }) => (
     {route.gpx_id ? (
       <Flex align="center" gap={2}>
         <Text
-          style={{
-            flex: '1 1 auto',
-            minWidth: 0,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
+          title={route.gpx_name || route.gpx_id}
+          style={{ flex: '1 1 auto', minWidth: 0, whiteSpace: 'nowrap' }}
         >
-          {route.gpx_name || route.gpx_id}
+          {truncateFilename(route.gpx_name || route.gpx_id)}
         </Text>
         <MediaUploadCheck>
           <MediaUpload
