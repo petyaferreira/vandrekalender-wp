@@ -481,12 +481,7 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                   gap={1}
                   style={{ flex: '1 1 auto', minWidth: 0 }}
                 >
-                  {route.distance_km && (
-                    <Text>
-                      {route.distance_km} km
-                      {route.gpx_name ? ` · ${route.gpx_name}` : ''}
-                    </Text>
-                  )}
+                  {route.distance_km && <Text>{route.distance_km} km</Text>}
                   {route.start_time && (
                     <Text>
                       {__('Start:', 'vandrekalender-events')} {route.start_time}
