@@ -2,8 +2,10 @@ import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/editor';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
+  BaseControl,
   Button,
   Flex,
+  Icon,
   SelectControl,
   TextControl,
   DatePicker,
@@ -18,6 +20,7 @@ import {
   format as wpFormat,
   getSettings as getDateSettings,
 } from '@wordpress/date';
+import { check } from '@wordpress/icons';
 
 // event_region and event_length are auto-assigned on save — hide their panels.
 dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_region');
@@ -348,9 +351,9 @@ const LocationPanel = ({ meta, setMeta }) => {
 
 const RouteGpxField = ({ route, onSelect, onRemove }) => (
   <div style={{ marginTop: '4px' }}>
-    <Text variant="muted" isBlock style={{ marginBottom: '4px' }}>
+    <BaseControl.VisualLabel>
       {__('GPX route', 'vandrekalender-events')}
-    </Text>
+    </BaseControl.VisualLabel>
 
     {route.gpx_id ? (
       <Flex align="center" gap={2}>
@@ -489,6 +492,16 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                     </Text>
                   )}
                   {route.price && <Text>{route.price} kr</Text>}
+                  {route.gpx_id && (
+                    <Flex gap={1} align="center" justify="flex-start">
+                      <Text>{__('GPX', 'vandrekalender-events')}</Text>
+                      <Icon
+                        icon={check}
+                        size={16}
+                        style={{ color: '#2D5F3F' /* theme palette: forest */ }}
+                      />
+                    </Flex>
+                  )}
                   {(!route.distance_km || !route.start_time) && (
                     <Text variant="muted">
                       {__('Incomplete route', 'vandrekalender-events')}
@@ -590,7 +603,10 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                 onSelect={media =>
                   updateRoute(index, {
                     gpx_id: String(media.id),
-                    gpx_name: media.filename || media.title,
+                    // Prefer the human-entered title; fall back to the raw
+                    // filename (e.g. with a -1 de-dupe suffix) only when the
+                    // attachment has no title.
+                    gpx_name: media.title || media.filename || '',
                   })
                 }
                 onRemove={() =>
