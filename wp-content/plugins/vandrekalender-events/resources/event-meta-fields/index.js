@@ -1,8 +1,11 @@
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/editor';
+import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
+  BaseControl,
   Button,
   Flex,
+  Icon,
   SelectControl,
   TextControl,
   DatePicker,
@@ -17,6 +20,7 @@ import {
   format as wpFormat,
   getSettings as getDateSettings,
 } from '@wordpress/date';
+import { check } from '@wordpress/icons';
 
 // event_region and event_length are auto-assigned on save — hide their panels.
 dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_region');
@@ -42,12 +46,21 @@ const toISODate = dateLike => {
 
 const generateRouteId = () => `route_${window.crypto.randomUUID()}`;
 
+// Keeps the Replace/Remove buttons from being squeezed off the row by a
+// long GPX filename — short names show in full, longer ones are cut to
+// 10 characters plus an ellipsis.
+const truncateFilename = (name, max = 10) =>
+  name.length > max ? `${name.slice(0, max)}…` : name;
+
 const emptyRoute = () => ({
   id: generateRouteId(),
   distance_km: '',
   start_time: '',
   cutoff_time: '',
   price: '',
+  gpx_id: '',
+  gpx_source_url: '',
+  gpx_name: '',
 });
 
 const normalizeRoutes = raw => {
@@ -58,6 +71,14 @@ const normalizeRoutes = raw => {
     start_time: typeof r?.start_time === 'string' ? r.start_time : '',
     cutoff_time: typeof r?.cutoff_time === 'string' ? r.cutoff_time : '',
     price: typeof r?.price === 'string' ? r.price : '',
+    gpx_id: typeof r?.gpx_id === 'string' ? r.gpx_id : '',
+    // Set by scrapers only; the editor never shows or edits it, but must
+    // still round-trip it unchanged — routes save as one meta array, so
+    // dropping it here would erase the scraper's re-download guard on the
+    // next editor save (see docs/route-gpx-plan.md).
+    gpx_source_url:
+      typeof r?.gpx_source_url === 'string' ? r.gpx_source_url : '',
+    gpx_name: typeof r?.gpx_name === 'string' ? r.gpx_name : '',
   }));
 };
 
@@ -326,6 +347,54 @@ const LocationPanel = ({ meta, setMeta }) => {
   );
 };
 
+// ── Route GPX field ───────────────────────────────────────────────────────────
+
+const RouteGpxField = ({ route, onSelect, onRemove }) => (
+  <div style={{ marginTop: '4px' }}>
+    <BaseControl.VisualLabel>
+      {__('GPX route', 'vandrekalender-events')}
+    </BaseControl.VisualLabel>
+
+    {route.gpx_id ? (
+      <Flex align="center" gap={2}>
+        <Text
+          title={route.gpx_name || route.gpx_id}
+          style={{ flex: '1 1 auto', minWidth: 0, whiteSpace: 'nowrap' }}
+        >
+          {truncateFilename(route.gpx_name || route.gpx_id)}
+        </Text>
+        <MediaUploadCheck>
+          <MediaUpload
+            allowedTypes={['application/gpx+xml']}
+            value={Number(route.gpx_id)}
+            onSelect={onSelect}
+            render={({ open }) => (
+              <Button variant="secondary" onClick={open} __next40pxDefaultSize>
+                {__('Replace', 'vandrekalender-events')}
+              </Button>
+            )}
+          />
+        </MediaUploadCheck>
+        <Button variant="tertiary" onClick={onRemove} __next40pxDefaultSize>
+          {__('Remove', 'vandrekalender-events')}
+        </Button>
+      </Flex>
+    ) : (
+      <MediaUploadCheck>
+        <MediaUpload
+          allowedTypes={['application/gpx+xml']}
+          onSelect={onSelect}
+          render={({ open }) => (
+            <Button variant="secondary" onClick={open} __next40pxDefaultSize>
+              {__('Upload GPX', 'vandrekalender-events')}
+            </Button>
+          )}
+        />
+      </MediaUploadCheck>
+    )}
+  </div>
+);
+
 // ── Event details panel ───────────────────────────────────────────────────────
 
 const EventDetailsPanel = ({ meta, setMeta }) => {
@@ -423,6 +492,16 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                     </Text>
                   )}
                   {route.price && <Text>{route.price} kr</Text>}
+                  {route.gpx_id && (
+                    <Flex gap={1} align="center" justify="flex-start">
+                      <Text>{__('GPX', 'vandrekalender-events')}</Text>
+                      <Icon
+                        icon={check}
+                        size={16}
+                        style={{ color: '#2D5F3F' /* theme palette: forest */ }}
+                      />
+                    </Flex>
+                  )}
                   {(!route.distance_km || !route.start_time) && (
                     <Text variant="muted">
                       {__('Incomplete route', 'vandrekalender-events')}
@@ -517,6 +596,34 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
                 placeholder="0"
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
+              />
+
+              <RouteGpxField
+                route={route}
+                onSelect={media =>
+                  updateRoute(index, {
+                    gpx_id: String(media.id),
+                    // Prefer the human-entered title; fall back to the raw
+                    // filename (e.g. with a -1 de-dupe suffix) only when the
+                    // attachment has no title.
+                    gpx_name: media.title || media.filename || '',
+                  })
+                }
+                onRemove={() =>
+                  // gpx_source_url is cleared too, not just gpx_id/gpx_name:
+                  // PR 4's scraper re-attaches whenever gpx_source_url is set
+                  // but gpx_id no longer points to a real attachment, so
+                  // leaving it would silently undo this Remove on the next
+                  // scrape. Replace (onSelect above) leaves gpx_source_url
+                  // alone on purpose — the new gpx_id is a real attachment,
+                  // so the scraper's "keep it" check already respects the
+                  // organiser's replacement without needing this.
+                  updateRoute(index, {
+                    gpx_id: '',
+                    gpx_name: '',
+                    gpx_source_url: '',
+                  })
+                }
               />
 
               <Flex justify="flex-end" style={{ marginTop: '8px' }}>

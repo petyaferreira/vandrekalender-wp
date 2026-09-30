@@ -365,7 +365,7 @@ File: `resources/event-meta-fields/index.js`
 | Field | UI component | Notes |
 |---|---|---|
 | `event_date` | `DatePicker` | Stores as `YYYY-MM-DD` |
-| `event_routes` | Custom add/edit/remove list | Each route has `distance_km`, `start_time`, `cutoff_time`, `price`. Display name derived at render time as `{post_title} {distance_km} km` |
+| `event_routes` | Custom add/edit/remove list | Each route has `distance_km`, `start_time`, `cutoff_time`, `price`, and an optional GPX file (`MediaUpload`, `allowedTypes={['application/gpx+xml']}`) that sets `gpx_id`/`gpx_name`. `gpx_source_url` has no UI — set by scrapers only, round-tripped unchanged by `normalizeRoutes()` on Upload/Replace. Remove clears all three, including `gpx_source_url`, so a scraper (PR 4) doesn't reattach a file the organiser deliberately detached. Display name derived at render time as `{post_title} {distance_km} km` |
 | `is_free` | Read-only derived display | Computed from route prices at read time — not stored, not editable |
 
 ### Location panel
