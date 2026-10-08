@@ -20,6 +20,8 @@ if ( ! $vk_post_id || \Vandrekalender\Event::CUSTOMPOSTTYPE !== get_post_type( $
 
 $vk_routes = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ROUTES, true );
 $vk_routes = is_array( $vk_routes ) ? array_values( array_filter( $vk_routes ) ) : [];
+$vk_routes = \Vandrekalender\Event::sort_routes_by_distance( $vk_routes );
+$vk_routes = \Vandrekalender\Event::add_gpx_urls( $vk_routes );
 
 // Events created on our own site sign people up here instead of linking
 // out to an organiser's booking page.
@@ -182,6 +184,8 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 					data-vk-price="<?php echo esc_attr( $vk_format_price( $vk_route ) ); ?>"
 					data-vk-start-time="<?php echo esc_attr( $vk_format_start_time( $vk_route ) ); ?>"
 					data-vk-cutoff="<?php echo esc_attr( $vk_format_cutoff( $vk_route ) ); ?>"
+					data-vk-route-id="<?php echo esc_attr( $vk_route['id'] ?? '' ); ?>"
+					data-vk-gpx-url="<?php echo esc_attr( $vk_route['gpx_url'] ?? '' ); ?>"
 				>
 					<?php echo esc_html( $vk_format_distance( $vk_route ) ); ?>
 				</button>
@@ -206,6 +210,20 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 			<div class="vk-info-card__row">
 				<dt><?php esc_html_e( 'Cutoff time', 'vandrekalender-events' ); ?></dt>
 				<dd data-vk-info-field="cutoff"><?php echo esc_html( $vk_format_cutoff( $vk_first_route ) ); ?></dd>
+			</div>
+
+			<div class="vk-info-card__row" data-vk-gpx-row <?php echo empty( $vk_first_route['gpx_url'] ) ? 'hidden' : ''; ?>>
+				<dt><?php esc_html_e( 'Route', 'vandrekalender-events' ); ?></dt>
+				<dd>
+					<a
+						class="vk-info-card__gpx"
+						data-vk-info-field="gpx"
+						href="<?php echo esc_url( $vk_first_route['gpx_url'] ?? '' ); ?>"
+						download
+					>
+						<?php esc_html_e( 'Download GPX', 'vandrekalender-events' ); ?>
+					</a>
+				</dd>
 			</div>
 		<?php endif; ?>
 

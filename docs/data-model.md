@@ -40,7 +40,7 @@ Native WP fields — no custom registration needed.
 
 ### `event_routes`
 
-Array of route options for the event. Stored as JSON in post meta. Registered as `type: array`.
+Array of route options for the event. Stored as JSON in post meta, in whatever order the editor created them — the frontend sorts by distance ascending, not stored order. Registered as `type: array`.
 
 Each route object:
 
@@ -306,14 +306,16 @@ Returns full detail for a single event. Used by the event detail page.
   "length": ["medium", "long"],
   "region": "hovedstaden",
   "routes": [
-    { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0 },
-    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250 }
+    { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0, "gpx_id": "", "gpx_url": "" },
+    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://vandrekalender.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
   ],
   "organiser_name": "Mammutmarch",
   "organiser_url": "https://mammutmarch.dk",
   "source_url": "https://mammutmarch.dk/shop/mammutmarch-koebenhavn-75-100-km/"
 }
 ```
+
+Each route in `routes` also carries a derived `gpx_url` (`Vandrekalender\Event::add_gpx_urls()`, resolved from `gpx_id` with `wp_get_attachment_url()`, empty string when no file or the attachment no longer exists). `gpx_source_url` is never included here — stripped by the same `strip_gpx_source_url()` used for the core post-meta REST output (see `event_routes` above).
 
 ---
 

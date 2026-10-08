@@ -519,7 +519,7 @@ class Vandrekalender_Event_Rest_Api {
 			'organiser'          => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
 			'lat'                => '' !== $lat ? (float) $lat : null,
 			'lng'                => '' !== $lng ? (float) $lng : null,
-			'routes'             => \Vandrekalender\Event::strip_gpx_source_url( $routes ),
+			'routes'             => \Vandrekalender\Event::strip_gpx_source_url( \Vandrekalender\Event::add_gpx_urls( $routes ) ),
 			'distances_km'       => $distances,
 			'price_from'         => $price_from,
 			// Free when no route records a real price, or when the cheapest
