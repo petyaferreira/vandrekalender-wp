@@ -205,7 +205,11 @@ const LocationPanel = ({ meta, setMeta }) => {
   // after the user picks or types an address and overwrite it.
   const cancelPendingCoords = () => {
     clearTimeout(coordsDebounceRef.current);
+    // Invalidates a lookup in flight, which then skips its own cleanup, so
+    // clear its spinner and any old error here.
     reverseRequestRef.current++;
+    setReverseLoading(false);
+    setReverseError('');
     setCoordsDraft(null);
   };
 

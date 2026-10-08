@@ -559,7 +559,8 @@ class Vandrekalender_Geocoder {
 				sprintf(
 					/* translators: %s: error message from the HTTP request. */
 					__( 'Datafordeler request failed: %s', 'vandrekalender-events' ),
-					$response->get_error_message()
+					// The key is in the URL; never let it reach the Scraper Log.
+					str_replace( $key, '***', $response->get_error_message() )
 				)
 			);
 			self::$unavailable = true;
