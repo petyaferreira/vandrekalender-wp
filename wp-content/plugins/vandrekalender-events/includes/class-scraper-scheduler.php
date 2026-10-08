@@ -123,24 +123,32 @@ class Vandrekalender_Scraper_Scheduler {
 		$results = [];
 		$total   = 0;
 
+		// Start clean, so nothing from before this run is blamed on a scraper.
+		Vandrekalender_Geocoder::take_issues();
+
 		foreach ( $scrapers as $name => $scraper ) {
 			try {
-				$count     = (int) $scraper->run();
-				$total    += $count;
-				$results[] = [
+				$count  = (int) $scraper->run();
+				$total += $count;
+				$result = [
 					'name'   => $name,
 					'count'  => $count,
 					'status' => 'ok',
 					'error'  => '',
 				];
 			} catch ( \Throwable $e ) {
-				$results[] = [
+				$result = [
 					'name'   => $name,
 					'count'  => 0,
 					'status' => 'error',
 					'error'  => $e->getMessage(),
 				];
 			}
+
+			// Geocoding problems do not stop a scraper, but leave events
+			// without a map pin or region — show them on this scraper's row.
+			$result['warnings'] = Vandrekalender_Geocoder::take_issues();
+			$results[]          = $result;
 		}
 
 		$entry = [

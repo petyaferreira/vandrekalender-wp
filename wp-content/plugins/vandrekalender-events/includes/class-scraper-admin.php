@@ -111,7 +111,8 @@ class Vandrekalender_Scraper_Admin {
 		$total    = isset( $run['total'] ) ? (int) $run['total'] : 0;
 		$scrapers = isset( $run['scrapers'] ) && is_array( $run['scrapers'] ) ? $run['scrapers'] : [];
 
-		$parts = [];
+		$parts    = [];
+		$warnings = [];
 		foreach ( $scrapers as $scraper ) {
 			$name = isset( $scraper['name'] ) ? (string) $scraper['name'] : '';
 			if ( isset( $scraper['status'] ) && 'error' === $scraper['status'] ) {
@@ -123,6 +124,11 @@ class Vandrekalender_Scraper_Admin {
 				/* translators: 1: scraper name, 2: number of events. */
 				$parts[] = sprintf( __( '%1$s: %2$d', 'vandrekalender-events' ), $name, $count );
 			}
+
+			foreach ( isset( $scraper['warnings'] ) && is_array( $scraper['warnings'] ) ? $scraper['warnings'] : [] as $warning ) {
+				/* translators: 1: scraper name, 2: warning message. */
+				$warnings[] = sprintf( __( '%1$s: %2$s', 'vandrekalender-events' ), $name, (string) $warning );
+			}
 		}
 
 		echo '<tr>';
@@ -130,7 +136,15 @@ class Vandrekalender_Scraper_Admin {
 		echo '<td>' . esc_html( $trigger ) . '</td>';
 		echo '<td>' . esc_html( $duration ) . 's</td>';
 		echo '<td>' . esc_html( (string) $total ) . '</td>';
-		echo '<td>' . esc_html( implode( ' · ', $parts ) ) . '</td>';
+		echo '<td>' . esc_html( implode( ' · ', $parts ) );
+		if ( $warnings ) {
+			echo '<ul class="vk-scraper-log__warnings" style="margin:6px 0 0;color:#996800;">';
+			foreach ( $warnings as $warning ) {
+				echo '<li>⚠ ' . esc_html( $warning ) . '</li>';
+			}
+			echo '</ul>';
+		}
+		echo '</td>';
 		echo '</tr>';
 	}
 }

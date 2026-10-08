@@ -79,7 +79,7 @@ The editor searches `/husnumre/soeg` while the user types, then fetches `/husnum
 
 `data/municipalities.json` is the **single source** for municipalities: code → `{ name, region }` for the 98 municipalities plus Christiansø (codes and names from Danmarks Statistik, the same names already stored on existing events). The editor uses it for code → name, and `Event::municipality_region_map()` builds its name → region lookup from the same file, so the two can never drift apart. To change a municipality or its region, edit only this file.
 
-The server-side geocoder (scrapers, Facebook importer) still calls DAWA until the second migration PR.
+The scrapers use the same service server-side (`Vandrekalender_Geocoder`, see `docs/scrapers.md` → Geocoding), with the same coordinate conversion and municipality list.
 
 ### Coordinate conversion (UTM 32N → latitude/longitude)
 
@@ -88,7 +88,7 @@ Adressevælger returns positions as EPSG:25832 (ETRS89 / UTM zone 32N) metres, e
 - **Why not `proj4`:** the first version of the migration used the `proj4` npm package. It supports every projection and coordinate format, and it grew the editor script from 13 KiB to 147 KiB to do one conversion. The helper is about 25 lines and keeps the script under 20 KiB.
 - **Formula:** inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid (zone 32: central meridian 9°E, scale 0.9996, false easting 500 000 m). ETRS89 and WGS84 differ by under a metre, so the result is used as WGS84 directly. Values are rounded to 7 decimals (about 1 cm).
 - **Checked:** against `proj4` for real Adressevælger addresses in Copenhagen, Rønne, Christiansø, Skagen, Thisted, Esbjerg, Sønderborg and Gedser. Every result was within 1 cm, and the difference is the 7-decimal rounding. Christiansø is the furthest point from the zone's central meridian, where the error would be largest.
-- **Shared with the server:** the server-side geocoder (second migration PR) uses the same formula, ported line for line to PHP, so the editor and the scrapers always produce the same coordinates for the same address. Change one, change both.
+- **Shared with the server:** the server-side geocoder uses the same formula, ported line for line to PHP in `includes/class-utm-converter.php`, so the editor and the scrapers always produce the same coordinates for the same address (checked: identical for 8 addresses across Denmark, Christiansø included). Change one, change both.
 
 | Field | Type | Required | Filter? | Notes |
 |---|---|---|---|---|

@@ -14,7 +14,7 @@ The scraping pipeline is **built and running**. What exists today:
 - A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once daily at 02:12 (site timezone), gated to production by the `VK_ENABLE_SCRAPING` constant. See [Running & scheduling](#running--scheduling).
 - Four implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the national maps feed), and `opdagverden.dk` (`Vandrekalender_Scraper_Opdagverden` — day walks).
 
-Coordinates come from the server-side DAWA helper (see [Geocoding](#geocoding-server-side-dawa-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality. Opdag Verden exposes only a landmark name (not a street address), so it geocodes via DAWA's **place-name register** (`Geocoder::geocode_place()`).
+Coordinates come from the server-side Adressevælger helper (see [Geocoding](#geocoding-server-side-adressevælger-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality. Opdag Verden exposes only a landmark name (not a street address), so it tries the **place-name register** (`Geocoder::geocode_place()`) first, then the address search. The place-name register and the reverse lookup need Datafordeler (PR 3 of `docs/dawa-migration-plan.md`) and return nothing until then.
 
 ---
 
@@ -34,8 +34,8 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 | Source | URL | Type | Priority | Notes |
 |---|---|---|---|---|
-| Opdag Verden | opdagverden.dk | HTML scrape | High | **Built** as `Vandrekalender_Scraper_Opdagverden` (2026-08-19). Membership outdoor community. Day walks listed at `/ture/dagsvandring` (a Joomla "Events Booking" site) as a table of cards linking to `/ture/dagsvandring/<region>/<slug>-<id>`. Each detail page carries a consistent "Begivenhedsoversigt" table (Startdato → date + time, Pris → price, Det foregår → location) parsed alongside `og:title` (title + distance) and `og:image`. The full tour description is members-only (paywalled), so only the structured summary is scraped — `post_content` is left empty. Meeting points are **landmark names** ("Stevns Klint", "Æbelø"), not street addresses, so coordinates come from DAWA's place-name register (`Geocoder::geocode_place()`), trying candidates derived from the title and the "Det foregår" value; the coordinate is the feature's representative point (approximate) and the municipality is reverse-geocoded from it. Events whose landmark does not resolve still **publish** (the map endpoint already skips positionless events, so they simply get no pin while staying in list/calendar/filter views) — and since region normally derives from the municipality, the scraper falls back to the **region encoded in the source URL** (`region_from_url()`, passed through the base class's `tax_terms` hook) so those events keep their region filter |
-| Dansk Vandrelaug (DVL) | dvl.dk | JSON feed + HTML | High | **Built** as `Vandrekalender_Scraper_DVL` (2026-07-03). The tour listing is client-rendered, but the public feed at `/wp-json/dvl/v1/maps/data` lists every upcoming tour (~490) with title, exact meeting-point coordinates, and tour URL. Each server-rendered tour page (`/vandreture/<slug>/`) is then fetched for date/time (from the add-to-calendar link), distance, organising chapter (`Arrangør` → `DVL <chapter>` + chapter page URL), meeting point, description, and image. Coordinates come from the feed; only the municipality is reverse-geocoded via DAWA (`Geocoder::municipality_from_coords()`), because meeting points are often landmark names DAWA cannot geocode forward. Day walks are marked free (price 0) only when the page carries the "Turen er gratis for medlemmer" note; paid vandreferier get no price. One scraper covers **all regional chapters** — the feed is national |
+| Opdag Verden | opdagverden.dk | HTML scrape | High | **Built** as `Vandrekalender_Scraper_Opdagverden` (2026-08-19). Membership outdoor community. Day walks listed at `/ture/dagsvandring` (a Joomla "Events Booking" site) as a table of cards linking to `/ture/dagsvandring/<region>/<slug>-<id>`. Each detail page carries a consistent "Begivenhedsoversigt" table (Startdato → date + time, Pris → price, Det foregår → location) parsed alongside `og:title` (title + distance) and `og:image`. The full tour description is members-only (paywalled), so only the structured summary is scraped — `post_content` is left empty. Meeting points are **landmark names** ("Stevns Klint", "Æbelø"), not street addresses, so coordinates come from the place-name register (`Geocoder::geocode_place()`), trying candidates derived from the title and the "Det foregår" value, then from the address search for the same candidates; the coordinate is approximate. The place-name register needs Datafordeler (PR 3 of `docs/dawa-migration-plan.md`), so until then only the address search runs, and most landmark names ("Stevns Klint", "Mols Bjerge") find no match. Events whose landmark does not resolve still **publish** (the map endpoint already skips positionless events, so they simply get no pin while staying in list/calendar/filter views) — and since region normally derives from the municipality, the scraper falls back to the **region encoded in the source URL** (`region_from_url()`, passed through the base class's `tax_terms` hook) so those events keep their region filter |
+| Dansk Vandrelaug (DVL) | dvl.dk | JSON feed + HTML | High | **Built** as `Vandrekalender_Scraper_DVL` (2026-07-03). The tour listing is client-rendered, but the public feed at `/wp-json/dvl/v1/maps/data` lists every upcoming tour (~490) with title, exact meeting-point coordinates, and tour URL. Each server-rendered tour page (`/vandreture/<slug>/`) is then fetched for date/time (from the add-to-calendar link), distance, organising chapter (`Arrangør` → `DVL <chapter>` + chapter page URL), meeting point, description, and image. Coordinates come from the feed; only the municipality is reverse-geocoded (`Geocoder::municipality_from_coords()`), because meeting points are often landmark names an address search cannot geocode forward. The reverse lookup needs Datafordeler (PR 3 of `docs/dawa-migration-plan.md`): until then, DVL events scraped after 1 October 2026 have coordinates but **no municipality and no region**, and the Scraper Log says so; events scraped earlier keep theirs. Day walks are marked free (price 0) only when the page carries the "Turen er gratis for medlemmer" note; paid vandreferier get no price. One scraper covers **all regional chapters** — the feed is national |
 
 ### Event timing & registration platforms
 
@@ -74,7 +74,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 Scraped data rarely maps cleanly to the event schema. Each source structures its events differently — one has a clear distance field, another buries it in a description paragraph, a third does not mention it at all. A three-layer approach handles this consistently across sources.
 
-> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA** (server-side, until PR 2 of `docs/dawa-migration-plan.md` moves it to Adressevælger; DAWA itself shut down on 1 October 2026). Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
+> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **Adressevælger** (DAWA shut down on 1 October 2026). Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
 
 ### Layer 1 — Direct field mapping
 
@@ -86,7 +86,7 @@ The simplest case: some fields map cleanly from a specific HTML element to a sch
 | `event_date` | A structured date element or `<time>` tag (`YYYY-MM-DD`) |
 | `event_source_url` | The current page URL — always available |
 | `event_place_name` | Meeting-point name or venue, if present |
-| `event_address` | Address / meeting-point text, passed to DAWA in Layer 2 |
+| `event_address` | Address / meeting-point text, passed to the geocoder in Layer 2 |
 | featured image (native WP) | Main event image `src`, sideloaded as the post's featured image |
 | `event_organiser_name` | Organiser or club name field |
 
@@ -102,7 +102,7 @@ Some fields are present but embedded in free text rather than structured element
 | `event_routes[].start_time` | Regex | `"kl. 09:00"` / `"09.00"` / `"kl 9"` |
 | `event_routes[].cutoff_time` | Regex | Stated cut-off / max duration where present |
 | `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value |
-| `event_address` → `event_lat` / `event_lng` / `event_municipality` | **DAWA** lookup | DAWA geocodes the extracted address string and returns coordinates **and** municipality in one call (`api.dataforsyningen.dk`). Manual event entry no longer uses DAWA (the editor searches Adressevælger); this server-side lookup moves to Adressevælger in PR 2 of `docs/dawa-migration-plan.md` |
+| `event_address` → `event_lat` / `event_lng` / `event_municipality` | **Adressevælger** lookup | The geocoder searches the extracted address string, looks the chosen house number up, and returns coordinates **and** municipality. Same provider as manual event entry in the editor |
 
 The free/paid state (`is_free`) and the `event_length` taxonomy are **not scraped** — `is_free` is computed at read time from `event_routes` prices and `event_length` is auto-assigned on save from route distances, the same as for manually created events. The scraper only needs to populate `event_routes` correctly; the save hook handles `event_length` and nothing needs to store `is_free`.
 
@@ -116,7 +116,7 @@ Some fields cannot be extracted from some sources. Rather than guessing or silen
 |---|---|
 | Optional field (e.g. a route's `start_time`) | Field left null. Event still published. Card shows no badge for that field |
 | `event_routes` distance | Route left without distance, event published, **flagged** for manual enrichment *(flagging UI is Planned)* |
-| `event_lat` / `event_lng` (DAWA failed) | Event held as **draft** — coordinates required for the map view. Admin must resolve |
+| `event_lat` / `event_lng` (geocoding failed) | Event held as **draft** — coordinates required for the map view. Admin must resolve |
 | `event_date` | Event held as **draft** — date is a required field |
 | `post_title` | Event **rejected** entirely — not created |
 
@@ -134,9 +134,9 @@ This replaces the confidence-scoring system from the original plan. These Layer 
 | `event_routes[].distance_km` | 2 | Regex | `"15 km"` / `"15km"` / `"15 kilometer"` |
 | `event_routes[].start_time` | 2 | Regex | `"kl. 09:00"` / `"09.00"` |
 | `event_routes[].price` | 2 | Keyword / amount | `"gratis"` → `0`, DKK amount → value |
-| `event_address` | 2 | HTML / regex | Passed to DAWA |
-| `event_lat` / `event_lng` | 2 | DAWA | Geocoded from address |
-| `event_municipality` | 2 | DAWA | Returned alongside coordinates |
+| `event_address` | 2 | HTML / regex | Passed to the geocoder |
+| `event_lat` / `event_lng` | 2 | Adressevælger | Geocoded from address |
+| `event_municipality` | 2 | Adressevælger | Code returned alongside coordinates, name from `data/municipalities.json` |
 | `is_free` | — | Computed at read time | From `event_routes` prices — not stored, not scraped |
 | `event_length` | — | Derived on save | Taxonomy auto-assigned from route distances — not scraped |
 | `event_region` | — | Derived on save | Taxonomy assigned from `event_municipality` — not scraped |
@@ -165,11 +165,26 @@ The base class then provides:
 
 > **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
 
-### Geocoding (server-side DAWA helper) — built
+### Geocoding (server-side Adressevælger helper) — built
 
-`Vandrekalender_Geocoder` (`includes/class-geocoder.php`) turns a free-text Danish address into `event_lat` / `event_lng` / `event_municipality` via the DAWA autocomplete endpoint, with transient caching (a month for hits, an hour of negative caching for misses). Scrapers call it server-side; the block editor has its own client-side address search on Adressevælger (`resources/event-meta-fields/index.js`, see `docs/data-model.md` → Event Location).
+`Vandrekalender_Geocoder` (`includes/class-geocoder.php`) turns a free-text Danish address into `event_lat` / `event_lng` / `event_municipality` with Adressevælger, the same service the block editor's address search uses (`resources/event-meta-fields/index.js`, see `docs/data-model.md` → Event Location). It reads the token from `VANDREKALENDER_ADRESSEVAELGER_TOKEN` (see `docs/deployment.md` → Address search token).
 
-For sources whose meeting point is a **landmark/place name** rather than a street address (Opdag Verden), `Geocoder::geocode_place()` queries DAWA's place-name register (`stednavne2`, `struktur=flad`) and returns the feature's representative point (`visueltcenter`) plus the municipality reverse-geocoded from that point. `Geocoder::municipality_from_coords()` remains the reverse-only helper for sources (DVL) that already carry exact coordinates.
+Steps: search `/husnumre/soeg`, choose a house number hit, look it up with `/husnumre/{id}`, convert its EPSG:25832 point with `Vandrekalender_Utm_Converter` (`includes/class-utm-converter.php`, a line-for-line port of the editor's helper, so both give identical coordinates), and map the municipality code to a name with `Vandrekalender_Municipalities` (`data/municipalities.json`).
+
+**Choosing the hit.** The search ignores a town written without a postcode: "Skovvejen 26, Brædstrup" ranks Skovvejen 26 in Slagelse first. So the hit is chosen by the input's locality:
+- postcode in the input → the first hit with that postcode;
+- only a town → the first hit whose locality contains the town (with up to 200 results, since the right town can rank far down: "Skolevej 5, Fanø" is hit 56);
+- neither (a landmark or bare town name like "Æbelø" or "Kolding") → the first hit, but only when all hits share one postcode. The point is then approximate (somewhere in the right area, so the region is right), otherwise the input is ambiguous and there is no match.
+
+A hit in the wrong town is rejected rather than pinned in the wrong part of the country, and foreign addresses ("Ostseebad Binz") find no match. A house number that does not exist ("Marselisborg Havnevej 1", the street has only even numbers) falls back to the nearest house on the same street and postcode. Checked against the coordinates DAWA had stored for every scraped address: all 21 matches within 3 km of DAWA's point (18 of 20 within 100 m), 20 of 21 with the same municipality (the other one DAWA had not found).
+
+**Caching.** Hits are cached for a month and genuine misses for an hour, as transients. Failed requests (network error, non-200, bad JSON, missing token) are **never** cached, so an outage does not hide addresses until a cache expires.
+
+**Not available yet (PR 3, needs Datafordeler).** Adressevælger has no place-name search and no reverse geocoding. `Geocoder::geocode_place()` (landmark names, Opdag Verden) and `Geocoder::municipality_from_coords()` (DVL) return nothing until then.
+
+**Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
+
+**Repairing events from the outage.** `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]` geocodes scraped events created since the given date that have an address but no coordinates (every geocode failed between DAWA's shutdown and this change). Run it once on production after deploying.
 
 ### Adding a new scraper
 
@@ -313,7 +328,9 @@ wp-content/plugins/vandrekalender-events/includes/
 ├── class-scraper-scheduler.php     ← schedule (daily 02:12, prod-gated) + execute() run/log
 ├── class-scraper-log.php           ← rolling run history (vandrekalender_scraper_runs option)
 ├── class-scraper-admin.php         ← Events → Scraper Log admin screen
-├── class-geocoder.php              ← server-side DAWA geocoding (address → lat/lng/municipality, coords → municipality)
+├── class-geocoder.php              ← server-side Adressevælger geocoding (address → lat/lng/municipality)
+├── class-utm-converter.php         ← EPSG:25832 → lat/lng, same formula as the editor
+├── class-municipalities.php        ← reads data/municipalities.json (code → name → region)
 ├── class-facebook-importer.php     ← Events → Add from Facebook paste-a-link importer
 └── scrapers/
     ├── class-scraper-mammut.php        ← mammutmarch.dk
@@ -325,4 +342,4 @@ wp-content/plugins/vandrekalender-events/includes/
 Manual-run wrapper: `scrape.sh` (repo root). Production flag: `VK_ENABLE_SCRAPING`
 in `wp-config.php`.
 
-Related: `docs/data-model.md` (canonical schema — meta keys, taxonomies, `event_routes` shape, DAWA), `docs/authentication.md` (claim flow and organiser ownership).
+Related: `docs/data-model.md` (canonical schema — meta keys, taxonomies, `event_routes` shape, address search), `docs/authentication.md` (claim flow and organiser ownership).

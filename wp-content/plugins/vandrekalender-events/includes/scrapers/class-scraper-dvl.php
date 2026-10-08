@@ -14,8 +14,10 @@ defined( 'ABSPATH' ) || exit;
  * and description.
  *
  * Meeting points are often station or landmark names ("Birkerød St.") that
- * DAWA cannot geocode, so coordinates come straight from the feed and only the
- * municipality is reverse-geocoded from them.
+ * an address search cannot geocode, so coordinates come straight from the
+ * feed and only the municipality is reverse-geocoded from them (needs
+ * Datafordeler, PR 3 of docs/dawa-migration-plan.md; until then the
+ * municipality a post already has is kept).
  *
  * @package Vandrekalender
  */
@@ -194,7 +196,9 @@ class Vandrekalender_Scraper_DVL extends Vandrekalender_Scraper_Base {
 		];
 
 		// The feed's coordinates are the exact meeting-point pin; only the
-		// municipality (for the region taxonomy) needs a DAWA lookup.
+		// municipality (for the region taxonomy) needs a reverse lookup. It
+		// returns '' until PR 3, and '' is not written, so the municipality a
+		// post already has is kept.
 		if ( 0.0 !== $lat && 0.0 !== $lng ) {
 			$event[ \Vandrekalender\Event::META_LAT ] = $lat;
 			$event[ \Vandrekalender\Event::META_LNG ] = $lng;

@@ -160,9 +160,10 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 			\Vandrekalender\Event::META_SOURCE_NAME    => self::SOURCE_NAME,
 		];
 
-		// Geocode the meeting point server-side via DAWA so the event gets a map
-		// pin and (through the municipality) a region. Danish addresses only;
-		// bare city names or foreign venues simply return no match.
+		// Geocode the meeting point server-side via Adressevælger so the event gets a map
+		// pin and (through the municipality) a region. Danish addresses only:
+		// foreign venues return no match, and a bare town name gets an
+		// approximate point in that town at best (see docs/scrapers.md).
 		if ( '' !== $address ) {
 			$geo = ( new Vandrekalender_Geocoder() )->geocode( $address );
 			if ( null !== $geo ) {

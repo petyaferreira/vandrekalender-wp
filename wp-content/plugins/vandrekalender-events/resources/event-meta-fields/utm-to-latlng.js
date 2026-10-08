@@ -4,9 +4,9 @@
  *
  * Our own helper instead of the proj4 library: we need exactly one
  * conversion, and proj4 grew the editor script from 13 KiB to 147 KiB.
- * The server-side geocoder gets the same formula, ported line for line to
- * PHP, in PR 2 of docs/dawa-migration-plan.md, so the editor and the
- * scrapers always agree. Keep the two in sync.
+ * The server-side geocoder uses the same formula, ported line for line to
+ * PHP in includes/class-utm-converter.php, so the editor and the scrapers
+ * always agree. Keep the two in sync.
  *
  * Inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid.
  * Checked against proj4 for addresses across Denmark (Bornholm included),

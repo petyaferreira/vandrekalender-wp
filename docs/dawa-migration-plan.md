@@ -95,7 +95,7 @@ Tests (local Docker stack, `http://localhost:8080`):
 
 ### PR 2: server side geocoder
 
-Branch: `fix/address-autocomplete-2-geocoder`, from PR 1 (stacked, as in `CLAUDE.md`).
+Branch: `fix/address-autocomplete-2-geocoder`. PR 1 was merged before this started, so it branches from `main` and targets `main`.
 
 File: `includes/class-geocoder.php`. Same public method names and return shape, `{ lat, lng, municipality }`, so scrapers (Sportstiming, Mammut, DVL, Opdag Verden) and the Facebook importer need no change.
 - `geocode()`: search `/husnumre/soeg`, take the first `husnummer` hit, look it up by ID, convert coordinates, map the municipality code.
@@ -104,6 +104,13 @@ File: `includes/class-geocoder.php`. Same public method names and return shape, 
 - `geocode_place()` (`stednavne2`) and anything else that needs Datafordeler stay as is for now but must fail gracefully and be logged to the Scraper Log.
 - Run `./scrape.sh` and check Events, Scraper Log. Report how many events got coordinates before and after.
 - After merging, existing events scraped since 1 Oct without coordinates need a re-geocode. Write a one off WP-CLI command for that, or note it for Petya.
+
+**Done in PR 2 (decisions made while building it, 8 Oct 2026):**
+- **Choosing the hit by locality.** Tested on every scraped address: taking the first house number pinned "Skovvejen 26, Brædstrup" in Slagelse (126 km off) and five more Sportstiming addresses 96–253 km off, because the search ignores a town without a postcode. The geocoder now picks the hit matching the input's postcode or town (200 results for town-only input) and rejects ambiguous input, plus a same-street fallback for house numbers that do not exist. Result: 21 of 35 addresses found, all within 3 km of DAWA's stored point, 20 of 21 with the same municipality. Details in `docs/scrapers.md` → Geocoding.
+- **Place names and reverse lookup** no longer call the dead DAWA endpoints; they return nothing and say so in the Scraper Log until PR 3.
+- **Scraper Log warnings**: geocoder problems are attached to each scraper's row and printed by `./scrape.sh`.
+- **`Vandrekalender_Municipalities`** (`includes/class-municipalities.php`) now reads `data/municipalities.json` for both the geocoder and the region map.
+- **Re-geocode command**: `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]`. Petya runs it once on production after deploying.
 
 ### PR 3 (later, needs a Datafordeler API key)
 
@@ -116,7 +123,8 @@ Adressevælger has no reverse geocoding (confirmed in the KDS FAQ: "Adressevælg
 - Call Datafordeler from the server through our own REST endpoint, so the API key never reaches the browser. The key follows the same constant / GitHub Environment secret / generated mu-plugin pattern as `VANDREKALENDER_ADRESSEVAELGER_TOKEN` (see `docs/deployment.md`).
 - Restore the editor help text ("…and the nearest address is looked up for you") and the matching Danish translation.
 - Re-run the lookup for existing events that have coordinates but no address or municipality (a one-off WP-CLI command, like PR 2's re-geocode). List how many events it fixed.
-- Use the same lookup in the server-side geocoder for DVL, which brings its own coordinates and only needs the municipality.
+- Use the same lookup in the server-side geocoder for DVL, which brings its own coordinates and only needs the municipality. Since 1 Oct 2026, new DVL events get coordinates but **no municipality and no region** (165 new ones in one local scrape on 8 Oct). Backfill them: extend `wp vandrekalender regeocode`, or add a sibling command, for events with coordinates but no municipality.
+- Implement `Geocoder::geocode_place()` (place-name register, Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge"), which returns nothing since PR 2.
 - Keep the `coordinates_label()` / coordinate directions fallback. It is still needed when the lookup fails or finds nothing. Update the comment in `Event::coordinates_label()`, which points at this PR.
 
 ### PR 4 (last step): Danish translation catch-up
