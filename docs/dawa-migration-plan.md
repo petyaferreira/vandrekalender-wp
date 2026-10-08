@@ -64,6 +64,11 @@ Implementation steps (part of PR 1, because PR 1 cannot work without it):
 
 Note: the token still reaches the browser of logged in editors (the editor script needs it to search), so it is hidden from the repo and from visitors, but not from someone who opens the dev tools in wp-admin. That is acceptable for this kind of token, but do not reuse it for anything else.
 
+**Decide when real tokens arrive.** Today the token is the public `adressevaelger123`, so showing it in the editor exposes nothing. When KDS launches real user management (expected late 2026 or early 2027) and issues a personal token, decide before switching the secret whether it may stay visible in wp-admin:
+- If KDS treats it as a browser-side key (like the public one, or with a domain restriction), keep the current setup and only change the secret and `.env`.
+- If it must stay secret, add a small REST endpoint of our own (logged-in editors only) that calls Adressevælger with the token from the server, and point the editor's search and lookup at it. The cost: every search keystroke goes through our server, which is slightly slower and adds load on the Nordicway hosting. PR 3's Datafordeler endpoint will already use this pattern, so reuse it.
+Check the KDS Brugerstyring page (and the Notifikationsservice mail) for how they expect the token to be used.
+
 Before merging PR 1 Petya must create the GitHub Environment secret `ADRESSEVAELGER_TOKEN` in BOTH `staging` and `production`, otherwise the deploy fails. For now the value is any string of 10 or more characters, and KDS recommends `adressevaelger123` (tested and working). She also adds the same line to her local `.env`.
 
 ## PR plan

@@ -101,6 +101,19 @@ const parseCoords = text => {
   return { lat, lng };
 };
 
+// A pasted point this close to the stored one is the same spot (the same
+// coordinates with fewer decimals, or from another source), so the address
+// picked for it still applies.
+const SAME_SPOT_METRES = 25;
+
+// Approximate distance in metres; accurate enough at this scale.
+const metresApart = (a, b) => {
+  const toRad = deg => (deg * Math.PI) / 180;
+  const x = toRad(b.lng - a.lng) * Math.cos(toRad((a.lat + b.lat) / 2));
+  const y = toRad(b.lat - a.lat);
+  return Math.hypot(x, y) * 6371000;
+};
+
 const adressevaelgerUrl = (path, params = {}) =>
   `${ADRESSEVAELGER}${path}?${new URLSearchParams({
     ...params,
@@ -168,6 +181,13 @@ const LocationPanel = ({ meta, setMeta }) => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
+  // A coordinates paste still waiting on its debounce would otherwise fire
+  // after the user picks or types an address and overwrite it.
+  const cancelPendingCoords = () => {
+    clearTimeout(coordsDebounceRef.current);
+    setCoordsDraft(null);
+  };
+
   const search = async text => {
     const request = ++requestRef.current;
     setLoading(true);
@@ -191,6 +211,7 @@ const LocationPanel = ({ meta, setMeta }) => {
   };
 
   const onQueryChange = value => {
+    cancelPendingCoords();
     // Clear derived fields when the user edits the address manually.
     setMeta({
       event_address: value,
@@ -218,7 +239,7 @@ const LocationPanel = ({ meta, setMeta }) => {
     // pending. Cancel it, or it would fire after the pick and its request
     // would make this pick's lookup look stale and get dropped.
     clearTimeout(debounceRef.current);
-    setCoordsDraft(null);
+    cancelPendingCoords();
     setMeta({
       event_address: titel,
       event_lat: 0,
@@ -234,8 +255,9 @@ const LocationPanel = ({ meta, setMeta }) => {
       return;
     }
 
+    // Keep the suggestions until the lookup succeeds, so a failed lookup
+    // can reopen the list and the user can click again.
     setOpen(false);
-    setSuggestions([]);
     const request = ++requestRef.current;
     setLoading(true);
     try {
@@ -254,9 +276,13 @@ const LocationPanel = ({ meta, setMeta }) => {
         event_lng: lng,
         event_municipality: municipalities[kode]?.name || '',
       });
+      setSuggestions([]);
       setSearchError('');
     } catch {
-      if (request === requestRef.current) setSearchError(unavailable);
+      if (request === requestRef.current) {
+        setSearchError(unavailable);
+        setOpen(true);
+      }
     } finally {
       if (request === requestRef.current) setLoading(false);
     }
@@ -278,9 +304,12 @@ const LocationPanel = ({ meta, setMeta }) => {
     const parsed = parseCoords(value);
     if (!parsed) return;
 
+    // With no stored point, the address is typed text the user is now
+    // pinning, so it is kept.
+    const stored = { lat: Number(meta.event_lat), lng: Number(meta.event_lng) };
     const moved =
-      parsed.lat !== Number(meta.event_lat) ||
-      parsed.lng !== Number(meta.event_lng);
+      Boolean(stored.lat && stored.lng) &&
+      metresApart(stored, parsed) > SAME_SPOT_METRES;
 
     coordsDebounceRef.current = setTimeout(() => {
       // The pasted coordinates are the source of truth for the map pin.
