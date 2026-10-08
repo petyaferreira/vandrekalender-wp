@@ -344,7 +344,8 @@ define( 'VANDREKALENDER_ADRESSEVAELGER_TOKEN', '…' );
 
 Same mechanics as the Google login config above: the mu-plugin is rewritten on
 every deploy, and the deploy **fails loudly** if the secret is missing for the
-target environment (or contains a `'` or `\`).
+target environment, or if it contains anything other than letters, digits and
+`. _ ~ + / = -` (a quote, backslash or newline would break the generated PHP file).
 
 Until Klimadatastyrelsen launches real user management (expected late 2026 or
 early 2027) any string of 10 or more characters works, and KDS recommends

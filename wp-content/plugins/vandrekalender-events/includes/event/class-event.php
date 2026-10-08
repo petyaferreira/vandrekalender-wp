@@ -439,6 +439,13 @@ class Event {
 			}
 		}
 
+		// Without the file no event gets a region, and nothing else would show
+		// it. Logged even without WP_DEBUG, since a broken deploy is the likely
+		// cause.
+		if ( empty( $map ) ) {
+			error_log( 'Vandrekalender: data/municipalities.json is missing or invalid, so event regions cannot be assigned.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
+		}
+
 		return $map;
 	}
 

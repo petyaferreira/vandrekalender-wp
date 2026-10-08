@@ -250,11 +250,12 @@ jobs:
             echo "::error::ADRESSEVAELGER_TOKEN not set for the '${{ inputs.environment }}' environment"
             exit 1
           fi
-          # Written into a single-quoted PHP string below, so reject quotes
-          # and backslashes rather than escaping them.
+          # Written into a single-quoted PHP string below. Allow only
+          # characters that are safe there: a quote, backslash or stray
+          # newline would break the mu-plugin and take the whole site down.
           case "$TOKEN" in
-            *\'* | *\\*)
-              echo "::error::ADRESSEVAELGER_TOKEN must not contain ' or \\"
+            *[!A-Za-z0-9._~+/=-]*)
+              echo "::error::ADRESSEVAELGER_TOKEN may only contain letters, digits and . _ ~ + / = -"
               exit 1
               ;;
           esac
