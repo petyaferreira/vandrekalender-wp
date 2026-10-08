@@ -87,6 +87,7 @@ $vk_wrapper_attributes = [
 							]
 						)
 					);
+					$vk_place = $vk_place ? $vk_place : \Vandrekalender\Event::coordinates_label( $vk_event_id );
 
 					$vk_routes    = get_post_meta( $vk_event_id, \Vandrekalender\Event::META_ROUTES, true );
 					$vk_distances = [];

@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * reads its Open Graph tags (title, description, image), and creates a
  * prefilled draft event. The admin then completes the required fields the
  * page cannot provide structured — date, routes, and address (geocoded via
- * the editor's DAWA autocomplete) — and publishes.
+ * the editor's Adressevælger address search) — and publishes.
  *
  * Facebook often serves a login wall to anonymous requests, so the prefill
  * is best-effort: when no usable Open Graph data comes back, the draft is

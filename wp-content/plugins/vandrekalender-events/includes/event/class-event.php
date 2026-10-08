@@ -366,7 +366,7 @@ class Event {
 	 * Assign event_region from a municipality name.
 	 *
 	 * @param int    $post_id      Post ID.
-	 * @param string $municipality Municipality name as returned by DAWA.
+	 * @param string $municipality Municipality name, as listed in data/municipalities.json.
 	 * @return void
 	 */
 	private function assign_region_from_municipality( int $post_id, string $municipality ): void {
@@ -416,115 +416,37 @@ class Event {
 	/**
 	 * Map of Danish municipality names (lowercase) to region slugs.
 	 *
+	 * Built from data/municipalities.json, the same file the editor uses to
+	 * turn an Adressevælger municipality code into a name, so the names
+	 * always match.
+	 *
 	 * @return array<string, string>
 	 */
 	private static function municipality_region_map(): array {
-		return [
-			// Hovedstaden.
-			'albertslund'       => 'hovedstaden',
-			'allerød'           => 'hovedstaden',
-			'ballerup'          => 'hovedstaden',
-			'bornholm'          => 'hovedstaden',
-			'brøndby'           => 'hovedstaden',
-			'christiansø'       => 'hovedstaden',
-			'dragør'            => 'hovedstaden',
-			'egedal'            => 'hovedstaden',
-			'fredensborg'       => 'hovedstaden',
-			'frederiksberg'     => 'hovedstaden',
-			'frederikssund'     => 'hovedstaden',
-			'furesø'            => 'hovedstaden',
-			'gentofte'          => 'hovedstaden',
-			'gladsaxe'          => 'hovedstaden',
-			'glostrup'          => 'hovedstaden',
-			'gribskov'          => 'hovedstaden',
-			'halsnæs'           => 'hovedstaden',
-			'helsingør'         => 'hovedstaden',
-			'herlev'            => 'hovedstaden',
-			'hillerød'          => 'hovedstaden',
-			'hvidovre'          => 'hovedstaden',
-			'høje-taastrup'     => 'hovedstaden',
-			'hørsholm'          => 'hovedstaden',
-			'ishøj'             => 'hovedstaden',
-			'københavn'         => 'hovedstaden',
-			'lyngby-taarbæk'    => 'hovedstaden',
-			'rudersdal'         => 'hovedstaden',
-			'rødovre'           => 'hovedstaden',
-			'tårnby'            => 'hovedstaden',
-			'vallensbæk'        => 'hovedstaden',
-			// Sjælland.
-			'faxe'              => 'sjaelland',
-			'greve'             => 'sjaelland',
-			'guldborgsund'      => 'sjaelland',
-			'holbæk'            => 'sjaelland',
-			'kalundborg'        => 'sjaelland',
-			'køge'              => 'sjaelland',
-			'lejre'             => 'sjaelland',
-			'lolland'           => 'sjaelland',
-			'næstved'           => 'sjaelland',
-			'odsherred'         => 'sjaelland',
-			'ringsted'          => 'sjaelland',
-			'roskilde'          => 'sjaelland',
-			'slagelse'          => 'sjaelland',
-			'solrød'            => 'sjaelland',
-			'sorø'              => 'sjaelland',
-			'stevns'            => 'sjaelland',
-			'vordingborg'       => 'sjaelland',
-			// Syddanmark.
-			'assens'            => 'syddanmark',
-			'billund'           => 'syddanmark',
-			'esbjerg'           => 'syddanmark',
-			'faaborg-midtfyn'   => 'syddanmark',
-			'fanø'              => 'syddanmark',
-			'fredericia'        => 'syddanmark',
-			'haderslev'         => 'syddanmark',
-			'kerteminde'        => 'syddanmark',
-			'kolding'           => 'syddanmark',
-			'langeland'         => 'syddanmark',
-			'middelfart'        => 'syddanmark',
-			'nordfyns'          => 'syddanmark',
-			'nyborg'            => 'syddanmark',
-			'odense'            => 'syddanmark',
-			'svendborg'         => 'syddanmark',
-			'sønderborg'        => 'syddanmark',
-			'tønder'            => 'syddanmark',
-			'varde'             => 'syddanmark',
-			'vejen'             => 'syddanmark',
-			'vejle'             => 'syddanmark',
-			'ærø'               => 'syddanmark',
-			'aabenraa'          => 'syddanmark',
-			// Midtjylland.
-			'favrskov'          => 'midtjylland',
-			'hedensted'         => 'midtjylland',
-			'herning'           => 'midtjylland',
-			'holstebro'         => 'midtjylland',
-			'horsens'           => 'midtjylland',
-			'ikast-brande'      => 'midtjylland',
-			'lemvig'            => 'midtjylland',
-			'norddjurs'         => 'midtjylland',
-			'odder'             => 'midtjylland',
-			'randers'           => 'midtjylland',
-			'ringkøbing-skjern' => 'midtjylland',
-			'samsø'             => 'midtjylland',
-			'silkeborg'         => 'midtjylland',
-			'skanderborg'       => 'midtjylland',
-			'skive'             => 'midtjylland',
-			'struer'            => 'midtjylland',
-			'syddjurs'          => 'midtjylland',
-			'viborg'            => 'midtjylland',
-			'aarhus'            => 'midtjylland',
-			// Nordjylland.
-			'brønderslev'       => 'nordjylland',
-			'frederikshavn'     => 'nordjylland',
-			'hjørring'          => 'nordjylland',
-			'jammerbugt'        => 'nordjylland',
-			'læsø'              => 'nordjylland',
-			'mariagerfjord'     => 'nordjylland',
-			'morsø'             => 'nordjylland',
-			'rebild'            => 'nordjylland',
-			'thisted'           => 'nordjylland',
-			'vesthimmerlands'   => 'nordjylland',
-			'aalborg'           => 'nordjylland',
-		];
+		static $map = null;
+
+		if ( null !== $map ) {
+			return $map;
+		}
+
+		$map  = [];
+		$json = file_get_contents( VANDREKALENDER_EVENTS_DIR . 'data/municipalities.json' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local plugin file.
+		$data = false !== $json ? json_decode( $json, true ) : null;
+
+		foreach ( is_array( $data ) ? $data : [] as $municipality ) {
+			if ( isset( $municipality['name'], $municipality['region'] ) ) {
+				$map[ mb_strtolower( $municipality['name'] ) ] = $municipality['region'];
+			}
+		}
+
+		// Without the file no event gets a region, and nothing else would show
+		// it. Logged even without WP_DEBUG, since a broken deploy is the likely
+		// cause.
+		if ( empty( $map ) ) {
+			error_log( 'Vandrekalender: data/municipalities.json is missing or invalid, so event regions cannot be assigned.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
+		}
+
+		return $map;
 	}
 
 	/**
@@ -636,6 +558,84 @@ class Event {
 		unset( $route );
 
 		return $routes;
+	}
+
+	/**
+	 * An event's stored coordinates, or null when it has none.
+	 *
+	 * The editor stores 0 when an address is cleared, so 0 counts as missing.
+	 *
+	 * @param int $post_id Event post ID.
+	 * @return array{lat: float, lng: float}|null
+	 */
+	public static function coordinates( int $post_id ): ?array {
+		$lat = (float) get_post_meta( $post_id, self::META_LAT, true );
+		$lng = (float) get_post_meta( $post_id, self::META_LNG, true );
+
+		if ( 0.0 === $lat || 0.0 === $lng ) {
+			return null;
+		}
+
+		return [
+			'lat' => $lat,
+			'lng' => $lng,
+		];
+	}
+
+	/**
+	 * Place text for events that have coordinates but no place name or
+	 * municipality, e.g. "GPS 55.67286° N, 12.56103° E".
+	 *
+	 * Events placed only by pasted coordinates get no address or
+	 * municipality until the reverse lookup exists (PR 3 of
+	 * docs/dawa-migration-plan.md), so without this they would show no place
+	 * at all. Five decimals is about one metre.
+	 *
+	 * @param int $post_id Event post ID.
+	 * @return string Empty string when the event has no coordinates.
+	 */
+	public static function coordinates_label( int $post_id ): string {
+		$coords = self::coordinates( $post_id );
+
+		if ( null === $coords ) {
+			return '';
+		}
+
+		$lat = sprintf(
+			/* translators: %s: latitude in degrees, e.g. 55.67286 */
+			$coords['lat'] >= 0 ? __( '%s° N', 'vandrekalender-events' ) : __( '%s° S', 'vandrekalender-events' ),
+			number_format( abs( $coords['lat'] ), 5, '.', '' )
+		);
+		$lng = sprintf(
+			/* translators: %s: longitude in degrees, e.g. 12.56103 */
+			$coords['lng'] >= 0 ? __( '%s° E', 'vandrekalender-events' ) : __( '%s° W', 'vandrekalender-events' ),
+			number_format( abs( $coords['lng'] ), 5, '.', '' )
+		);
+
+		/* translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E */
+		return sprintf( __( 'GPS %1$s, %2$s', 'vandrekalender-events' ), $lat, $lng );
+	}
+
+	/**
+	 * Google Maps directions link for an event: to its address, or to its
+	 * coordinates when it has no address.
+	 *
+	 * @param int $post_id Event post ID.
+	 * @return string Empty string when the event has neither.
+	 */
+	public static function directions_url( int $post_id ): string {
+		$address = trim( (string) get_post_meta( $post_id, self::META_ADDRESS, true ) );
+		$coords  = self::coordinates( $post_id );
+
+		if ( '' !== $address ) {
+			$destination = $address;
+		} elseif ( null !== $coords ) {
+			$destination = $coords['lat'] . ',' . $coords['lng'];
+		} else {
+			return '';
+		}
+
+		return 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $destination );
 	}
 
 	/**
@@ -774,6 +774,19 @@ class Event {
 			$asset['dependencies'],
 			$asset['version'],
 			true
+		);
+
+		// The Adressevælger token reaches the editor script only through this
+		// constant (set per environment, see docs/deployment.md). Without it
+		// the Location panel shows "Address search is not configured".
+		$address_token = defined( 'VANDREKALENDER_ADRESSEVAELGER_TOKEN' )
+			? (string) VANDREKALENDER_ADRESSEVAELGER_TOKEN
+			: '';
+
+		wp_add_inline_script(
+			'vandrekalender-event-meta-fields',
+			'window.vandrekalenderAddressSearch = ' . wp_json_encode( [ 'token' => $address_token ] ) . ';',
+			'before'
 		);
 
 		wp_set_script_translations(

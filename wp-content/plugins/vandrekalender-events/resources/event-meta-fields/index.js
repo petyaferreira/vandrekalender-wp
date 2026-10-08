@@ -10,6 +10,7 @@ import {
   TextControl,
   DatePicker,
   Modal,
+  Notice,
   Spinner,
   __experimentalText as Text,
 } from '@wordpress/components';
@@ -21,6 +22,8 @@ import {
   getSettings as getDateSettings,
 } from '@wordpress/date';
 import { check } from '@wordpress/icons';
+import municipalities from '../../data/municipalities.json';
+import { utmToLatLng } from './utm-to-latlng';
 
 // event_region and event_length are auto-assigned on save — hide their panels.
 dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_region');
@@ -28,10 +31,10 @@ dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_length');
 
 const POST_TYPE = 'event';
 const EMPTY_META = {};
-const DAWA_AUTOCOMPLETE =
-  'https://api.dataforsyningen.dk/autocomplete?type=adresse&q=';
-const DAWA_KOMMUNE = 'https://api.dataforsyningen.dk/kommuner/';
-const DAWA_REVERSE = 'https://api.dataforsyningen.dk/adgangsadresser/reverse';
+const ADRESSEVAELGER = 'https://adressevaelger.dk';
+// Passed in from PHP (VANDREKALENDER_ADRESSEVAELGER_TOKEN). Empty when the
+// constant is not defined — the panel then says search is not configured.
+const ADDRESS_TOKEN = window.vandrekalenderAddressSearch?.token || '';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -99,6 +102,39 @@ const parseCoords = text => {
   return { lat, lng };
 };
 
+// A pasted point this close to the stored one is the same spot (the same
+// coordinates with fewer decimals, or from another source), so the address
+// picked for it still applies.
+const SAME_SPOT_METRES = 25;
+
+// Approximate distance in metres; accurate enough at this scale.
+const metresApart = (a, b) => {
+  const toRad = deg => (deg * Math.PI) / 180;
+  const x = toRad(b.lng - a.lng) * Math.cos(toRad((a.lat + b.lat) / 2));
+  const y = toRad(b.lat - a.lat);
+  return Math.hypot(x, y) * 6371000;
+};
+
+// Municipality names for the manual fallback picker, in Danish order.
+const MUNICIPALITY_OPTIONS = Object.values(municipalities)
+  .map(m => m.name)
+  .sort((a, b) => a.localeCompare(b, 'da'))
+  .map(name => ({ label: name, value: name }));
+
+const adressevaelgerUrl = (path, params = {}) =>
+  `${ADRESSEVAELGER}${path}?${new URLSearchParams({
+    ...params,
+    token: ADDRESS_TOKEN,
+  })}`;
+
+// Fetch JSON and throw on anything but a 200 with a JSON body, so a dead
+// endpoint shows up in the panel instead of silently returning nothing.
+const fetchJson = async url => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+};
+
 const formatDate = iso => {
   if (!iso) return '';
   const dateFormat = getDateSettings().formats.date;
@@ -123,26 +159,30 @@ const LocationPanel = ({ meta, setMeta }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  // Set when the picked address has a municipality code that is not in
+  // data/municipalities.json, so the editor must choose the municipality.
+  const [municipalityUnknown, setMunicipalityUnknown] = useState(false);
   // While the user is typing coordinates the field shows their raw text;
   // otherwise it mirrors the stored meta values.
   const [coordsDraft, setCoordsDraft] = useState(null);
   const debounceRef = useRef(null);
-  const reverseRef = useRef(null);
+  const coordsDebounceRef = useRef(null);
   const wrapperRef = useRef(null);
+  // Bumped on every keystroke and request, so a slow response for older
+  // input never overwrites newer results.
+  const requestRef = useRef(0);
   const setMetaRef = useRef(setMeta);
   setMetaRef.current = setMeta;
+  // Latest meta for timeouts, which would otherwise see the values from
+  // when they were scheduled.
+  const metaRef = useRef(meta);
+  metaRef.current = meta;
 
-  const applyMunicipality = kommunekode => {
-    if (!kommunekode) return;
-    fetch(DAWA_KOMMUNE + kommunekode)
-      .then(res => res.json())
-      .then(kommune => {
-        if (kommune.navn) {
-          setMetaRef.current({ event_municipality: kommune.navn });
-        }
-      })
-      .catch(() => {});
-  };
+  const unavailable = __(
+    'Address search is unavailable. Try again later, or paste coordinates below.',
+    'vandrekalender-events'
+  );
 
   // Close dropdown when clicking outside.
   useEffect(() => {
@@ -155,7 +195,38 @@ const LocationPanel = ({ meta, setMeta }) => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
+  // A coordinates paste still waiting on its debounce would otherwise fire
+  // after the user picks or types an address and overwrite it.
+  const cancelPendingCoords = () => {
+    clearTimeout(coordsDebounceRef.current);
+    setCoordsDraft(null);
+  };
+
+  const search = async text => {
+    const request = ++requestRef.current;
+    setLoading(true);
+    try {
+      const data = await fetchJson(
+        adressevaelgerUrl('/husnumre/soeg', { tekst: text, maksimum: 8 })
+      );
+      if (!Array.isArray(data?.fund)) throw new Error('No fund array');
+      if (request !== requestRef.current) return;
+      setSuggestions(data.fund.filter(f => typeof f?.titel === 'string'));
+      setSearchError('');
+      setOpen(true);
+    } catch {
+      if (request !== requestRef.current) return;
+      setSuggestions([]);
+      setOpen(false);
+      setSearchError(unavailable);
+    } finally {
+      if (request === requestRef.current) setLoading(false);
+    }
+  };
+
   const onQueryChange = value => {
+    cancelPendingCoords();
+    setMunicipalityUnknown(false);
     // Clear derived fields when the user edits the address manually.
     setMeta({
       event_address: value,
@@ -165,71 +236,118 @@ const LocationPanel = ({ meta, setMeta }) => {
     });
 
     clearTimeout(debounceRef.current);
+    requestRef.current++;
+    setLoading(false);
 
-    if (value.length < 3) {
+    if (value.length < 3 || !ADDRESS_TOKEN) {
       setSuggestions([]);
       setOpen(false);
       return;
     }
 
-    debounceRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(DAWA_AUTOCOMPLETE + encodeURIComponent(value));
-        const data = await res.json();
-        setSuggestions(data.slice(0, 8));
-        setOpen(true);
-      } catch {
-        setSuggestions([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 300);
+    debounceRef.current = setTimeout(() => search(value), 300);
   };
 
-  const onSelect = suggestion => {
-    const { tekst, data } = suggestion;
-    setOpen(false);
-    setSuggestions([]);
-    setCoordsDraft(null);
-
+  const onSelect = async suggestion => {
+    const { type, id, titel } = suggestion;
+    // Suggestions stay clickable while a search for newer input is still
+    // pending. Cancel it, or it would fire after the pick and its request
+    // would make this pick's lookup look stale and get dropped.
+    clearTimeout(debounceRef.current);
+    cancelPendingCoords();
+    setMunicipalityUnknown(false);
     setMeta({
-      event_address: tekst,
-      event_lat: data.y,
-      event_lng: data.x,
+      event_address: titel,
+      event_lat: 0,
+      event_lng: 0,
       event_municipality: '',
     });
 
-    applyMunicipality(data.kommunekode);
+    // A street (with or without postcode) is not a finished address:
+    // search again with its text so the list shows its house numbers, and
+    // the user can keep typing.
+    if (type !== 'husnummer' || !id) {
+      search(titel);
+      return;
+    }
+
+    // Keep the suggestions until the lookup succeeds, so a failed lookup
+    // can reopen the list and the user can click again.
+    setOpen(false);
+    const request = ++requestRef.current;
+    setLoading(true);
+    try {
+      const data = await fetchJson(
+        adressevaelgerUrl(`/husnumre/${encodeURIComponent(id)}`)
+      );
+      const point = data?.husnummer?.adgangspunkt?.koordinater;
+      if (!Number.isFinite(point?.x) || !Number.isFinite(point?.y)) {
+        throw new Error('No coordinates');
+      }
+      if (request !== requestRef.current) return;
+      const { lat, lng } = utmToLatLng(point.x, point.y);
+      const kode = data.husnummer.navngivenvejkommunedel?.kommune;
+      const municipality = municipalities[kode]?.name || '';
+      // Every current code is in the list, so a miss means a new code (e.g.
+      // after a municipal reform). Ask the editor to choose the
+      // municipality, or the event would silently get no region.
+      setMunicipalityUnknown(!municipality);
+      setMetaRef.current({
+        event_lat: lat,
+        event_lng: lng,
+        event_municipality: municipality,
+      });
+      setSuggestions([]);
+      setSearchError('');
+    } catch {
+      if (request === requestRef.current) {
+        setSearchError(unavailable);
+        setOpen(true);
+      }
+    } finally {
+      if (request === requestRef.current) setLoading(false);
+    }
   };
 
   const onCoordsChange = value => {
     setCoordsDraft(value);
-    clearTimeout(reverseRef.current);
+    clearTimeout(coordsDebounceRef.current);
+
+    // An emptied field removes the pin. It is not a coordinate pair, so
+    // without this the meta would never change and the post would not
+    // become dirty (Save stays disabled).
+    if (!value.trim()) {
+      setMeta({ event_lat: 0, event_lng: 0 });
+      setCoordsDraft(null);
+      return;
+    }
 
     const parsed = parseCoords(value);
     if (!parsed) return;
 
-    reverseRef.current = setTimeout(async () => {
-      // The pasted coordinates are the source of truth for the map pin;
-      // the reverse-geocoded nearest address is for display and municipality.
-      setMetaRef.current({ event_lat: parsed.lat, event_lng: parsed.lng });
+    coordsDebounceRef.current = setTimeout(() => {
+      // The pasted coordinates are the source of truth for the map pin.
+      // An address and municipality picked earlier no longer describe the
+      // new point, so clear them (as typing in the address field clears the
+      // coordinates), or the card and the region would disagree with the
+      // pin. Filling them from the coordinates needs the nearest-address
+      // lookup, which needs Datafordeler (docs/dawa-migration-plan.md, PR 3).
+      // Compared against the point stored now, not when the user typed.
+      // With no stored point, the address is typed text the user is now
+      // pinning, so it is kept.
+      const stored = {
+        lat: Number(metaRef.current.event_lat),
+        lng: Number(metaRef.current.event_lng),
+      };
+      const moved =
+        Boolean(stored.lat && stored.lng) &&
+        metresApart(stored, parsed) > SAME_SPOT_METRES;
 
-      try {
-        const res = await fetch(
-          `${DAWA_REVERSE}?x=${parsed.lng}&y=${parsed.lat}&struktur=mini`
-        );
-        const data = await res.json();
-        if (data && data.betegnelse) {
-          setMetaRef.current({ event_address: data.betegnelse });
-        }
-        if (data && data.kommunekode) {
-          applyMunicipality(data.kommunekode);
-        }
-      } catch {
-        // Coordinates are stored even when the address lookup fails.
-      }
-
+      setMetaRef.current({
+        event_lat: parsed.lat,
+        event_lng: parsed.lng,
+        ...(moved && { event_address: '', event_municipality: '' }),
+      });
       setCoordsDraft(null);
     }, 600);
   };
@@ -281,6 +399,56 @@ const LocationPanel = ({ meta, setMeta }) => {
           </div>
         )}
 
+        {!ADDRESS_TOKEN && (
+          <Text
+            isBlock
+            style={{ marginTop: '8px', fontSize: '12px', color: '#cc1818' }}
+          >
+            {__(
+              'Address search is not configured. Paste coordinates below instead.',
+              'vandrekalender-events'
+            )}
+          </Text>
+        )}
+
+        {Boolean(searchError) && (
+          <Text
+            isBlock
+            style={{ marginTop: '8px', fontSize: '12px', color: '#cc1818' }}
+          >
+            {searchError}
+          </Text>
+        )}
+
+        {municipalityUnknown && (
+          <Notice
+            status="warning"
+            isDismissible={false}
+            className="vandrekalender-location__municipality"
+          >
+            <p style={{ marginTop: 0 }}>
+              {__(
+                'We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below.',
+                'vandrekalender-events'
+              )}
+            </p>
+            <SelectControl
+              label={__('Municipality', 'vandrekalender-events')}
+              value={meta.event_municipality || ''}
+              options={[
+                {
+                  label: __('Choose municipality…', 'vandrekalender-events'),
+                  value: '',
+                },
+                ...MUNICIPALITY_OPTIONS,
+              ]}
+              onChange={value => setMeta({ event_municipality: value })}
+              __next40pxDefaultSize
+              __nextHasNoMarginBottom
+            />
+          </Notice>
+        )}
+
         {open && suggestions.length > 0 && (
           <ul
             style={{
@@ -298,8 +466,13 @@ const LocationPanel = ({ meta, setMeta }) => {
           >
             {suggestions.map((s, i) => (
               <li
-                key={i}
-                onMouseDown={() => onSelect(s)}
+                key={s.id || s.titel}
+                onMouseDown={e => {
+                  // Keep focus in the input so the user can keep typing
+                  // after picking a street.
+                  e.preventDefault();
+                  onSelect(s);
+                }}
                 style={{
                   padding: '8px 12px',
                   cursor: 'pointer',
@@ -312,7 +485,7 @@ const LocationPanel = ({ meta, setMeta }) => {
                 }
                 onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
               >
-                {s.tekst}
+                {s.titel}
               </li>
             ))}
           </ul>
@@ -326,7 +499,7 @@ const LocationPanel = ({ meta, setMeta }) => {
           onChange={onCoordsChange}
           placeholder="56.052777, 9.749856"
           help={__(
-            'Filled automatically when an address is chosen. Or paste coordinates as "56.052777, 9.749856" or "56.8036° N, 9.0192° E" and the nearest address is looked up for you.',
+            'Filled automatically when an address is chosen. Or paste coordinates as "56.052777, 9.749856" or "56.8036° N, 9.0192° E" to place the pin directly.',
             'vandrekalender-events'
           )}
           __next40pxDefaultSize

@@ -324,6 +324,45 @@ first when Google login breaks on one environment only.
 
 ---
 
+## Address search token (all environments)
+
+The event editor's address field searches **Adressevælger** (`adressevaelger.dk`),
+which needs a token on every call. The plugin reads it **only** from the constant
+`VANDREKALENDER_ADRESSEVAELGER_TOKEN` and passes it to the editor script with
+`wp_add_inline_script()`. There is no fallback value in the code: if the constant
+is missing or empty, the Location panel shows "Address search is not configured".
+
+```php
+define( 'VANDREKALENDER_ADRESSEVAELGER_TOKEN', '…' );
+```
+
+| Environment | Where the value comes from |
+|---|---|
+| Local | `.env` (`ADRESSEVAELGER_TOKEN=…`) → interpolated into `WORDPRESS_CONFIG_EXTRA` in `docker-compose.yml` |
+| Staging | GitHub Environment secret `ADRESSEVAELGER_TOKEN` → generated `mu-plugins/00-vk-address-search.php` (automatic) |
+| Production | GitHub Environment secret `ADRESSEVAELGER_TOKEN` → generated `mu-plugins/00-vk-address-search.php` (automatic) |
+
+Same mechanics as the Google login config above: the mu-plugin is rewritten on
+every deploy, and the deploy **fails loudly** if the secret is missing for the
+target environment, or if it contains anything other than letters, digits and
+`. _ ~ + / = -` (a quote, backslash or newline would break the generated PHP file).
+
+Until Klimadatastyrelsen launches real user management (expected late 2026 or
+early 2027) any string of 10 or more characters works, and KDS recommends
+`adressevaelger123`. When real tokens arrive, change the secret and `.env` and
+re-deploy; no code change. Sign up for their Notifikationsservice (linked from
+https://confluence.kds.dk/display/ADV/Brugerstyring) to hear when it happens.
+
+**It is not a secret.** The token reaches the browser of logged-in editors (the
+editor script calls Adressevælger directly), so it is hidden from the repo and
+from visitors but not from anyone with wp-admin dev tools open. Keeping it out of
+the repo is about being able to change it per environment without a code change,
+not about hiding it. Do not reuse it for anything else. Whether a future personal
+KDS token may stay browser-side is an open decision, see
+`docs/dawa-migration-plan.md` → Token.
+
+---
+
 ## GitHub Actions Workflows
 
 - `ci.yml` — triggers on push to `main`, calls the reusable deploy workflow targeting staging
@@ -339,7 +378,8 @@ first when Google login breaks on one environment only.
 6. Write SSH key + known_hosts
 7. SCP to `NORDICWAY_DEST_PATH`
 8. Write `mu-plugins/00-vk-google-login.php` from the environment's Google secrets
-9. Post-deploy SSH sanity check
+9. Write `mu-plugins/00-vk-address-search.php` from the environment's `ADRESSEVAELGER_TOKEN` secret
+10. Post-deploy SSH sanity check
 
 ---
 
@@ -361,6 +401,7 @@ Set in repo Settings → Environments (`staging`, `production`):
 - `NORDICWAY_SSH_USERNAME`
 - `GOOGLE_LOGIN_CLIENT_ID`
 - `GOOGLE_LOGIN_SECRET`
+- `ADRESSEVAELGER_TOKEN`
 - `NORDICWAY_DEST_PATH`
 
 ---
