@@ -1201,3 +1201,7 @@ msgstr "Den nærmeste adresse kunne ikke slås op. Nålen er gemt; tilføj adres
 #: includes/class-geocoder.php
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr "Et opslag i Datafordeler blev sprunget over, fordi Datafordeler fejlede tidligere i denne kørsel."
+
+#: includes/class-event-rest-api.php
+msgid "Too many address lookups. Wait a few minutes and try again."
+msgstr "For mange adresseopslag. Vent et par minutter, og prøv igen."

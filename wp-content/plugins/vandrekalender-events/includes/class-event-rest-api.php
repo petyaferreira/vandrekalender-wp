@@ -11,6 +11,10 @@ class Vandrekalender_Event_Rest_Api {
 
 	const NAMESPACE = 'vandrekalender/v1';
 
+	// Reverse lookups allowed per user per window (see reverse_geocode()).
+	const REVERSE_RATE_LIMIT  = 60;
+	const REVERSE_RATE_WINDOW = 10 * MINUTE_IN_SECONDS;
+
 	/**
 	 * Constructor.
 	 */
@@ -24,14 +28,17 @@ class Vandrekalender_Event_Rest_Api {
 	public function register_routes() {
 		// Nearest address and municipality for coordinates pasted in the editor.
 		// Goes through the server so the Datafordeler key never reaches a
-		// browser; editors only, since every call spends our API quota.
+		// browser. Only for people who can edit events (administrators and
+		// event organisers; organisers deliberately lack edit_posts), and
+		// rate limited per user, since anyone can sign up as an organiser and
+		// every call spends our Datafordeler quota.
 		register_rest_route(
 			self::NAMESPACE,
 			'/geocode/reverse',
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'reverse_geocode' ],
-				'permission_callback' => fn() => current_user_can( 'edit_posts' ),
+				'permission_callback' => fn() => current_user_can( 'edit_events' ),
 				'args'                => [
 					'lat' => [
 						'required' => true,
@@ -117,6 +124,19 @@ class Vandrekalender_Event_Rest_Api {
 	 *                                   502 error when the lookup service failed.
 	 */
 	public function reverse_geocode( WP_REST_Request $request ) {
+		// Far more than an editor pasting coordinates needs, far less than a
+		// script draining the quota would want.
+		$limit_key = 'vk_reverse_rate_' . get_current_user_id();
+		$calls     = (int) get_transient( $limit_key );
+		if ( $calls >= self::REVERSE_RATE_LIMIT ) {
+			return new WP_Error(
+				'vandrekalender_reverse_rate_limited',
+				__( 'Too many address lookups. Wait a few minutes and try again.', 'vandrekalender-events' ),
+				[ 'status' => 429 ]
+			);
+		}
+		set_transient( $limit_key, $calls + 1, self::REVERSE_RATE_WINDOW );
+
 		$result = ( new Vandrekalender_Geocoder() )->reverse( (float) $request['lat'], (float) $request['lng'] );
 		$issues = Vandrekalender_Geocoder::take_issues();
 
