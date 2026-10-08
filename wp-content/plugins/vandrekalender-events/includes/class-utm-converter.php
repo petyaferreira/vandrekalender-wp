@@ -76,6 +76,51 @@ class Vandrekalender_Utm_Converter {
 	}
 
 	/**
+	 * Convert latitude/longitude to a UTM 32N point (the inverse of
+	 * to_lat_lng()), for Datafordeler queries, which take EPSG:25832.
+	 *
+	 * Server-only: the editor never needs this direction, so it has no JS
+	 * twin. Krüger's forward series on GRS80, the counterpart of the
+	 * inverse series above; a round trip is accurate to well under 1 cm.
+	 *
+	 * @param float $lat Latitude in degrees.
+	 * @param float $lng Longitude in degrees.
+	 * @return array{x: float, y: float} Easting/northing in metres, rounded to 2 decimals.
+	 */
+	public static function from_lat_lng( float $lat, float $lng ): array {
+		$n                 = self::F / ( 2 - self::F );
+		$n2                = $n * $n;
+		$n3                = $n2 * $n;
+		$rectifying_radius = ( self::A / ( 1 + $n ) ) * ( 1 + $n2 / 4 + ( $n2 * $n2 ) / 64 );
+		$alpha             = [
+			$n / 2 - ( 2 / 3 ) * $n2 + ( 5 / 16 ) * $n3,
+			( 13 / 48 ) * $n2 - ( 3 / 5 ) * $n3,
+			( 61 / 240 ) * $n3,
+		];
+
+		$phi    = deg2rad( $lat );
+		$lambda = deg2rad( $lng - self::LON0 );
+		$e2n    = 2 * sqrt( $n ) / ( 1 + $n );
+
+		$t         = sinh( atanh( sin( $phi ) ) - $e2n * atanh( $e2n * sin( $phi ) ) );
+		$xi_prime  = atan( $t / cos( $lambda ) );
+		$eta_prime = atanh( sin( $lambda ) / sqrt( 1 + $t * $t ) );
+
+		$xi  = $xi_prime;
+		$eta = $eta_prime;
+		foreach ( $alpha as $i => $a ) {
+			$j    = 2 * ( $i + 1 );
+			$xi  += $a * sin( $j * $xi_prime ) * cosh( $j * $eta_prime );
+			$eta += $a * cos( $j * $xi_prime ) * sinh( $j * $eta_prime );
+		}
+
+		return [
+			'x' => round( self::FALSE_EASTING + self::K0 * $rectifying_radius * $eta, 2 ),
+			'y' => round( self::K0 * $rectifying_radius * $xi, 2 ),
+		];
+	}
+
+	/**
 	 * Radians to degrees in the JS helper's order of operations
 	 * (rad * 180 / PI). PHP's rad2deg() divides first, which can differ in
 	 * the last bit.

@@ -870,7 +870,7 @@ msgid "Coordinates"
 msgstr ""
 
 #: resources/event-meta-fields/index.js:307
-msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" to place the pin directly."
+msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
 msgstr ""
 
 #: resources/event-meta-fields/index.js:359
@@ -1154,13 +1154,55 @@ msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event
 msgstr ""
 
 #: includes/class-geocoder.php
-msgid "Municipality from coordinates is not available until Datafordeler is set up (DAWA migration PR 3); events keep their coordinates but get no municipality or region."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Place-name lookup is not available until Datafordeler is set up (DAWA migration PR 3); tried the address search instead."
+msgid "Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead."
 msgstr ""
 
 #: includes/class-geocoder.php
 msgid "Skipped an address lookup because the address search failed earlier in this run."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
+msgstr ""
+
+#. translators: %s: error message from the HTTP request.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Datafordeler request failed: %s"
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Datafordeler returned HTTP %d."
+msgstr ""
+
+#. translators: %s: first error message returned by the GraphQL API.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Datafordeler query failed: %s"
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "unexpected response"
+msgstr ""
+
+#: resources/event-meta-fields/index.js
+msgid "Looking up the nearest address…"
+msgstr ""
+
+#: resources/event-meta-fields/index.js
+msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
+msgstr ""
+
+#: includes/class-event-rest-api.php
+msgid "Too many address lookups. Wait a few minutes and try again."
 msgstr ""

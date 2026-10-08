@@ -16,6 +16,7 @@ import {
 } from '@wordpress/components';
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import {
   format as wpFormat,
@@ -163,6 +164,11 @@ const LocationPanel = ({ meta, setMeta }) => {
   // Set when the picked address has a municipality code that is not in
   // data/municipalities.json, so the editor must choose the municipality.
   const [municipalityUnknown, setMunicipalityUnknown] = useState(false);
+  const [reverseLoading, setReverseLoading] = useState(false);
+  const [reverseError, setReverseError] = useState('');
+  // Bumped on every reverse lookup and when the user picks or types an
+  // address, so a slow lookup never overwrites a newer choice.
+  const reverseRequestRef = useRef(0);
   // While the user is typing coordinates the field shows their raw text;
   // otherwise it mirrors the stored meta values.
   const [coordsDraft, setCoordsDraft] = useState(null);
@@ -199,7 +205,49 @@ const LocationPanel = ({ meta, setMeta }) => {
   // after the user picks or types an address and overwrite it.
   const cancelPendingCoords = () => {
     clearTimeout(coordsDebounceRef.current);
+    // Invalidates a lookup in flight, which then skips its own cleanup, so
+    // clear its spinner and any old error here.
+    reverseRequestRef.current++;
+    setReverseLoading(false);
+    setReverseError('');
     setCoordsDraft(null);
+  };
+
+  // Fill the address and municipality from pasted coordinates. Runs on the
+  // server (Datafordeler), so the API key never reaches the browser.
+  // `replaceAddress` is false when the existing address still describes
+  // the point (same spot, or text the user typed): then only a missing
+  // municipality is filled.
+  const lookUpNearestAddress = async (point, replaceAddress) => {
+    const request = ++reverseRequestRef.current;
+    setReverseLoading(true);
+    try {
+      const result = await apiFetch({
+        path: `/vandrekalender/v1/geocode/reverse?lat=${point.lat}&lng=${point.lng}`,
+      });
+      if (request !== reverseRequestRef.current) return;
+      setReverseError('');
+      if (!result?.found) return;
+      if (replaceAddress) {
+        setMetaRef.current({
+          event_address: result.address,
+          event_municipality: result.municipality,
+        });
+      } else if (!metaRef.current.event_municipality) {
+        setMetaRef.current({ event_municipality: result.municipality });
+      }
+    } catch {
+      if (request === reverseRequestRef.current) {
+        setReverseError(
+          __(
+            'The nearest address could not be looked up. The pin is saved; add the address by hand if you need it.',
+            'vandrekalender-events'
+          )
+        );
+      }
+    } finally {
+      if (request === reverseRequestRef.current) setReverseLoading(false);
+    }
   };
 
   const search = async text => {
@@ -328,13 +376,11 @@ const LocationPanel = ({ meta, setMeta }) => {
     coordsDebounceRef.current = setTimeout(() => {
       // The pasted coordinates are the source of truth for the map pin.
       // An address and municipality picked earlier no longer describe the
-      // new point, so clear them (as typing in the address field clears the
-      // coordinates), or the card and the region would disagree with the
-      // pin. Filling them from the coordinates needs the nearest-address
-      // lookup, which needs Datafordeler (docs/dawa-migration-plan.md, PR 3).
+      // new point, so clear them and look up the nearest address instead,
+      // or the card and the region would disagree with the pin.
       // Compared against the point stored now, not when the user typed.
       // With no stored point, the address is typed text the user is now
-      // pinning, so it is kept.
+      // pinning, so it is kept and only the municipality is looked up.
       const stored = {
         lat: Number(metaRef.current.event_lat),
         lng: Number(metaRef.current.event_lng),
@@ -349,6 +395,7 @@ const LocationPanel = ({ meta, setMeta }) => {
         ...(moved && { event_address: '', event_municipality: '' }),
       });
       setCoordsDraft(null);
+      lookUpNearestAddress(parsed, moved || !metaRef.current.event_address);
     }, 600);
   };
 
@@ -499,12 +546,30 @@ const LocationPanel = ({ meta, setMeta }) => {
           onChange={onCoordsChange}
           placeholder="56.052777, 9.749856"
           help={__(
-            'Filled automatically when an address is chosen. Or paste coordinates as "56.052777, 9.749856" or "56.8036° N, 9.0192° E" to place the pin directly.',
+            'Filled automatically when an address is chosen. Or paste coordinates as "56.052777, 9.749856" or "56.8036° N, 9.0192° E" and the nearest address is looked up for you.',
             'vandrekalender-events'
           )}
           __next40pxDefaultSize
           __nextHasNoMarginBottom
         />
+
+        {reverseLoading && (
+          <Flex justify="flex-start" gap={2} style={{ marginTop: '8px' }}>
+            <Spinner style={{ margin: 0 }} />
+            <Text style={{ fontSize: '12px' }}>
+              {__('Looking up the nearest address…', 'vandrekalender-events')}
+            </Text>
+          </Flex>
+        )}
+
+        {Boolean(reverseError) && (
+          <Text
+            isBlock
+            style={{ marginTop: '8px', fontSize: '12px', color: '#cc1818' }}
+          >
+            {reverseError}
+          </Text>
+        )}
       </div>
 
       {Boolean(meta.event_municipality) && (

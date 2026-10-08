@@ -24,6 +24,7 @@ services:
         define( 'WP_GOOGLE_LOGIN_SECRET', '${GOOGLE_LOGIN_SECRET}' );
         define( 'WP_GOOGLE_LOGIN_USER_REGISTRATION', true );
         define( 'VANDREKALENDER_ADRESSEVAELGER_TOKEN', '${ADRESSEVAELGER_TOKEN}' );
+        define( 'VANDREKALENDER_DATAFORDELER_API_KEY', '${DATAFORDELER_API_KEY}' );
     volumes:
       - "./wp-content/themes:/var/www/html/wp-content/themes"
       - "./wp-content/plugins:/var/www/html/wp-content/plugins"

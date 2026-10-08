@@ -160,8 +160,8 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 		// natural features ("Stevns Klint"), not street addresses, so the
 		// place-name register is tried first (its coordinates are the
 		// feature's representative point — approximate, but in the right
-		// place). It needs Datafordeler (PR 3 of docs/dawa-migration-plan.md);
-		// until then every candidate falls through to the address search.
+		// place). It is not built yet (docs/dawa-migration-plan.md → Place
+		// names), so every candidate falls through to the address search.
 		$geo          = $this->resolve_location( $title, $place );
 		$municipality = ( null !== $geo ) ? $geo['municipality'] : '';
 

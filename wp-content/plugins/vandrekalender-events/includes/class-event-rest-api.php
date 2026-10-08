@@ -11,6 +11,10 @@ class Vandrekalender_Event_Rest_Api {
 
 	const NAMESPACE = 'vandrekalender/v1';
 
+	// Reverse lookups allowed per user per window (see reverse_geocode()).
+	const REVERSE_RATE_LIMIT  = 60;
+	const REVERSE_RATE_WINDOW = 10 * MINUTE_IN_SECONDS;
+
 	/**
 	 * Constructor.
 	 */
@@ -22,6 +26,36 @@ class Vandrekalender_Event_Rest_Api {
 	 * Register REST routes.
 	 */
 	public function register_routes() {
+		// Nearest address and municipality for coordinates pasted in the editor.
+		// Goes through the server so the Datafordeler key never reaches a
+		// browser. Only for people who can edit events (administrators and
+		// event organisers; organisers deliberately lack edit_posts), and
+		// rate limited per user, since anyone can sign up as an organiser and
+		// every call spends our Datafordeler quota.
+		register_rest_route(
+			self::NAMESPACE,
+			'/geocode/reverse',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'reverse_geocode' ],
+				'permission_callback' => fn() => current_user_can( 'edit_events' ),
+				'args'                => [
+					'lat' => [
+						'required' => true,
+						'type'     => 'number',
+						'minimum'  => -90,
+						'maximum'  => 90,
+					],
+					'lng' => [
+						'required' => true,
+						'type'     => 'number',
+						'minimum'  => -180,
+						'maximum'  => 180,
+					],
+				],
+			]
+		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			'/events',
@@ -78,6 +112,43 @@ class Vandrekalender_Event_Rest_Api {
 						'validate_callback' => fn( $v ) => is_numeric( $v ),
 					],
 				],
+			]
+		);
+	}
+
+	/**
+	 * Nearest address and municipality for a coordinate pair.
+	 *
+	 * @param WP_REST_Request $request Request with lat and lng.
+	 * @return WP_REST_Response|WP_Error { found, address, municipality }, or a
+	 *                                   502 error when the lookup service failed.
+	 */
+	public function reverse_geocode( WP_REST_Request $request ) {
+		// Far more than an editor pasting coordinates needs, far less than a
+		// script draining the quota would want.
+		$limit_key = 'vk_reverse_rate_' . get_current_user_id();
+		$calls     = (int) get_transient( $limit_key );
+		if ( $calls >= self::REVERSE_RATE_LIMIT ) {
+			return new WP_Error(
+				'vandrekalender_reverse_rate_limited',
+				__( 'Too many address lookups. Wait a few minutes and try again.', 'vandrekalender-events' ),
+				[ 'status' => 429 ]
+			);
+		}
+		set_transient( $limit_key, $calls + 1, self::REVERSE_RATE_WINDOW );
+
+		$result = ( new Vandrekalender_Geocoder() )->reverse( (float) $request['lat'], (float) $request['lng'] );
+		$issues = Vandrekalender_Geocoder::take_issues();
+
+		if ( null === $result && $issues ) {
+			return new WP_Error( 'vandrekalender_reverse_unavailable', implode( ' ', $issues ), [ 'status' => 502 ] );
+		}
+
+		return rest_ensure_response(
+			[
+				'found'        => null !== $result,
+				'address'      => $result['address'] ?? '',
+				'municipality' => $result['municipality'] ?? '',
 			]
 		);
 	}

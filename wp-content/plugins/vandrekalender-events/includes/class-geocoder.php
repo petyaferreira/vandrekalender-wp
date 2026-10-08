@@ -22,10 +22,11 @@ defined( 'ABSPATH' ) || exit;
  * repeat scrapes do not re-hit the API. Failed requests are never cached, so
  * an outage does not hide addresses until the cache expires.
  *
- * Adressevælger has no place-name search and no reverse geocoding. Both need
- * Datafordeler (PR 3 of docs/dawa-migration-plan.md); until then
- * geocode_place() and municipality_from_coords() return nothing and say so in
- * the Scraper Log.
+ * Adressevælger has no reverse geocoding, so reverse() and
+ * municipality_from_coords() ask Datafordeler's DAR register (GraphQL, API
+ * key in VANDREKALENDER_DATAFORDELER_API_KEY) for the nearest address point.
+ * It has no place-name search either; geocode_place() returns nothing and
+ * says so in the Scraper Log.
  *
  * Problems are collected per run and attached to the scraper's row in the
  * Scraper Log (see take_issues()), so a broken lookup is visible instead of
@@ -41,6 +42,15 @@ class Vandrekalender_Geocoder {
 	// A genuine "no match" is cached briefly, so one scrape does not ask
 	// twice for the same unresolvable address.
 	const NO_MATCH_TTL = HOUR_IN_SECONDS;
+	const DATAFORDELER = 'https://graphql.datafordeler.dk/';
+	// Square half-sides tried in turn, in metres: a street, a village, open
+	// countryside. Stops at the first that contains any address point.
+	const REVERSE_RADII = [ 60, 250, 1000, 3000 ];
+	// Address points asked for per square. The page comes back unordered,
+	// so a full page may leave out the nearest point (see reverse()).
+	const DAR_POINTS_PAGE = 200;
+	// DAR's `in` filter accepts at most 100 values.
+	const DAR_IN_LIMIT = 100;
 
 	/**
 	 * Problems seen since the last take_issues(), message => count.
@@ -50,15 +60,17 @@ class Vandrekalender_Geocoder {
 	private static $issues = [];
 
 	/**
-	 * Set when the service itself is down or overloaded (network error, 429
-	 * or 5xx), so the rest of the scraper's run skips it instead of waiting
-	 * on a 10 s timeout per address. Other 4xx answers (one bad address, or a
-	 * bad token) come back at once and only fail that address. Reset by
-	 * take_issues(), so the next scraper tries again.
+	 * Services that are down or overloaded this run, keyed 'adressevaelger'
+	 * or 'datafordeler'. Set on a network error (after one retry), 429 or
+	 * 5xx — for Datafordeler also a rejected key — so the rest of the
+	 * scraper's run skips that service instead of waiting on a timeout per
+	 * address. Per service, so an expired Datafordeler key does not stop
+	 * forward geocoding. Other 4xx answers come back at once and only fail
+	 * that address. Reset by take_issues(), so the next scraper tries again.
 	 *
-	 * @var bool
+	 * @var array<string, bool>
 	 */
-	private static $unavailable = false;
+	private static $unavailable = [];
 
 	/**
 	 * Geocode a Danish address string.
@@ -268,16 +280,17 @@ class Vandrekalender_Geocoder {
 	/**
 	 * Geocode a Danish landmark or place name ("Stevns Klint", "Mols Bjerge").
 	 *
-	 * Not available yet: Adressevælger only searches addresses, and the
-	 * place-name register needs Datafordeler (PR 3 of
-	 * docs/dawa-migration-plan.md). Callers fall back to geocode().
+	 * Not built yet: Adressevælger only searches addresses, and Datafordeler's
+	 * place-name register (DS/v2) only matches exact spellings and keeps the
+	 * geometry in ~30 category types (see docs/dawa-migration-plan.md →
+	 * Place names). Callers fall back to geocode().
 	 *
 	 * @param string $name Place name, e.g. "Stevns Klint".
 	 * @return array|null Always null for now.
 	 */
 	public function geocode_place( string $name ): ?array {
 		if ( '' !== trim( $name ) ) {
-			self::record_issue( __( 'Place-name lookup is not available until Datafordeler is set up (DAWA migration PR 3); tried the address search instead.', 'vandrekalender-events' ) );
+			self::record_issue( __( 'Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead.', 'vandrekalender-events' ) );
 		}
 
 		return null;
@@ -286,18 +299,188 @@ class Vandrekalender_Geocoder {
 	/**
 	 * Find the municipality containing a coordinate (reverse geocoding).
 	 *
-	 * Not available yet: Adressevælger has no reverse geocoding, it needs
-	 * Datafordeler (PR 3 of docs/dawa-migration-plan.md). Events keep their
-	 * coordinates but get no municipality or region from this.
+	 * For sources that carry exact coordinates but whose meeting points are
+	 * landmark names an address search cannot geocode forward ("Birkerød
+	 * St."). The municipality is the nearest address's — see reverse().
 	 *
 	 * @param float $lat Latitude (WGS84).
 	 * @param float $lng Longitude (WGS84).
-	 * @return string Always an empty string for now.
+	 * @return string Municipality name, or empty string on failure.
 	 */
-	public function municipality_from_coords( float $lat, float $lng ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- public signature kept for PR 3.
-		self::record_issue( __( 'Municipality from coordinates is not available until Datafordeler is set up (DAWA migration PR 3); events keep their coordinates but get no municipality or region.', 'vandrekalender-events' ) );
+	public function municipality_from_coords( float $lat, float $lng ): string {
+		$result = $this->reverse( $lat, $lng );
 
-		return '';
+		return null !== $result ? $result['municipality'] : '';
+	}
+
+	/**
+	 * The nearest address to a coordinate, with its municipality.
+	 *
+	 * Adressevælger has no reverse lookup, so this asks Datafordeler's DAR
+	 * register for the address points inside a small square around the
+	 * point (widening it when empty), takes the nearest, and looks its house
+	 * number up in Adressevælger for the address text and municipality code.
+	 * Points far out in nature still get the nearest address within a few
+	 * kilometres, so the municipality (and region) is right in practice even
+	 * though the address is only "near".
+	 *
+	 * @param float $lat Latitude (WGS84).
+	 * @param float $lng Longitude (WGS84).
+	 * @return array|null Array of { address: string, municipality: string, distance: float (metres) }, or null.
+	 */
+	public function reverse( float $lat, float $lng ): ?array {
+		// Round to ~10 m so nearby lookups share a cache entry.
+		$cache_key = self::CACHE_PREFIX . 'rev_' . round( $lat, 4 ) . '_' . round( $lng, 4 );
+		$cached    = get_transient( $cache_key );
+		if ( false !== $cached ) {
+			return is_array( $cached ) ? $cached : null;
+		}
+
+		$point   = Vandrekalender_Utm_Converter::from_lat_lng( $lat, $lng );
+		$nearest = null;
+
+		foreach ( self::REVERSE_RADII as $radius ) {
+			// A full page is unordered and may leave out the nearest point,
+			// so halve the square until the page is complete.
+			do {
+				$near = $this->address_points_near( $point['x'], $point['y'], $radius );
+				if ( null === $near ) {
+					return null;
+				}
+				$radius = intdiv( $radius, 2 );
+			} while ( $near['full'] && $radius >= 10 );
+			$candidates = $near['points'];
+			foreach ( $candidates as &$candidate ) {
+				$candidate['distance'] = hypot( $candidate['x'] - $point['x'], $candidate['y'] - $point['y'] );
+			}
+			unset( $candidate );
+			usort( $candidates, fn( $a, $b ) => $a['distance'] <=> $b['distance'] );
+
+			// Not every address point is a current house number's access
+			// point (road points, retired house numbers), so look the house
+			// numbers up for the nearest batch and take the nearest that has one.
+			$candidates = array_slice( $candidates, 0, self::DAR_IN_LIMIT );
+			$husnumre   = $this->current_husnumre_at( array_column( $candidates, 'id' ) );
+			if ( null === $husnumre ) {
+				return null;
+			}
+			foreach ( $candidates as $candidate ) {
+				if ( isset( $husnumre[ $candidate['id'] ] ) ) {
+					$nearest = $candidate + [ 'husnummer' => $husnumre[ $candidate['id'] ] ];
+					break 2;
+				}
+			}
+		}
+
+		if ( null === $nearest ) {
+			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
+			return null;
+		}
+
+		$husnummer_id = $nearest['husnummer'];
+		$lookup       = $this->request( '/husnumre/' . rawurlencode( $husnummer_id ) );
+		if ( null === $lookup ) {
+			return null;
+		}
+
+		$code   = (string) ( $lookup['husnummer']['navngivenvejkommunedel']['kommune'] ?? '' );
+		$result = [
+			'address'      => (string) ( $lookup['husnummer']['adgangsadressebetegnelse'] ?? '' ),
+			'municipality' => Vandrekalender_Municipalities::name( $code ),
+			'distance'     => round( $nearest['distance'] ),
+		];
+
+		set_transient( $cache_key, $result, self::CACHE_TTL );
+		return $result;
+	}
+
+	/**
+	 * Current DAR address points inside a square around a UTM 32N point.
+	 *
+	 * @param float $x      Easting in metres.
+	 * @param float $y      Northing in metres.
+	 * @param int   $radius Half the square's side, in metres.
+	 * @return array|null { points: list of { id: string, x: float, y: float }, full: bool
+	 *                    (the page limit was reached) }, or null on failure.
+	 */
+	private function address_points_near( float $x, float $y, int $radius ): ?array {
+		$wkt = sprintf(
+			'POLYGON((%1$.2f %2$.2f, %3$.2f %2$.2f, %3$.2f %4$.2f, %1$.2f %4$.2f, %1$.2f %2$.2f))',
+			$x - $radius,
+			$y - $radius,
+			$x + $radius,
+			$y + $radius
+		);
+
+		$data = $this->request_datafordeler(
+			'DAR/v3',
+			sprintf(
+				'{ DAR_Adressepunkt(first: %3$d, virkningstid: "%1$s", registreringstid: "%1$s", where: { position: { within: { wkt: "%2$s", crs: 25832 } } }) { nodes { id_lokalId status position { wkt } } } }',
+				gmdate( 'Y-m-d\TH:i:s\Z' ),
+				$wkt,
+				self::DAR_POINTS_PAGE
+			)
+		);
+		if ( null === $data ) {
+			return null;
+		}
+
+		$nodes  = $data['DAR_Adressepunkt']['nodes'] ?? [];
+		$points = [];
+		foreach ( $nodes as $node ) {
+			// Status 8 is a current point; 9 is retired.
+			if ( isset( $node['id_lokalId'], $node['position']['wkt'] )
+				&& '8' === (string) ( $node['status'] ?? '' )
+				&& preg_match( '/POINT\s*\(\s*([\d.]+)\s+([\d.]+)/i', (string) $node['position']['wkt'], $m ) ) {
+				$points[] = [
+					'id' => (string) $node['id_lokalId'],
+					'x'  => (float) $m[1],
+					'y'  => (float) $m[2],
+				];
+			}
+		}
+
+		return [
+			'points' => $points,
+			'full'   => count( $nodes ) >= self::DAR_POINTS_PAGE,
+		];
+	}
+
+	/**
+	 * Current house numbers (adgangsadresser) whose access points are among
+	 * these address points.
+	 *
+	 * @param string[] $address_point_ids DAR_Adressepunkt id_lokalId values, at most DAR_IN_LIMIT.
+	 * @return array<string, string>|null House number id keyed by its access point id, or null on failure.
+	 */
+	private function current_husnumre_at( array $address_point_ids ): ?array {
+		if ( empty( $address_point_ids ) ) {
+			return [];
+		}
+
+		$ids  = array_map( fn( $id ) => preg_replace( '/[^0-9a-f-]/i', '', (string) $id ), $address_point_ids );
+		$data = $this->request_datafordeler(
+			'DAR/v3',
+			sprintf(
+				'{ DAR_Husnummer(first: %1$d, virkningstid: "%2$s", registreringstid: "%2$s", where: { adgangspunkt: { in: %3$s } }) { nodes { id_lokalId adgangspunkt status } } }',
+				count( $ids ) * 2,
+				gmdate( 'Y-m-d\TH:i:s\Z' ),
+				wp_json_encode( array_values( $ids ) )
+			)
+		);
+		if ( null === $data ) {
+			return null;
+		}
+
+		$map = [];
+		foreach ( $data['DAR_Husnummer']['nodes'] ?? [] as $node ) {
+			// Status 3 is a current house number (the ones Adressevælger returns).
+			if ( isset( $node['id_lokalId'], $node['adgangspunkt'] ) && '3' === (string) ( $node['status'] ?? '' ) ) {
+				$map[ (string) $node['adgangspunkt'] ] = (string) $node['id_lokalId'];
+			}
+		}
+
+		return $map;
 	}
 
 	/**
@@ -316,7 +499,7 @@ class Vandrekalender_Geocoder {
 		}
 
 		self::$issues      = [];
-		self::$unavailable = false;
+		self::$unavailable = [];
 		return $lines;
 	}
 
@@ -328,6 +511,112 @@ class Vandrekalender_Geocoder {
 	 */
 	private static function record_issue( string $message ): void {
 		self::$issues[ $message ] = ( self::$issues[ $message ] ?? 0 ) + 1;
+	}
+
+	/**
+	 * Send an HTTP request, retrying once on a network error.
+	 *
+	 * A single dropped connection is common enough that it should not trip
+	 * the "service unavailable" switch for the rest of the run; two in a
+	 * row is treated as a real outage by the callers.
+	 *
+	 * @param string $method 'GET' or 'POST'.
+	 * @param string $url    Full URL.
+	 * @param array  $args   wp_remote_request() arguments.
+	 * @return array|WP_Error
+	 */
+	private static function http( string $method, string $url, array $args ) {
+		$args['method'] = $method;
+		$response       = wp_remote_request( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$response = wp_remote_request( $url, $args );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Run a GraphQL query against a Datafordeler register.
+	 *
+	 * Failures are recorded as issues and never cached; network errors, 429
+	 * and 5xx also stop further lookups for the run, like request().
+	 *
+	 * @param string $register Register and version, e.g. "DAR/v3".
+	 * @param string $query    GraphQL query.
+	 * @return array|null The response's `data`, or null on any failure.
+	 */
+	private function request_datafordeler( string $register, string $query ): ?array {
+		$key = defined( 'VANDREKALENDER_DATAFORDELER_API_KEY' ) ? (string) VANDREKALENDER_DATAFORDELER_API_KEY : '';
+		if ( '' === $key ) {
+			self::record_issue( __( 'Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates.', 'vandrekalender-events' ) );
+			return null;
+		}
+		if ( ! empty( self::$unavailable['datafordeler'] ) ) {
+			self::record_issue( __( 'Skipped a Datafordeler lookup because Datafordeler failed earlier in this run.', 'vandrekalender-events' ) );
+			return null;
+		}
+
+		$response = self::http(
+			'POST',
+			self::DATAFORDELER . $register . '?apiKey=' . rawurlencode( $key ),
+			[
+				'timeout'    => 15,
+				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
+				'headers'    => [
+					'Content-Type' => 'application/json',
+					'Accept'       => 'application/json',
+				],
+				'body'       => wp_json_encode( [ 'query' => $query ] ),
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			self::record_issue(
+				sprintf(
+					/* translators: %s: error message from the HTTP request. */
+					__( 'Datafordeler request failed: %s', 'vandrekalender-events' ),
+					// The key is in the URL; never let it reach the Scraper Log.
+					str_replace( $key, '***', $response->get_error_message() )
+				)
+			);
+			self::$unavailable['datafordeler'] = true;
+			return null;
+		}
+
+		$status = (int) wp_remote_retrieve_response_code( $response );
+		$body   = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( 401 === $status || 403 === $status ) {
+			self::record_issue( __( 'Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key.', 'vandrekalender-events' ) );
+			self::$unavailable['datafordeler'] = true;
+			return null;
+		}
+		if ( 200 !== $status ) {
+			self::record_issue(
+				sprintf(
+					/* translators: %d: HTTP status code. */
+					__( 'Datafordeler returned HTTP %d.', 'vandrekalender-events' ),
+					$status
+				)
+			);
+			if ( 429 === $status || $status >= 500 ) {
+				self::$unavailable['datafordeler'] = true;
+			}
+			return null;
+		}
+		if ( ! empty( $body['errors'] ) || ! isset( $body['data'] ) || ! is_array( $body['data'] ) ) {
+			self::record_issue(
+				sprintf(
+					/* translators: %s: first error message returned by the GraphQL API. */
+					__( 'Datafordeler query failed: %s', 'vandrekalender-events' ),
+					(string) ( $body['errors'][0]['message'] ?? __( 'unexpected response', 'vandrekalender-events' ) )
+				)
+			);
+			return null;
+		}
+
+		return $body['data'];
 	}
 
 	/**
@@ -346,14 +635,15 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
-		if ( self::$unavailable ) {
+		if ( ! empty( self::$unavailable['adressevaelger'] ) ) {
 			self::record_issue( __( 'Skipped an address lookup because the address search failed earlier in this run.', 'vandrekalender-events' ) );
 			return null;
 		}
 
 		$params['token'] = $token;
 
-		$response = wp_remote_get(
+		$response = self::http(
+			'GET',
 			self::ADRESSEVAELGER . $path . '?' . http_build_query( $params, '', '&', PHP_QUERY_RFC3986 ),
 			[
 				'timeout'    => 10,
@@ -370,7 +660,7 @@ class Vandrekalender_Geocoder {
 					$response->get_error_message()
 				)
 			);
-			self::$unavailable = true;
+			self::$unavailable['adressevaelger'] = true;
 			return null;
 		}
 
@@ -384,7 +674,7 @@ class Vandrekalender_Geocoder {
 				)
 			);
 			if ( 429 === $status || $status >= 500 ) {
-				self::$unavailable = true;
+				self::$unavailable['adressevaelger'] = true;
 			}
 			return null;
 		}
