@@ -129,7 +129,9 @@ function initRouteMap(root) {
     }).addTo(map);
 
     const layers = new Map();
-    let loadedCount = 0;
+    // Counts layers that have either loaded or failed, so one broken GPX
+    // (404, deleted attachment, parse error) cannot block the others.
+    let settledCount = 0;
 
     const fitAll = () => {
       const bounds = L.latLngBounds([]);
@@ -193,8 +195,18 @@ function initRouteMap(root) {
       }
     };
 
+    const settle = () => {
+      settledCount += 1;
+      if (settledCount === routes.length) {
+        render();
+      }
+    };
+
     routes.forEach((route, index) => {
       const color = ROUTE_COLORS[index % ROUTE_COLORS.length];
+      // `id` is not required by the event_routes schema; fall back to the
+      // index so routes without one do not collapse onto the same key.
+      const key = route.id ? String(route.id) : `vk-route-${index}`;
 
       const gpxLayer = new L.GPX(route.gpx_url, {
         async: true,
@@ -203,14 +215,14 @@ function initRouteMap(root) {
           startIcon: plainMarkerIcon('start'),
           endIcon: plainMarkerIcon('end'),
         },
-      }).on('loaded', () => {
-        loadedCount += 1;
-        if (loadedCount === routes.length) {
-          render();
-        }
-      });
+      })
+        .on('loaded', settle)
+        .on('error', () => {
+          layers.delete(key);
+          settle();
+        });
 
-      layers.set(String(route.id), gpxLayer);
+      layers.set(key, gpxLayer);
     });
 
     document.addEventListener('vk:route-change', event => {
