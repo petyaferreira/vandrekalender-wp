@@ -363,6 +363,45 @@ KDS token may stay browser-side is an open decision, see
 
 ---
 
+## Datafordeler API key (all environments)
+
+The server-side reverse lookup (municipality and nearest address from
+coordinates, used for DVL events and pasted coordinates in the editor) calls
+Datafordeler's GraphQL API. The plugin reads the key **only** from the constant
+`VANDREKALENDER_DATAFORDELER_API_KEY`; there is no fallback in the code.
+
+```php
+define( 'VANDREKALENDER_DATAFORDELER_API_KEY', '…' );
+```
+
+**This one is a real secret.** It is only used server-side (the editor reaches
+it through our own REST endpoint), so it never reaches a browser. Never paste it
+into code, docs, issues or chats.
+
+| Environment | Where the value comes from |
+|---|---|
+| Local | `.env` (`DATAFORDELER_API_KEY=…`) → interpolated into `WORDPRESS_CONFIG_EXTRA` in `docker-compose.yml` |
+| Staging | GitHub Environment secret `DATAFORDELER_API_KEY` → generated `mu-plugins/00-vk-datafordeler.php` (automatic) |
+| Production | GitHub Environment secret `DATAFORDELER_API_KEY` → generated `mu-plugins/00-vk-datafordeler.php` (automatic) |
+
+Same mechanics as the address search token: rewritten on every deploy, and the
+deploy fails if the secret is missing or has characters outside
+`A-Z a-z 0-9 . _ ~ + / = -`.
+
+**Where the key comes from.** Datafordelerens Administration
+(https://portal.datafordeler.dk, production environment) → IT system
+"allevandreture" → API key "allevandreture". It belongs to Petya's private
+(MitID) user; Alle Vandreture has no CVR, so there is no MitID Erhverv account.
+One key serves all three of our environments.
+
+- A new key needs about **15 minutes** before it works; until then every call
+  returns 401 `DAF-AUTH-0005` ("Unrecognized Authentication key").
+- Keys must be **renewed about every 2 years**. When it expires, reverse lookups
+  fail and the Scraper Log says so: create a new key on the same IT system,
+  update `.env` and both GitHub environment secrets, and re-deploy.
+
+---
+
 ## GitHub Actions Workflows
 
 - `ci.yml` — triggers on push to `main`, calls the reusable deploy workflow targeting staging
@@ -379,7 +418,8 @@ KDS token may stay browser-side is an open decision, see
 7. SCP to `NORDICWAY_DEST_PATH`
 8. Write `mu-plugins/00-vk-google-login.php` from the environment's Google secrets
 9. Write `mu-plugins/00-vk-address-search.php` from the environment's `ADRESSEVAELGER_TOKEN` secret
-10. Post-deploy SSH sanity check
+10. Write `mu-plugins/00-vk-datafordeler.php` from the environment's `DATAFORDELER_API_KEY` secret
+11. Post-deploy SSH sanity check
 
 ---
 
@@ -402,6 +442,7 @@ Set in repo Settings → Environments (`staging`, `production`):
 - `GOOGLE_LOGIN_CLIENT_ID`
 - `GOOGLE_LOGIN_SECRET`
 - `ADRESSEVAELGER_TOKEN`
+- `DATAFORDELER_API_KEY`
 - `NORDICWAY_DEST_PATH`
 
 ---

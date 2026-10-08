@@ -559,10 +559,10 @@ class Event {
 	 * Place text for events that have coordinates but no place name or
 	 * municipality, e.g. "GPS 55.67286° N, 12.56103° E".
 	 *
-	 * Events placed only by pasted coordinates get no address or
-	 * municipality until the reverse lookup exists (PR 3 of
-	 * docs/dawa-migration-plan.md), so without this they would show no place
-	 * at all. Five decimals is about one metre.
+	 * Events placed only by pasted coordinates normally get the nearest
+	 * address and municipality from the reverse lookup, but when that fails
+	 * or finds nothing they have neither, and without this they would show
+	 * no place at all. Five decimals is about one metre.
 	 *
 	 * @param int $post_id Event post ID.
 	 * @return string Empty string when the event has no coordinates.

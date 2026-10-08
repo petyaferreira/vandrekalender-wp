@@ -190,10 +190,12 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 /**
  * Register the `wp vandrekalender regeocode` command.
  *
- * One-off repair after the DAWA shutdown (1 October 2026): scraped events
- * created since then got no coordinates, because every geocode failed.
- * Geocodes each scraped event that has an address but no coordinates, and
- * sets lat/lng plus the municipality (which assigns the region).
+ * One-off repair after the DAWA shutdown (1 October 2026), for scraped
+ * events created since then:
+ * - an address but no coordinates (every geocode failed): geocodes it and
+ *   sets lat/lng plus the municipality (which assigns the region);
+ * - coordinates but no municipality (DVL, whose reverse lookup failed):
+ *   looks the municipality up from the coordinates.
  *
  * Remove this command once it has been run on production: it only repairs
  * the outage window and has no use after that.
@@ -237,10 +239,31 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$geocoder = new Vandrekalender_Geocoder();
 			$fixed    = 0;
 			$missed   = 0;
+			$verb     = $dry_run ? 'Would fix' : 'Fixed';
 
 			foreach ( $post_ids as $post_id ) {
 				$address = trim( (string) get_post_meta( $post_id, \Vandrekalender\Event::META_ADDRESS, true ) );
-				if ( '' === $address || null !== \Vandrekalender\Event::coordinates( $post_id ) ) {
+				$coords  = \Vandrekalender\Event::coordinates( $post_id );
+
+				if ( null !== $coords ) {
+					if ( '' !== (string) get_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, true ) ) {
+						continue;
+					}
+					$municipality = $geocoder->municipality_from_coords( $coords['lat'], $coords['lng'] );
+					if ( '' === $municipality ) {
+						WP_CLI::log( sprintf( 'No municipality %d: %s, %s', $post_id, $coords['lat'], $coords['lng'] ) );
+						++$missed;
+						continue;
+					}
+					WP_CLI::log( sprintf( '%s %d: %s, %s → %s', $verb, $post_id, $coords['lat'], $coords['lng'], $municipality ) );
+					if ( ! $dry_run ) {
+						update_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, $municipality );
+					}
+					++$fixed;
+					continue;
+				}
+
+				if ( '' === $address ) {
 					continue;
 				}
 
@@ -251,7 +274,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					continue;
 				}
 
-				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)', $dry_run ? 'Would fix' : 'Fixed', $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'] ) );
+				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)', $verb, $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'] ) );
 				if ( ! $dry_run ) {
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LAT, $geo['lat'] );
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LNG, $geo['lng'] );
@@ -267,7 +290,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				WP_CLI::warning( $issue );
 			}
 
-			WP_CLI::success( sprintf( '%d events %s, %d without a match.', $fixed, $dry_run ? 'would get coordinates' : 'got coordinates', $missed ) );
+			WP_CLI::success( sprintf( '%d events %s, %d without a match.', $fixed, $dry_run ? 'would be fixed' : 'fixed', $missed ) );
 		}
 	);
 }

@@ -22,6 +22,33 @@ class Vandrekalender_Event_Rest_Api {
 	 * Register REST routes.
 	 */
 	public function register_routes() {
+		// Nearest address and municipality for coordinates pasted in the editor.
+		// Goes through the server so the Datafordeler key never reaches a
+		// browser; editors only, since every call spends our API quota.
+		register_rest_route(
+			self::NAMESPACE,
+			'/geocode/reverse',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'reverse_geocode' ],
+				'permission_callback' => fn() => current_user_can( 'edit_posts' ),
+				'args'                => [
+					'lat' => [
+						'required' => true,
+						'type'     => 'number',
+						'minimum'  => -90,
+						'maximum'  => 90,
+					],
+					'lng' => [
+						'required' => true,
+						'type'     => 'number',
+						'minimum'  => -180,
+						'maximum'  => 180,
+					],
+				],
+			]
+		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			'/events',
@@ -78,6 +105,30 @@ class Vandrekalender_Event_Rest_Api {
 						'validate_callback' => fn( $v ) => is_numeric( $v ),
 					],
 				],
+			]
+		);
+	}
+
+	/**
+	 * Nearest address and municipality for a coordinate pair.
+	 *
+	 * @param WP_REST_Request $request Request with lat and lng.
+	 * @return WP_REST_Response|WP_Error { found, address, municipality }, or a
+	 *                                   502 error when the lookup service failed.
+	 */
+	public function reverse_geocode( WP_REST_Request $request ) {
+		$result = ( new Vandrekalender_Geocoder() )->reverse( (float) $request['lat'], (float) $request['lng'] );
+		$issues = Vandrekalender_Geocoder::take_issues();
+
+		if ( null === $result && $issues ) {
+			return new WP_Error( 'vandrekalender_reverse_unavailable', implode( ' ', $issues ), [ 'status' => 502 ] );
+		}
+
+		return rest_ensure_response(
+			[
+				'found'        => null !== $result,
+				'address'      => $result['address'] ?? '',
+				'municipality' => $result['municipality'] ?? '',
 			]
 		);
 	}
