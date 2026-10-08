@@ -74,7 +74,6 @@ $vk_payload = array_map(
 			'id'          => (string) ( $vk_route['id'] ?? '' ),
 			'distance_km' => (string) ( $vk_route['distance_km'] ?? '' ),
 			'gpx_url'     => $vk_route['gpx_url'],
-			'gpx_name'    => (string) ( $vk_route['gpx_name'] ?? '' ),
 		];
 	},
 	$vk_gpx_routes
