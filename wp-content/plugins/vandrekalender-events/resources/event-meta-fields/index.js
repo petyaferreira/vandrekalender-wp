@@ -278,12 +278,22 @@ const LocationPanel = ({ meta, setMeta }) => {
     const parsed = parseCoords(value);
     if (!parsed) return;
 
+    const moved =
+      parsed.lat !== Number(meta.event_lat) ||
+      parsed.lng !== Number(meta.event_lng);
+
     coordsDebounceRef.current = setTimeout(() => {
       // The pasted coordinates are the source of truth for the map pin.
-      // The nearest-address lookup needs Datafordeler and is not wired up
-      // yet (see docs/dawa-migration-plan.md, PR 3), so the address and
-      // municipality are left as they are.
-      setMetaRef.current({ event_lat: parsed.lat, event_lng: parsed.lng });
+      // An address and municipality picked earlier no longer describe the
+      // new point, so clear them (as typing in the address field clears the
+      // coordinates), or the card and the region would disagree with the
+      // pin. Filling them from the coordinates needs the nearest-address
+      // lookup, which needs Datafordeler (docs/dawa-migration-plan.md, PR 3).
+      setMetaRef.current({
+        event_lat: parsed.lat,
+        event_lng: parsed.lng,
+        ...(moved && { event_address: '', event_municipality: '' }),
+      });
       setCoordsDraft(null);
     }, 600);
   };
