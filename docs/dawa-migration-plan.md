@@ -125,7 +125,7 @@ Options for the municipality from coordinates (decide with Petya before building
 
 Recommended: start creating the Datafordeler key now, because option 1 also covers place names and the nearest address lookup.
 
-After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a one off WP-CLI command.
+After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a one off WP-CLI command. Once both have run on production, remove `wp vandrekalender regeocode` (added in PR 2) and any sibling backfill command from `vandrekalender-events.php`, and the mention in `docs/scrapers.md` → Geocoding. They only repair the outage window.
 
 ## Docs to update in each PR
 
