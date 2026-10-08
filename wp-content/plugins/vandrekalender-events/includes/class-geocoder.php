@@ -50,9 +50,11 @@ class Vandrekalender_Geocoder {
 	private static $issues = [];
 
 	/**
-	 * Set after a failed request, so the rest of the scraper's run skips the
-	 * service instead of waiting on a 10 s timeout per address during an
-	 * outage. Reset by take_issues(), so the next scraper tries again.
+	 * Set when the service itself is down or overloaded (network error, 429
+	 * or 5xx), so the rest of the scraper's run skips it instead of waiting
+	 * on a 10 s timeout per address. Other 4xx answers (one bad address, or a
+	 * bad token) come back at once and only fail that address. Reset by
+	 * take_issues(), so the next scraper tries again.
 	 *
 	 * @var bool
 	 */
@@ -381,7 +383,9 @@ class Vandrekalender_Geocoder {
 					$status
 				)
 			);
-			self::$unavailable = true;
+			if ( 429 === $status || $status >= 500 ) {
+				self::$unavailable = true;
+			}
 			return null;
 		}
 
