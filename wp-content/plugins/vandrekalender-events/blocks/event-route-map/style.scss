@@ -20,6 +20,12 @@
     padding: 0.5rem 1rem;
     cursor: pointer;
 
+    // display: inline-flex above would otherwise override the hidden
+    // attribute (view.js hides the toggle when every GPX fails to load).
+    &[hidden] {
+      display: none;
+    }
+
     &[aria-pressed='true'] {
       background: var(--wp--preset--color--forest, #2d5f3f);
       border-color: var(--wp--preset--color--forest, #2d5f3f);

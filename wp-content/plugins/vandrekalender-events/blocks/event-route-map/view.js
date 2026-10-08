@@ -113,6 +113,50 @@ function initRouteMap(root) {
     return;
   }
 
+  // `currentId` starts as the Event Info Card's default active route
+  // (`data-vk-initial-route-id`, the first route in event_routes order —
+  // see render.php), not null, so first paint already matches the card
+  // instead of showing every track until the first tab click. `showAll`
+  // is the toggle button's state; selecting a route always turns it off
+  // again — the toggle is an override the reader reaches for on top of a
+  // selection, not a separate mode that survives switching routes.
+  let currentId = root.dataset.vkInitialRouteId || null;
+  let showAll = false;
+  // Tracks whether a route with no track has ever been reached by an
+  // actual click, as opposed to being the initial default (see below).
+  let hasInteracted = false;
+
+  const toggleButton = root.querySelector('[data-vk-route-map-toggle]');
+
+  // Set once the map exists and every GPX layer has settled. Until then the
+  // listeners below only record state, so a tab click while Leaflet is
+  // still loading is not lost: the first render picks it up.
+  let renderMap = null;
+
+  // Registered before Leaflet loads (see renderMap above).
+  document.addEventListener('vk:route-change', event => {
+    hasInteracted = true;
+    currentId =
+      event.detail && event.detail.id ? String(event.detail.id) : null;
+    showAll = false;
+    if (toggleButton) {
+      toggleButton.setAttribute('aria-pressed', 'false');
+    }
+    if (renderMap) {
+      renderMap();
+    }
+  });
+
+  if (toggleButton) {
+    toggleButton.addEventListener('click', () => {
+      showAll = !showAll;
+      toggleButton.setAttribute('aria-pressed', String(showAll));
+      if (renderMap) {
+        renderMap();
+      }
+    });
+  }
+
   (async () => {
     try {
       await ensureLeafletGpx();
@@ -144,21 +188,6 @@ function initRouteMap(root) {
         map.fitBounds(bounds, { padding: [16, 16] });
       }
     };
-
-    // `currentId` starts as the Event Info Card's default active route
-    // (`data-vk-initial-route-id`, the first route in event_routes order —
-    // see render.php), not null, so first paint already matches the card
-    // instead of showing every track until the first tab click. `showAll`
-    // is the toggle button's state; selecting a route always turns it off
-    // again — the toggle is an override the reader reaches for on top of a
-    // selection, not a separate mode that survives switching routes.
-    let currentId = root.dataset.vkInitialRouteId || null;
-    let showAll = false;
-    // Tracks whether a route with no track has ever been reached by an
-    // actual click, as opposed to being the initial default (see below).
-    let hasInteracted = false;
-
-    const toggleButton = root.querySelector('[data-vk-route-map-toggle]');
 
     // Shows either every route (`showAll`) or only `currentId`, hiding the
     // rest — not just dimming them, to match how every other tab-driven
@@ -197,9 +226,20 @@ function initRouteMap(root) {
 
     const settle = () => {
       settledCount += 1;
-      if (settledCount === routes.length) {
-        render();
+      if (settledCount !== routes.length) {
+        return;
       }
+      // Every GPX failed: hide the map instead of leaving a grey canvas
+      // with no view. The download links stay.
+      if (!layers.size) {
+        canvas.hidden = true;
+        if (toggleButton) {
+          toggleButton.hidden = true;
+        }
+        return;
+      }
+      renderMap = render;
+      render();
     };
 
     routes.forEach((route, index) => {
@@ -224,25 +264,6 @@ function initRouteMap(root) {
 
       layers.set(key, gpxLayer);
     });
-
-    document.addEventListener('vk:route-change', event => {
-      hasInteracted = true;
-      currentId =
-        event.detail && event.detail.id ? String(event.detail.id) : null;
-      showAll = false;
-      if (toggleButton) {
-        toggleButton.setAttribute('aria-pressed', 'false');
-      }
-      render();
-    });
-
-    if (toggleButton) {
-      toggleButton.addEventListener('click', () => {
-        showAll = !showAll;
-        toggleButton.setAttribute('aria-pressed', String(showAll));
-        render();
-      });
-    }
   })();
 }
 
