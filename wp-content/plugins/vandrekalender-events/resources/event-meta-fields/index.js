@@ -214,6 +214,10 @@ const LocationPanel = ({ meta, setMeta }) => {
 
   const onSelect = async suggestion => {
     const { type, id, titel } = suggestion;
+    // Suggestions stay clickable while a search for newer input is still
+    // pending. Cancel it, or it would fire after the pick and its request
+    // would make this pick's lookup look stale and get dropped.
+    clearTimeout(debounceRef.current);
     setCoordsDraft(null);
     setMeta({
       event_address: titel,
@@ -226,7 +230,6 @@ const LocationPanel = ({ meta, setMeta }) => {
     // search again with its text so the list shows its house numbers, and
     // the user can keep typing.
     if (type !== 'husnummer' || !id) {
-      clearTimeout(debounceRef.current);
       search(titel);
       return;
     }
