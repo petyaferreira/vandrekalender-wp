@@ -74,7 +74,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 Scraped data rarely maps cleanly to the event schema. Each source structures its events differently — one has a clear distance field, another buries it in a description paragraph, a third does not mention it at all. A three-layer approach handles this consistently across sources.
 
-> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA**. Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
+> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **DAWA** (server-side, until PR 2 of `docs/dawa-migration-plan.md` moves it to Adressevælger; DAWA itself shut down on 1 October 2026). Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
 
 ### Layer 1 — Direct field mapping
 
@@ -102,7 +102,7 @@ Some fields are present but embedded in free text rather than structured element
 | `event_routes[].start_time` | Regex | `"kl. 09:00"` / `"09.00"` / `"kl 9"` |
 | `event_routes[].cutoff_time` | Regex | Stated cut-off / max duration where present |
 | `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value |
-| `event_address` → `event_lat` / `event_lng` / `event_municipality` | **DAWA** lookup | DAWA geocodes the extracted address string and returns coordinates **and** municipality in one call (`api.dataforsyningen.dk`). Same provider as manual event entry |
+| `event_address` → `event_lat` / `event_lng` / `event_municipality` | **DAWA** lookup | DAWA geocodes the extracted address string and returns coordinates **and** municipality in one call (`api.dataforsyningen.dk`). Manual event entry no longer uses DAWA (the editor searches Adressevælger); this server-side lookup moves to Adressevælger in PR 2 of `docs/dawa-migration-plan.md` |
 
 The free/paid state (`is_free`) and the `event_length` taxonomy are **not scraped** — `is_free` is computed at read time from `event_routes` prices and `event_length` is auto-assigned on save from route distances, the same as for manually created events. The scraper only needs to populate `event_routes` correctly; the save hook handles `event_length` and nothing needs to store `is_free`.
 

@@ -353,9 +353,13 @@ early 2027) any string of 10 or more characters works, and KDS recommends
 re-deploy; no code change. Sign up for their Notifikationsservice (linked from
 https://confluence.kds.dk/display/ADV/Brugerstyring) to hear when it happens.
 
-The token reaches the browser of logged-in editors (the editor script calls
-Adressevælger directly), so it is hidden from the repo and from visitors but not
-from anyone with wp-admin dev tools open. Do not reuse it for anything else.
+**It is not a secret.** The token reaches the browser of logged-in editors (the
+editor script calls Adressevælger directly), so it is hidden from the repo and
+from visitors but not from anyone with wp-admin dev tools open. Keeping it out of
+the repo is about being able to change it per environment without a code change,
+not about hiding it. Do not reuse it for anything else. Whether a future personal
+KDS token may stay browser-side is an open decision, see
+`docs/dawa-migration-plan.md` → Token.
 
 ---
 
