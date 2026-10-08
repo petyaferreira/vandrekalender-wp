@@ -7,9 +7,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * Turns a free-text Danish address into coordinates and a municipality name.
  * Scrapers run in PHP with no browser, so they cannot reuse the block editor's
- * client-side DAWA integration; this is the server-side equivalent.
+ * client-side address search; this is the server-side equivalent.
  *
- * Uses the DAWA autocomplete endpoint (the same one the editor uses) rather
+ * Uses the DAWA autocomplete endpoint rather
  * than a strict address lookup, because scraped meeting-point addresses are
  * often approximate (e.g. a house number that does not exist exactly), and
  * autocomplete returns the nearest real address with coordinates. Results are

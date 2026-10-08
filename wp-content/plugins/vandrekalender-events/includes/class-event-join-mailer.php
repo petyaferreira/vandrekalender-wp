@@ -224,6 +224,7 @@ class Vandrekalender_Event_Join_Mailer {
 		$date   = get_post_meta( $event_id, \Vandrekalender\Event::META_DATE, true );
 		$place  = get_post_meta( $event_id, \Vandrekalender\Event::META_PLACE_NAME, true );
 		$place  = $place ? $place : get_post_meta( $event_id, \Vandrekalender\Event::META_MUNICIPALITY, true );
+		$place  = $place ? $place : \Vandrekalender\Event::coordinates_label( $event_id );
 		$routes = get_post_meta( $event_id, \Vandrekalender\Event::META_ROUTES, true );
 		$routes = is_array( $routes ) ? array_values( array_filter( $routes ) ) : [];
 		$start  = isset( $routes[0]['start_time'] ) ? $routes[0]['start_time'] : '';

@@ -359,7 +359,7 @@ class Vandrekalender_Event_Schema {
 	}
 
 	/**
-	 * Collapse empty segments in a raw DAWA address string, e.g.
+	 * Collapse empty segments in a stored address string, e.g.
 	 * "Hvidovrevej 280, , 2650 Hvidovre" → "Hvidovrevej 280, 2650 Hvidovre".
 	 *
 	 * @param string $address Raw address string.

@@ -870,7 +870,7 @@ msgid "Coordinates"
 msgstr ""
 
 #: resources/event-meta-fields/index.js:307
-msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
+msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" to place the pin directly."
 msgstr ""
 
 #: resources/event-meta-fields/index.js:359
@@ -1065,4 +1065,42 @@ msgstr ""
 #: blocks/tabs/block.json
 msgctxt "block description"
 msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
+msgstr ""
+
+#: resources/event-meta-fields/index.js
+msgid "Address search is unavailable. Try again later, or paste coordinates below."
+msgstr ""
+
+#: resources/event-meta-fields/index.js
+msgid "Address search is not configured. Paste coordinates below instead."
+msgstr ""
+
+#. translators: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° N"
+msgstr ""
+
+#. translators: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° S"
+msgstr ""
+
+#. translators: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° E"
+msgstr ""
+
+#. translators: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° W"
+msgstr ""
+
+#. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
+#: includes/event/class-event.php
+#, php-format
+msgid "GPS %1$s, %2$s"
 msgstr ""

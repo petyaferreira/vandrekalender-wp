@@ -42,9 +42,10 @@ $vk_organiser_url = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ORGA
 
 $vk_book_url = $vk_source_url ? $vk_source_url : $vk_organiser_url;
 $vk_place    = $vk_place_name ? $vk_place_name : $vk_municipality;
+$vk_place    = $vk_place ? $vk_place : \Vandrekalender\Event::coordinates_label( $vk_post_id );
 
 $vk_date_label     = $vk_date ? date_i18n( get_option( 'date_format' ), strtotime( $vk_date ) ) : '';
-$vk_directions_url = $vk_address ? 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $vk_address ) : '';
+$vk_directions_url = \Vandrekalender\Event::directions_url( $vk_post_id );
 
 /**
  * Format a route's price as "Gratis" or "{n} kr".

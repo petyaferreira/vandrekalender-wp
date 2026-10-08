@@ -716,8 +716,8 @@ msgid "Coordinates"
 msgstr "Koordinater"
 
 #: resources/event-meta-fields/index.js:307
-msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
-msgstr "Udfyldes automatisk når en adresse vælges. Eller indsæt koordinater som \"56.052777, 9.749856\" eller \"56.8036° N, 9.0192° E\", så slås den nærmeste adresse op for dig."
+msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" to place the pin directly."
+msgstr "Udfyldes automatisk når en adresse vælges. Eller indsæt koordinater som \"56.052777, 9.749856\" eller \"56.8036° N, 9.0192° E\" for at placere nålen direkte."
 
 #: resources/event-meta-fields/index.js:359
 msgid "Event Details"
@@ -1065,3 +1065,41 @@ msgstr "Du er arrangør af denne tur"
 #: includes/class-event-join.php:284
 msgid "You are the organiser of this event."
 msgstr "Du er arrangør af denne tur."
+
+#: resources/event-meta-fields/index.js
+msgid "Address search is unavailable. Try again later, or paste coordinates below."
+msgstr "Adressesøgning er ikke tilgængelig. Prøv igen senere, eller indsæt koordinater nedenfor."
+
+#: resources/event-meta-fields/index.js
+msgid "Address search is not configured. Paste coordinates below instead."
+msgstr "Adressesøgning er ikke sat op. Indsæt koordinater nedenfor i stedet."
+
+#. translators: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° N"
+msgstr "%s° N"
+
+#. translators: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° S"
+msgstr "%s° S"
+
+#. translators: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° E"
+msgstr "%s° Ø"
+
+#. translators: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php
+#, php-format
+msgid "%s° W"
+msgstr "%s° V"
+
+#. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
+#: includes/event/class-event.php
+#, php-format
+msgid "GPS %1$s, %2$s"
+msgstr "GPS %1$s, %2$s"

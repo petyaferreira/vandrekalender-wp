@@ -1,0 +1,398 @@
+{
+  "0101": {
+    "name": "København",
+    "region": "hovedstaden"
+  },
+  "0147": {
+    "name": "Frederiksberg",
+    "region": "hovedstaden"
+  },
+  "0151": {
+    "name": "Ballerup",
+    "region": "hovedstaden"
+  },
+  "0153": {
+    "name": "Brøndby",
+    "region": "hovedstaden"
+  },
+  "0155": {
+    "name": "Dragør",
+    "region": "hovedstaden"
+  },
+  "0157": {
+    "name": "Gentofte",
+    "region": "hovedstaden"
+  },
+  "0159": {
+    "name": "Gladsaxe",
+    "region": "hovedstaden"
+  },
+  "0161": {
+    "name": "Glostrup",
+    "region": "hovedstaden"
+  },
+  "0163": {
+    "name": "Herlev",
+    "region": "hovedstaden"
+  },
+  "0165": {
+    "name": "Albertslund",
+    "region": "hovedstaden"
+  },
+  "0167": {
+    "name": "Hvidovre",
+    "region": "hovedstaden"
+  },
+  "0169": {
+    "name": "Høje-Taastrup",
+    "region": "hovedstaden"
+  },
+  "0173": {
+    "name": "Lyngby-Taarbæk",
+    "region": "hovedstaden"
+  },
+  "0175": {
+    "name": "Rødovre",
+    "region": "hovedstaden"
+  },
+  "0183": {
+    "name": "Ishøj",
+    "region": "hovedstaden"
+  },
+  "0185": {
+    "name": "Tårnby",
+    "region": "hovedstaden"
+  },
+  "0187": {
+    "name": "Vallensbæk",
+    "region": "hovedstaden"
+  },
+  "0190": {
+    "name": "Furesø",
+    "region": "hovedstaden"
+  },
+  "0201": {
+    "name": "Allerød",
+    "region": "hovedstaden"
+  },
+  "0210": {
+    "name": "Fredensborg",
+    "region": "hovedstaden"
+  },
+  "0217": {
+    "name": "Helsingør",
+    "region": "hovedstaden"
+  },
+  "0219": {
+    "name": "Hillerød",
+    "region": "hovedstaden"
+  },
+  "0223": {
+    "name": "Hørsholm",
+    "region": "hovedstaden"
+  },
+  "0230": {
+    "name": "Rudersdal",
+    "region": "hovedstaden"
+  },
+  "0240": {
+    "name": "Egedal",
+    "region": "hovedstaden"
+  },
+  "0250": {
+    "name": "Frederikssund",
+    "region": "hovedstaden"
+  },
+  "0253": {
+    "name": "Greve",
+    "region": "sjaelland"
+  },
+  "0259": {
+    "name": "Køge",
+    "region": "sjaelland"
+  },
+  "0260": {
+    "name": "Halsnæs",
+    "region": "hovedstaden"
+  },
+  "0265": {
+    "name": "Roskilde",
+    "region": "sjaelland"
+  },
+  "0269": {
+    "name": "Solrød",
+    "region": "sjaelland"
+  },
+  "0270": {
+    "name": "Gribskov",
+    "region": "hovedstaden"
+  },
+  "0306": {
+    "name": "Odsherred",
+    "region": "sjaelland"
+  },
+  "0316": {
+    "name": "Holbæk",
+    "region": "sjaelland"
+  },
+  "0320": {
+    "name": "Faxe",
+    "region": "sjaelland"
+  },
+  "0326": {
+    "name": "Kalundborg",
+    "region": "sjaelland"
+  },
+  "0329": {
+    "name": "Ringsted",
+    "region": "sjaelland"
+  },
+  "0330": {
+    "name": "Slagelse",
+    "region": "sjaelland"
+  },
+  "0336": {
+    "name": "Stevns",
+    "region": "sjaelland"
+  },
+  "0340": {
+    "name": "Sorø",
+    "region": "sjaelland"
+  },
+  "0350": {
+    "name": "Lejre",
+    "region": "sjaelland"
+  },
+  "0360": {
+    "name": "Lolland",
+    "region": "sjaelland"
+  },
+  "0370": {
+    "name": "Næstved",
+    "region": "sjaelland"
+  },
+  "0376": {
+    "name": "Guldborgsund",
+    "region": "sjaelland"
+  },
+  "0390": {
+    "name": "Vordingborg",
+    "region": "sjaelland"
+  },
+  "0400": {
+    "name": "Bornholm",
+    "region": "hovedstaden"
+  },
+  "0410": {
+    "name": "Middelfart",
+    "region": "syddanmark"
+  },
+  "0411": {
+    "name": "Christiansø",
+    "region": "hovedstaden"
+  },
+  "0420": {
+    "name": "Assens",
+    "region": "syddanmark"
+  },
+  "0430": {
+    "name": "Faaborg-Midtfyn",
+    "region": "syddanmark"
+  },
+  "0440": {
+    "name": "Kerteminde",
+    "region": "syddanmark"
+  },
+  "0450": {
+    "name": "Nyborg",
+    "region": "syddanmark"
+  },
+  "0461": {
+    "name": "Odense",
+    "region": "syddanmark"
+  },
+  "0479": {
+    "name": "Svendborg",
+    "region": "syddanmark"
+  },
+  "0480": {
+    "name": "Nordfyns",
+    "region": "syddanmark"
+  },
+  "0482": {
+    "name": "Langeland",
+    "region": "syddanmark"
+  },
+  "0492": {
+    "name": "Ærø",
+    "region": "syddanmark"
+  },
+  "0510": {
+    "name": "Haderslev",
+    "region": "syddanmark"
+  },
+  "0530": {
+    "name": "Billund",
+    "region": "syddanmark"
+  },
+  "0540": {
+    "name": "Sønderborg",
+    "region": "syddanmark"
+  },
+  "0550": {
+    "name": "Tønder",
+    "region": "syddanmark"
+  },
+  "0561": {
+    "name": "Esbjerg",
+    "region": "syddanmark"
+  },
+  "0563": {
+    "name": "Fanø",
+    "region": "syddanmark"
+  },
+  "0573": {
+    "name": "Varde",
+    "region": "syddanmark"
+  },
+  "0575": {
+    "name": "Vejen",
+    "region": "syddanmark"
+  },
+  "0580": {
+    "name": "Aabenraa",
+    "region": "syddanmark"
+  },
+  "0607": {
+    "name": "Fredericia",
+    "region": "syddanmark"
+  },
+  "0615": {
+    "name": "Horsens",
+    "region": "midtjylland"
+  },
+  "0621": {
+    "name": "Kolding",
+    "region": "syddanmark"
+  },
+  "0630": {
+    "name": "Vejle",
+    "region": "syddanmark"
+  },
+  "0657": {
+    "name": "Herning",
+    "region": "midtjylland"
+  },
+  "0661": {
+    "name": "Holstebro",
+    "region": "midtjylland"
+  },
+  "0665": {
+    "name": "Lemvig",
+    "region": "midtjylland"
+  },
+  "0671": {
+    "name": "Struer",
+    "region": "midtjylland"
+  },
+  "0706": {
+    "name": "Syddjurs",
+    "region": "midtjylland"
+  },
+  "0707": {
+    "name": "Norddjurs",
+    "region": "midtjylland"
+  },
+  "0710": {
+    "name": "Favrskov",
+    "region": "midtjylland"
+  },
+  "0727": {
+    "name": "Odder",
+    "region": "midtjylland"
+  },
+  "0730": {
+    "name": "Randers",
+    "region": "midtjylland"
+  },
+  "0740": {
+    "name": "Silkeborg",
+    "region": "midtjylland"
+  },
+  "0741": {
+    "name": "Samsø",
+    "region": "midtjylland"
+  },
+  "0746": {
+    "name": "Skanderborg",
+    "region": "midtjylland"
+  },
+  "0751": {
+    "name": "Aarhus",
+    "region": "midtjylland"
+  },
+  "0756": {
+    "name": "Ikast-Brande",
+    "region": "midtjylland"
+  },
+  "0760": {
+    "name": "Ringkøbing-Skjern",
+    "region": "midtjylland"
+  },
+  "0766": {
+    "name": "Hedensted",
+    "region": "midtjylland"
+  },
+  "0773": {
+    "name": "Morsø",
+    "region": "nordjylland"
+  },
+  "0779": {
+    "name": "Skive",
+    "region": "midtjylland"
+  },
+  "0787": {
+    "name": "Thisted",
+    "region": "nordjylland"
+  },
+  "0791": {
+    "name": "Viborg",
+    "region": "midtjylland"
+  },
+  "0810": {
+    "name": "Brønderslev",
+    "region": "nordjylland"
+  },
+  "0813": {
+    "name": "Frederikshavn",
+    "region": "nordjylland"
+  },
+  "0820": {
+    "name": "Vesthimmerlands",
+    "region": "nordjylland"
+  },
+  "0825": {
+    "name": "Læsø",
+    "region": "nordjylland"
+  },
+  "0840": {
+    "name": "Rebild",
+    "region": "nordjylland"
+  },
+  "0846": {
+    "name": "Mariagerfjord",
+    "region": "nordjylland"
+  },
+  "0849": {
+    "name": "Jammerbugt",
+    "region": "nordjylland"
+  },
+  "0851": {
+    "name": "Aalborg",
+    "region": "nordjylland"
+  },
+  "0860": {
+    "name": "Hjørring",
+    "region": "nordjylland"
+  }
+}

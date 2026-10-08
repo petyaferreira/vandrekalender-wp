@@ -21,8 +21,14 @@
             "Address": ["Adresse"],
             "Start typing an address\u2026": ["Begynd at skrive en adresse\u2026"],
             "Coordinates": ["Koordinater"],
-            "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036\u00b0 N, 9.0192\u00b0 E\" and the nearest address is looked up for you.": [
-                "Udfyldes automatisk n\u00e5r en adresse v\u00e6lges. Eller inds\u00e6t koordinater som \"56.052777, 9.749856\" eller \"56.8036\u00b0 N, 9.0192\u00b0 E\", s\u00e5 sl\u00e5s den n\u00e6rmeste adresse op for dig."
+            "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036\u00b0 N, 9.0192\u00b0 E\" to place the pin directly.": [
+                "Udfyldes automatisk n\u00e5r en adresse v\u00e6lges. Eller inds\u00e6t koordinater som \"56.052777, 9.749856\" eller \"56.8036\u00b0 N, 9.0192\u00b0 E\" for at placere n\u00e5len direkte."
+            ],
+            "Address search is unavailable. Try again later, or paste coordinates below.": [
+                "Adresses\u00f8gning er ikke tilg\u00e6ngelig. Pr\u00f8v igen senere, eller inds\u00e6t koordinater nedenfor."
+            ],
+            "Address search is not configured. Paste coordinates below instead.": [
+                "Adresses\u00f8gning er ikke sat op. Inds\u00e6t koordinater nedenfor i stedet."
             ],
             "Event Details": ["Begivenhedsdetaljer"],
             "Event Date": ["Dato for begivenhed"],

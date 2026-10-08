@@ -73,19 +73,34 @@ Route display name is derived at render time — never stored: `{post_title} {di
 
 ## Event Location — Post Meta
 
-Address input uses **DAWA** (Danmarks Adressers Web API — `api.dataforsyningen.dk`) for autocomplete and geocoding. Free, official Danish government address register. Returns full address, municipality, and coordinates in one call.
+Address input in the editor uses **Adressevælger** (`adressevaelger.dk`, Klimadatastyrelsen), the official Danish address register. It replaced DAWA, which shut down on 1 October 2026 (see `docs/dawa-migration-plan.md`). Free, but every call needs a token (`VANDREKALENDER_ADRESSEVAELGER_TOKEN`, see `docs/deployment.md` → Address search token).
+
+The editor searches `/husnumre/soeg` while the user types, then fetches `/husnumre/{id}` for the picked house number. That lookup returns coordinates in **EPSG:25832** (UTM 32N, metres), which the editor converts to WGS84 latitude/longitude with our own helper `resources/event-meta-fields/utm-to-latlng.js` before saving (see *Coordinate conversion* below), and a four-digit municipality **code** (e.g. `0101`), which is mapped to its name with the static list in `data/municipalities.json`.
+
+`data/municipalities.json` is the **single source** for municipalities: code → `{ name, region }` for the 98 municipalities plus Christiansø (codes and names from Danmarks Statistik, the same names already stored on existing events). The editor uses it for code → name, and `Event::municipality_region_map()` builds its name → region lookup from the same file, so the two can never drift apart. To change a municipality or its region, edit only this file.
+
+The server-side geocoder (scrapers, Facebook importer) still calls DAWA until the second migration PR.
+
+### Coordinate conversion (UTM 32N → latitude/longitude)
+
+Adressevælger returns positions as EPSG:25832 (ETRS89 / UTM zone 32N) metres, e.g. Helgolandsgade 3 is `x=723913.84, y=6175420.05`, while `event_lat` / `event_lng` are degrees. The conversion is **our own helper**, not a library:
+
+- **Why not `proj4`:** the first version of the migration used the `proj4` npm package. It supports every projection and coordinate format, and it grew the editor script from 13 KiB to 147 KiB to do one conversion. The helper is about 25 lines and keeps the script under 20 KiB.
+- **Formula:** inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid (zone 32: central meridian 9°E, scale 0.9996, false easting 500 000 m). ETRS89 and WGS84 differ by under a metre, so the result is used as WGS84 directly. Values are rounded to 7 decimals (about 1 cm).
+- **Checked:** against `proj4` for real Adressevælger addresses in Copenhagen, Rønne, Christiansø, Skagen, Thisted, Esbjerg, Sønderborg and Gedser. Every result was within 1 cm, and the difference is the 7-decimal rounding. Christiansø is the furthest point from the zone's central meridian, where the error would be largest.
+- **Shared with the server:** the server-side geocoder (second migration PR) uses the same formula, ported line for line to PHP, so the editor and the scrapers always produce the same coordinates for the same address. Change one, change both.
 
 | Field | Type | Required | Filter? | Notes |
 |---|---|---|---|---|
-| `event_place_name` | string | — | — | Optional human-readable name e.g. `Dyrehaven` or `Silkeborg Sti ved parkeringen`. Shown on event cards. Falls back to `event_municipality` if not set |
-| `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via DAWA autocomplete |
-| `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from DAWA on save. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
-| `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from DAWA on save. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
-| `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from DAWA on save. Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
+| `event_place_name` | string | — | — | Optional human-readable name e.g. `Dyrehaven` or `Silkeborg Sti ved parkeringen`. Shown on event cards. Falls back to `event_municipality`, then to the coordinates as "GPS 55.67286° N, 12.56103° Ø" (`Event::coordinates_label()`, also used in the info card and join emails) |
+| `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via Adressevælger search |
+| `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
+| `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
+| `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from the picked address (code mapped through `data/municipalities.json`). Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
 
 ### Proximity Search (v2)
 
-When a user searches "Valby", DAWA geocodes it to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Deferred to v2.
+When a user searches "Valby", it is geocoded to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Deferred to v2.
 
 ---
 
@@ -163,7 +178,7 @@ Custom taxonomy representing organizations (e.g. DVL, Mammutmarch, individual or
 
 ### `event_region`
 
-5 Danish regions. Auto-assigned on save by mapping the municipality returned by DAWA to its region. The full municipality → region mapping is hardcoded in the plugin.
+5 Danish regions. Auto-assigned on save by mapping the municipality name to its region. The mapping lives in `data/municipalities.json` (see Event Location above), matched case-insensitively.
 
 | Term | Slug |
 |---|---|
@@ -375,9 +390,9 @@ File: `resources/event-meta-fields/index.js`
 | Field | UI component | Notes |
 |---|---|---|
 | `event_place_name` | `TextControl` | Optional, free text |
-| `event_address` | `TextControl` with DAWA autocomplete | Triggers geocoding on selection. Populates `event_lat`, `event_lng`, `event_municipality` automatically |
-| `event_lat`, `event_lng` | `TextControl` (single "Coordinates" field) | Shows the stored pair as `lat, lng`. Auto-filled when an address is chosen. Accepts a pasted `lat, lng` pair (e.g. from a Facebook event page): the pasted coordinates are stored **as-is** for the map pin, and DAWA reverse-geocoding fills `event_address` with the nearest official address plus the municipality |
-| `event_municipality` | Hidden | Derived from DAWA — shown as a muted note under the fields |
+| `event_address` | `TextControl` with Adressevælger search | Picking a house number looks it up and populates `event_lat`, `event_lng`, `event_municipality` automatically. Picking a street only searches again with the street text, so its house numbers are listed. A failed search shows "Address search is unavailable"; a missing token shows "Address search is not configured" |
+| `event_lat`, `event_lng` | `TextControl` (single "Coordinates" field) | Shows the stored pair as `lat, lng`. Auto-filled when an address is chosen. Accepts a pasted `lat, lng` pair (e.g. from a Facebook event page): the pasted coordinates are stored **as-is** for the map pin. The nearest-address lookup (which also filled the municipality) needs Datafordeler and is not available until PR 3 of `docs/dawa-migration-plan.md`, so address and municipality are left unchanged |
+| `event_municipality` | Hidden | Derived from the picked address — shown as a muted note under the fields |
 
 ### Organiser panel
 

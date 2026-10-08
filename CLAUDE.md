@@ -19,6 +19,7 @@ Walking events calendar for Denmark. Aggregates events from scrapers, Facebook, 
 | Deployment, CI/CD, environments | `docs/deployment.md` |
 | Internationalisation — Polylang, translation functions, REST API lang filtering | `docs/i18n.md` |
 | Route GPX feature — planned PR by PR, in order | `docs/route-gpx-plan.md` |
+| DAWA → Adressevælger migration (address search) — planned PR by PR | `docs/dawa-migration-plan.md` |
 
 ---
 
@@ -67,6 +68,17 @@ composer run phpcbf   # auto-fix
 ```
 
 WordPress-Extra ruleset. Text domains: `vandrekalender-theme`, `vandrekalender-events`. Pre-commit hook blocks violations on staged PHP files.
+
+### Clean up after every change
+
+Applies to every code change and every PR, not only planned features. When you replace or remove something (a service, an API, a function, a field, a behaviour), remove everything that belonged to the old version in the same change:
+
+- Dead code: unused constants, functions, imports, CSS, npm/Composer packages, options and meta that nothing reads any more.
+- Names that describe the old behaviour (rename `reverseRef` once there is no reverse lookup).
+- Code comments and docblocks that describe the old behaviour or mention the old service.
+- Docs in `docs/` and `CLAUDE.md` that describe the old behaviour.
+
+Before calling a change done, grep the repo for the old names (service name, URLs, constants, function names) and go through every hit. If a leftover belongs to a part that a later PR in the plan replaces, leave it and say so in the PR description, naming that PR. Never leave commented-out old code "just in case"; git history keeps it.
 
 ---
 
