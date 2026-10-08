@@ -1103,3 +1103,15 @@ msgstr "%s° V"
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr "GPS %1$s, %2$s"
+
+#: resources/event-meta-fields/index.js
+msgid "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below."
+msgstr "Vi kunne ikke finde kommunen for denne adresse, så turen vises ikke under en region. Vælg kommunen nedenfor."
+
+#: resources/event-meta-fields/index.js
+msgid "Municipality"
+msgstr "Kommune"
+
+#: resources/event-meta-fields/index.js
+msgid "Choose municipality…"
+msgstr "Vælg kommune…"

@@ -10,6 +10,7 @@ import {
   TextControl,
   DatePicker,
   Modal,
+  Notice,
   Spinner,
   __experimentalText as Text,
 } from '@wordpress/components';
@@ -114,6 +115,12 @@ const metresApart = (a, b) => {
   return Math.hypot(x, y) * 6371000;
 };
 
+// Municipality names for the manual fallback picker, in Danish order.
+const MUNICIPALITY_OPTIONS = Object.values(municipalities)
+  .map(m => m.name)
+  .sort((a, b) => a.localeCompare(b, 'da'))
+  .map(name => ({ label: name, value: name }));
+
 const adressevaelgerUrl = (path, params = {}) =>
   `${ADRESSEVAELGER}${path}?${new URLSearchParams({
     ...params,
@@ -153,6 +160,9 @@ const LocationPanel = ({ meta, setMeta }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchError, setSearchError] = useState('');
+  // Set when the picked address has a municipality code that is not in
+  // data/municipalities.json, so the editor must choose the municipality.
+  const [municipalityUnknown, setMunicipalityUnknown] = useState(false);
   // While the user is typing coordinates the field shows their raw text;
   // otherwise it mirrors the stored meta values.
   const [coordsDraft, setCoordsDraft] = useState(null);
@@ -216,6 +226,7 @@ const LocationPanel = ({ meta, setMeta }) => {
 
   const onQueryChange = value => {
     cancelPendingCoords();
+    setMunicipalityUnknown(false);
     // Clear derived fields when the user edits the address manually.
     setMeta({
       event_address: value,
@@ -244,6 +255,7 @@ const LocationPanel = ({ meta, setMeta }) => {
     // would make this pick's lookup look stale and get dropped.
     clearTimeout(debounceRef.current);
     cancelPendingCoords();
+    setMunicipalityUnknown(false);
     setMeta({
       event_address: titel,
       event_lat: 0,
@@ -276,15 +288,10 @@ const LocationPanel = ({ meta, setMeta }) => {
       const { lat, lng } = utmToLatLng(point.x, point.y);
       const kode = data.husnummer.navngivenvejkommunedel?.kommune;
       const municipality = municipalities[kode]?.name || '';
-      if (!municipality) {
-        // Every current code is in the list, so this means a new code
-        // (e.g. after a municipal reform): the event gets no region until
-        // data/municipalities.json is updated.
-        // eslint-disable-next-line no-console
-        console.warn(
-          `Vandrekalender: municipality code "${kode}" is not in data/municipalities.json, so no region is assigned.`
-        );
-      }
+      // Every current code is in the list, so a miss means a new code (e.g.
+      // after a municipal reform). Ask the editor to choose the
+      // municipality, or the event would silently get no region.
+      setMunicipalityUnknown(!municipality);
       setMetaRef.current({
         event_lat: lat,
         event_lng: lng,
@@ -411,6 +418,35 @@ const LocationPanel = ({ meta, setMeta }) => {
           >
             {searchError}
           </Text>
+        )}
+
+        {municipalityUnknown && (
+          <Notice
+            status="warning"
+            isDismissible={false}
+            className="vandrekalender-location__municipality"
+          >
+            <p style={{ marginTop: 0 }}>
+              {__(
+                'We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below.',
+                'vandrekalender-events'
+              )}
+            </p>
+            <SelectControl
+              label={__('Municipality', 'vandrekalender-events')}
+              value={meta.event_municipality || ''}
+              options={[
+                {
+                  label: __('Choose municipality…', 'vandrekalender-events'),
+                  value: '',
+                },
+                ...MUNICIPALITY_OPTIONS,
+              ]}
+              onChange={value => setMeta({ event_municipality: value })}
+              __next40pxDefaultSize
+              __nextHasNoMarginBottom
+            />
+          </Notice>
         )}
 
         {open && suggestions.length > 0 && (

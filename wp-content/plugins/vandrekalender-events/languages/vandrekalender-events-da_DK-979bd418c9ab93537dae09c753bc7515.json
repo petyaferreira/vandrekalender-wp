@@ -30,6 +30,11 @@
             "Address search is not configured. Paste coordinates below instead.": [
                 "Adresses\u00f8gning er ikke sat op. Inds\u00e6t koordinater nedenfor i stedet."
             ],
+            "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below.": [
+                "Vi kunne ikke finde kommunen for denne adresse, s\u00e5 turen vises ikke under en region. V\u00e6lg kommunen nedenfor."
+            ],
+            "Municipality": ["Kommune"],
+            "Choose municipality\u2026": ["V\u00e6lg kommune\u2026"],
             "Event Details": ["Begivenhedsdetaljer"],
             "Event Date": ["Dato for begivenhed"],
             "Routes": ["Ruter"],
