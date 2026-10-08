@@ -79,6 +79,12 @@
     padding-block: var(--wp--preset--spacing--small, 0.75rem);
     border-top: 1px solid var(--wp--preset--color--cream, #faf5ec);
 
+    // display: flex above would otherwise override the hidden attribute
+    // (the GPX row is hidden for routes without a file).
+    &[hidden] {
+      display: none;
+    }
+
     dt {
       font-size: var(--wp--preset--font-size--small, 0.875rem);
       color: var(--wp--preset--color--pebble, #7a7268);

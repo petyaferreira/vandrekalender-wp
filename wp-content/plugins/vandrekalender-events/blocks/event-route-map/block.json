@@ -1,0 +1,16 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/event-route-map",
+    "title": "Event Route Map",
+    "category": "widgets",
+    "description": "Shows the GPX track(s) attached to an event's routes on a Leaflet map, with a download link per route. Renders nothing when no route has a GPX file.",
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false
+    }
+}

@@ -611,6 +611,69 @@ class Event {
 	}
 
 	/**
+	 * Add a derived gpx_url to every route in a routes array.
+	 *
+	 * Resolves each route's gpx_id (an attachment ID) to a public URL, so
+	 * consumers never need their own wp_get_attachment_url() call. Empty
+	 * string when the route has no gpx_id or the attachment no longer
+	 * exists. Shared by Vandrekalender_Event_Rest_Api::format_event() and the
+	 * event-info-card and event-route-map block renders (see
+	 * docs/route-gpx-plan.md, PR 3).
+	 *
+	 * @param array $routes A route array, as stored in event_routes meta.
+	 * @return array The same routes with gpx_url added to each.
+	 */
+	public static function add_gpx_urls( array $routes ): array {
+		foreach ( $routes as &$route ) {
+			if ( ! is_array( $route ) ) {
+				continue;
+			}
+
+			$gpx_id           = ! empty( $route['gpx_id'] ) ? (int) $route['gpx_id'] : 0;
+			$gpx_url          = $gpx_id ? wp_get_attachment_url( $gpx_id ) : false;
+			$route['gpx_url'] = $gpx_url ? $gpx_url : '';
+		}
+		unset( $route );
+
+		return $routes;
+	}
+
+	/**
+	 * Sort a routes array by distance_km ascending.
+	 *
+	 * Routes with no distance (left incomplete in the editor) sort last —
+	 * there is nothing meaningful to compare them against, so they should
+	 * not jump to the front. Used everywhere routes are shown as an ordered
+	 * list — the Event Info Card's tabs and the Event Route Map's default
+	 * selection and download list — so both blocks agree on the same order
+	 * instead of each falling back to event_routes' stored (creation) order.
+	 *
+	 * @param array $routes A route array, as stored in event_routes meta.
+	 * @return array The same routes, sorted by distance_km ascending.
+	 */
+	public static function sort_routes_by_distance( array $routes ): array {
+		usort(
+			$routes,
+			static function ( $a, $b ) {
+				$a_has_distance = is_array( $a ) && isset( $a['distance_km'] ) && '' !== $a['distance_km'];
+				$b_has_distance = is_array( $b ) && isset( $b['distance_km'] ) && '' !== $b['distance_km'];
+
+				if ( $a_has_distance !== $b_has_distance ) {
+					return $a_has_distance ? -1 : 1;
+				}
+
+				if ( ! $a_has_distance ) {
+					return 0;
+				}
+
+				return (float) $a['distance_km'] <=> (float) $b['distance_km'];
+			}
+		);
+
+		return $routes;
+	}
+
+	/**
 	 * Register the region taxonomy (5 Danish regions).
 	 * Terms are auto-assigned on save — not manually editable.
 	 *
