@@ -1,0 +1,18 @@
+{
+    "translation-revision-date": "2026-10-08 15:00+0200",
+    "generator": "WP-CLI\/2.12.0",
+    "source": "build\/blocks\/event-route-map\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "da_DK",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Event Route Map \u2014 renders the GPX track(s) attached to this event\u2019s routes on the published page. Shows nothing here or on the front end if no route has a GPX file.": [
+                "Rutekort \u2014 viser GPX-sporene fra begivenhedens ruter p\u00e5 den udgivne side. Viser intet her eller p\u00e5 siden, hvis ingen rute har en GPX-fil."
+            ]
+        }
+    }
+}

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-27T05:07:03+00:00\n"
+"POT-Creation-Date: 2026-10-08T13:01:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: vandrekalender-events.php
-msgid "https://vandrekalender.dk"
+msgid "https://allevandreture.dk"
 msgstr ""
 
 #. Description of the plugin
@@ -35,43 +35,53 @@ msgid "Petya Ferreira"
 msgstr ""
 
 #: blocks/event-calendar/render.php:130
+#: build/blocks/event-calendar/render.php:130
 msgid "Mon"
 msgstr ""
 
 #: blocks/event-calendar/render.php:131
+#: build/blocks/event-calendar/render.php:131
 msgid "Tue"
 msgstr ""
 
 #: blocks/event-calendar/render.php:132
+#: build/blocks/event-calendar/render.php:132
 msgid "Wed"
 msgstr ""
 
 #: blocks/event-calendar/render.php:133
+#: build/blocks/event-calendar/render.php:133
 msgid "Thu"
 msgstr ""
 
 #: blocks/event-calendar/render.php:134
+#: build/blocks/event-calendar/render.php:134
 msgid "Fri"
 msgstr ""
 
 #: blocks/event-calendar/render.php:135
+#: build/blocks/event-calendar/render.php:135
 msgid "Sat"
 msgstr ""
 
 #: blocks/event-calendar/render.php:136
+#: build/blocks/event-calendar/render.php:136
 msgid "Sun"
 msgstr ""
 
 #: blocks/event-calendar/render.php:165
+#: build/blocks/event-calendar/render.php:165
 msgid "Previous month"
 msgstr ""
 
 #: blocks/event-calendar/render.php:174
+#: build/blocks/event-calendar/render.php:174
 msgid "Next month"
 msgstr ""
 
 #. translators: 1: long date, 2: number of events.
 #: blocks/event-calendar/render.php:240
+#: build/blocks/event-calendar/render.php:240
 #, php-format
 msgid "%1$s — %2$d walk"
 msgid_plural "%1$s — %2$d walks"
@@ -79,228 +89,315 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: blocks/event-calendar/render.php:264
-#: blocks/event-cards/render.php:106
-#: blocks/event-info-card/render.php:57
+#: blocks/event-cards/render.php:107
+#: blocks/event-info-card/render.php:60
 #: blocks/event-map/render.php:72
+#: build/blocks/event-calendar/render.php:264
+#: build/blocks/event-cards/render.php:107
+#: build/blocks/event-info-card/render.php:60
+#: build/blocks/event-map/render.php:72
 msgid "Free"
 msgstr ""
 
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
 #: blocks/event-calendar/render.php:267
-#: blocks/event-cards/render.php:109
+#: blocks/event-cards/render.php:110
 #: blocks/event-map/render.php:74
+#: build/blocks/event-calendar/render.php:267
+#: build/blocks/event-cards/render.php:110
+#: build/blocks/event-map/render.php:74
 #, php-format
 msgid "from %d kr"
 msgstr ""
 
 #: blocks/event-cards/render.php:75
+#: build/blocks/event-cards/render.php:75
 msgid "No walks match your filters."
 msgstr ""
 
-#: blocks/event-cards/render.php:154
+#: blocks/event-cards/render.php:155
+#: build/blocks/event-cards/render.php:155
 msgid "Show more walks"
 msgstr ""
 
 #: blocks/event-filters/render.php:24
+#: build/blocks/event-filters/render.php:24
 msgid "Short (0–10 km)"
 msgstr ""
 
 #: blocks/event-filters/render.php:25
+#: build/blocks/event-filters/render.php:25
 msgid "Medium (10–25 km)"
 msgstr ""
 
 #: blocks/event-filters/render.php:26
+#: build/blocks/event-filters/render.php:26
 msgid "Long (25+ km)"
 msgstr ""
 
 #: blocks/event-filters/render.php:31
-#: includes/event/class-event.php:547
+#: build/blocks/event-filters/render.php:31
+#: includes/event/class-event.php:662
 msgid "Region"
 msgstr ""
 
 #: blocks/event-filters/render.php:33
+#: build/blocks/event-filters/render.php:33
 msgid "All regions"
 msgstr ""
 
 #: blocks/event-filters/render.php:41
 #: blocks/event-filters/render.php:42
-#: includes/event/class-event.php:582
+#: build/blocks/event-filters/render.php:41
+#: build/blocks/event-filters/render.php:42
+#: includes/event/class-event.php:697
 msgid "Length"
 msgstr ""
 
 #: blocks/event-filters/render.php:53
+#: build/blocks/event-filters/render.php:53
 msgid "From date"
 msgstr ""
 
 #: blocks/event-filters/render.php:58
+#: build/blocks/event-filters/render.php:58
 msgid "To date"
 msgstr ""
 
 #: blocks/event-filters/render.php:66
+#: build/blocks/event-filters/render.php:66
 msgid "Free only"
 msgstr ""
 
 #: blocks/event-filters/render.php:71
+#: build/blocks/event-filters/render.php:71
 msgid "Reset"
 msgstr ""
 
 #. translators: %s: price in Danish kroner
-#: blocks/event-info-card/render.php:61
+#: blocks/event-info-card/render.php:64
+#: build/blocks/event-info-card/render.php:64
 #, php-format
 msgid "%s kr"
 msgstr ""
 
 #. translators: %s: start time, e.g. 09:00
-#: blocks/event-info-card/render.php:76
+#: blocks/event-info-card/render.php:79
+#: build/blocks/event-info-card/render.php:79
 #, php-format
 msgid "at %s"
 msgstr ""
 
 #. translators: %s: number of hours
-#: blocks/event-info-card/render.php:91
+#: blocks/event-info-card/render.php:94
+#: build/blocks/event-info-card/render.php:94
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/event-info-card/render.php:102
-#: resources/event-meta-fields/index.js:465
+#: blocks/event-info-card/render.php:105
+#: blocks/event-info-card/render.php:217
+#: build/blocks/event-info-card/render.php:105
+#: build/blocks/event-info-card/render.php:217
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:782
 msgid "Route"
 msgstr ""
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:108
+#: blocks/event-info-card/render.php:111
+#: build/blocks/event-info-card/render.php:111
 #, php-format
 msgid "%s km"
 msgstr ""
 
-#: blocks/event-info-card/render.php:125
+#: blocks/event-info-card/render.php:128
+#: build/blocks/event-info-card/render.php:128
 msgid "I'm going"
 msgstr ""
 
-#: blocks/event-info-card/render.php:126
+#: blocks/event-info-card/render.php:129
+#: build/blocks/event-info-card/render.php:129
 msgid "Attending"
 msgstr ""
 
-#: blocks/event-info-card/render.php:127
+#: blocks/event-info-card/render.php:130
+#: build/blocks/event-info-card/render.php:130
 msgid "You are signed up — we have emailed you a confirmation."
 msgstr ""
 
-#: blocks/event-info-card/render.php:135
+#: blocks/event-info-card/render.php:138
+#: build/blocks/event-info-card/render.php:138
 msgid "Sign-up failed. Please try again."
 msgstr ""
 
-#: blocks/event-info-card/render.php:136
+#: blocks/event-info-card/render.php:139
+#: build/blocks/event-info-card/render.php:139
 msgid "Cancellation failed. Please try again."
 msgstr ""
 
-#: blocks/event-info-card/render.php:146
+#: blocks/event-info-card/render.php:149
+#: build/blocks/event-info-card/render.php:149
 msgid "You are signed up for this walk."
 msgstr ""
 
-#: blocks/event-info-card/render.php:148
+#: blocks/event-info-card/render.php:151
+#: build/blocks/event-info-card/render.php:151
 msgid "You need an account to sign up. We will bring you straight back here."
 msgstr ""
 
-#: blocks/event-info-card/render.php:170
+#: blocks/event-info-card/render.php:173
+#: build/blocks/event-info-card/render.php:173
 msgid "per participant"
 msgstr ""
 
-#: blocks/event-info-card/render.php:195
+#: blocks/event-info-card/render.php:200
+#: build/blocks/event-info-card/render.php:200
 msgid "Date"
 msgstr ""
 
-#: blocks/event-info-card/render.php:202
+#: blocks/event-info-card/render.php:207
+#: build/blocks/event-info-card/render.php:207
 msgid "Start time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:207
+#: blocks/event-info-card/render.php:212
+#: build/blocks/event-info-card/render.php:212
 msgid "Cutoff time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:214
-msgid "Place"
-msgstr ""
-
-#: blocks/event-info-card/render.php:223
-msgid "Show directions"
+#: blocks/event-info-card/render.php:225
+#: blocks/event-route-map/render.php:121
+#: build/blocks/event-info-card/render.php:225
+#: build/blocks/event-route-map/render.php:121
+msgid "Download GPX"
 msgstr ""
 
 #: blocks/event-info-card/render.php:233
+#: build/blocks/event-info-card/render.php:233
+msgid "Place"
+msgstr ""
+
+#: blocks/event-info-card/render.php:242
+#: build/blocks/event-info-card/render.php:242
+msgid "Show directions"
+msgstr ""
+
+#: blocks/event-info-card/render.php:252
+#: build/blocks/event-info-card/render.php:252
 msgid "You are the organiser of this walk"
 msgstr ""
 
-#: blocks/event-info-card/render.php:275
+#: blocks/event-info-card/render.php:294
+#: build/blocks/event-info-card/render.php:294
 msgid "Cancel your sign-up?"
 msgstr ""
 
-#: blocks/event-info-card/render.php:276
+#: blocks/event-info-card/render.php:295
+#: build/blocks/event-info-card/render.php:295
 msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
 msgstr ""
 
-#: blocks/event-info-card/render.php:280
+#: blocks/event-info-card/render.php:299
+#: build/blocks/event-info-card/render.php:299
 msgid "No, keep my place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:288
+#: blocks/event-info-card/render.php:307
+#: build/blocks/event-info-card/render.php:307
 msgid "Yes, cancel"
 msgstr ""
 
-#: blocks/event-info-card/render.php:295
+#: blocks/event-info-card/render.php:314
+#: build/blocks/event-info-card/render.php:314
 msgid "Book your place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:297
+#: blocks/event-info-card/render.php:316
+#: build/blocks/event-info-card/render.php:316
 msgid "Registration is handled by the organiser"
 msgstr ""
 
 #: blocks/event-map/render.php:75
+#: build/blocks/event-map/render.php:75
 msgid "See details"
 msgstr ""
 
 #: blocks/event-map/render.php:76
+#: build/blocks/event-map/render.php:76
 msgid "No walks with a location match your filters."
 msgstr ""
 
 #: blocks/event-map/render.php:77
 #: blocks/event-map/render.php:104
+#: build/blocks/event-map/render.php:77
+#: build/blocks/event-map/render.php:104
 msgid "Loading map…"
 msgstr ""
 
 #: blocks/event-map/render.php:78
+#: build/blocks/event-map/render.php:78
 msgid "Could not load the map. Please try again."
 msgstr ""
 
 #: blocks/event-map/render.php:79
+#: build/blocks/event-map/render.php:79
 msgid "The map could not be loaded."
 msgstr ""
 
 #: blocks/event-map/render.php:91
+#: build/blocks/event-map/render.php:91
 msgid "Map of walking events in Denmark"
 msgstr ""
 
 #: blocks/event-map/render.php:103
+#: build/blocks/event-map/render.php:103
 msgid "Reset map"
 msgstr ""
 
-#: blocks/slider/render.php:62
+#: blocks/event-route-map/render.php:101
+#: build/blocks/event-route-map/render.php:101
+msgid "Show all routes"
+msgstr ""
+
+#: blocks/event-route-map/render.php:108
+#: build/blocks/event-route-map/render.php:108
+msgid "Map of the route track"
+msgstr ""
+
+#. translators: %s: distance in kilometres
+#: blocks/event-route-map/render.php:119
+#: build/blocks/event-route-map/render.php:119
+#, php-format
+msgid "Download GPX (%s km)"
+msgstr ""
+
+#: blocks/slider/render.php:71
+#: build/blocks/slider/render.php:71
 msgid "Slider navigation"
 msgstr ""
 
-#: blocks/slider/render.php:72
-#: blocks/slider/render.php:98
+#: blocks/slider/render.php:81
+#: blocks/slider/render.php:107
+#: build/blocks/slider/render.php:81
+#: build/blocks/slider/render.php:107
 msgid "Previous slide"
 msgstr ""
 
-#: blocks/slider/render.php:82
-#: blocks/slider/render.php:110
+#: blocks/slider/render.php:91
+#: blocks/slider/render.php:119
+#: build/blocks/slider/render.php:91
+#: build/blocks/slider/render.php:119
 msgid "Next slide"
 msgstr ""
 
 #: blocks/tabs/render.php:32
+#: build/blocks/tabs/render.php:32
 #: blocks/tabs/edit.js:116
+#: build/blocks/tabs/index.js:1
 msgid "Tab"
 msgstr ""
 
@@ -384,19 +481,19 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: event date
-#: includes/class-event-join-mailer.php:235
+#: includes/class-event-join-mailer.php:236
 #, php-format
 msgid "Date: %s"
 msgstr ""
 
 #. translators: %s: start time, e.g. 09:00
-#: includes/class-event-join-mailer.php:240
+#: includes/class-event-join-mailer.php:241
 #, php-format
 msgid "Start time: %s"
 msgstr ""
 
 #. translators: %s: place name
-#: includes/class-event-join-mailer.php:245
+#: includes/class-event-join-mailer.php:246
 #, php-format
 msgid "Place: %s"
 msgstr ""
@@ -409,7 +506,19 @@ msgstr ""
 msgid "You are the organiser of this event."
 msgstr ""
 
-#: includes/class-event-rest-api.php:474
+#: includes/class-event-past-events.php:286
+msgid "This walk has taken place."
+msgstr ""
+
+#: includes/class-event-past-events.php:290
+msgid "Upcoming walks nearby"
+msgstr ""
+
+#: includes/class-event-rest-api.php:134
+msgid "Too many address lookups. Wait a few minutes and try again."
+msgstr ""
+
+#: includes/class-event-rest-api.php:545
 msgid "Event not found."
 msgstr ""
 
@@ -514,7 +623,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:89
+#: includes/event/class-event.php:91
 msgid "Event"
 msgstr ""
 
@@ -532,6 +641,87 @@ msgstr ""
 
 #: includes/class-facebook-importer.php:669
 msgid "View on Facebook"
+msgstr ""
+
+#: includes/class-geocoder.php:130
+msgid "Address lookup returned no coordinates."
+msgstr ""
+
+#. translators: %s: four-digit municipality code, e.g. 0101.
+#: includes/class-geocoder.php:140
+#, php-format
+msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
+msgstr ""
+
+#: includes/class-geocoder.php:178
+#: includes/class-geocoder.php:684
+msgid "Address search returned an unexpected response."
+msgstr ""
+
+#: includes/class-geocoder.php:293
+msgid "Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead."
+msgstr ""
+
+#: includes/class-geocoder.php:552
+msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
+msgstr ""
+
+#: includes/class-geocoder.php:556
+msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
+msgstr ""
+
+#. translators: %s: error message from the HTTP request.
+#: includes/class-geocoder.php:578
+#, php-format
+msgid "Datafordeler request failed: %s"
+msgstr ""
+
+#: includes/class-geocoder.php:591
+msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/class-geocoder.php:599
+#, php-format
+msgid "Datafordeler returned HTTP %d."
+msgstr ""
+
+#. translators: %s: first error message returned by the GraphQL API.
+#: includes/class-geocoder.php:612
+#, php-format
+msgid "Datafordeler query failed: %s"
+msgstr ""
+
+#: includes/class-geocoder.php:613
+msgid "unexpected response"
+msgstr ""
+
+#: includes/class-geocoder.php:634
+msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
+msgstr ""
+
+#: includes/class-geocoder.php:639
+msgid "Skipped an address lookup because the address search failed earlier in this run."
+msgstr ""
+
+#. translators: %s: error message from the HTTP request.
+#: includes/class-geocoder.php:659
+#, php-format
+msgid "Address search request failed: %s"
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/class-geocoder.php:672
+#, php-format
+msgid "Address search returned HTTP %d."
+msgstr ""
+
+#: includes/class-gpx-uploads.php:101
+msgid "GPX files must be smaller than 5 MB."
+msgstr ""
+
+#: includes/class-gpx-uploads.php:107
+msgid "This file is not a valid GPX track."
 msgstr ""
 
 #: includes/class-organizer-dashboard.php:118
@@ -643,566 +833,623 @@ msgid "Automatic scraping is disabled here. Runs are triggered manually (./scrap
 msgstr ""
 
 #. translators: 1: scraper name, 2: error message.
-#: includes/class-scraper-admin.php:120
+#: includes/class-scraper-admin.php:121
 #, php-format
 msgid "%1$s: error — %2$s"
 msgstr ""
 
 #. translators: 1: scraper name, 2: number of events.
-#: includes/class-scraper-admin.php:124
+#: includes/class-scraper-admin.php:125
 #, php-format
 msgid "%1$s: %2$d"
 msgstr ""
 
-#: includes/event/class-event.php:88
+#. translators: 1: scraper name, 2: warning message.
+#: includes/class-scraper-admin.php:130
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
 #: includes/event/class-event.php:90
+#: includes/event/class-event.php:92
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:91
+#: includes/event/class-event.php:93
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:92
+#: includes/event/class-event.php:94
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:93
+#: includes/event/class-event.php:95
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:94
+#: includes/event/class-event.php:96
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:95
+#: includes/event/class-event.php:97
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:96
+#: includes/event/class-event.php:98
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:97
+#: includes/event/class-event.php:99
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:98
+#: includes/event/class-event.php:100
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:101
 msgid "No events found in trash."
 msgstr ""
 
-#: includes/event/class-event.php:546
-#: includes/event/class-event.php:554
-msgid "Regions"
-msgstr ""
-
-#: includes/event/class-event.php:548
-msgid "Search Regions"
-msgstr ""
-
-#: includes/event/class-event.php:549
-msgid "All Regions"
-msgstr ""
-
-#: includes/event/class-event.php:550
-msgid "Edit Region"
-msgstr ""
-
-#: includes/event/class-event.php:551
-msgid "Update Region"
-msgstr ""
-
-#: includes/event/class-event.php:552
-msgid "Add New Region"
-msgstr ""
-
-#: includes/event/class-event.php:553
-msgid "New Region Name"
-msgstr ""
-
-#: includes/event/class-event.php:581
-#: includes/event/class-event.php:589
-msgid "Lengths"
-msgstr ""
-
-#: includes/event/class-event.php:583
-msgid "Search Lengths"
-msgstr ""
-
-#: includes/event/class-event.php:584
-msgid "All Lengths"
-msgstr ""
-
-#: includes/event/class-event.php:585
-msgid "Edit Length"
-msgstr ""
-
-#: includes/event/class-event.php:586
-msgid "Update Length"
-msgstr ""
-
-#: includes/event/class-event.php:587
-msgid "Add New Length"
-msgstr ""
-
-#: includes/event/class-event.php:588
-msgid "New Length Name"
-msgstr ""
-
-#: blocks/event-calendar/edit.js:16
-msgid "Event Calendar — a month grid with event dots renders on the published page."
-msgstr ""
-
-#: blocks/event-cards/edit.js:14
-msgid "Event Cards — events load as a card grid on the published page."
-msgstr ""
-
-#: blocks/event-filters/edit.js:16
-msgid "Event Filters — region, length, date, free. Active on the published page."
-msgstr ""
-
-#: blocks/event-info-card/edit.js:16
-msgid "Event Info Card — the price, date, place, and a per-route start/cutoff time switcher render on the published event page."
-msgstr ""
-
-#: blocks/event-map/edit.js:14
-msgid "Event Map — an interactive Denmark map with event pins renders on the published page."
-msgstr ""
-
-#: blocks/link-box/edit.js:48
-msgid "Link"
-msgstr ""
-
-#: blocks/link-box/edit.js:55
-msgid "Unlink"
-msgstr ""
-
-#: blocks/link-box/edit.js:87
-msgid "Hover text"
-msgstr ""
-
-#: blocks/link-box/edit.js:97
-msgid "Hover background"
-msgstr ""
-
-#: blocks/slider/edit.js:35
-msgid "Slider settings"
-msgstr ""
-
-#: blocks/slider/edit.js:39
-msgid "Behavior"
-msgstr ""
-
-#: blocks/slider/edit.js:43
-msgid "Normal slider"
-msgstr ""
-
-#: blocks/slider/edit.js:47
-msgid "Continuous marquee"
-msgstr ""
-
-#: blocks/slider/edit.js:51
-msgid "Vertical"
-msgstr ""
-
-#: blocks/slider/edit.js:55
-msgid "Hero with Progress Bar"
-msgstr ""
-
-#: blocks/slider/edit.js:66
-msgid "Progress bar color"
-msgstr ""
-
-#: blocks/slider/edit.js:82
-msgid "Slides per view (Desktop)"
-msgstr ""
-
-#: blocks/slider/edit.js:92
-msgid "Slides per view (Mobile)"
-msgstr ""
-
-#: blocks/tabs/edit.js:13
-msgid "Tab 1"
-msgstr ""
-
-#: blocks/tabs/edit.js:14
-msgid "Tab 2"
-msgstr ""
-
-#: blocks/tabs/edit.js:111
-msgid "Add tab"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:89
-msgid "—"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:227
-msgid "Location"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:232
-msgid "Place name (optional)"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:235
-msgid "e.g. Dyrehaven or Silkeborg Sti"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:239
-msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
-msgstr ""
-
-#: resources/event-meta-fields/index.js:249
-msgid "Address"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:252
-msgid "Start typing an address…"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:303
-msgid "Coordinates"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:307
-msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
-msgstr ""
-
-#: resources/event-meta-fields/index.js:359
-msgid "Event Details"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:369
-msgid "Event Date"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:393
-msgid "Routes"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:398
-msgid "No routes added yet."
-msgstr ""
-
-#: resources/event-meta-fields/index.js:422
-msgid "Start:"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:428
-msgid "Incomplete route"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:442
-msgid "Edit"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:449
-#: resources/event-meta-fields/index.js:472
-msgid "Remove"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:477
-msgid "Distance (km)"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:488
-msgid "Start Time"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:497
-msgid "Cutoff Time (hours)"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:503
-msgid "Maximum hours allowed to finish the route."
-msgstr ""
-
-#: resources/event-meta-fields/index.js:512
-msgid "Price (DKK)"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:528
-msgid "Done"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:542
-msgid "Add route"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:558
-msgid "Organiser"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:564
-msgid "Name"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:567
-msgid "Organiser or club name"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:573
-msgid "Website"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:584
-msgid "Contact email (admin only)"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:589
-msgid "Stored securely. Never shown publicly. Used for the event claim flow."
-msgstr ""
-
-#: resources/event-meta-fields/index.js:655
-msgid "New here?"
-msgstr ""
-
-#: resources/event-meta-fields/index.js:660
-#: resources/event-meta-fields/index.js:671
-msgid "Watch the how-to video"
-msgstr ""
-
-#: blocks/event-calendar/block.json
-msgctxt "block title"
-msgid "Event Calendar"
-msgstr ""
-
-#: blocks/event-calendar/block.json
-msgctxt "block description"
-msgid "A month calendar that marks days with walking events. Click a day to see its events."
-msgstr ""
-
-#: blocks/event-cards/block.json
-msgctxt "block title"
-msgid "Event Cards"
-msgstr ""
-
-#: blocks/event-cards/block.json
-msgctxt "block description"
-msgid "Displays matching walking events as a grid of cards."
-msgstr ""
-
-#: blocks/event-filters/block.json
-msgctxt "block title"
-msgid "Event Filters"
-msgstr ""
-
-#: blocks/event-filters/block.json
-msgctxt "block description"
-msgid "Filter controls for the event calendar."
-msgstr ""
-
-#: blocks/event-info-card/block.json
-msgctxt "block title"
-msgid "Event Info Card"
-msgstr ""
-
-#: blocks/event-info-card/block.json
-msgctxt "block description"
-msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with either a \"Jeg kommer\" sign-up or a link to the organiser's booking page."
-msgstr ""
-
-#: blocks/event-map/block.json
-msgctxt "block title"
-msgid "Event Map"
-msgstr ""
-
-#: blocks/event-map/block.json
-msgctxt "block description"
-msgid "A map of Denmark with a pin for each walking event. Built on Leaflet + OpenStreetMap."
-msgstr ""
-
-#: blocks/link-box/block.json
-msgctxt "block title"
-msgid "Link Box"
-msgstr ""
-
-#: blocks/link-box/block.json
-msgctxt "block description"
-msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
-msgstr ""
-
-#: blocks/slider-slide/block.json
-msgctxt "block title"
-msgid "Slider Slide"
-msgstr ""
-
-#: blocks/slider-slide/block.json
-msgctxt "block description"
-msgid "A single slide within slider slides block."
-msgstr ""
-
-#: blocks/slider/block.json
-msgctxt "block title"
-msgid "Slider"
-msgstr ""
-
-#: blocks/slider/block.json
-msgctxt "block description"
-msgid "Slider block for displaying content in a sliding format."
-msgstr ""
-
-#: blocks/tab/block.json
-msgctxt "block title"
-msgid "Tab"
-msgstr ""
-
-#: blocks/tab/block.json
-msgctxt "block description"
-msgid "A single tab panel. Place any blocks inside. Lives inside a Tabs block."
-msgstr ""
-
-#: blocks/tabs/block.json
-msgctxt "block title"
-msgid "Tabs"
-msgstr ""
-
-#: blocks/tabs/block.json
-msgctxt "block description"
-msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
-msgstr ""
-
-#: resources/event-meta-fields/index.js
-msgid "Address search is unavailable. Try again later, or paste coordinates below."
-msgstr ""
-
-#: resources/event-meta-fields/index.js
-msgid "Address search is not configured. Paste coordinates below instead."
-msgstr ""
-
-#. translators: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php
+#. translators: %s: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php:579
 #, php-format
 msgid "%s° N"
 msgstr ""
 
-#. translators: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php
+#. translators: %s: latitude in degrees, e.g. 55.67286
+#: includes/event/class-event.php:579
 #, php-format
 msgid "%s° S"
 msgstr ""
 
-#. translators: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php
+#. translators: %s: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php:584
 #, php-format
 msgid "%s° E"
 msgstr ""
 
-#. translators: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php
+#. translators: %s: longitude in degrees, e.g. 12.56103
+#: includes/event/class-event.php:584
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php
+#: includes/event/class-event.php:589
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: resources/event-meta-fields/index.js
+#: includes/event/class-event.php:661
+#: includes/event/class-event.php:669
+msgid "Regions"
+msgstr ""
+
+#: includes/event/class-event.php:663
+msgid "Search Regions"
+msgstr ""
+
+#: includes/event/class-event.php:664
+msgid "All Regions"
+msgstr ""
+
+#: includes/event/class-event.php:665
+msgid "Edit Region"
+msgstr ""
+
+#: includes/event/class-event.php:666
+msgid "Update Region"
+msgstr ""
+
+#: includes/event/class-event.php:667
+msgid "Add New Region"
+msgstr ""
+
+#: includes/event/class-event.php:668
+msgid "New Region Name"
+msgstr ""
+
+#: includes/event/class-event.php:696
+#: includes/event/class-event.php:704
+msgid "Lengths"
+msgstr ""
+
+#: includes/event/class-event.php:698
+msgid "Search Lengths"
+msgstr ""
+
+#: includes/event/class-event.php:699
+msgid "All Lengths"
+msgstr ""
+
+#: includes/event/class-event.php:700
+msgid "Edit Length"
+msgstr ""
+
+#: includes/event/class-event.php:701
+msgid "Update Length"
+msgstr ""
+
+#: includes/event/class-event.php:702
+msgid "Add New Length"
+msgstr ""
+
+#: includes/event/class-event.php:703
+msgid "New Length Name"
+msgstr ""
+
+#: blocks/event-calendar/edit.js:16
+#: build/blocks/event-calendar/index.js:1
+msgid "Event Calendar — a month grid with event dots renders on the published page."
+msgstr ""
+
+#: blocks/event-cards/edit.js:14
+#: build/blocks/event-cards/index.js:1
+msgid "Event Cards — events load as a card grid on the published page."
+msgstr ""
+
+#: blocks/event-filters/edit.js:16
+#: build/blocks/event-filters/index.js:1
+msgid "Event Filters — region, length, date, free. Active on the published page."
+msgstr ""
+
+#: blocks/event-info-card/edit.js:16
+#: build/blocks/event-info-card/index.js:1
+msgid "Event Info Card — the price, date, place, and a per-route start/cutoff time switcher render on the published event page."
+msgstr ""
+
+#: blocks/event-map/edit.js:14
+#: build/blocks/event-map/index.js:1
+msgid "Event Map — an interactive Denmark map with event pins renders on the published page."
+msgstr ""
+
+#: blocks/event-route-map/edit.js:16
+#: build/blocks/event-route-map/index.js:1
+msgid "Event Route Map — renders the GPX track(s) attached to this event’s routes on the published page. Shows nothing here or on the front end if no route has a GPX file."
+msgstr ""
+
+#: blocks/link-box/edit.js:48
+#: build/blocks/link-box/index.js:1
+msgid "Link"
+msgstr ""
+
+#: blocks/link-box/edit.js:55
+#: build/blocks/link-box/index.js:1
+msgid "Unlink"
+msgstr ""
+
+#: blocks/link-box/edit.js:87
+#: build/blocks/link-box/index.js:1
+msgid "Hover text"
+msgstr ""
+
+#: blocks/link-box/edit.js:97
+#: build/blocks/link-box/index.js:1
+msgid "Hover background"
+msgstr ""
+
+#: blocks/slider/edit.js:42
+#: build/blocks/slider/index.js:1
+msgid "Slider settings"
+msgstr ""
+
+#: blocks/slider/edit.js:46
+#: build/blocks/slider/index.js:1
+msgid "Behavior"
+msgstr ""
+
+#: blocks/slider/edit.js:50
+#: build/blocks/slider/index.js:1
+msgid "Normal slider"
+msgstr ""
+
+#: blocks/slider/edit.js:54
+#: build/blocks/slider/index.js:1
+msgid "Continuous marquee"
+msgstr ""
+
+#: blocks/slider/edit.js:58
+#: build/blocks/slider/index.js:1
+msgid "Vertical"
+msgstr ""
+
+#: blocks/slider/edit.js:62
+#: build/blocks/slider/index.js:1
+msgid "Hero with Progress Bar"
+msgstr ""
+
+#: blocks/slider/edit.js:73
+#: build/blocks/slider/index.js:1
+msgid "Progress bar color"
+msgstr ""
+
+#: blocks/slider/edit.js:89
+#: build/blocks/slider/index.js:1
+msgid "Spacing between slides (rem)"
+msgstr ""
+
+#: blocks/slider/edit.js:102
+#: build/blocks/slider/index.js:1
+msgid "Marquee speed"
+msgstr ""
+
+#: blocks/slider/edit.js:103
+#: build/blocks/slider/index.js:1
+msgid "Higher = slower scroll."
+msgstr ""
+
+#: blocks/slider/edit.js:120
+#: build/blocks/slider/index.js:1
+msgid "Slides per view (Desktop)"
+msgstr ""
+
+#: blocks/slider/edit.js:130
+#: build/blocks/slider/index.js:1
+msgid "Slides per view (Mobile)"
+msgstr ""
+
+#: blocks/tabs/edit.js:13
+#: build/blocks/tabs/index.js:1
+msgid "Tab 1"
+msgstr ""
+
+#: blocks/tabs/edit.js:14
+#: build/blocks/tabs/index.js:1
+msgid "Tab 2"
+msgstr ""
+
+#: blocks/tabs/edit.js:111
+#: build/blocks/tabs/index.js:1
+msgid "Add tab"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:147
+msgid "—"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:188
+msgid "Address search is unavailable. Try again later, or paste coordinates below."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:413
+msgid "Location"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:418
+msgid "Place name (optional)"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:421
+msgid "e.g. Dyrehaven or Silkeborg Sti"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:425
+msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:435
+msgid "Address"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:438
+msgid "Start typing an address…"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:454
+msgid "Address search is not configured. Paste coordinates below instead."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:477
 msgid "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below."
 msgstr ""
 
-#: resources/event-meta-fields/index.js
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:483
 msgid "Municipality"
 msgstr ""
 
-#: resources/event-meta-fields/index.js
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:487
 msgid "Choose municipality…"
 msgstr ""
 
-#. translators: 1: scraper name, 2: warning message.
-#: includes/class-scraper-admin.php
-#, php-format
-msgid "%1$s: %2$s"
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:544
+msgid "Coordinates"
 msgstr ""
 
-#: includes/class-geocoder.php
-msgid "Address lookup returned no coordinates."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
-msgstr ""
-
-#. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Address search request failed: %s"
-msgstr ""
-
-#. translators: %d: HTTP status code.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Address search returned HTTP %d."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Address search returned an unexpected response."
-msgstr ""
-
-#. translators: %s: four-digit municipality code, e.g. 0101.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Skipped an address lookup because the address search failed earlier in this run."
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
-msgstr ""
-
-#. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Datafordeler request failed: %s"
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
-msgstr ""
-
-#. translators: %d: HTTP status code.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Datafordeler returned HTTP %d."
-msgstr ""
-
-#. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php
-#, php-format
-msgid "Datafordeler query failed: %s"
-msgstr ""
-
-#: includes/class-geocoder.php
-msgid "unexpected response"
-msgstr ""
-
-#: resources/event-meta-fields/index.js
-msgid "Looking up the nearest address…"
-msgstr ""
-
-#: resources/event-meta-fields/index.js
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:242
 msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
 msgstr ""
 
-#: includes/class-geocoder.php
-msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:548
+msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
 msgstr ""
 
-#: includes/class-event-rest-api.php
-msgid "Too many address lookups. Wait a few minutes and try again."
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:560
+msgid "Looking up the nearest address…"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:593
+msgid "GPX route"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:611
+msgid "Replace"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:617
+#: resources/event-meta-fields/index.js:766
+#: resources/event-meta-fields/index.js:789
+msgid "Remove"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:627
+msgid "Upload GPX"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:666
+msgid "Event Details"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:676
+msgid "Event Date"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:700
+msgid "Routes"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:705
+msgid "No routes added yet."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:794
+msgid "Distance (km)"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:805
+msgid "Start Time"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:814
+msgid "Cutoff Time (hours)"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:820
+msgid "Maximum hours allowed to finish the route."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:829
+msgid "Price (DKK)"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:873
+msgid "Done"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:729
+msgid "Start:"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:735
+msgid "GPX"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:745
+msgid "Incomplete route"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:759
+msgid "Edit"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:887
+msgid "Add route"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:903
+msgid "Organiser"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:909
+msgid "Name"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:912
+msgid "Organiser or club name"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:918
+msgid "Website"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:929
+msgid "Contact email (admin only)"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:934
+msgid "Stored securely. Never shown publicly. Used for the event claim flow."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:1000
+msgid "New here?"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:1005
+#: resources/event-meta-fields/index.js:1016
+msgid "Watch the how-to video"
+msgstr ""
+
+#: blocks/event-calendar/block.json
+#: build/blocks/event-calendar/block.json
+msgctxt "block title"
+msgid "Event Calendar"
+msgstr ""
+
+#: blocks/event-calendar/block.json
+#: build/blocks/event-calendar/block.json
+msgctxt "block description"
+msgid "A month calendar that marks days with walking events. Click a day to see its events."
+msgstr ""
+
+#: blocks/event-cards/block.json
+#: build/blocks/event-cards/block.json
+msgctxt "block title"
+msgid "Event Cards"
+msgstr ""
+
+#: blocks/event-cards/block.json
+#: build/blocks/event-cards/block.json
+msgctxt "block description"
+msgid "Displays matching walking events as a grid of cards."
+msgstr ""
+
+#: blocks/event-filters/block.json
+#: build/blocks/event-filters/block.json
+msgctxt "block title"
+msgid "Event Filters"
+msgstr ""
+
+#: blocks/event-filters/block.json
+#: build/blocks/event-filters/block.json
+msgctxt "block description"
+msgid "Filter controls for the event calendar."
+msgstr ""
+
+#: blocks/event-info-card/block.json
+#: build/blocks/event-info-card/block.json
+msgctxt "block title"
+msgid "Event Info Card"
+msgstr ""
+
+#: blocks/event-info-card/block.json
+#: build/blocks/event-info-card/block.json
+msgctxt "block description"
+msgid "Sticky booking summary for a single event: price, date, place, and a route switcher for start time and cutoff time, with either a \"Jeg kommer\" sign-up or a link to the organiser's booking page."
+msgstr ""
+
+#: blocks/event-map/block.json
+#: build/blocks/event-map/block.json
+msgctxt "block title"
+msgid "Event Map"
+msgstr ""
+
+#: blocks/event-map/block.json
+#: build/blocks/event-map/block.json
+msgctxt "block description"
+msgid "A map of Denmark with a pin for each walking event. Built on Leaflet + OpenStreetMap."
+msgstr ""
+
+#: blocks/event-route-map/block.json
+#: build/blocks/event-route-map/block.json
+msgctxt "block title"
+msgid "Event Route Map"
+msgstr ""
+
+#: blocks/event-route-map/block.json
+#: build/blocks/event-route-map/block.json
+msgctxt "block description"
+msgid "Shows the GPX track(s) attached to an event's routes on a Leaflet map, with a download link per route. Renders nothing when no route has a GPX file."
+msgstr ""
+
+#: blocks/link-box/block.json
+#: build/blocks/link-box/block.json
+msgctxt "block title"
+msgid "Link Box"
+msgstr ""
+
+#: blocks/link-box/block.json
+#: build/blocks/link-box/block.json
+msgctxt "block description"
+msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
+msgstr ""
+
+#: blocks/slider-slide/block.json
+#: build/blocks/slider-slide/block.json
+msgctxt "block title"
+msgid "Slider Slide"
+msgstr ""
+
+#: blocks/slider-slide/block.json
+#: build/blocks/slider-slide/block.json
+msgctxt "block description"
+msgid "A single slide within slider slides block."
+msgstr ""
+
+#: blocks/slider/block.json
+#: build/blocks/slider/block.json
+msgctxt "block title"
+msgid "Slider"
+msgstr ""
+
+#: blocks/slider/block.json
+#: build/blocks/slider/block.json
+msgctxt "block description"
+msgid "Slider block for displaying content in a sliding format."
+msgstr ""
+
+#: blocks/tab/block.json
+#: build/blocks/tab/block.json
+msgctxt "block title"
+msgid "Tab"
+msgstr ""
+
+#: blocks/tab/block.json
+#: build/blocks/tab/block.json
+msgctxt "block description"
+msgid "A single tab panel. Place any blocks inside. Lives inside a Tabs block."
+msgstr ""
+
+#: blocks/tabs/block.json
+#: build/blocks/tabs/block.json
+msgctxt "block title"
+msgid "Tabs"
+msgstr ""
+
+#: blocks/tabs/block.json
+#: build/blocks/tabs/block.json
+msgctxt "block description"
+msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
 msgstr ""

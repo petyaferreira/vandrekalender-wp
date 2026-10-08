@@ -163,6 +163,15 @@ Steps:
 4. Check in the browser with the site in Danish: the Facebook importer screen, the Scraper Log screen, a GPX upload error, the route map block and the event editor.
 5. Include the theme (`vandrekalender-theme` text domain) in the same check if it has the same gaps, or note it for Petya as a separate task.
 
+**Done in PR 4 (8 Oct 2026):**
+- All 59 untranslated strings translated, plus 5 found later (GPX strings in the event editor and two short ones). Wording follows the existing Danish (vandretur/tur, begivenhed, arrangør, rute, Faneblad). Left untranslated on purpose: the plugin name, its URI, the author and the brand "Vandrekalender".
+- Fuzzy fixed: the `Event Route Map` block title is now "Rutekort" (it said "Kort over begivenheder", the Event Map's name).
+- 38 obsolete entries removed. The header now has `Language: da_DK`, `Plural-Forms` and translator fields, so `msgfmt --check` passes.
+- **Correction to step 1:** `--exclude=…,resources` also excludes `build/resources/`, which dropped every event-editor string. The working command excludes only `node_modules,vendor`; see `docs/i18n.md`.
+- JS translations: 10 JSON files, one per built script. The block editors (slider, tabs, link box, info card, route map and the rest) get Danish for the first time. JSON files for source paths are deleted, because WordPress never loads them.
+- `.mo` stays committed (the servers do not compile it); `docs/i18n.md` now says so and documents the full procedure.
+- Front-end `view.js` scripts have no translatable strings, so they need no JSON. The theme has no translatable strings at all (its patterns are written directly in the templates), so there is nothing to translate there.
+
 ## Docs to update in each PR
 
 - `docs/data-model.md` and `docs/scrapers.md`: replace DAWA mentions.
