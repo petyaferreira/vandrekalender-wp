@@ -1116,3 +1116,51 @@ msgstr ""
 #: resources/event-meta-fields/index.js
 msgid "Choose municipality…"
 msgstr ""
+
+#. translators: 1: scraper name, 2: warning message.
+#: includes/class-scraper-admin.php
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Address lookup returned no coordinates."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
+msgstr ""
+
+#. translators: %s: error message from the HTTP request.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Address search request failed: %s"
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Address search returned HTTP %d."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Address search returned an unexpected response."
+msgstr ""
+
+#. translators: %s: four-digit municipality code, e.g. 0101.
+#: includes/class-geocoder.php
+#, php-format
+msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Municipality from coordinates is not available until Datafordeler is set up (DAWA migration PR 3); events keep their coordinates but get no municipality or region."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Place-name lookup is not available until Datafordeler is set up (DAWA migration PR 3); tried the address search instead."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Skipped an address lookup because the address search failed earlier in this run."
+msgstr ""

@@ -416,37 +416,10 @@ class Event {
 	/**
 	 * Map of Danish municipality names (lowercase) to region slugs.
 	 *
-	 * Built from data/municipalities.json, the same file the editor uses to
-	 * turn an Adressevælger municipality code into a name, so the names
-	 * always match.
-	 *
 	 * @return array<string, string>
 	 */
 	private static function municipality_region_map(): array {
-		static $map = null;
-
-		if ( null !== $map ) {
-			return $map;
-		}
-
-		$map  = [];
-		$json = file_get_contents( VANDREKALENDER_EVENTS_DIR . 'data/municipalities.json' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local plugin file.
-		$data = false !== $json ? json_decode( $json, true ) : null;
-
-		foreach ( is_array( $data ) ? $data : [] as $municipality ) {
-			if ( isset( $municipality['name'], $municipality['region'] ) ) {
-				$map[ mb_strtolower( $municipality['name'] ) ] = $municipality['region'];
-			}
-		}
-
-		// Without the file no event gets a region, and nothing else would show
-		// it. Logged even without WP_DEBUG, since a broken deploy is the likely
-		// cause.
-		if ( empty( $map ) ) {
-			error_log( 'Vandrekalender: data/municipalities.json is missing or invalid, so event regions cannot be assigned.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
-		}
-
-		return $map;
+		return \Vandrekalender_Municipalities::region_map();
 	}
 
 	/**

@@ -29,6 +29,8 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/trait-polylang-language.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-past-events.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-municipalities.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-utm-converter.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
@@ -174,9 +176,98 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				} else {
 					WP_CLI::log( sprintf( '%s: %d events', $scraper['name'], $scraper['count'] ) );
 				}
+
+				foreach ( $scraper['warnings'] as $warning ) {
+					WP_CLI::warning( sprintf( '%s: %s', $scraper['name'], $warning ) );
+				}
 			}
 
 			WP_CLI::success( sprintf( '%d events updated in %ss.', $entry['total'], $entry['duration'] ) );
+		}
+	);
+}
+
+/**
+ * Register the `wp vandrekalender regeocode` command.
+ *
+ * One-off repair after the DAWA shutdown (1 October 2026): scraped events
+ * created since then got no coordinates, because every geocode failed.
+ * Geocodes each scraped event that has an address but no coordinates, and
+ * sets lat/lng plus the municipality (which assigns the region).
+ *
+ * Remove this command once it has been run on production: it only repairs
+ * the outage window and has no use after that.
+ *
+ * ## OPTIONS
+ *
+ * [--since=<date>]
+ * : Only events created on or after this date (Y-m-d). Default: 2026-10-01.
+ *
+ * [--dry-run]
+ * : Show what would change without saving.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender regeocode',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+			$since   = isset( $assoc_args['since'] ) ? (string) $assoc_args['since'] : '2026-10-01';
+
+			$post_ids = get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'date_query'     => [
+						[
+							'after'     => $since,
+							'inclusive' => true,
+						],
+					],
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-off repair command, not a request-time query.
+						[
+							'key'   => \Vandrekalender\Event::META_SOURCE,
+							'value' => 'scraped',
+						],
+					],
+				]
+			);
+
+			$geocoder = new Vandrekalender_Geocoder();
+			$fixed    = 0;
+			$missed   = 0;
+
+			foreach ( $post_ids as $post_id ) {
+				$address = trim( (string) get_post_meta( $post_id, \Vandrekalender\Event::META_ADDRESS, true ) );
+				if ( '' === $address || null !== \Vandrekalender\Event::coordinates( $post_id ) ) {
+					continue;
+				}
+
+				$geo = $geocoder->geocode( $address );
+				if ( null === $geo ) {
+					WP_CLI::log( sprintf( 'No match %d: %s', $post_id, $address ) );
+					++$missed;
+					continue;
+				}
+
+				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)', $dry_run ? 'Would fix' : 'Fixed', $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'] ) );
+				if ( ! $dry_run ) {
+					update_post_meta( $post_id, \Vandrekalender\Event::META_LAT, $geo['lat'] );
+					update_post_meta( $post_id, \Vandrekalender\Event::META_LNG, $geo['lng'] );
+					// '' would clear a municipality the post already has.
+					if ( '' !== $geo['municipality'] ) {
+						update_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, $geo['municipality'] );
+					}
+				}
+				++$fixed;
+			}
+
+			foreach ( Vandrekalender_Geocoder::take_issues() as $issue ) {
+				WP_CLI::warning( $issue );
+			}
+
+			WP_CLI::success( sprintf( '%d events %s, %d without a match.', $fixed, $dry_run ? 'would get coordinates' : 'got coordinates', $missed ) );
 		}
 	);
 }

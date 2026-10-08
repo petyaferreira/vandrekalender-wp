@@ -79,7 +79,7 @@ The editor searches `/husnumre/soeg` while the user types, then fetches `/husnum
 
 `data/municipalities.json` is the **single source** for municipalities: code → `{ name, region }` for the 98 municipalities plus Christiansø (codes and names from Danmarks Statistik, the same names already stored on existing events). The editor uses it for code → name, and `Event::municipality_region_map()` builds its name → region lookup from the same file, so the two can never drift apart. To change a municipality or its region, edit only this file.
 
-The server-side geocoder (scrapers, Facebook importer) still calls DAWA until the second migration PR.
+The scrapers use the same service server-side (`Vandrekalender_Geocoder`, see `docs/scrapers.md` → Geocoding), with the same coordinate conversion and municipality list.
 
 ### Coordinate conversion (UTM 32N → latitude/longitude)
 
@@ -88,7 +88,28 @@ Adressevælger returns positions as EPSG:25832 (ETRS89 / UTM zone 32N) metres, e
 - **Why not `proj4`:** the first version of the migration used the `proj4` npm package. It supports every projection and coordinate format, and it grew the editor script from 13 KiB to 147 KiB to do one conversion. The helper is about 25 lines and keeps the script under 20 KiB.
 - **Formula:** inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid (zone 32: central meridian 9°E, scale 0.9996, false easting 500 000 m). ETRS89 and WGS84 differ by under a metre, so the result is used as WGS84 directly. Values are rounded to 7 decimals (about 1 cm).
 - **Checked:** against `proj4` for real Adressevælger addresses in Copenhagen, Rønne, Christiansø, Skagen, Thisted, Esbjerg, Sønderborg and Gedser. Every result was within 1 cm, and the difference is the 7-decimal rounding. Christiansø is the furthest point from the zone's central meridian, where the error would be largest.
-- **Shared with the server:** the server-side geocoder (second migration PR) uses the same formula, ported line for line to PHP, so the editor and the scrapers always produce the same coordinates for the same address. Change one, change both.
+- **Shared with the server:** the server-side geocoder uses the same formula, ported line for line to PHP in `includes/class-utm-converter.php`, so the editor and the scrapers always produce the same coordinates for the same address (checked: identical for 8 addresses across Denmark, Christiansø included). Change one, change both.
+
+**Reference coordinates.** Both helpers must return exactly these values (7 decimals) for these Adressevælger points. Check them after any change to either file:
+
+| Address | x (EPSG:25832) | y (EPSG:25832) | lat | lng |
+|---|---|---|---|---|
+| Helgolandsgade 3, 1653 København V | 723913.84 | 6175420.05 | 55.6728586 | 12.5610342 |
+| Store Torv 1, Rønne, 3700 Rønne | 863465.13 | 6121042.35 | 55.1024714 | 14.6997173 |
+| Christiansø 1, 3760 Gudhjem | 892312.50462501 | 6147899.35579871 | 55.3204708 | 15.1865207 |
+| Sct. Laurentii Vej 1, 9990 Skagen | 595138.28 | 6399237.37 | 57.7251950 | 10.5974043 |
+| Tordenskjoldsgade 1, 6700 Esbjerg | 464480.46 | 6147034.66 | 55.4681724 | 8.4381703 |
+| Rådhustorvet 1, 6400 Sønderborg | 550624.6983165281 | 6084992.801707251 | 54.9093796 | 9.7896298 |
+| Stationsvejen 1, 4874 Gedser | 689333.59 | 6051481.81 | 54.5753310 | 11.9293575 |
+| Storegade 1, 7700 Thisted | 481220.7 | 6312394.91 | 56.9547821 | 8.6912387 |
+
+```bash
+# PHP
+./wp.sh eval 'print_r( Vandrekalender_Utm_Converter::to_lat_lng( 723913.84, 6175420.05 ) );'
+# JS (from wp-content/plugins/vandrekalender-events)
+cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import('/tmp/utm.mjs').then(m => console.log(m.utmToLatLng(723913.84, 6175420.05)))"
+```
+
 
 | Field | Type | Required | Filter? | Notes |
 |---|---|---|---|---|

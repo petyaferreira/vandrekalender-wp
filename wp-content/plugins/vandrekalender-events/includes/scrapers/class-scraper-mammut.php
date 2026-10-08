@@ -192,7 +192,7 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 			\Vandrekalender\Event::META_SOURCE_NAME    => self::SOURCE_NAME,
 		];
 
-		// Geocode the start address server-side via DAWA.
+		// Geocode the start address server-side via Adressevælger.
 		if ( '' !== $address ) {
 			$geo = ( new Vandrekalender_Geocoder() )->geocode( $address );
 			if ( null !== $geo ) {

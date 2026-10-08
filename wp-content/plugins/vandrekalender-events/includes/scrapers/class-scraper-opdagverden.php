@@ -14,8 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * The full tour description is members-only (behind a paywall), so only the
  * structured summary is scraped. Meeting points are landmark names ("Stevns
- * klint", "Æbelø"); DAWA's address autocomplete resolves them to the nearest
- * real address, giving approximate coordinates and the correct municipality.
+ * klint", "Æbelø"); the Adressevælger address search resolves them to the
+ * nearest real address, giving approximate coordinates and the correct
+ * municipality.
  *
  * @package Vandrekalender
  */
@@ -156,9 +157,11 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 		];
 
 		// Resolve coordinates from the landmark name. Meeting points here are
-		// natural features ("Stevns Klint"), not street addresses, so DAWA's
-		// place-name register is tried first and the coordinates are the
-		// feature's representative point — approximate, but in the right place.
+		// natural features ("Stevns Klint"), not street addresses, so the
+		// place-name register is tried first (its coordinates are the
+		// feature's representative point — approximate, but in the right
+		// place). It needs Datafordeler (PR 3 of docs/dawa-migration-plan.md);
+		// until then every candidate falls through to the address search.
 		$geo          = $this->resolve_location( $title, $place );
 		$municipality = ( null !== $geo ) ? $geo['municipality'] : '';
 
@@ -226,8 +229,8 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 	 * Resolve coordinates and municipality for an event's landmark meeting point.
 	 *
 	 * Builds an ordered list of query candidates from the event title and the
-	 * "Det foregår" value, then tries DAWA's place-name register for each, and
-	 * finally the address autocomplete. The first hit wins.
+	 * "Det foregår" value, then tries the place-name register for each, and
+	 * finally the address search. The first hit wins.
 	 *
 	 * @param string $title Event title, e.g. "Møns Klint: Klintekongens Rige (15 km)".
 	 * @param string $place The "Det foregår" location value.
