@@ -43,11 +43,6 @@ jobs:
             Review this pull request for correctness bugs, security issues, and
             code-quality problems. Get the changes with
             `gh pr diff ${{ github.event.pull_request.number }}`.
-            Read CLAUDE.md first and check the PR against it, especially
-            "Clean up after every change": flag leftovers of anything the PR
-            replaces or removes (dead code, unused packages, old names, stale
-            comments or docs), unless the PR description says a later PR
-            handles them.
             Leave inline feedback on specific lines with the create_inline_comment tool.
             Always finish by posting one summary comment with
             `gh pr comment ${{ github.event.pull_request.number }} --body "..."`,
