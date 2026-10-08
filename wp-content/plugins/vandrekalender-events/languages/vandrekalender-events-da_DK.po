@@ -1190,7 +1190,6 @@ msgstr "Forespørgslen til Datafordeler fejlede: %s"
 msgid "unexpected response"
 msgstr "uventet svar"
 
-
 #: resources/event-meta-fields/index.js
 msgid "Looking up the nearest address…"
 msgstr "Slår den nærmeste adresse op…"
@@ -1198,3 +1197,7 @@ msgstr "Slår den nærmeste adresse op…"
 #: resources/event-meta-fields/index.js
 msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
 msgstr "Den nærmeste adresse kunne ikke slås op. Nålen er gemt; tilføj adressen manuelt, hvis du har brug for den."
+
+#: includes/class-geocoder.php
+msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
+msgstr "Et opslag i Datafordeler blev sprunget over, fordi Datafordeler fejlede tidligere i denne kørsel."

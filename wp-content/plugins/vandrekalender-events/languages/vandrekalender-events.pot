@@ -1191,11 +1191,14 @@ msgstr ""
 msgid "unexpected response"
 msgstr ""
 
-
 #: resources/event-meta-fields/index.js
 msgid "Looking up the nearest address…"
 msgstr ""
 
 #: resources/event-meta-fields/index.js
 msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
+msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr ""
