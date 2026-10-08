@@ -164,6 +164,10 @@ const LocationPanel = ({ meta, setMeta }) => {
   const requestRef = useRef(0);
   const setMetaRef = useRef(setMeta);
   setMetaRef.current = setMeta;
+  // Latest meta for timeouts, which would otherwise see the values from
+  // when they were scheduled.
+  const metaRef = useRef(meta);
+  metaRef.current = meta;
 
   const unavailable = __(
     'Address search is unavailable. Try again later, or paste coordinates below.',
@@ -271,10 +275,20 @@ const LocationPanel = ({ meta, setMeta }) => {
       if (request !== requestRef.current) return;
       const { lat, lng } = utmToLatLng(point.x, point.y);
       const kode = data.husnummer.navngivenvejkommunedel?.kommune;
+      const municipality = municipalities[kode]?.name || '';
+      if (!municipality) {
+        // Every current code is in the list, so this means a new code
+        // (e.g. after a municipal reform): the event gets no region until
+        // data/municipalities.json is updated.
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Vandrekalender: municipality code "${kode}" is not in data/municipalities.json, so no region is assigned.`
+        );
+      }
       setMetaRef.current({
         event_lat: lat,
         event_lng: lng,
-        event_municipality: municipalities[kode]?.name || '',
+        event_municipality: municipality,
       });
       setSuggestions([]);
       setSearchError('');
@@ -304,13 +318,6 @@ const LocationPanel = ({ meta, setMeta }) => {
     const parsed = parseCoords(value);
     if (!parsed) return;
 
-    // With no stored point, the address is typed text the user is now
-    // pinning, so it is kept.
-    const stored = { lat: Number(meta.event_lat), lng: Number(meta.event_lng) };
-    const moved =
-      Boolean(stored.lat && stored.lng) &&
-      metresApart(stored, parsed) > SAME_SPOT_METRES;
-
     coordsDebounceRef.current = setTimeout(() => {
       // The pasted coordinates are the source of truth for the map pin.
       // An address and municipality picked earlier no longer describe the
@@ -318,6 +325,17 @@ const LocationPanel = ({ meta, setMeta }) => {
       // coordinates), or the card and the region would disagree with the
       // pin. Filling them from the coordinates needs the nearest-address
       // lookup, which needs Datafordeler (docs/dawa-migration-plan.md, PR 3).
+      // Compared against the point stored now, not when the user typed.
+      // With no stored point, the address is typed text the user is now
+      // pinning, so it is kept.
+      const stored = {
+        lat: Number(metaRef.current.event_lat),
+        lng: Number(metaRef.current.event_lng),
+      };
+      const moved =
+        Boolean(stored.lat && stored.lng) &&
+        metresApart(stored, parsed) > SAME_SPOT_METRES;
+
       setMetaRef.current({
         event_lat: parsed.lat,
         event_lng: parsed.lng,
