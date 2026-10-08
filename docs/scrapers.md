@@ -184,7 +184,7 @@ A hit in the wrong town is rejected rather than pinned in the wrong part of the 
 
 **Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
 
-**Repairing events from the outage.** `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]` geocodes scraped events created since the given date that have an address but no coordinates (every geocode failed between DAWA's shutdown and this change). Run it once on production after deploying.
+**Repairing events from the outage.** `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]` geocodes scraped events created since the given date that have an address but no coordinates (every geocode failed between DAWA's shutdown and this change). Run it once on production after deploying, then remove the command in a later PR — it only repairs the outage window.
 
 ### Adding a new scraper
 

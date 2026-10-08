@@ -1159,3 +1159,7 @@ msgstr "Kommune ud fra koordinater er ikke tilgængelig, før Datafordeler er sa
 #: includes/class-geocoder.php
 msgid "Place-name lookup is not available until Datafordeler is set up (DAWA migration PR 3); tried the address search instead."
 msgstr "Stednavneopslag er ikke tilgængeligt, før Datafordeler er sat op (DAWA-migrering PR 3); adressesøgningen blev prøvet i stedet."
+
+#: includes/class-geocoder.php
+msgid "Skipped an address lookup because the address search failed earlier in this run."
+msgstr "Et adresseopslag blev sprunget over, fordi adressesøgningen fejlede tidligere i denne kørsel."

@@ -8,7 +8,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * A line-for-line port of resources/event-meta-fields/utm-to-latlng.js, the
  * editor's helper, so the editor and the scrapers produce exactly the same
- * coordinates for the same address. Keep the two in sync. Why it is our own
+ * coordinates for the same address. Keep the two in sync and check both
+ * against the reference coordinates in docs/data-model.md → Coordinate
+ * conversion after any change. Why it is our own
  * helper and not a library: docs/data-model.md → Coordinate conversion.
  *
  * Inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid.

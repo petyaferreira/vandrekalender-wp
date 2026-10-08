@@ -6,7 +6,8 @@
  * conversion, and proj4 grew the editor script from 13 KiB to 147 KiB.
  * The server-side geocoder uses the same formula, ported line for line to
  * PHP in includes/class-utm-converter.php, so the editor and the scrapers
- * always agree. Keep the two in sync.
+ * always agree. Keep the two in sync and check both against the reference
+ * coordinates in docs/data-model.md → Coordinate conversion after any change.
  *
  * Inverse transverse Mercator with Krüger's series on the GRS80 ellipsoid.
  * Checked against proj4 for addresses across Denmark (Bornholm included),

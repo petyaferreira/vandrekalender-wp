@@ -1160,3 +1160,7 @@ msgstr ""
 #: includes/class-geocoder.php
 msgid "Place-name lookup is not available until Datafordeler is set up (DAWA migration PR 3); tried the address search instead."
 msgstr ""
+
+#: includes/class-geocoder.php
+msgid "Skipped an address lookup because the address search failed earlier in this run."
+msgstr ""

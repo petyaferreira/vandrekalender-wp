@@ -90,6 +90,27 @@ Adressevælger returns positions as EPSG:25832 (ETRS89 / UTM zone 32N) metres, e
 - **Checked:** against `proj4` for real Adressevælger addresses in Copenhagen, Rønne, Christiansø, Skagen, Thisted, Esbjerg, Sønderborg and Gedser. Every result was within 1 cm, and the difference is the 7-decimal rounding. Christiansø is the furthest point from the zone's central meridian, where the error would be largest.
 - **Shared with the server:** the server-side geocoder uses the same formula, ported line for line to PHP in `includes/class-utm-converter.php`, so the editor and the scrapers always produce the same coordinates for the same address (checked: identical for 8 addresses across Denmark, Christiansø included). Change one, change both.
 
+**Reference coordinates.** Both helpers must return exactly these values (7 decimals) for these Adressevælger points. Check them after any change to either file:
+
+| Address | x (EPSG:25832) | y (EPSG:25832) | lat | lng |
+|---|---|---|---|---|
+| Helgolandsgade 3, 1653 København V | 723913.84 | 6175420.05 | 55.6728586 | 12.5610342 |
+| Store Torv 1, Rønne, 3700 Rønne | 863465.13 | 6121042.35 | 55.1024714 | 14.6997173 |
+| Christiansø 1, 3760 Gudhjem | 892312.50462501 | 6147899.35579871 | 55.3204708 | 15.1865207 |
+| Sct. Laurentii Vej 1, 9990 Skagen | 595138.28 | 6399237.37 | 57.7251950 | 10.5974043 |
+| Tordenskjoldsgade 1, 6700 Esbjerg | 464480.46 | 6147034.66 | 55.4681724 | 8.4381703 |
+| Rådhustorvet 1, 6400 Sønderborg | 550624.6983165281 | 6084992.801707251 | 54.9093796 | 9.7896298 |
+| Stationsvejen 1, 4874 Gedser | 689333.59 | 6051481.81 | 54.5753310 | 11.9293575 |
+| Storegade 1, 7700 Thisted | 481220.7 | 6312394.91 | 56.9547821 | 8.6912387 |
+
+```bash
+# PHP
+./wp.sh eval 'print_r( Vandrekalender_Utm_Converter::to_lat_lng( 723913.84, 6175420.05 ) );'
+# JS (from wp-content/plugins/vandrekalender-events)
+cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import('/tmp/utm.mjs').then(m => console.log(m.utmToLatLng(723913.84, 6175420.05)))"
+```
+
+
 | Field | Type | Required | Filter? | Notes |
 |---|---|---|---|---|
 | `event_place_name` | string | — | — | Optional human-readable name e.g. `Dyrehaven` or `Silkeborg Sti ved parkeringen`. Shown on event cards. Falls back to `event_municipality`, then to the coordinates as "GPS 55.67286° N, 12.56103° Ø" (`Event::coordinates_label()`, also used in the info card and join emails) |

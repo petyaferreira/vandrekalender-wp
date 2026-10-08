@@ -50,6 +50,15 @@ class Vandrekalender_Geocoder {
 	private static $issues = [];
 
 	/**
+	 * Set after a failed request, so the rest of the scraper's run skips the
+	 * service instead of waiting on a 10 s timeout per address during an
+	 * outage. Reset by take_issues(), so the next scraper tries again.
+	 *
+	 * @var bool
+	 */
+	private static $unavailable = false;
+
+	/**
 	 * Geocode a Danish address string.
 	 *
 	 * @param string $address Free-text address, e.g. "Marselisborg Havnevej 1, 8000 Aarhus".
@@ -304,7 +313,8 @@ class Vandrekalender_Geocoder {
 			$lines[] = $count > 1 ? sprintf( '%s (%d×)', $message, $count ) : $message;
 		}
 
-		self::$issues = [];
+		self::$issues      = [];
+		self::$unavailable = false;
 		return $lines;
 	}
 
@@ -334,6 +344,11 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
+		if ( self::$unavailable ) {
+			self::record_issue( __( 'Skipped an address lookup because the address search failed earlier in this run.', 'vandrekalender-events' ) );
+			return null;
+		}
+
 		$params['token'] = $token;
 
 		$response = wp_remote_get(
@@ -353,6 +368,7 @@ class Vandrekalender_Geocoder {
 					$response->get_error_message()
 				)
 			);
+			self::$unavailable = true;
 			return null;
 		}
 
@@ -365,6 +381,7 @@ class Vandrekalender_Geocoder {
 					$status
 				)
 			);
+			self::$unavailable = true;
 			return null;
 		}
 

@@ -112,39 +112,20 @@ File: `includes/class-geocoder.php`. Same public method names and return shape, 
 - **`Vandrekalender_Municipalities`** (`includes/class-municipalities.php`) now reads `data/municipalities.json` for both the geocoder and the region map.
 - **Re-geocode command**: `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]`. Petya runs it once on production after deploying.
 
-### PR 3 (later, needs a Datafordeler API key)
+### PR 3: regions for DVL events (higher priority than "later")
 
-Place names (`stednavne2`) and nearest address from coordinates. Petya must first create a user, an IT system and an API key in Datafordelerens Administration (https://portal.datafordeler.dk). Plan this PR only after the key exists.
+Found on production on 8 Oct 2026: scraped events from DVL (organiser "DVL Trekantomraadet" and the other DVL areas) are published with NO region. They do have the address and exact coordinates, because the DVL feed supplies the coordinates. The region taxonomy comes from the municipality, and `Vandrekalender_Geocoder::municipality_from_coords()` used DAWA for that (reverse lookup). Adressevælger cannot do a reverse lookup, so after PR 1 and PR 2 these events will STILL have no region. Events that already had a municipality keep it (the scraper does not overwrite it with an empty value), for example "Isenbjerg og Gludsted Plantage" still shows Midtjylland.
 
-Adressevælger has no reverse geocoding (confirmed in the KDS FAQ: "Adressevælgeren tilbyder ikke funktionaliteten Reverse Geokodning … Vi henviser til de muligheder datafordeleren stiller til rådighed"), so this PR is the only way to get an address from coordinates.
+Also affected: `geocode_place()` (`stednavne2`, used by Opdag Verden) and the editor's "paste coordinates" box.
 
-**Reverse address from coordinates (must be part of this PR).** Since PR 1, pasting coordinates in the editor sets `event_lat` / `event_lng` and clears any earlier `event_address` and `event_municipality` (they would describe the old point). The event then has no address, no municipality and therefore no `event_region`, so it is missing from region filters. On the frontend it falls back to the `Event::coordinates_label()` text ("GPS 55.67286° N, 12.56103° Ø") and a directions link to the coordinates (added in PR 1). This PR must:
-- Look up the nearest address and the municipality code for pasted coordinates (Datafordeler DAR GraphQL), and fill `event_address` and `event_municipality` (name via `data/municipalities.json`, which also sets the region). The pasted coordinates stay as they are; they are the source of truth for the pin.
-- Call Datafordeler from the server through our own REST endpoint, so the API key never reaches the browser. The key follows the same constant / GitHub Environment secret / generated mu-plugin pattern as `VANDREKALENDER_ADRESSEVAELGER_TOKEN` (see `docs/deployment.md`).
-- Restore the editor help text ("…and the nearest address is looked up for you") and the matching Danish translation.
-- Re-run the lookup for existing events that have coordinates but no address or municipality (a one-off WP-CLI command, like PR 2's re-geocode). List how many events it fixed.
-- Use the same lookup in the server-side geocoder for DVL, which brings its own coordinates and only needs the municipality. Since 1 Oct 2026, new DVL events get coordinates but **no municipality and no region** (165 new ones in one local scrape on 8 Oct). Backfill them: extend `wp vandrekalender regeocode`, or add a sibling command, for events with coordinates but no municipality.
-- Implement `Geocoder::geocode_place()` (place-name register, Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge"), which returns nothing since PR 2.
-- Keep the `coordinates_label()` / coordinate directions fallback. It is still needed when the lookup fails or finds nothing. Update the comment in `Event::coordinates_label()`, which points at this PR.
+Options for the municipality from coordinates (decide with Petya before building):
+1. Datafordeler GraphQL (DAGI, the municipality register). This is the official route. Needs a Datafordeler API key that Petya creates in Datafordelerens Administration (https://portal.datafordeler.dk): a user, an IT system and an API key. The key is a real secret: store it the same way as the Adressevælger token (`.env`, GitHub Environment secret, generated mu-plugin).
+2. No API at all: ship simplified municipality boundaries (DAGI, 98 municipalities) as a static file in the plugin and do a point in polygon test in PHP. Works offline and cannot be shut down, but the file adds size and a point very close to a border can land in the wrong municipality (acceptable if only the 5 regions matter, check this).
+3. A fallback for the editor only: geocode the typed address text with Adressevælger and take the municipality code from the lookup. Not usable for DVL, because DVL addresses often have no house number or postcode.
 
-### PR 4 (last step): Danish translation catch-up
+Recommended: start creating the Datafordeler key now, because option 1 also covers place names and the nearest address lookup.
 
-Branch: `fix/address-autocomplete-4-translations`, from PR 3 (stacked).
-
-PRs 1 to 3 add only their own strings to the translation files, by hand, so their diffs stay small. Regenerating the template from the code shows a backlog from earlier features that this PR clears in one go. Measured on 8 Oct 2026, plugin `vandrekalender-events` only:
-
-- 69 untranslated strings out of 227. Most are in `includes/` (Facebook importer, Scraper Log admin screen, GPX upload errors, onboarding video notices), the rest in the `event-route-map`, `event-info-card`, `slider`, `tabs` blocks and the plugin header.
-- 2 fuzzy entries with wrong Danish, for example `Event Route Map` (block title) is translated as "Kort over begivenheder", which is the Event Map block's name.
-- The `.po` header has no `Plural-Forms`, so `msgfmt --check` fails with 2 fatal errors. Add `Plural-Forms: nplurals=2; plural=(n != 1);` and fill in `Language: da_DK`.
-- `docs/i18n.md` says compiled `.mo` files are gitignored, but `languages/vandrekalender-events-da_DK.mo` is committed and is not ignored. Decide which is right (the server has no build step for `.mo`, so committing it is probably correct) and make the doc match.
-- Only the editor script (`resources/event-meta-fields/index.js`) has a JS translation JSON. Check whether the front-end view scripts with translated strings need their own JSON from `wp i18n make-json`.
-
-Steps:
-1. `./wp.sh i18n make-pot wp-content/plugins/vandrekalender-events wp-content/plugins/vandrekalender-events/languages/vandrekalender-events.pot --exclude=node_modules,vendor,resources` (build output is scanned for JS strings; `resources` is the unbuilt source). Add the exclude flag to the command in `docs/i18n.md`.
-2. `msgmerge --update` the Danish `.po` against it. Translate every untranslated string and fix the fuzzy ones. Strings that are not for users (plugin URI, author name) can stay untranslated; list them in the PR description.
-3. `msgfmt --check` must pass. Compile the `.mo` and regenerate the JSON files with `wp i18n make-json --no-purge`.
-4. Check in the browser with the site in Danish: the Facebook importer screen, the Scraper Log screen, a GPX upload error, the route map block and the event editor.
-5. Include the theme (`vandrekalender-theme` text domain) in the same check if it has the same gaps, or note it for Petya as a separate task.
+After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a one off WP-CLI command.
 
 ## Docs to update in each PR
 

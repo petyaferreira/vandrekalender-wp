@@ -195,6 +195,9 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * Geocodes each scraped event that has an address but no coordinates, and
  * sets lat/lng plus the municipality (which assigns the region).
  *
+ * Remove this command once it has been run on production: it only repairs
+ * the outage window and has no use after that.
+ *
  * ## OPTIONS
  *
  * [--since=<date>]
