@@ -1,17 +1,20 @@
 {
-    "translation-revision-date": "YEAR-MO-DA HO:MI+ZONE",
+    "translation-revision-date": "2026-10-08 15:00+0200",
     "generator": "WP-CLI\/2.12.0",
-    "source": "resources\/event-meta-fields\/index.js",
+    "source": "build\/resources\/event-meta-fields\/index.js",
     "domain": "messages",
     "locale_data": {
         "messages": {
             "": {
                 "domain": "messages",
-                "lang": "en",
+                "lang": "da_DK",
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
             "Route": ["Rute"],
-            "\u2014": [""],
+            "\u2014": ["\u2014"],
+            "Address search is unavailable. Try again later, or paste coordinates below.": [
+                "Adresses\u00f8gning er ikke tilg\u00e6ngelig. Pr\u00f8v igen senere, eller inds\u00e6t koordinater nedenfor."
+            ],
             "Location": ["Placering"],
             "Place name (optional)": ["Stednavn (valgfrit)"],
             "e.g. Dyrehaven or Silkeborg Sti": ["f.eks. Dyrehaven eller Silkeborg Sti"],
@@ -20,19 +23,6 @@
             ],
             "Address": ["Adresse"],
             "Start typing an address\u2026": ["Begynd at skrive en adresse\u2026"],
-            "Coordinates": ["Koordinater"],
-            "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036\u00b0 N, 9.0192\u00b0 E\" and the nearest address is looked up for you.": [
-                "Udfyldes automatisk n\u00e5r en adresse v\u00e6lges. Eller inds\u00e6t koordinater som \"56.052777, 9.749856\" eller \"56.8036\u00b0 N, 9.0192\u00b0 E\", s\u00e5 sl\u00e5s den n\u00e6rmeste adresse op for dig."
-            ],
-            "Looking up the nearest address\u2026": [
-                "Sl\u00e5r den n\u00e6rmeste adresse op\u2026"
-            ],
-            "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it.": [
-                "Den n\u00e6rmeste adresse kunne ikke sl\u00e5s op. N\u00e5len er gemt; tilf\u00f8j adressen manuelt, hvis du har brug for den."
-            ],
-            "Address search is unavailable. Try again later, or paste coordinates below.": [
-                "Adresses\u00f8gning er ikke tilg\u00e6ngelig. Pr\u00f8v igen senere, eller inds\u00e6t koordinater nedenfor."
-            ],
             "Address search is not configured. Paste coordinates below instead.": [
                 "Adresses\u00f8gning er ikke sat op. Inds\u00e6t koordinater nedenfor i stedet."
             ],
@@ -41,14 +31,24 @@
             ],
             "Municipality": ["Kommune"],
             "Choose municipality\u2026": ["V\u00e6lg kommune\u2026"],
+            "Coordinates": ["Koordinater"],
+            "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it.": [
+                "Den n\u00e6rmeste adresse kunne ikke sl\u00e5s op. N\u00e5len er gemt; tilf\u00f8j adressen manuelt, hvis du har brug for den."
+            ],
+            "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036\u00b0 N, 9.0192\u00b0 E\" and the nearest address is looked up for you.": [
+                "Udfyldes automatisk n\u00e5r en adresse v\u00e6lges. Eller inds\u00e6t koordinater som \"56.052777, 9.749856\" eller \"56.8036\u00b0 N, 9.0192\u00b0 E\", s\u00e5 sl\u00e5s den n\u00e6rmeste adresse op for dig."
+            ],
+            "Looking up the nearest address\u2026": [
+                "Sl\u00e5r den n\u00e6rmeste adresse op\u2026"
+            ],
+            "GPX route": ["GPX-rute"],
+            "Replace": ["Erstat"],
+            "Remove": ["Fjern"],
+            "Upload GPX": ["Upload GPX"],
             "Event Details": ["Begivenhedsdetaljer"],
             "Event Date": ["Dato for begivenhed"],
             "Routes": ["Ruter"],
             "No routes added yet.": ["Ingen ruter tilf\u00f8jet endnu."],
-            "Start:": ["Start:"],
-            "Incomplete route": ["Ufuldst\u00e6ndig rute"],
-            "Edit": ["Rediger"],
-            "Remove": ["Fjern"],
             "Distance (km)": ["Distance (km)"],
             "Start Time": ["Starttidspunkt"],
             "Cutoff Time (hours)": ["Makstid (timer)"],
@@ -57,6 +57,10 @@
             ],
             "Price (DKK)": ["Pris (DKK)"],
             "Done": ["F\u00e6rdig"],
+            "Start:": ["Start:"],
+            "GPX": ["GPX"],
+            "Incomplete route": ["Ufuldst\u00e6ndig rute"],
+            "Edit": ["Rediger"],
             "Add route": ["Tilf\u00f8j rute"],
             "Organiser": ["Arrang\u00f8r"],
             "Name": ["Navn"],
