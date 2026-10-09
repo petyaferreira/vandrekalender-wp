@@ -125,7 +125,7 @@ Options for the municipality from coordinates (decide with Petya before building
 
 Recommended: start creating the Datafordeler key now, because option 1 also covers place names and the nearest address lookup.
 
-After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a one off WP-CLI command. This ran on production on 9 Oct 2026: 25 events fixed, 1 without a match. Petya decided to keep `wp vandrekalender regeocode` rather than remove it; it only touches events missing coordinates or a municipality, so running it again is safe.
+After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a WP-CLI command. This ran on production on 9 Oct 2026: 25 events fixed, 1 without a match. Petya decided to keep `wp vandrekalender regeocode` rather than remove it; it only touches events missing coordinates or a municipality, so running it again is safe.
 
 **Done in PR 3 (option 1, Datafordeler; 8 Oct 2026):**
 - Petya created a private (MitID) user, the IT system "allevandreture" and an API key in Datafordelerens Administration (production). The key needed about 15 minutes before it was accepted. It is stored as `DATAFORDELER_API_KEY` in `.env` and in both GitHub environments, and the deploy writes `mu-plugins/00-vk-datafordeler.php` (see `docs/deployment.md` → Datafordeler API key).

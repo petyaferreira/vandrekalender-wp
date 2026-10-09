@@ -228,7 +228,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 							'inclusive' => true,
 						],
 					],
-					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-off repair command, not a request-time query.
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- repair command run by hand, not a request-time query.
 						[
 							'key'   => \Vandrekalender\Event::META_SOURCE,
 							'value' => 'scraped',
