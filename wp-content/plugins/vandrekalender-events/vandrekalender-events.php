@@ -190,15 +190,16 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 /**
  * Register the `wp vandrekalender regeocode` command.
  *
- * One-off repair after the DAWA shutdown (1 October 2026), for scraped
+ * Repair written for the DAWA shutdown (1 October 2026), for scraped
  * events created since then:
  * - an address but no coordinates (every geocode failed): geocodes it and
  *   sets lat/lng plus the municipality (which assigns the region);
  * - coordinates but no municipality (DVL, whose reverse lookup failed):
  *   looks the municipality up from the coordinates.
  *
- * Remove this command once it has been run on production: it only repairs
- * the outage window and has no use after that.
+ * Ran on production on 9 October 2026 and kept on purpose: it only touches
+ * events missing coordinates or a municipality, so it is safe to run again
+ * after any future geocoder outage.
  *
  * ## OPTIONS
  *

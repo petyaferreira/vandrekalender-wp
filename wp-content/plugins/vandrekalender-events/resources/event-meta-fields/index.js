@@ -962,8 +962,6 @@ const EventDocumentFields = () => {
 
   const setMeta = patch => editPost({ meta: { ...meta, ...patch } });
 
-  console.log('Current meta:', meta); // Debug log to inspect meta structure
-
   return (
     <>
       <EventDetailsPanel meta={meta} setMeta={setMeta} />
