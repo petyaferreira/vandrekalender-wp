@@ -110,7 +110,7 @@ File: `includes/class-geocoder.php`. Same public method names and return shape, 
 - **Place names and reverse lookup** no longer call the dead DAWA endpoints; they return nothing and say so in the Scraper Log until PR 3.
 - **Scraper Log warnings**: geocoder problems are attached to each scraper's row and printed by `./scrape.sh`.
 - **`Vandrekalender_Municipalities`** (`includes/class-municipalities.php`) now reads `data/municipalities.json` for both the geocoder and the region map.
-- **Re-geocode command**: `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]`. Petya runs it once on production after deploying.
+- **Re-geocode command**: `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]`. Ran on production on 9 Oct 2026 (see PR 3 below).
 
 ### PR 3: regions for DVL events (higher priority than "later")
 
@@ -125,13 +125,13 @@ Options for the municipality from coordinates (decide with Petya before building
 
 Recommended: start creating the Datafordeler key now, because option 1 also covers place names and the nearest address lookup.
 
-After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a one off WP-CLI command. Once both have run on production, remove `wp vandrekalender regeocode` (added in PR 2) and any sibling backfill command from `vandrekalender-events.php`, and the mention in `docs/scrapers.md` → Geocoding. They only repair the outage window.
+After the fix is live, re-geocode events scraped since 1 Oct (both the missing coordinates from PR 2 and the missing municipalities here) with a WP-CLI command. This ran on production on 9 Oct 2026: 25 events fixed, 1 without a match. Petya decided to keep `wp vandrekalender regeocode` rather than remove it; it only touches events missing coordinates or a municipality, so running it again is safe.
 
 **Done in PR 3 (option 1, Datafordeler; 8 Oct 2026):**
 - Petya created a private (MitID) user, the IT system "allevandreture" and an API key in Datafordelerens Administration (production). The key needed about 15 minutes before it was accepted. It is stored as `DATAFORDELER_API_KEY` in `.env` and in both GitHub environments, and the deploy writes `mu-plugins/00-vk-datafordeler.php` (see `docs/deployment.md` → Datafordeler API key).
 - `Geocoder::reverse()`: nearest current address to a point, via `DAR/v3` (address points in a widening square → current house numbers → Adressevælger lookup for the text and municipality code). `municipality_from_coords()` uses it, so new DVL events get their municipality and region again. Checked against DAWA's stored municipalities: 60 of 60 found, 59 the same; the one difference was a border case in the same region.
 - Editor: pasting coordinates fills the nearest address and municipality through `GET /vandrekalender/v1/geocode/reverse` (`edit_events`: administrators and organisers; 60 lookups per user per 10 minutes; key stays on the server). The help text "…and the nearest address is looked up for you" is back.
-- `wp vandrekalender regeocode` also backfills a missing municipality for events with coordinates. Locally it fixed 164 of 165 DVL events (the miss was in Germany). Run it once on production after deploying, then remove it as planned above.
+- `wp vandrekalender regeocode` also backfills a missing municipality for events with coordinates. Locally it fixed 164 of 165 DVL events (the miss was in Germany). Ran on production on 9 Oct 2026 and kept, as noted above.
 - Both services retry once on a dropped connection before treating the service as down for the run.
 - Not done: DAGI/v2 (`DAGI_Kommuneinddeling`) could give the municipality by point-in-polygon instead of "the nearest address's municipality". Only worth it if border cases ever matter.
 
