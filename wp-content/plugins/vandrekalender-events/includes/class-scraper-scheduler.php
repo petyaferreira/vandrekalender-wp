@@ -145,9 +145,10 @@ class Vandrekalender_Scraper_Scheduler {
 				];
 			}
 
-			// Geocoding problems do not stop a scraper, but leave events
-			// without a map pin or region — show them on this scraper's row.
-			$result['warnings'] = Vandrekalender_Geocoder::take_issues();
+			// Geocoding and GPX download problems do not stop a scraper, but
+			// leave events without a map pin, region or route map — show them
+			// on this scraper's row.
+			$result['warnings'] = array_merge( Vandrekalender_Geocoder::take_issues(), $scraper->take_warnings() );
 			$results[]          = $result;
 		}
 

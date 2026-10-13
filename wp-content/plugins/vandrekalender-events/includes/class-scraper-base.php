@@ -17,6 +17,13 @@ abstract class Vandrekalender_Scraper_Base {
 	protected array $seen_source_urls = [];
 
 	/**
+	 * Problems that did not stop the run, for the Scraper Log, keyed by message.
+	 *
+	 * @var array<string, int>
+	 */
+	protected array $warnings = [];
+
+	/**
 	 * Fetch raw HTML from the event source.
 	 *
 	 * @return string Raw HTML body.
@@ -53,6 +60,35 @@ abstract class Vandrekalender_Scraper_Base {
 		$this->unpublish_stale_events();
 
 		return $count;
+	}
+
+	/**
+	 * Return and clear the warnings recorded since the last call.
+	 *
+	 * Read by Vandrekalender_Scraper_Scheduler::execute() after each scraper,
+	 * next to the geocoder's issues.
+	 *
+	 * @return string[] One line per distinct message, with a count when repeated.
+	 */
+	public function take_warnings(): array {
+		$lines = [];
+
+		foreach ( $this->warnings as $message => $count ) {
+			$lines[] = $count > 1 ? sprintf( '%s (%d×)', $message, $count ) : $message;
+		}
+
+		$this->warnings = [];
+		return $lines;
+	}
+
+	/**
+	 * Record a problem that does not stop the run.
+	 *
+	 * @param string $message Message for the Scraper Log.
+	 * @return void
+	 */
+	protected function record_warning( string $message ): void {
+		$this->warnings[ $message ] = ( $this->warnings[ $message ] ?? 0 ) + 1;
 	}
 
 	/**
@@ -211,11 +247,23 @@ abstract class Vandrekalender_Scraper_Base {
 			return false;
 		}
 
+		// Read before the meta loop below overwrites them with the scraped
+		// routes, which never carry a gpx_id.
+		$stored_routes = $existing ? get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true ) : [];
+
 		$reserved = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'ID', 'featured_image_url', 'tax_terms' ];
 		foreach ( $event as $key => $value ) {
 			if ( ! in_array( $key, $reserved, true ) ) {
 				update_post_meta( $post_id, $key, $value );
 			}
+		}
+
+		if ( isset( $event[ \Vandrekalender\Event::META_ROUTES ] ) && is_array( $event[ \Vandrekalender\Event::META_ROUTES ] ) ) {
+			$this->attach_route_gpx_files(
+				$post_id,
+				$event[ \Vandrekalender\Event::META_ROUTES ],
+				is_array( $stored_routes ) ? $stored_routes : []
+			);
 		}
 
 		// Taxonomy terms a scraper assigns directly, e.g. a region derived from
@@ -258,6 +306,198 @@ abstract class Vandrekalender_Scraper_Base {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Download the GPX files the scraped routes link to and attach them.
+	 *
+	 * Scrapers only set a route's `gpx_source_url`; this fills in `gpx_id` and
+	 * `gpx_name` and writes the routes back once. Stored routes are matched by
+	 * route `id`, so a source is not downloaded again on every run (same idea
+	 * as `_event_source_image` for featured images).
+	 *
+	 * Per route:
+	 * - Same source URL as the stored route (both may be empty): keep the
+	 *   route's file. That is the scraped file, a replacement chosen in the
+	 *   editor, or a file attached by hand to a route the source has no GPX for.
+	 * - New or changed source URL: reuse a file of this event for the same URL
+	 *   (one GPX linked from several routes is downloaded once), otherwise
+	 *   download it. If that fails, keep the route's previous file and its
+	 *   previous source URL, so the next run tries again.
+	 * - The source no longer links a file: drop the scraped one.
+	 *
+	 * Files of this event that no route uses any more are deleted, so
+	 * replacements do not pile up in the media library.
+	 *
+	 * @param int   $post_id       Event post ID.
+	 * @param array $routes        Routes as scraped, already saved to event_routes.
+	 * @param array $stored_routes Routes stored on the post before this run.
+	 * @return void
+	 */
+	protected function attach_route_gpx_files( int $post_id, array $routes, array $stored_routes ): void {
+		$stored_by_id = [];
+		$known        = []; // Source URL => attachment ID.
+		$names        = []; // Source URL => gpx_name.
+
+		foreach ( $stored_routes as $stored ) {
+			if ( ! is_array( $stored ) || ! $this->is_attachment( (int) ( $stored['gpx_id'] ?? 0 ) ) ) {
+				continue;
+			}
+			$stored_by_id[ (string) ( $stored['id'] ?? '' ) ] = $stored;
+			if ( '' !== (string) ( $stored['gpx_source_url'] ?? '' ) ) {
+				$known[ (string) $stored['gpx_source_url'] ] = (int) $stored['gpx_id'];
+				$names[ (string) $stored['gpx_source_url'] ] = (string) ( $stored['gpx_name'] ?? '' );
+			}
+		}
+
+		$updated = $routes;
+		$in_use  = [];
+
+		foreach ( $updated as $i => $route ) {
+			if ( ! is_array( $route ) ) {
+				continue;
+			}
+
+			$source_url = (string) ( $route['gpx_source_url'] ?? '' );
+			$stored     = $stored_by_id[ (string) ( $route['id'] ?? '' ) ] ?? null;
+			$gpx_id     = 0;
+
+			if ( null !== $stored && (string) ( $stored['gpx_source_url'] ?? '' ) === $source_url ) {
+				$gpx_id = (int) $stored['gpx_id'];
+				$route  = array_merge(
+					$route,
+					[
+						'gpx_id'   => (string) $gpx_id,
+						'gpx_name' => (string) ( $stored['gpx_name'] ?? '' ),
+					]
+				);
+			} elseif ( '' !== $source_url ) {
+				if ( ! isset( $known[ $source_url ] ) ) {
+					$attachment_id = $this->sideload_gpx( $post_id, $source_url );
+					if ( $attachment_id > 0 ) {
+						$known[ $source_url ] = $attachment_id;
+						$names[ $source_url ] = wp_basename( (string) get_attached_file( $attachment_id ) );
+					}
+				}
+
+				if ( isset( $known[ $source_url ] ) ) {
+					$gpx_id = $known[ $source_url ];
+					$route  = array_merge(
+						$route,
+						[
+							'gpx_id'   => (string) $gpx_id,
+							'gpx_name' => $names[ $source_url ],
+						]
+					);
+				} elseif ( null !== $stored ) {
+					// Download failed: keep the previous file and its source
+					// URL, so the next run tries again.
+					$gpx_id = (int) $stored['gpx_id'];
+					$route  = array_merge(
+						$route,
+						[
+							'gpx_id'         => (string) $gpx_id,
+							'gpx_source_url' => (string) ( $stored['gpx_source_url'] ?? '' ),
+							'gpx_name'       => (string) ( $stored['gpx_name'] ?? '' ),
+						]
+					);
+				}
+				// Otherwise no file yet: the route keeps its gpx_source_url,
+				// so the next run tries again.
+			}
+			// No source URL: a previously scraped file is dropped (deleted
+			// below), and the route is left as scraped, so routes without a
+			// GPX are not rewritten on every run.
+
+			if ( $gpx_id > 0 ) {
+				$in_use[ $gpx_id ] = true;
+			}
+			$updated[ $i ] = $route;
+		}
+
+		if ( $updated !== $routes ) {
+			update_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, $updated );
+		}
+
+		foreach ( $stored_by_id as $stored ) {
+			$old_id = (int) $stored['gpx_id'];
+			// Only files uploaded to this event, never one shared from elsewhere.
+			if ( ! isset( $in_use[ $old_id ] ) && (int) wp_get_post_parent_id( $old_id ) === $post_id ) {
+				wp_delete_attachment( $old_id, true );
+			}
+		}
+	}
+
+	/**
+	 * Download a GPX file into the media library, attached to an event.
+	 *
+	 * Goes through media_handle_sideload(), so the GPX filters in
+	 * Vandrekalender_Gpx_Uploads apply: the file type is accepted, and the
+	 * file is rejected unless it is a GPX track under 5 MB.
+	 *
+	 * @param int    $post_id Event post the file belongs to.
+	 * @param string $url     GPX file URL at the source.
+	 * @return int Attachment ID, or 0 on failure (recorded as a warning).
+	 */
+	protected function sideload_gpx( int $post_id, string $url ): int {
+		$this->require_media_functions();
+
+		$tmp = download_url( $url, 15 );
+		if ( is_wp_error( $tmp ) ) {
+			$this->record_warning(
+				/* translators: 1: GPX file URL, 2: error message. */
+				sprintf( __( 'Could not download the GPX file %1$s: %2$s', 'vandrekalender-events' ), $url, $tmp->get_error_message() )
+			);
+			return 0;
+		}
+
+		// The type checks go by extension, and a download link need not end in .gpx.
+		$name = sanitize_file_name( wp_basename( (string) wp_parse_url( $url, PHP_URL_PATH ) ) );
+		if ( ! preg_match( '/\.gpx$/i', $name ) ) {
+			$name = ( '' !== $name ? $name : 'route' ) . '.gpx';
+		}
+
+		$attachment_id = media_handle_sideload(
+			[
+				'name'     => $name,
+				'tmp_name' => $tmp,
+			],
+			$post_id
+		);
+
+		if ( is_wp_error( $attachment_id ) ) {
+			wp_delete_file( $tmp );
+			$this->record_warning(
+				/* translators: 1: GPX file URL, 2: error message. */
+				sprintf( __( 'Could not add the GPX file %1$s: %2$s', 'vandrekalender-events' ), $url, $attachment_id->get_error_message() )
+			);
+			return 0;
+		}
+
+		return (int) $attachment_id;
+	}
+
+	/**
+	 * Whether an ID belongs to an existing attachment.
+	 *
+	 * @param int $id Post ID.
+	 * @return bool
+	 */
+	private function is_attachment( int $id ): bool {
+		return $id > 0 && 'attachment' === get_post_type( $id );
+	}
+
+	/**
+	 * Load the admin media functions, which cron and WP-CLI runs do not have.
+	 *
+	 * @return void
+	 */
+	private function require_media_functions(): void {
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
 	}
 
 	/**
@@ -343,11 +583,7 @@ abstract class Vandrekalender_Scraper_Base {
 	 * @return bool True on success, false on failure.
 	 */
 	protected function set_featured_image_from_url( int $post_id, string $url ): bool {
-		if ( ! function_exists( 'media_sideload_image' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/media.php';
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-		}
+		$this->require_media_functions();
 
 		$attachment_id = media_sideload_image( $url, $post_id, null, 'id' );
 		if ( is_wp_error( $attachment_id ) ) {
