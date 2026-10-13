@@ -33,6 +33,9 @@ class Vandrekalender_Gpx_Uploads {
 		add_filter( 'upload_mimes', [ $this, 'allow_gpx_mime' ] );
 		add_filter( 'wp_check_filetype_and_ext', [ $this, 'fix_gpx_filetype' ], 10, 5 );
 		add_filter( 'wp_handle_upload_prefilter', [ $this, 'validate_gpx_upload' ] );
+		// media_handle_sideload() (scrapers, see Scraper_Base::sideload_gpx())
+		// runs its own prefilter, not the upload one.
+		add_filter( 'wp_handle_sideload_prefilter', [ $this, 'validate_gpx_upload' ] );
 	}
 
 	/**
@@ -85,11 +88,12 @@ class Vandrekalender_Gpx_Uploads {
 	 * Reject `.gpx` uploads that are not a valid GPX track.
 	 *
 	 * Runs before the file is moved into place, so it can only inspect the
-	 * temporary upload. Keeps random XML (or a renamed `.txt`) out of the
-	 * media library by requiring a `gpx` root element and at least one
-	 * track point, route point, or waypoint.
+	 * temporary file. Used for browser uploads and for files scrapers
+	 * download with media_handle_sideload(). Keeps random XML (or a renamed
+	 * `.txt`) out of the media library by requiring a `gpx` root element and
+	 * at least one track point, route point, or waypoint.
 	 *
-	 * @param array $file Upload data as passed to wp_handle_upload().
+	 * @param array $file Upload data as passed to wp_handle_upload() or wp_handle_sideload().
 	 * @return array Unmodified, or with an 'error' key set to reject the upload.
 	 */
 	public function validate_gpx_upload( array $file ): array {
@@ -97,7 +101,10 @@ class Vandrekalender_Gpx_Uploads {
 			return $file;
 		}
 
-		if ( (int) $file['size'] > self::MAX_SIZE ) {
+		// A sideload's file array has no 'size' key.
+		$size = isset( $file['size'] ) ? (int) $file['size'] : (int) filesize( $file['tmp_name'] );
+
+		if ( $size > self::MAX_SIZE ) {
 			$file['error'] = __( 'GPX files must be smaller than 5 MB.', 'vandrekalender-events' );
 
 			return $file;

@@ -88,6 +88,8 @@ Test: event with two routes, both with GPX, switch tabs and confirm the map high
 
 ## PR 4: scrapers pick up GPX files
 
+**Done (13 October 2026): 4a only.** The audit (4b) found no source that links a downloadable GPX file today, so 4c was not built. Result table and how to add detection later: `docs/scrapers.md` → GPX files. Two changes from the plan below: `sideload_gpx()` downloads with `download_url()` (like featured images, and it refuses private addresses) instead of `remote_get()`, and a new URL first reuses a file another route of the same event already has for it, so one file linked from several routes is downloaded once. The GPX validation is hooked on `wp_handle_sideload_prefilter` too, because sideloads do not run `wp_handle_upload_prefilter`.
+
 ### 4a Base class support
 
 In `includes/class-scraper-base.php`:

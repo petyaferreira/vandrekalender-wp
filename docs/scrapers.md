@@ -161,6 +161,8 @@ The base class then provides:
 
 - `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated. Afterwards it drafts stale events — see Removal below.
 - `upsert_event( array $event ): bool` — see Deduplication below.
+- `sideload_gpx( int $post_id, string $url ): int` — downloads a GPX file into the media library, attached to the event. See [GPX files](#gpx-files-route-maps) below.
+- `record_warning( string $message ): void` — records a problem that does not stop the run; shown under the scraper's row in the Scraper Log (read by the scheduler with `take_warnings()`).
 - `mark_source_url_seen( string $url ): void` — scrapers call this for every URL found in the source's listing, *before* fetching the detail page, so a temporarily unreachable detail page is not mistaken for a removed event. `run()` also marks the source URL of every parsed event automatically.
 
 > **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
@@ -190,7 +192,7 @@ Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()`
 
 **Place names: not built yet.** `Geocoder::geocode_place()` (landmark names, Opdag Verden) returns nothing; see `docs/dawa-migration-plan.md` → Place names for why.
 
-**Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
+**Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`, plus the scraper's own `take_warnings()`, e.g. a failed GPX download) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
 
 **Repairing events from the outage.** `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]` repairs scraped events created since the given date: an address but no coordinates gets geocoded, and coordinates but no municipality (DVL) gets the reverse lookup. Locally it fixed 164 of 165 DVL events; the miss was a trip in Germany. It ran on production on 9 Oct 2026 (25 events fixed, 1 without a match). The command is kept on purpose: it only touches events missing coordinates or a municipality, so it is safe to run again after any future geocoder outage.
 
@@ -200,7 +202,8 @@ Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()`
 2. Extend `Vandrekalender_Scraper_Base`.
 3. Implement `fetch()` — usually `return $this->remote_get( self::SOURCE_URL );`.
 4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
-5. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
+5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
+6. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
 
 ### Deduplication
 
@@ -211,6 +214,29 @@ Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()`
 - Otherwise it updates the existing post, or inserts a new one published immediately.
 - Reserved keys (`post_title`, `post_content`, `post_status`, `post_type`, `ID`) become post fields; every other key is written as post meta.
 - After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`.
+
+### GPX files (route maps)
+
+A route can carry a GPX track, shown on the event page by the Event Route Map block (see `docs/route-gpx-plan.md` and `docs/data-model.md` → `event_routes`). Scrapers only set a route's `gpx_source_url`, the URL of the `.gpx` file on the source site. After writing the meta, `upsert_event()` (`attach_route_gpx_files()`) fills in `gpx_id` and `gpx_name`:
+
+- **Unchanged URL.** Stored routes are matched by route `id`. If the stored route has a file and the same `gpx_source_url`, its file is kept, so a source is downloaded once, not on every run. This also keeps a file someone chose with Replace in the editor (Replace leaves `gpx_source_url` alone).
+- **New or changed URL.** If another route of the event already has a file for that URL, it is reused, so one GPX linked from several routes is downloaded once. Otherwise `sideload_gpx()` downloads it with `download_url()` and adds it with `media_handle_sideload()`, attached to the event. The GPX filters in `Vandrekalender_Gpx_Uploads` apply to sideloads too: the file must be a GPX track (`gpx` root and at least one point) under 5 MB. A URL that does not end in `.gpx` gets the extension added to the filename, since the type check goes by extension.
+- **Download fails.** The route keeps its previous file and previous `gpx_source_url`, so the next run tries again. The failure appears as a warning in the Scraper Log.
+- **No `gpx_source_url`.** A file attached by hand in the editor (stored without a source URL) is kept. A previously scraped file is dropped.
+- **Cleanup.** Files attached to this event that no route uses any more (replaced, dropped by the source, or the route was removed) are deleted, so the media library does not fill up.
+
+Like every other scraped field, this only happens on unclaimed events; claimed events are skipped entirely.
+
+**Which sources link GPX files** (audit 13 October 2026, upcoming events at each source):
+
+| Source | Pages checked | GPX links | Notes |
+|---|---|---|---|
+| Dansk Vandrelaug | 87 of 421 | None | No GPX, Komoot or Plotaroute links in the walk descriptions |
+| Sportstiming | 14 of 14 | None | One event links an AllTrails map page (not downloadable without an account) |
+| Opdag Verden | 7 of 7 | Members only | 3 events link a "hike route" (`/ruter/{slug}`) with `has_gpx: true`, but `/ruter/{slug}/gpx` answers 403 and `gpx_url` is `null` for visitors. Not scrapable |
+| Mammutmarch | 3 of 3 (all Danish events) | None | The new site's admin has GPX and Komoot fields per distance, but no event fills them on the public pages |
+
+So no scraper sets `gpx_source_url` today. The base support is ready for when a source starts linking GPX files: collect `<a>` elements whose `href` ends in `.gpx` (case insensitive, ignoring the query string), make them absolute with `WP_Http::make_absolute_url()`, and with several routes match a link to a route by the distance in its text or filename ("30 km", "30km", "_30_"). Komoot and Plotaroute links need an account to download, so skip them.
 
 ### Recurring events (duplicate titles)
 

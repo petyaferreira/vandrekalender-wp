@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-08T13:01:21+00:00\n"
+"POT-Creation-Date: 2026-10-13T10:31:03+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -679,11 +679,11 @@ msgstr "Adressesøgningen fejlede: %s"
 msgid "Address search returned HTTP %d."
 msgstr "Adressesøgningen returnerede HTTP %d."
 
-#: includes/class-gpx-uploads.php:101
+#: includes/class-gpx-uploads.php:108
 msgid "GPX files must be smaller than 5 MB."
 msgstr "GPX-filer skal være mindre end 5 MB."
 
-#: includes/class-gpx-uploads.php:107
+#: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
@@ -811,6 +811,18 @@ msgstr "%1$s: %2$d"
 #, php-format
 msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
+
+#. translators: 1: GPX file URL, 2: error message.
+#: includes/class-scraper-base.php:449
+#, php-format
+msgid "Could not download the GPX file %1$s: %2$s"
+msgstr "Kunne ikke hente GPX-filen %1$s: %2$s"
+
+#. translators: 1: GPX file URL, 2: error message.
+#: includes/class-scraper-base.php:472
+#, php-format
+msgid "Could not add the GPX file %1$s: %2$s"
+msgstr "Kunne ikke tilføje GPX-filen %1$s: %2$s"
 
 #: includes/event/class-event.php:90 includes/event/class-event.php:92
 msgid "Events"
@@ -1246,13 +1258,13 @@ msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1000
+#: resources/event-meta-fields/index.js:998
 msgid "New here?"
 msgstr "Ny her?"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1005
-#: resources/event-meta-fields/index.js:1016
+#: resources/event-meta-fields/index.js:1003
+#: resources/event-meta-fields/index.js:1014
 msgid "Watch the how-to video"
 msgstr "Se hvordan-videoen"
 
