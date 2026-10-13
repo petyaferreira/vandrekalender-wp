@@ -72,14 +72,15 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 
 			$trip_url = self::BASE_URL . '/faellesture/' . $listed['slug'];
 
-			// Mark the listed dates first, so a detail page that fails to
-			// load is not mistaken for removed events.
-			foreach ( $listed['upcoming_dates'] as $date ) {
-				$this->mark_source_url_seen( $trip_url . '#' . ( $date['start_date'] ?? '' ) );
-			}
-
 			$props = $this->page_props( $this->remote_get( $trip_url ) );
 			if ( ! isset( $props['trip'] ) || ! is_array( $props['trip'] ) ) {
+				// Detail page failed: mark the listed dates, so they are not
+				// mistaken for removed events. Otherwise run() marks the
+				// events returned below, which leaves out cancelled dates,
+				// so the stale sweep drafts those.
+				foreach ( $listed['upcoming_dates'] as $date ) {
+					$this->mark_source_url_seen( $trip_url . '#' . ( $date['start_date'] ?? '' ) );
+				}
 				continue;
 			}
 
@@ -159,8 +160,10 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 				continue;
 			}
 
-			// Non-member price of this date; a free walk becomes "0".
-			$price = (string) (int) round( (float) ( $date_row['price'] ?? $trip['price'] ?? 0 ) );
+			// Non-member price of this date; a free walk becomes "0", and no
+			// published price stays empty rather than looking free.
+			$raw_price = $date_row['price'] ?? $trip['price'] ?? null;
+			$price     = is_numeric( $raw_price ) ? (string) (int) round( (float) $raw_price ) : '';
 
 			$url = $trip_url . '#' . $date;
 
