@@ -140,9 +140,9 @@ After the fix is live, re-geocode events scraped since 1 Oct (both the missing c
 `Geocoder::geocode_place()` (Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge") still returns nothing; Opdag Verden falls back to the address search. Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
 - `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match, and Opdag Verden writes "Stevns klint".
 - The geometry is not on the name: it is on the named place (`navngivetSted_objectid`), which lives in one of ~30 category types (`DS_Naturareal`, `DS_Landskabsform`, `DS_Bebyggelse`, `DS_Soe`, `DS_Sevaerdighed` and so on), each with full polygon geometry in EPSG:25832. We would need to query the right type and compute a representative point ourselves.
-- Opdag Verden had **0 events** at the source on 17 Sep and 8 Oct 2026.
+- The Opdag Verden scraper found **0 events** on 17 Sep and 8 Oct 2026. That was the scraper, not the source: the site had moved to a new system and the scraper no longer matched it (fixed 13 Oct 2026, see `docs/scrapers.md`). Since then about 40 landmark lookups per run fall back to the address search, and many find nothing ("Hald Sø", "Enebærodde"), so those events get no map pin.
 
-Revisit when Opdag Verden lists events again. A cheaper alternative is a small hand-kept map of their recurring landmarks to coordinates.
+Worth revisiting now that Opdag Verden events are scraped again. A cheaper alternative is a small hand-kept map of their recurring landmarks to coordinates.
 
 ### PR 4 (last step): Danish translation catch-up
 
