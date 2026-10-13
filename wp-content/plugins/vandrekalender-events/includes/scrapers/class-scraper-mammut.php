@@ -106,7 +106,9 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 	 *
 	 * @param array  $item Event object from the API.
 	 * @param string $url  The event page URL (dedup key).
-	 * @return array|null Event array, or null if it lacks a title or date.
+	 * @return array|null Event array, or null if it lacks a title or date, or a
+	 *                    request for its prices or description failed (the
+	 *                    event is then left as stored until the next run).
 	 */
 	private function build_event( array $item, string $url ): ?array {
 		$title = trim( (string) ( $item['name'] ?? '' ) );
@@ -115,7 +117,11 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 			return null;
 		}
 
-		$variants = $this->fetch_variants( (int) ( $item['id'] ?? 0 ) );
+		$variants    = $this->fetch_variants( (int) ( $item['id'] ?? 0 ) );
+		$description = $this->fetch_description( $url );
+		if ( null === $variants || null === $description ) {
+			return null;
+		}
 
 		// One event_routes entry per distance.
 		$distances = array_map( 'intval', is_array( $item['distances'] ?? null ) ? $item['distances'] : [] );
@@ -152,8 +158,6 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 			// blank. The next scrape overwrites this once it is announced.
 			$place = 'Annonceres senere';
 		}
-
-		$description = $this->fetch_description( $url );
 
 		$event = [
 			'post_title'                               => $title,
@@ -192,16 +196,17 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 	 * taken. Start times are only set once Mammut announces the start groups.
 	 *
 	 * @param int $event_id API event ID.
-	 * @return array<int, array{price: string, start_time: string}> Keyed by distance in km.
+	 * @return array|null Price and start time keyed by distance in km, or null
+	 *                    if the request failed.
 	 */
-	private function fetch_variants( int $event_id ): array {
+	private function fetch_variants( int $event_id ): ?array {
 		if ( $event_id <= 0 ) {
-			return [];
+			return null;
 		}
 
 		$data = json_decode( $this->remote_get( self::API_URL . '/events/' . $event_id . '/variants', self::API_HEADERS ), true );
 		if ( ! is_array( $data ) || ! isset( $data['data'] ) || ! is_array( $data['data'] ) ) {
-			return [];
+			return null;
 		}
 
 		$by_distance = [];
@@ -236,27 +241,29 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 	 * with the class `tiptap-content` (the site's rich-text output).
 	 *
 	 * @param string $url Event page URL.
-	 * @return array Array of { content: string, excerpt: string }.
+	 * @return array|null Array of { content: string, excerpt: string }, or null
+	 *                    if the page could not be fetched.
 	 */
-	private function fetch_description( string $url ): array {
+	private function fetch_description( string $url ): ?array {
+		$html = $this->remote_get( $url );
+		if ( '' === $html ) {
+			return null;
+		}
+
+		$dom = new DOMDocument();
+		libxml_use_internal_errors( true );
+		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+		libxml_clear_errors();
+
+		$xpath      = new DOMXPath( $dom );
+		$nodes      = $xpath->query( "(//*[contains(concat(' ', normalize-space(@class), ' '), ' tiptap-content ')])[1]//p" );
 		$paragraphs = [];
-		$html       = $this->remote_get( $url );
 
-		if ( '' !== $html ) {
-			$dom = new DOMDocument();
-			libxml_use_internal_errors( true );
-			$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
-			libxml_clear_errors();
-
-			$xpath = new DOMXPath( $dom );
-			$nodes = $xpath->query( "(//*[contains(concat(' ', normalize-space(@class), ' '), ' tiptap-content ')])[1]//p" );
-
-			foreach ( $nodes ? $nodes : [] as $node ) {
-				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$paragraph = trim( (string) preg_replace( '/\s+/u', ' ', $node->textContent ) );
-				if ( '' !== $paragraph ) {
-					$paragraphs[] = $paragraph;
-				}
+		foreach ( $nodes ? $nodes : [] as $node ) {
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$paragraph = trim( (string) preg_replace( '/\s+/u', ' ', $node->textContent ) );
+			if ( '' !== $paragraph ) {
+				$paragraphs[] = $paragraph;
 			}
 		}
 

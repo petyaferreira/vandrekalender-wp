@@ -200,7 +200,7 @@ Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()`
 
 1. Create `includes/scrapers/class-scraper-{source}.php`.
 2. Extend `Vandrekalender_Scraper_Base`.
-3. Implement `fetch()` — usually `return $this->remote_get( self::SOURCE_URL );`.
+3. Implement `fetch()` — for an HTML listing usually `return $this->remote_get( self::SOURCE_URL );`; a JSON source can return the JSON for `parse()` to decode (Mammutmarch).
 4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
 5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
 6. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
