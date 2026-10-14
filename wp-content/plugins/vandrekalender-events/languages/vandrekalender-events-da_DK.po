@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-14T15:32:36+00:00\n"
+"POT-Creation-Date: 2026-10-14T15:41:18+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -997,19 +997,25 @@ msgid "New Length Name"
 msgstr "Navn på ny længde"
 
 #. translators: %s: trip title.
-#: includes/scrapers/class-scraper-opdagverden.php:328
+#: includes/scrapers/class-scraper-opdagverden.php:152
+#, php-format
+msgid "No \"Start: Kl. … ved …\" line in \"%s\", so its meeting point is the trip's area name."
+msgstr "Ingen \"Start: Kl. … ved …\"-linje i \"%s\", så mødestedet er turens områdenavn."
+
+#. translators: %s: trip title.
+#: includes/scrapers/class-scraper-opdagverden.php:334
 #, php-format
 msgid "The route point of \"%s\" is outside its region, so the pin is placed in the middle of the region."
 msgstr "Rutepunktet for \"%s\" ligger uden for dens region, så nålen sættes midt i regionen."
 
 #. translators: %s: trip title.
-#: includes/scrapers/class-scraper-opdagverden.php:343
+#: includes/scrapers/class-scraper-opdagverden.php:349
 #, php-format
 msgid "\"%s\" has no meeting point link, route point or region, so it gets no pin."
 msgstr "\"%s\" har hverken link til mødestedet, rutepunkt eller region, så den får ingen nål."
 
 #. translators: %s: Google Maps link.
-#: includes/scrapers/class-scraper-opdagverden.php:387
+#: includes/scrapers/class-scraper-opdagverden.php:393
 #, php-format
 msgid "Could not read the coordinates of the meeting point link %s."
 msgstr "Kunne ikke læse koordinaterne fra mødestedets link %s."

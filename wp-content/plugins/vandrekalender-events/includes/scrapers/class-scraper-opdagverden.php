@@ -146,7 +146,13 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 		// Meeting point from the start line; the trip's location label is
 		// only a fallback ("Blixen ruten (folehave skov) rundsted").
 		$meeting = $this->meeting_point( $description );
-		$place   = '' !== $meeting['name']
+		if ( '' === $meeting['name'] ) {
+			$this->record_warning(
+				/* translators: %s: trip title. */
+				sprintf( __( 'No "Start: Kl. … ved …" line in "%s", so its meeting point is the trip\'s area name.', 'vandrekalender-events' ), $title )
+			);
+		}
+		$place = '' !== $meeting['name']
 			? $meeting['name']
 			: trim( html_entity_decode( (string) ( $trip['location']['name'] ?? '' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
 
