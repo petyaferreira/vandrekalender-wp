@@ -347,7 +347,7 @@ Returns full detail for a single event. Used by the event detail page.
   ],
   "organiser_name": "Mammutmarch",
   "organiser_url": "https://mammutmarch.dk",
-  "source_url": "https://mammutmarch.dk/shop/mammutmarch-koebenhavn-75-100-km/"
+  "source_url": "https://mammutmarch.dk/events/mammutmarch-koebenhavn-75-100-km"
 }
 ```
 

@@ -501,6 +501,63 @@ abstract class Vandrekalender_Scraper_Base {
 	}
 
 	/**
+	 * Move an existing event to a new source URL after the source changed its URLs.
+	 *
+	 * Events are deduplicated by source URL (upsert_event()), so when a
+	 * source moves its event pages, the next run would create a duplicate of every upcoming
+	 * event and draft the original (its URL "disappeared"), losing the
+	 * original's permalink. Call this before returning an event from parse():
+	 * if no post has the new URL yet, a post of this source with the same
+	 * date whose URL matches the old format is switched to the new URL, so
+	 * upsert_event() updates it in place. Once every such post has moved, it
+	 * finds nothing and does nothing.
+	 *
+	 * @param string $new_url        The event's source URL in the new format.
+	 * @param string $date           Event date (Y-m-d).
+	 * @param string $legacy_pattern Regex the event's old source URL matches.
+	 * @return void
+	 */
+	protected function adopt_legacy_source_url( string $new_url, string $date, string $legacy_pattern ): void {
+		if ( '' === $date || ! defined( static::class . '::SOURCE_NAME' ) ) {
+			return;
+		}
+
+		$same_day = get_posts(
+			[
+				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'   => \Vandrekalender\Event::META_SOURCE_NAME,
+						'value' => (string) constant( static::class . '::SOURCE_NAME' ),
+					],
+					[
+						'key'   => \Vandrekalender\Event::META_DATE,
+						'value' => $date,
+					],
+				],
+			]
+		);
+
+		$legacy_id = 0;
+		foreach ( $same_day as $post_id ) {
+			$url = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_URL, true );
+			if ( $url === $new_url ) {
+				return;
+			}
+			if ( 0 === $legacy_id && preg_match( $legacy_pattern, $url ) ) {
+				$legacy_id = (int) $post_id;
+			}
+		}
+
+		if ( $legacy_id > 0 ) {
+			update_post_meta( $legacy_id, \Vandrekalender\Event::META_SOURCE_URL, $new_url );
+		}
+	}
+
+	/**
 	 * Append the event date to the title when another event already uses it.
 	 *
 	 * Sources like DVL publish recurring walks as one page per occurrence,
@@ -604,15 +661,17 @@ abstract class Vandrekalender_Scraper_Base {
 	/**
 	 * Fetch a URL via wp_remote_get and return the body, or empty string on failure.
 	 *
-	 * @param string $url URL to fetch.
+	 * @param string $url     URL to fetch.
+	 * @param array  $headers Extra request headers, e.g. a JSON API's locale header.
 	 * @return string Response body.
 	 */
-	protected function remote_get( string $url ): string {
+	protected function remote_get( string $url, array $headers = [] ): string {
 		$response = wp_remote_get(
 			$url,
 			[
 				'timeout'    => 15,
 				'user-agent' => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
+				'headers'    => $headers,
 			]
 		);
 
