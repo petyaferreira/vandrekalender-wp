@@ -214,7 +214,7 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 3. Implement `fetch()` — for an HTML listing usually `return $this->remote_get( self::SOURCE_URL );`; a JSON source can return the JSON for `parse()` to decode (Mammutmarch).
 4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
 5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
-6. Register the scraper in `class-scraper-scheduler.php` → `run_all_scrapers()`.
+6. Register the scraper in the `$scrapers` list in `Vandrekalender_Scraper_Scheduler::execute()` (`class-scraper-scheduler.php`).
 
 ### Deduplication
 
@@ -293,9 +293,9 @@ Tombstones (not re-creating admin-deleted events) are deferred to v2 ([#36](http
 
 `Vandrekalender_Scraper_Scheduler` (`includes/class-scraper-scheduler.php`):
 
-- Registers a single cron hook, `vandrekalender_run_scrapers`, on a **weekly** schedule (a custom `weekly` interval it adds to WP-Cron).
-- `run_all_scrapers()` instantiates every scraper and calls `run()` on each. All sources run on the same weekly cadence.
-- Scheduled on plugin activation, cleared on deactivation.
+- Registers a single cron hook, `vandrekalender_run_scrapers`, on WP-Cron's built-in **daily** schedule, at 02:12 site time, only where `VK_ENABLE_SCRAPING` is set (see [Running & scheduling](#running--scheduling)).
+- `execute()` instantiates every scraper and calls `run()` on each, then records the run in the Scraper Log and, for cron runs, sends the alert email ([Alerts](#alerts-when-a-source-breaks)). All sources run on the same daily cadence.
+- `reconcile_schedule()` on `init` schedules or clears the job to match the flag; deactivation clears it.
 
 Trigger manually:
 
