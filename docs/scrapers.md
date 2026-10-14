@@ -115,7 +115,7 @@ Some fields cannot be extracted from some sources. Rather than guessing or silen
 | Missing field | Behaviour |
 |---|---|
 | Optional field (e.g. a route's `start_time`) | Field left null. Event still published. Card shows no badge for that field |
-| `event_routes` distance | Route left without distance, event published, **flagged** for manual enrichment *(flagging UI is Planned)* |
+| `event_routes` distance | Route left without distance, event published, **flagged** for manual enrichment *(flagging UI is planned, [#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38))* |
 | `event_lat` / `event_lng` (geocoding failed) | Event held as **draft** — coordinates required for the map view. Admin must resolve |
 | `event_date` | Event held as **draft** — date is a required field |
 | `post_title` | Event **rejected** entirely — not created |
@@ -190,7 +190,7 @@ A hit in the wrong town is rejected rather than pinned in the wrong part of the 
 
 Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()` (DVL) is the municipality part of it, and the editor uses it through `GET /vandrekalender/v1/geocode/reverse?lat=&lng=`. That endpoint needs `edit_events` (administrators and event organisers; organisers have no `edit_posts`) and is limited to 60 lookups per user per 10 minutes (HTTP 429 after that), since anyone can sign up as an organiser and each call spends our Datafordeler quota. The key never reaches a browser. Each service retries once on a dropped connection, so during a real outage a lookup can take up to twice the timeout (Datafordeler 15 s → up to 30 s) before it gives up. Checked on 60 random DVL meeting points against the municipality DAWA had stored: 60 of 60 found, 59 the same. The one difference was Rødovre Station, whose nearest address officially lies in Hvidovre (same region). The nearest address was a median 27 m away, 948 m at most. Points with no Danish address within 3 km (abroad, at sea) get nothing.
 
-**Place names: not built yet.** `Geocoder::geocode_place()` (landmark names, Opdag Verden) returns nothing; see `docs/dawa-migration-plan.md` → Place names for why.
+**Place names: not built yet** ([#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30)). `Geocoder::geocode_place()` (landmark names, Opdag Verden) returns nothing; see `docs/dawa-migration-plan.md` → Place names for why.
 
 **Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`, plus the scraper's own `take_warnings()`, e.g. a failed GPX download) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
 
@@ -285,7 +285,7 @@ Recurring occurrences are deduplicated differently instead, without touching pub
 - **Old `/event/` base.** `Vandrekalender_Legacy_Event_Urls` 301-redirects the pre-Polylang `/event/{slug}/` URLs (still indexed, still hit) to the current `/begivenhed/{slug}/` permalink; a second hop into the redirect above is expected and fine.
 - **Restoring what the old sweep already drafted.** `wp vandrekalender restore-past-drafts [--dry-run]` republishes scraped, unclaimed drafts the old cleanup created — distinguished from a draft caused by the removal sweep above (`event_date` on or after `post_modified` means cancelled at the source, left alone) by `event_date` being at least 6 days before `post_modified` (the cleanup ran 7+ days after the event). It publishes with `wp_update_post` and verifies `post_name` didn't change.
 
-Tombstones (not re-creating admin-deleted events) are deferred to v2. Deleting events older than ~12 months and answering 410 Gone is also deferred — see `docs/past-events-brief.md` → Later.
+Tombstones (not re-creating admin-deleted events) are deferred to v2 ([#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36)). Deleting events older than ~12 months and answering 410 Gone is also deferred ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
 
 > Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim-flow milestone.
 
@@ -303,17 +303,17 @@ Trigger manually:
 ./wp.sh cron event run vandrekalender_run_scrapers
 ```
 
-> **Planned (v2):** per-source schedules (high-volume sources more often, others weekly) instead of one shared weekly run.
+> **Planned (v2):** per-source schedules instead of one shared daily run ([#39](https://github.com/petyaferreira/vandrekalender-wp/issues/39)).
 
 ---
 
 ## Planned (v2 and later)
 
-None of the following exists in code yet. Kept here as design intent so the roadmap isn't lost.
+None of the following exists in code yet. Open work is tracked as GitHub issues; this section keeps the design notes and decisions.
 
 ### Tombstones
 
-Events deleted by an admin should not be re-created on the next scrape. Maintain a tombstone list of dismissed source URLs that `upsert_event()` checks before inserting.
+Events deleted by an admin should not be re-created on the next scrape. Maintain a tombstone list of dismissed source URLs that `upsert_event()` checks before inserting. Tracked in [#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36).
 
 ### Admin scraping dashboard
 
@@ -323,7 +323,8 @@ Events deleted by an admin should not be re-created on the next scrape. Maintain
 plus the current schedule status. Runs are stored in the `vandrekalender_scraper_runs`
 option (capped, most recent first) by `Vandrekalender_Scraper_Log`.
 
-Still planned: a queue of flagged events needing manual enrichment, and a
+Still planned: a queue of flagged events needing manual enrichment
+([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)), and a
 per-scraper "Run now" button in the UI.
 
 ### Facebook scraping

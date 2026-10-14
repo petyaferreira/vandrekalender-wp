@@ -133,9 +133,11 @@ After the fix is live, re-geocode events scraped since 1 Oct (both the missing c
 - Editor: pasting coordinates fills the nearest address and municipality through `GET /vandrekalender/v1/geocode/reverse` (`edit_events`: administrators and organisers; 60 lookups per user per 10 minutes; key stays on the server). The help text "…and the nearest address is looked up for you" is back.
 - `wp vandrekalender regeocode` also backfills a missing municipality for events with coordinates. Locally it fixed 164 of 165 DVL events (the miss was in Germany). Ran on production on 9 Oct 2026 and kept, as noted above.
 - Both services retry once on a dropped connection before treating the service as down for the run.
-- Not done: DAGI/v2 (`DAGI_Kommuneinddeling`) could give the municipality by point-in-polygon instead of "the nearest address's municipality". Only worth it if border cases ever matter.
+- Not done: DAGI/v2 (`DAGI_Kommuneinddeling`) could give the municipality by point-in-polygon instead of "the nearest address's municipality". Only worth it if border cases ever matter ([#43](https://github.com/petyaferreira/vandrekalender-wp/issues/43)).
 
-### Place names (follow-up, not planned yet)
+### Place names (follow-up)
+
+Tracked in [#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30).
 
 `Geocoder::geocode_place()` (Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge") still returns nothing; Opdag Verden falls back to the address search. Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
 - `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match, and Opdag Verden writes "Stevns klint".

@@ -121,7 +121,7 @@ cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import(
 
 ### Proximity Search (v2)
 
-When a user searches "Valby", it is geocoded to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Deferred to v2.
+When a user searches "Valby", it is geocoded to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Deferred to v2 ([#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42)).
 
 ---
 
@@ -138,7 +138,7 @@ When a user searches "Valby", it is geocoded to coordinates, then a custom SQL h
 
 ### `organizer` Taxonomy
 
-Custom taxonomy representing organizations (DVL, Mammutmarch, etc.). See `docs/authentication.md` for the full organization model.
+Custom taxonomy representing organizations (DVL, Mammutmarch, etc.). **Not built yet** ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)). See `docs/authentication.md` for the full organization model.
 
 Each organizer term carries:
 
@@ -190,6 +190,8 @@ All scraping fields are admin only — never visible to event creators or the pu
 ## Taxonomies
 
 ### `organizer`
+
+> **Not built yet** — design only, see [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32).
 
 Custom taxonomy representing organizations (e.g. DVL, Mammutmarch, individual organizers). Defines shared event ownership and team membership. See `docs/authentication.md` for the full organization and user role model.
 

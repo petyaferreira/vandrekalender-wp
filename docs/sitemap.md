@@ -20,7 +20,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | `/begivenhed/[slug]` | Single event detail page | V1 |
 | `/om` | About page — site mission, how it works, membership info | V1 |
 | `/kontakt` | Contact form | V1 |
-| `/arrangor/[slug]` | Organizer profile page — all events by one organization | V2 |
+| `/arrangor/[slug]` | Organizer profile page — all events by one organization | V2 ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)) |
 | `/privatlivspolitik` | Privacy policy (GDPR) | V1 |
 | `/vilkaar` | Terms of use | V1 |
 | `/cookies` | Cookie policy | V1 |
@@ -129,7 +129,7 @@ All three tabs update simultaneously when filters change.
 | User settings (profile page) | V1 |
 | Membership management (email domain match, admin assignment) | V1 |
 | Membership copy on `/om` and `/vilkaar` | V1 |
-| Organizer archive page (`/arrangor`) | V2 |
+| Organizer archive page (`/arrangor`) | V2 ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)) |
 | Member invitations | V2 |
 | Custom admin/creator pages (beyond native WP) | V2+ |
 

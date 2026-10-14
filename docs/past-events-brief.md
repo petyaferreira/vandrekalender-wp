@@ -68,5 +68,5 @@ WP-CLI command, for example `wp vandrekalender restore-past-drafts [--dry-run]`:
 
 ## Later (not now)
 
-- Events older than about 12 months: consider deleting and answering **410 Gone**.
+- Events older than about 12 months: consider deleting and answering **410 Gone** ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
 - Watch Search Console "Not found (404)" and "Duplicate" rows over the following weeks.
