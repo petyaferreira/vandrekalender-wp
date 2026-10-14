@@ -203,7 +203,7 @@ When a source's site moves or changes, its scraper usually does not fail: it jus
 - `run()` sets `source_problem()` when `fetch()` returned an empty string ("Could not load the source…") or no source URL was seen ("The source loaded, but no events were found…"). Every source has always listed upcoming events, so either case almost always means the scraper needs fixing. The message is also a warning on the scraper's row in the Scraper Log and in `./scrape.sh`.
 - `Scheduler::execute()` stores it as `problem` in the scraper's log entry. A scraper that throws gets its error message as `problem`.
 - After a **cron** run (production only), `Vandrekalender_Scraper_Alerts::notify()` compares the sources with a `problem` against the ones stored in the `vandrekalender_scraper_alerts` option. It emails `kontakt@allevandreture.dk` (filter `vandrekalender_scraper_alert_email`) when a source newly breaks or works again, and sends nothing while a source stays broken, so a broken source gives one email, not one every night. If `wp_mail()` fails, the option is not updated and the next run tries again. Manual runs never email.
-- Emails go through `wp_mail()` with the admin email as From, so on production they need the real mail transport described in `docs/deployment.md` → Email.
+- Emails go through `wp_mail()` with the admin email as From. On production FluentSMTP sends them, as kontakt@allevandreture.dk (see `docs/deployment.md` → Email).
 
 If a source ever legitimately lists no events for a while (between seasons), expect one "stopped working" email and one "works again" email when it lists events again.
 

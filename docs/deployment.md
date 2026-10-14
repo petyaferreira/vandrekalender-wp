@@ -205,13 +205,17 @@ Deliberately configured in PHP rather than in WordPress:
 > (the admin email; for the join emails via `vandrekalender_join_email_from`). Core's
 > password-reset mail does hit it.
 
-### Production — needs a real transport
+### Production — FluentSMTP
 
-`wp_mail()` on Nordicway falls through to PHP `mail()`, which sends as
-`wordpress@vandrekalender.dk` and will not pass SPF/DKIM — expect spam foldering
-or silent drops. FluentSMTP ships with the site (currently **inactive**);
-activate it and point it at the `kontakt@vandrekalender.dk` mailbox. No code
-change is needed — every `wp_mail()` call picks it up automatically.
+FluentSMTP is active on production (set up 5 Sep 2026, see
+`docs/migration-to-allevandreture.md`). It sends over SMTP as the
+`kontakt@allevandreture.dk` mailbox, with "Force From Email" and "Force Sender
+Name" on, so every `wp_mail()` (core, join emails, scraper alerts) goes out as
+"Alle Vandreture" <kontakt@allevandreture.dk>, whatever From the code sets. Its
+settings live in the database (`fluentmail-settings`), not in the repo.
+
+Staging has no working outbound mail: there is no SMTP connection there, and
+PHP `mail()` is not delivered.
 
 ---
 
