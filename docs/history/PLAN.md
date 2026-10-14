@@ -1,4 +1,7 @@
 # Vandrekalender — Project Plan
+
+> **Archived on 14 October 2026.** This is the original build plan from the start of the project. Everything we need has been taken from it: what was built is described in `docs/`, and open work lives in [GitHub Issues](https://github.com/petyaferreira/vandrekalender-wp/issues). Some names below are out of date: the post type is `event`, the taxonomies are `event_region` and `event_length`, and routes are stored in `event_routes`. Decided while archiving (#48): no branch protection on `main`, no frontend event form (organisers use the WordPress editor), no Claude Code hooks (the pre-commit hook covers phpcs), and the mobile responsive pass became #47. Linear was replaced by GitHub Issues.
+
 *Walking events calendar for Denmark. AI-first, from scratch to CI/CD and production.*
 
 ---
