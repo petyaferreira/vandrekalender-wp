@@ -13,9 +13,12 @@ defined( 'ABSPATH' ) || exit;
  * walked on several dates becomes one event per date, keyed by
  * /faellesture/<slug>#<date>.
  *
- * Meeting points are landmark names ("Stevns klint", "Æbelø"); the
- * Adressevælger address search resolves them to the nearest real address,
- * giving approximate coordinates and the correct municipality.
+ * The meeting point is the "Start: Kl.10 ved …" line of the description
+ * (the trip's `location` is only a label for the area). Its pin comes from,
+ * in order: the Google Maps link many start lines carry (exact), the point
+ * of the trip's linked route page (the route's area, not the meeting
+ * point), or the centre of the trip's region. The last two are marked
+ * approximate (`event_location_approximate`).
  *
  * @package Vandrekalender
  */
@@ -140,8 +143,18 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 			$start_time = sprintf( '%02d:%s', (int) $time_match[1], $time_match[2] ?? '00' );
 		}
 
-		// Meeting point / location name.
-		$place = trim( html_entity_decode( (string) ( $trip['location']['name'] ?? '' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+		// Meeting point from the start line; the trip's location label is
+		// only a fallback ("Blixen ruten (folehave skov) rundsted").
+		$meeting = $this->meeting_point( $description );
+		if ( '' === $meeting['name'] ) {
+			$this->record_warning(
+				/* translators: %s: trip title. */
+				sprintf( __( 'No "Start: Kl. … ved …" line in "%s", so its meeting point is the trip\'s area name.', 'vandrekalender-events' ), $title )
+			);
+		}
+		$place = '' !== $meeting['name']
+			? $meeting['name']
+			: trim( html_entity_decode( (string) ( $trip['location']['name'] ?? '' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
 
 		$excerpt = trim( (string) ( $trip['hero']['description'] ?? '' ) );
 		if ( '' === $excerpt ) {
@@ -149,10 +162,10 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 		}
 
 		// Resolved once per trip: every date meets at the same place.
-		$geo    = $this->resolve_location( $title, $place );
-		$region = $this->region_from_categories( is_array( $trip['categories'] ?? null ) ? $trip['categories'] : [] );
-		$slug   = (string) ( $trip['slug'] ?? '' );
-		$events = [];
+		$region   = $this->region_from_categories( is_array( $trip['categories'] ?? null ) ? $trip['categories'] : [] );
+		$location = $this->locate( $title, $meeting['maps_url'], (string) ( $trip['hike_route']['slug'] ?? '' ), $region );
+		$slug     = (string) ( $trip['slug'] ?? '' );
+		$events   = [];
 
 		foreach ( is_array( $trip['upcoming_dates'] ?? null ) ? $trip['upcoming_dates'] : [] as $date_row ) {
 			$date = (string) ( $date_row['start_date'] ?? '' );
@@ -184,26 +197,24 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 					],
 				],
 				\Vandrekalender\Event::META_PLACE_NAME     => $place,
-				\Vandrekalender\Event::META_ADDRESS        => $place,
+				// No street address: the meeting point is a car park, a
+				// station or a harbour, shown as the place name.
+				\Vandrekalender\Event::META_ADDRESS        => '',
 				\Vandrekalender\Event::META_ORGANISER_NAME => self::SOURCE_NAME,
 				\Vandrekalender\Event::META_ORGANISER_URL  => self::ORGANISER_URL,
 				\Vandrekalender\Event::META_SOURCE_URL     => $url,
 				\Vandrekalender\Event::META_SOURCE_NAME    => self::SOURCE_NAME,
 			];
 
-			if ( null !== $geo ) {
-				// Coordinates are usable even when the point does not fall
-				// inside a kommune polygon (coastal/island landmarks), so keep
-				// them regardless of whether a municipality was resolved.
-				$event[ \Vandrekalender\Event::META_LAT ] = $geo['lat'];
-				$event[ \Vandrekalender\Event::META_LNG ] = $geo['lng'];
+			if ( null !== $location ) {
+				$event[ \Vandrekalender\Event::META_LAT ]                  = $location['lat'];
+				$event[ \Vandrekalender\Event::META_LNG ]                  = $location['lng'];
+				$event[ \Vandrekalender\Event::META_MUNICIPALITY ]         = $location['municipality'];
+				$event[ \Vandrekalender\Event::META_LOCATION_APPROXIMATE ] = $location['approximate'];
 			}
 
-			if ( null !== $geo && '' !== $geo['municipality'] ) {
-				$event[ \Vandrekalender\Event::META_MUNICIPALITY ] = $geo['municipality'];
-			} elseif ( '' !== $region ) {
-				// No municipality. Region normally derives from it, so writing
-				// an empty value would clear the region term; instead use the
+			if ( ( null === $location || '' === $location['municipality'] ) && '' !== $region ) {
+				// No municipality. Region normally derives from it; use the
 				// trip's region category so the event stays in the filters.
 				$event['tax_terms'] = [ \Vandrekalender\Event::TAX_REGION => [ $region ] ];
 			}
@@ -223,80 +234,196 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 	}
 
 	/**
-	 * Resolve coordinates and municipality for an event's landmark meeting point.
+	 * Read the meeting point from the description's start line.
 	 *
-	 * Builds an ordered list of query candidates from the event title and the
-	 * meeting point, then tries the place-name register for each, and
-	 * finally the address search. The first hit wins.
+	 * The line reads "Start: Kl.10 ved Rungsted station" or "Start: Kl. 10 på
+	 * <a href="https://maps.app.goo.gl/…">P-pladsen Hasmark strand</a>", and
+	 * sometimes runs on into "Slut: …" in the same paragraph.
 	 *
-	 * @param string $title Event title, e.g. "Møns Klint: Klintekongens Rige (15 km)".
-	 * @param string $place The meeting point (the trip's location name).
-	 * @return array|null Array of { lat, lng, municipality }, or null if unresolved.
+	 * @param string $description Description HTML.
+	 * @return array{name: string, maps_url: string} The meeting point, and
+	 *               its Google Maps link if it has one ('' when missing).
 	 */
-	private function resolve_location( string $title, string $place ): ?array {
-		$geocoder   = new Vandrekalender_Geocoder();
-		$candidates = $this->geocode_candidates( $title, $place );
+	private function meeting_point( string $description ): array {
+		$point = [
+			'name'     => '',
+			'maps_url' => '',
+		];
 
-		foreach ( $candidates as $candidate ) {
-			$geo = $geocoder->geocode_place( $candidate );
-			if ( null !== $geo ) {
-				return $geo;
+		if ( ! preg_match( '#Start(?:\s|<[^>]+>|&nbsp;|:)*kl\.?.*?(?=</p>|<strong>\s*Slut|$)#isu', $description, $line ) ) {
+			return $point;
+		}
+
+		// The first link with visible text; some lines have an empty one first.
+		if ( preg_match_all( '#<a\s[^>]*href="(https://maps\.app\.goo\.gl/[^"]+)"[^>]*>(.*?)</a>#isu', $line[0], $links, PREG_SET_ORDER ) ) {
+			foreach ( $links as $link ) {
+				if ( '' !== $this->plain_text( $link[2] ) ) {
+					$point['maps_url'] = $link[1];
+					break;
+				}
 			}
 		}
 
-		foreach ( $candidates as $candidate ) {
-			$geo = $geocoder->geocode( $candidate );
-			if ( null !== $geo ) {
-				return $geo;
-			}
+		$name = $this->plain_text( $line[0] );
+		$name = (string) preg_replace( '/^Start\s*:?\s*kl\.?\s*\d{1,2}(?:[.:]\d{2})?\s*/iu', '', $name );
+		$name = (string) preg_replace( '/^(?:[-–]\s*)?(?:(?:ved|på|fra)\s+)?/iu', '', $name );
+		$name = trim( $name, ' .,;:-–' );
+
+		$point['name'] = mb_strtoupper( mb_substr( $name, 0, 1 ) ) . mb_substr( $name, 1 );
+
+		return $point;
+	}
+
+	/**
+	 * Strip tags and entities from an HTML fragment and collapse whitespace.
+	 *
+	 * @param string $html HTML fragment.
+	 * @return string Plain text.
+	 */
+	private function plain_text( string $html ): string {
+		$text = html_entity_decode( wp_strip_all_tags( $html ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+
+		return trim( (string) preg_replace( '/[\s\x{00A0}]+/u', ' ', $text ) );
+	}
+
+	/**
+	 * Find the pin for a trip, exact when possible, otherwise approximate.
+	 *
+	 * 1. The Google Maps link of the start line: the exact meeting point.
+	 * 2. The point of the trip's route page: somewhere on the route, so only
+	 *    used when it lies in the trip's region (one route point is in the
+	 *    wrong part of Jutland).
+	 * 3. The centre of the trip's region, so the walk still shows on the map.
+	 *
+	 * @param string $title      Trip title, for the Scraper Log.
+	 * @param string $maps_url   Google Maps short link of the start line, or ''.
+	 * @param string $route_slug Slug of the linked route page, or ''.
+	 * @param string $region     Region slug from the trip's categories, or ''.
+	 * @return array|null Array of { lat, lng, municipality, approximate }, or
+	 *                    null if not even the region is known.
+	 */
+	private function locate( string $title, string $maps_url, string $route_slug, string $region ): ?array {
+		$geocoder = new Vandrekalender_Geocoder();
+
+		$point = '' !== $maps_url ? $this->maps_link_coordinates( $maps_url ) : null;
+		if ( null !== $point ) {
+			return [
+				'lat'          => $point[0],
+				'lng'          => $point[1],
+				'municipality' => $geocoder->municipality_from_coords( $point[0], $point[1] ),
+				'approximate'  => false,
+			];
 		}
+
+		$point = '' !== $route_slug ? $this->route_coordinates( $route_slug ) : null;
+		if ( null !== $point ) {
+			$municipality = $geocoder->municipality_from_coords( $point[0], $point[1] );
+			$in_region    = Vandrekalender_Municipalities::region_map()[ mb_strtolower( $municipality ) ] ?? '';
+
+			if ( '' !== $municipality && ( '' === $region || $in_region === $region ) ) {
+				return [
+					'lat'          => $point[0],
+					'lng'          => $point[1],
+					'municipality' => $municipality,
+					'approximate'  => true,
+				];
+			}
+
+			$this->record_warning(
+				/* translators: %s: trip title. */
+				sprintf( __( 'The route point of "%s" is outside its region, so the pin is placed in the middle of the region.', 'vandrekalender-events' ), $title )
+			);
+		}
+
+		if ( isset( Vandrekalender_Municipalities::REGION_CENTRES[ $region ] ) ) {
+			return [
+				'lat'          => Vandrekalender_Municipalities::REGION_CENTRES[ $region ][0],
+				'lng'          => Vandrekalender_Municipalities::REGION_CENTRES[ $region ][1],
+				'municipality' => '',
+				'approximate'  => true,
+			];
+		}
+
+		$this->record_warning(
+			/* translators: %s: trip title. */
+			sprintf( __( '"%s" has no meeting point link, route point or region, so it gets no pin.', 'vandrekalender-events' ), $title )
+		);
 
 		return null;
 	}
 
 	/**
-	 * Build an ordered, de-duplicated list of landmark query strings to geocode.
+	 * Coordinates of a Google Maps short link (maps.app.goo.gl).
 	 *
-	 * The title's leading segment (before a colon, with a trailing "(21 km)"
-	 * removed) is the most reliable landmark; the meeting point is a fallback.
-	 * Each is also offered in a cleaned form with tour words ("rundt",
-	 * "dagstur") and secondary segments stripped.
+	 * The link redirects to a google.com/maps URL that carries the place's
+	 * coordinates as "!3d<lat>!4d<lng>" (or the map view's "@<lat>,<lng>").
+	 * Only the redirect is read, not the page. Cached for a month, since a
+	 * short link always points to the same place.
 	 *
-	 * @param string $title Event title.
-	 * @param string $place The meeting point (the trip's location name).
-	 * @return string[] Ordered unique candidate strings.
+	 * @param string $url Short link.
+	 * @return array|null [ lat, lng ] in Denmark, or null.
 	 */
-	private function geocode_candidates( string $title, string $place ): array {
-		$title_base = (string) preg_replace( '/\s*\([^)]*\)\s*/u', ' ', $title );
-		$title_base = trim( (string) preg_split( '/:/u', $title_base )[0] );
+	private function maps_link_coordinates( string $url ): ?array {
+		$cache_key = 'vk_ov_maps_' . md5( $url );
+		$cached    = get_transient( $cache_key );
+		if ( is_array( $cached ) ) {
+			return $cached;
+		}
 
-		$candidates = [
-			$title_base,
-			$this->clean_place( $title_base ),
-			$this->clean_place( $place ),
-			$place,
-		];
+		$response = wp_remote_head(
+			$url,
+			[
+				'timeout'     => 15,
+				'redirection' => 0,
+				'user-agent'  => 'Vandrekalender/1.0 (+https://allevandreture.dk)',
+			]
+		);
+		$location = is_wp_error( $response ) ? '' : (string) wp_remote_retrieve_header( $response, 'location' );
 
-		$candidates = array_filter( array_map( 'trim', $candidates ) );
+		if ( preg_match( '/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/', $location, $m ) || preg_match( '/@(-?\d+\.\d+),(-?\d+\.\d+)/', $location, $m ) ) {
+			$point = [ (float) $m[1], (float) $m[2] ];
+			if ( $this->in_denmark( $point ) ) {
+				set_transient( $cache_key, $point, MONTH_IN_SECONDS );
+				return $point;
+			}
+		}
 
-		return array_values( array_unique( $candidates ) );
+		$this->record_warning(
+			/* translators: %s: Google Maps link. */
+			sprintf( __( 'Could not read the coordinates of the meeting point link %s.', 'vandrekalender-events' ), $url )
+		);
+
+		return null;
 	}
 
 	/**
-	 * Reduce a location string to its leading landmark name for geocoding.
+	 * The point of a route page (/ruter/<slug>), somewhere on the route.
 	 *
-	 * Drops parentheticals, keeps only the first segment before a comma, ampersand,
-	 * slash or " og ", and strips trailing tour words like "rundt" or "dagstur".
-	 *
-	 * @param string $value Raw location or title string.
-	 * @return string Cleaned landmark name.
+	 * @param string $slug Route slug, from the trip's `hike_route`.
+	 * @return array|null [ lat, lng ] in Denmark, or null.
 	 */
-	private function clean_place( string $value ): string {
-		$value = (string) preg_replace( '/\([^)]*\)/u', ' ', $value );
-		$value = (string) preg_split( '/[,&\/:]| og /u', $value )[0];
-		$value = (string) preg_replace( '/\b(rundtur|rundt|rundsted|weekendtur|dagstur|tur)\b/iu', ' ', $value );
+	private function route_coordinates( string $slug ): ?array {
+		$props = $this->page_props( $this->remote_get( self::BASE_URL . '/ruter/' . rawurlencode( $slug ) ) );
+		$lat   = $props['hikeRoute']['latitude'] ?? null;
+		$lng   = $props['hikeRoute']['longitude'] ?? null;
 
-		return trim( (string) preg_replace( '/\s+/u', ' ', $value ) );
+		if ( ! is_numeric( $lat ) || ! is_numeric( $lng ) ) {
+			return null;
+		}
+
+		$point = [ (float) $lat, (float) $lng ];
+
+		return $this->in_denmark( $point ) ? $point : null;
+	}
+
+	/**
+	 * Whether a point lies within Denmark's bounding box (incl. Bornholm).
+	 *
+	 * @param array $point [ lat, lng ].
+	 * @return bool
+	 */
+	private function in_denmark( array $point ): bool {
+		return $point[0] >= 54.5 && $point[0] <= 57.8 && $point[1] >= 8.0 && $point[1] <= 15.2;
 	}
 
 	/**
@@ -304,8 +431,8 @@ class Vandrekalender_Scraper_Opdagverden extends Vandrekalender_Scraper_Base {
 	 *
 	 * Trips carry Opdag Verden's own geographic grouping as a category
 	 * ("storkobenhavn", "midtjylland", ...). This maps those to the site's
-	 * five official regions. Used only as a fallback when geocoding finds no
-	 * municipality.
+	 * five official regions. Used to check a route's point, for the
+	 * approximate pin, and as the region when the pin has no municipality.
 	 *
 	 * @param array $categories The trip's categories, each with a `slug`.
 	 * @return string Region slug (e.g. "syddanmark"), or empty string if unknown.

@@ -117,6 +117,7 @@ cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import(
 | `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via Adressevælger search |
 | `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
 | `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
+| `event_location_approximate` | boolean | — | — | `true` when `event_lat`/`event_lng` only place the walk roughly: a scraper had no exact meeting point (Opdag Verden: a point on the route, or the centre of the region, see `docs/scrapers.md`). The map still shows the pin, but `Event::coordinates()` treats it as missing, so there is no "GPS …" label, directions go to the place name instead, and the JSON-LD has no `geo`. The editor sets it to `false` whenever someone sets the location by hand. Default `false` |
 | `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from the picked address (code mapped through `data/municipalities.json`). Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
 
 ### Proximity Search (v2)

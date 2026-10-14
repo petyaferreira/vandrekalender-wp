@@ -101,7 +101,7 @@ File: `includes/class-geocoder.php`. Same public method names and return shape, 
 - `geocode()`: search `/husnumre/soeg`, take the first `husnummer` hit, look it up by ID, convert coordinates, map the municipality code.
 - Port the JS helper `resources/event-meta-fields/utm-to-latlng.js` (from PR 1) to PHP line for line, as a small helper class (same constants, same Krüger series, same 7-decimal rounding). Check that it gives exactly the same latitude/longitude as the JS helper for the addresses tested in PR 1 (Helgolandsgade 3, Rønne, Christiansø, Skagen, Esbjerg). Point the JS helper's comment at the PHP file so the two stay in sync.
 - Keep the transient cache. Do NOT cache failures for a month: a `410` or network error must not be cached as "no result".
-- `geocode_place()` (`stednavne2`) and anything else that needs Datafordeler stay as is for now but must fail gracefully and be logged to the Scraper Log.
+- `geocode_place()` (`stednavne2`) and anything else that needs Datafordeler stay as is for now but must fail gracefully and be logged to the Scraper Log. (`geocode_place()` was later removed, see Place names below.)
 - Run `./scrape.sh` and check Events, Scraper Log. Report how many events got coordinates before and after.
 - After merging, existing events scraped since 1 Oct without coordinates need a re-geocode. Write a one off WP-CLI command for that, or note it for Petya.
 
@@ -116,7 +116,7 @@ File: `includes/class-geocoder.php`. Same public method names and return shape, 
 
 Found on production on 8 Oct 2026: scraped events from DVL (organiser "DVL Trekantomraadet" and the other DVL areas) are published with NO region. They do have the address and exact coordinates, because the DVL feed supplies the coordinates. The region taxonomy comes from the municipality, and `Vandrekalender_Geocoder::municipality_from_coords()` used DAWA for that (reverse lookup). Adressevælger cannot do a reverse lookup, so after PR 1 and PR 2 these events will STILL have no region. Events that already had a municipality keep it (the scraper does not overwrite it with an empty value), for example "Isenbjerg og Gludsted Plantage" still shows Midtjylland.
 
-Also affected: `geocode_place()` (`stednavne2`, used by Opdag Verden) and the editor's "paste coordinates" box.
+Also affected: `geocode_place()` (`stednavne2`, used by Opdag Verden; removed in #30, see Place names below) and the editor's "paste coordinates" box.
 
 Options for the municipality from coordinates (decide with Petya before building):
 1. Datafordeler GraphQL (DAGI, the municipality register). This is the official route. Needs a Datafordeler API key that Petya creates in Datafordelerens Administration (https://portal.datafordeler.dk): a user, an IT system and an API key. The key is a real secret: store it the same way as the Adressevælger token (`.env`, GitHub Environment secret, generated mu-plugin).
@@ -135,16 +135,11 @@ After the fix is live, re-geocode events scraped since 1 Oct (both the missing c
 - Both services retry once on a dropped connection before treating the service as down for the run.
 - Not done: DAGI/v2 (`DAGI_Kommuneinddeling`) could give the municipality by point-in-polygon instead of "the nearest address's municipality". Only worth it if border cases ever matter ([#43](https://github.com/petyaferreira/vandrekalender-wp/issues/43)).
 
-### Place names (follow-up)
+### Place names (not needed for now)
 
-Tracked in [#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30).
-
-`Geocoder::geocode_place()` (Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge") still returns nothing; Opdag Verden falls back to the address search. Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
-- `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match, and Opdag Verden writes "Stevns klint".
+Opdag Verden was the only user of `Geocoder::geocode_place()`, which never returned anything after DAWA closed. Since [#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30) it takes its pin from the Google Maps link in the trip description, the trip's route page, or the region centre, and `geocode_place()` is removed. If a source ever needs landmark names again: Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
+- `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match.
 - The geometry is not on the name: it is on the named place (`navngivetSted_objectid`), which lives in one of ~30 category types (`DS_Naturareal`, `DS_Landskabsform`, `DS_Bebyggelse`, `DS_Soe`, `DS_Sevaerdighed` and so on), each with full polygon geometry in EPSG:25832. We would need to query the right type and compute a representative point ourselves.
-- The Opdag Verden scraper found **0 events** on 17 Sep and 8 Oct 2026. That was the scraper, not the source: the site had moved to a new system and the scraper no longer matched it (fixed 13 Oct 2026, see `docs/scrapers.md`). Since then about 40 landmark lookups per run fall back to the address search, and many find nothing ("Hald Sø", "Enebærodde"), so those events get no map pin.
-
-Worth revisiting now that Opdag Verden events are scraped again. A cheaper alternative is a small hand-kept map of their recurring landmarks to coordinates.
 
 ### PR 4 (last step): Danish translation catch-up
 

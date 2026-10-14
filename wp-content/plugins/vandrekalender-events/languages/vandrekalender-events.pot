@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-14T08:29:00+00:00\n"
+"POT-Creation-Date: 2026-10-14T15:41:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -138,7 +138,7 @@ msgstr ""
 
 #: blocks/event-filters/render.php:31
 #: build/blocks/event-filters/render.php:31
-#: includes/event/class-event.php:662
+#: includes/event/class-event.php:688
 msgid "Region"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 #: blocks/event-filters/render.php:42
 #: build/blocks/event-filters/render.php:41
 #: build/blocks/event-filters/render.php:42
-#: includes/event/class-event.php:697
+#: includes/event/class-event.php:723
 msgid "Length"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgstr[1] ""
 #: build/blocks/event-info-card/render.php:105
 #: build/blocks/event-info-card/render.php:217
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:782
+#: resources/event-meta-fields/index.js:792
 msgid "Route"
 msgstr ""
 
@@ -623,7 +623,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:91
+#: includes/event/class-event.php:92
 msgid "Event"
 msgstr ""
 
@@ -654,64 +654,60 @@ msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event
 msgstr ""
 
 #: includes/class-geocoder.php:178
-#: includes/class-geocoder.php:684
+#: includes/class-geocoder.php:665
 msgid "Address search returned an unexpected response."
 msgstr ""
 
-#: includes/class-geocoder.php:293
-msgid "Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead."
-msgstr ""
-
-#: includes/class-geocoder.php:552
+#: includes/class-geocoder.php:533
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr ""
 
-#: includes/class-geocoder.php:556
+#: includes/class-geocoder.php:537
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:578
+#: includes/class-geocoder.php:559
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:591
+#: includes/class-geocoder.php:572
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:599
+#: includes/class-geocoder.php:580
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr ""
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:612
+#: includes/class-geocoder.php:593
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:613
+#: includes/class-geocoder.php:594
 msgid "unexpected response"
 msgstr ""
 
-#: includes/class-geocoder.php:634
+#: includes/class-geocoder.php:615
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr ""
 
-#: includes/class-geocoder.php:639
+#: includes/class-geocoder.php:620
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:659
+#: includes/class-geocoder.php:640
 #, php-format
 msgid "Address search request failed: %s"
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:672
+#: includes/class-geocoder.php:653
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr ""
@@ -912,133 +908,157 @@ msgstr ""
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:90
-#: includes/event/class-event.php:92
+#: includes/event/class-event.php:91
+#: includes/event/class-event.php:93
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:93
+#: includes/event/class-event.php:94
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:94
+#: includes/event/class-event.php:95
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:95
+#: includes/event/class-event.php:96
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:96
+#: includes/event/class-event.php:97
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:97
+#: includes/event/class-event.php:98
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:98
+#: includes/event/class-event.php:99
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:100
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:100
+#: includes/event/class-event.php:101
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:102
 msgid "No events found in trash."
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:579
+#: includes/event/class-event.php:599
 #, php-format
 msgid "%s° N"
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:579
+#: includes/event/class-event.php:599
 #, php-format
 msgid "%s° S"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:584
+#: includes/event/class-event.php:604
 #, php-format
 msgid "%s° E"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:584
+#: includes/event/class-event.php:604
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:589
+#: includes/event/class-event.php:609
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:661
-#: includes/event/class-event.php:669
+#: includes/event/class-event.php:687
+#: includes/event/class-event.php:695
 msgid "Regions"
 msgstr ""
 
-#: includes/event/class-event.php:663
+#: includes/event/class-event.php:689
 msgid "Search Regions"
 msgstr ""
 
-#: includes/event/class-event.php:664
+#: includes/event/class-event.php:690
 msgid "All Regions"
 msgstr ""
 
-#: includes/event/class-event.php:665
+#: includes/event/class-event.php:691
 msgid "Edit Region"
 msgstr ""
 
-#: includes/event/class-event.php:666
+#: includes/event/class-event.php:692
 msgid "Update Region"
 msgstr ""
 
-#: includes/event/class-event.php:667
+#: includes/event/class-event.php:693
 msgid "Add New Region"
 msgstr ""
 
-#: includes/event/class-event.php:668
+#: includes/event/class-event.php:694
 msgid "New Region Name"
 msgstr ""
 
-#: includes/event/class-event.php:696
-#: includes/event/class-event.php:704
+#: includes/event/class-event.php:722
+#: includes/event/class-event.php:730
 msgid "Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:698
+#: includes/event/class-event.php:724
 msgid "Search Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:699
+#: includes/event/class-event.php:725
 msgid "All Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:700
+#: includes/event/class-event.php:726
 msgid "Edit Length"
 msgstr ""
 
-#: includes/event/class-event.php:701
+#: includes/event/class-event.php:727
 msgid "Update Length"
 msgstr ""
 
-#: includes/event/class-event.php:702
+#: includes/event/class-event.php:728
 msgid "Add New Length"
 msgstr ""
 
-#: includes/event/class-event.php:703
+#: includes/event/class-event.php:729
 msgid "New Length Name"
+msgstr ""
+
+#. translators: %s: trip title.
+#: includes/scrapers/class-scraper-opdagverden.php:152
+#, php-format
+msgid "No \"Start: Kl. … ved …\" line in \"%s\", so its meeting point is the trip's area name."
+msgstr ""
+
+#. translators: %s: trip title.
+#: includes/scrapers/class-scraper-opdagverden.php:334
+#, php-format
+msgid "The route point of \"%s\" is outside its region, so the pin is placed in the middle of the region."
+msgstr ""
+
+#. translators: %s: trip title.
+#: includes/scrapers/class-scraper-opdagverden.php:349
+#, php-format
+msgid "\"%s\" has no meeting point link, route point or region, so it gets no pin."
+msgstr ""
+
+#. translators: %s: Google Maps link.
+#: includes/scrapers/class-scraper-opdagverden.php:393
+#, php-format
+msgid "Could not read the coordinates of the meeting point link %s."
 msgstr ""
 
 #: blocks/event-calendar/edit.js:16
@@ -1177,57 +1197,57 @@ msgid "Address search is unavailable. Try again later, or paste coordinates belo
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:413
+#: resources/event-meta-fields/index.js:423
 msgid "Location"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:418
+#: resources/event-meta-fields/index.js:428
 msgid "Place name (optional)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:421
+#: resources/event-meta-fields/index.js:431
 msgid "e.g. Dyrehaven or Silkeborg Sti"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:425
+#: resources/event-meta-fields/index.js:435
 msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:435
+#: resources/event-meta-fields/index.js:445
 msgid "Address"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:438
+#: resources/event-meta-fields/index.js:448
 msgid "Start typing an address…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:454
+#: resources/event-meta-fields/index.js:464
 msgid "Address search is not configured. Paste coordinates below instead."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:477
+#: resources/event-meta-fields/index.js:487
 msgid "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:483
+#: resources/event-meta-fields/index.js:493
 msgid "Municipality"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:487
+#: resources/event-meta-fields/index.js:497
 msgid "Choose municipality…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:544
+#: resources/event-meta-fields/index.js:554
 msgid "Coordinates"
 msgstr ""
 
@@ -1237,150 +1257,150 @@ msgid "The nearest address could not be looked up. The pin is saved; add the add
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:548
+#: resources/event-meta-fields/index.js:558
 msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:560
+#: resources/event-meta-fields/index.js:570
 msgid "Looking up the nearest address…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:593
+#: resources/event-meta-fields/index.js:603
 msgid "GPX route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:611
+#: resources/event-meta-fields/index.js:621
 msgid "Replace"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:617
-#: resources/event-meta-fields/index.js:766
-#: resources/event-meta-fields/index.js:789
+#: resources/event-meta-fields/index.js:627
+#: resources/event-meta-fields/index.js:776
+#: resources/event-meta-fields/index.js:799
 msgid "Remove"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:627
+#: resources/event-meta-fields/index.js:637
 msgid "Upload GPX"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:666
+#: resources/event-meta-fields/index.js:676
 msgid "Event Details"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:676
+#: resources/event-meta-fields/index.js:686
 msgid "Event Date"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:700
+#: resources/event-meta-fields/index.js:710
 msgid "Routes"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:705
+#: resources/event-meta-fields/index.js:715
 msgid "No routes added yet."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:794
+#: resources/event-meta-fields/index.js:804
 msgid "Distance (km)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:805
+#: resources/event-meta-fields/index.js:815
 msgid "Start Time"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:814
+#: resources/event-meta-fields/index.js:824
 msgid "Cutoff Time (hours)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:820
+#: resources/event-meta-fields/index.js:830
 msgid "Maximum hours allowed to finish the route."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:829
+#: resources/event-meta-fields/index.js:839
 msgid "Price (DKK)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:873
+#: resources/event-meta-fields/index.js:883
 msgid "Done"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:729
+#: resources/event-meta-fields/index.js:739
 msgid "Start:"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:735
+#: resources/event-meta-fields/index.js:745
 msgid "GPX"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:745
+#: resources/event-meta-fields/index.js:755
 msgid "Incomplete route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:759
+#: resources/event-meta-fields/index.js:769
 msgid "Edit"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:887
+#: resources/event-meta-fields/index.js:897
 msgid "Add route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:903
+#: resources/event-meta-fields/index.js:913
 msgid "Organiser"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:909
+#: resources/event-meta-fields/index.js:919
 msgid "Name"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:912
+#: resources/event-meta-fields/index.js:922
 msgid "Organiser or club name"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:918
+#: resources/event-meta-fields/index.js:928
 msgid "Website"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:929
+#: resources/event-meta-fields/index.js:939
 msgid "Contact email (admin only)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:934
+#: resources/event-meta-fields/index.js:944
 msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:998
+#: resources/event-meta-fields/index.js:1008
 msgid "New here?"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1003
-#: resources/event-meta-fields/index.js:1014
+#: resources/event-meta-fields/index.js:1013
+#: resources/event-meta-fields/index.js:1024
 msgid "Watch the how-to video"
 msgstr ""
 

@@ -275,11 +275,14 @@ const LocationPanel = ({ meta, setMeta }) => {
   const onQueryChange = value => {
     cancelPendingCoords();
     setMunicipalityUnknown(false);
-    // Clear derived fields when the user edits the address manually.
+    // Clear derived fields when the user edits the address manually. A
+    // location set by hand is exact, so it also drops a scraper's
+    // "approximate" mark (event_location_approximate) here and below.
     setMeta({
       event_address: value,
       event_lat: 0,
       event_lng: 0,
+      event_location_approximate: false,
       event_municipality: '',
     });
 
@@ -308,6 +311,7 @@ const LocationPanel = ({ meta, setMeta }) => {
       event_address: titel,
       event_lat: 0,
       event_lng: 0,
+      event_location_approximate: false,
       event_municipality: '',
     });
 
@@ -343,6 +347,7 @@ const LocationPanel = ({ meta, setMeta }) => {
       setMetaRef.current({
         event_lat: lat,
         event_lng: lng,
+        event_location_approximate: false,
         event_municipality: municipality,
       });
       setSuggestions([]);
@@ -365,7 +370,11 @@ const LocationPanel = ({ meta, setMeta }) => {
     // without this the meta would never change and the post would not
     // become dirty (Save stays disabled).
     if (!value.trim()) {
-      setMeta({ event_lat: 0, event_lng: 0 });
+      setMeta({
+        event_lat: 0,
+        event_lng: 0,
+        event_location_approximate: false,
+      });
       setCoordsDraft(null);
       return;
     }
@@ -392,6 +401,7 @@ const LocationPanel = ({ meta, setMeta }) => {
       setMetaRef.current({
         event_lat: parsed.lat,
         event_lng: parsed.lng,
+        event_location_approximate: false,
         ...(moved && { event_address: '', event_municipality: '' }),
       });
       setCoordsDraft(null);

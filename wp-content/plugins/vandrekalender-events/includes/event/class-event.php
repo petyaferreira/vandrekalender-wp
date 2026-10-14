@@ -28,16 +28,17 @@ class Event {
 	public const TAX_LENGTH = 'event_length';
 
 	// Meta keys.
-	public const META_DATE            = 'event_date';
-	public const META_ROUTES          = 'event_routes';
-	public const META_PLACE_NAME      = 'event_place_name';
-	public const META_ADDRESS         = 'event_address';
-	public const META_LAT             = 'event_lat';
-	public const META_LNG             = 'event_lng';
-	public const META_MUNICIPALITY    = 'event_municipality';
-	public const META_ORGANISER_NAME  = 'event_organiser_name';
-	public const META_ORGANISER_URL   = 'event_organiser_url';
-	public const META_ORGANISER_EMAIL = 'event_organiser_email';
+	public const META_DATE                 = 'event_date';
+	public const META_ROUTES               = 'event_routes';
+	public const META_PLACE_NAME           = 'event_place_name';
+	public const META_ADDRESS              = 'event_address';
+	public const META_LAT                  = 'event_lat';
+	public const META_LNG                  = 'event_lng';
+	public const META_MUNICIPALITY         = 'event_municipality';
+	public const META_LOCATION_APPROXIMATE = 'event_location_approximate';
+	public const META_ORGANISER_NAME       = 'event_organiser_name';
+	public const META_ORGANISER_URL        = 'event_organiser_url';
+	public const META_ORGANISER_EMAIL      = 'event_organiser_email';
 
 	// Source / scraping meta.
 	public const META_SOURCE      = 'event_source';
@@ -228,6 +229,21 @@ class Event {
 				'single'       => true,
 				'show_in_rest' => true,
 				'default'      => '',
+			]
+		);
+
+		// True when event_lat/event_lng only place the walk roughly (a
+		// scraper had no exact meeting point), so the pin must not be used
+		// for directions or sent to search engines. The editor clears it
+		// whenever someone sets the location by hand.
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_LOCATION_APPROXIMATE,
+			[
+				'type'         => 'boolean',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => false,
 			]
 		);
 
@@ -537,6 +553,10 @@ class Event {
 	 * An event's stored coordinates, or null when it has none.
 	 *
 	 * The editor stores 0 when an address is cleared, so 0 counts as missing.
+	 * An approximate pin (META_LOCATION_APPROXIMATE) counts as missing too:
+	 * these coordinates are shown as a GPS position and used for directions,
+	 * so they must be the real meeting point. The map's pins read the meta
+	 * directly and do include approximate ones.
 	 *
 	 * @param int $post_id Event post ID.
 	 * @return array{lat: float, lng: float}|null
@@ -545,7 +565,7 @@ class Event {
 		$lat = (float) get_post_meta( $post_id, self::META_LAT, true );
 		$lng = (float) get_post_meta( $post_id, self::META_LNG, true );
 
-		if ( 0.0 === $lat || 0.0 === $lng ) {
+		if ( 0.0 === $lat || 0.0 === $lng || get_post_meta( $post_id, self::META_LOCATION_APPROXIMATE, true ) ) {
 			return null;
 		}
 
@@ -591,19 +611,25 @@ class Event {
 
 	/**
 	 * Google Maps directions link for an event: to its address, or to its
-	 * coordinates when it has no address.
+	 * coordinates when it has no address. When its pin is only approximate,
+	 * to its place name instead ("Rungsted station, Danmark"), which Google
+	 * Maps finds by name.
 	 *
 	 * @param int $post_id Event post ID.
-	 * @return string Empty string when the event has neither.
+	 * @return string Empty string when the event has none of these.
 	 */
 	public static function directions_url( int $post_id ): string {
 		$address = trim( (string) get_post_meta( $post_id, self::META_ADDRESS, true ) );
 		$coords  = self::coordinates( $post_id );
+		// Without notes such as "(afhænger af busplan 2026, …)".
+		$place = trim( (string) preg_replace( '/\s*\([^)]*\)?/u', '', (string) get_post_meta( $post_id, self::META_PLACE_NAME, true ) ) );
 
 		if ( '' !== $address ) {
 			$destination = $address;
 		} elseif ( null !== $coords ) {
 			$destination = $coords['lat'] . ',' . $coords['lng'];
+		} elseif ( '' !== $place && get_post_meta( $post_id, self::META_LOCATION_APPROXIMATE, true ) ) {
+			$destination = $place . ', Danmark';
 		} else {
 			return '';
 		}
