@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-13T10:31:03+00:00\n"
+"POT-Creation-Date: 2026-10-14T08:29:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -788,76 +788,126 @@ msgstr ""
 msgid "Event Organizer"
 msgstr ""
 
-#: includes/class-scraper-admin.php:31
-#: includes/class-scraper-admin.php:32
-#: includes/class-scraper-admin.php:52
+#: includes/class-scraper-admin.php:33
+#: includes/class-scraper-admin.php:34
+#: includes/class-scraper-admin.php:54
 msgid "Scraper Log"
 msgstr ""
 
-#: includes/class-scraper-admin.php:57
+#: includes/class-scraper-admin.php:59
 msgid "No scraper runs recorded yet."
 msgstr ""
 
-#: includes/class-scraper-admin.php:64
+#: includes/class-scraper-admin.php:66
 msgid "When"
 msgstr ""
 
-#: includes/class-scraper-admin.php:65
+#: includes/class-scraper-admin.php:67
 msgid "Trigger"
 msgstr ""
 
-#: includes/class-scraper-admin.php:66
+#: includes/class-scraper-admin.php:68
 msgid "Duration"
 msgstr ""
 
-#: includes/class-scraper-admin.php:67
+#: includes/class-scraper-admin.php:69
 msgid "Events updated"
 msgstr ""
 
-#: includes/class-scraper-admin.php:68
+#: includes/class-scraper-admin.php:70
 msgid "Per scraper"
 msgstr ""
 
 #. translators: %s: next scheduled run, formatted in the site timezone.
-#: includes/class-scraper-admin.php:90
+#: includes/class-scraper-admin.php:92
 #, php-format
 msgid "Automatic scraping is enabled. Next run: %s."
 msgstr ""
 
-#: includes/class-scraper-admin.php:93
+#: includes/class-scraper-admin.php:95
 msgid "Automatic scraping is enabled, but no run is scheduled yet."
 msgstr ""
 
-#: includes/class-scraper-admin.php:95
+#: includes/class-scraper-admin.php:97
 msgid "Automatic scraping is disabled here. Runs are triggered manually (./scrape.sh)."
 msgstr ""
 
 #. translators: 1: scraper name, 2: error message.
-#: includes/class-scraper-admin.php:121
+#: includes/class-scraper-admin.php:123
 #, php-format
 msgid "%1$s: error — %2$s"
 msgstr ""
 
 #. translators: 1: scraper name, 2: number of events.
-#: includes/class-scraper-admin.php:125
+#: includes/class-scraper-admin.php:127
 #, php-format
 msgid "%1$s: %2$d"
 msgstr ""
 
 #. translators: 1: scraper name, 2: warning message.
-#: includes/class-scraper-admin.php:130
+#: includes/class-scraper-admin.php:132
 #, php-format
 msgid "%1$s: %2$s"
 msgstr ""
 
+#: includes/class-scraper-alerts.php:69
+msgid "These sources stopped working in the nightly scraper run:"
+msgstr ""
+
+#: includes/class-scraper-alerts.php:75
+msgid "Their events stay as they are until the scraper is fixed, but new and changed events from these sources are not picked up."
+msgstr ""
+
+#: includes/class-scraper-alerts.php:80
+msgid "These sources work again:"
+msgstr ""
+
+#. translators: 1: source name, 2: number of events.
+#: includes/class-scraper-alerts.php:84
+#, php-format
+msgid "%1$s: %2$d event updated"
+msgid_plural "%1$s: %2$d events updated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-scraper-alerts.php:89
+msgid "You get this email only when a source stops or starts working, not every night."
+msgstr ""
+
+#. translators: %s: URL of the Scraper Log admin page.
+#: includes/class-scraper-alerts.php:91
+#, php-format
+msgid "Scraper Log: %s"
+msgstr ""
+
+#. translators: 1: site name, 2: source names.
+#: includes/class-scraper-alerts.php:95
+#, php-format
+msgid "[%1$s] Scraper stopped working: %2$s"
+msgstr ""
+
+#. translators: 1: site name, 2: source names.
+#: includes/class-scraper-alerts.php:97
+#, php-format
+msgid "[%1$s] Scraper works again: %2$s"
+msgstr ""
+
+#: includes/class-scraper-base.php:72
+msgid "Could not load the source. Its site may be down, or its address has changed."
+msgstr ""
+
+#: includes/class-scraper-base.php:74
+msgid "The source loaded, but no events were found in it. Its site may have changed."
+msgstr ""
+
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:449
+#: includes/class-scraper-base.php:481
 #, php-format
 msgid "Could not download the GPX file %1$s: %2$s"
 msgstr ""
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:472
+#: includes/class-scraper-base.php:504
 #, php-format
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""

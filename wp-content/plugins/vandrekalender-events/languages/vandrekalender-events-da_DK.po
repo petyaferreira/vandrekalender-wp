@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-13T10:31:03+00:00\n"
+"POT-Creation-Date: 2026-10-14T08:29:00+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -751,75 +751,125 @@ msgstr "Introduktionsvideoen mangler på %s, så arrangører får ingen video vi
 msgid "Event Organizer"
 msgstr "Arrangør"
 
-#: includes/class-scraper-admin.php:31 includes/class-scraper-admin.php:32
-#: includes/class-scraper-admin.php:52
+#: includes/class-scraper-admin.php:33 includes/class-scraper-admin.php:34
+#: includes/class-scraper-admin.php:54
 msgid "Scraper Log"
 msgstr "Scraper-log"
 
-#: includes/class-scraper-admin.php:57
+#: includes/class-scraper-admin.php:59
 msgid "No scraper runs recorded yet."
 msgstr "Ingen scraper-kørsler registreret endnu."
 
-#: includes/class-scraper-admin.php:64
+#: includes/class-scraper-admin.php:66
 msgid "When"
 msgstr "Hvornår"
 
-#: includes/class-scraper-admin.php:65
+#: includes/class-scraper-admin.php:67
 msgid "Trigger"
 msgstr "Udløser"
 
-#: includes/class-scraper-admin.php:66
+#: includes/class-scraper-admin.php:68
 msgid "Duration"
 msgstr "Varighed"
 
-#: includes/class-scraper-admin.php:67
+#: includes/class-scraper-admin.php:69
 msgid "Events updated"
 msgstr "Opdaterede begivenheder"
 
-#: includes/class-scraper-admin.php:68
+#: includes/class-scraper-admin.php:70
 msgid "Per scraper"
 msgstr "Pr. scraper"
 
 #. translators: %s: next scheduled run, formatted in the site timezone.
-#: includes/class-scraper-admin.php:90
+#: includes/class-scraper-admin.php:92
 #, php-format
 msgid "Automatic scraping is enabled. Next run: %s."
 msgstr "Automatisk scraping er slået til. Næste kørsel: %s."
 
-#: includes/class-scraper-admin.php:93
+#: includes/class-scraper-admin.php:95
 msgid "Automatic scraping is enabled, but no run is scheduled yet."
 msgstr "Automatisk scraping er slået til, men der er ikke planlagt nogen kørsel endnu."
 
-#: includes/class-scraper-admin.php:95
+#: includes/class-scraper-admin.php:97
 msgid "Automatic scraping is disabled here. Runs are triggered manually (./scrape.sh)."
 msgstr "Automatisk scraping er slået fra her. Kørsler startes manuelt (./scrape.sh)."
 
 #. translators: 1: scraper name, 2: error message.
-#: includes/class-scraper-admin.php:121
+#: includes/class-scraper-admin.php:123
 #, php-format
 msgid "%1$s: error — %2$s"
 msgstr "%1$s: fejl — %2$s"
 
 #. translators: 1: scraper name, 2: number of events.
-#: includes/class-scraper-admin.php:125
+#: includes/class-scraper-admin.php:127
 #, php-format
 msgid "%1$s: %2$d"
 msgstr "%1$s: %2$d"
 
 #. translators: 1: scraper name, 2: warning message.
-#: includes/class-scraper-admin.php:130
+#: includes/class-scraper-admin.php:132
 #, php-format
 msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
+#: includes/class-scraper-alerts.php:69
+msgid "These sources stopped working in the nightly scraper run:"
+msgstr "Disse kilder holdt op med at virke i nattens scraper-kørsel:"
+
+#: includes/class-scraper-alerts.php:75
+msgid "Their events stay as they are until the scraper is fixed, but new and changed events from these sources are not picked up."
+msgstr "Deres begivenheder forbliver som de er, indtil scraperen er rettet, men nye og ændrede begivenheder fra disse kilder kommer ikke med."
+
+#: includes/class-scraper-alerts.php:80
+msgid "These sources work again:"
+msgstr "Disse kilder virker igen:"
+
+#. translators: 1: source name, 2: number of events.
+#: includes/class-scraper-alerts.php:84
+#, php-format
+msgid "%1$s: %2$d event updated"
+msgid_plural "%1$s: %2$d events updated"
+msgstr[0] "%1$s: %2$d begivenhed opdateret"
+msgstr[1] "%1$s: %2$d begivenheder opdateret"
+
+#: includes/class-scraper-alerts.php:89
+msgid "You get this email only when a source stops or starts working, not every night."
+msgstr "Du får kun denne e-mail, når en kilde holder op med at virke eller virker igen, ikke hver nat."
+
+#. translators: %s: URL of the Scraper Log admin page.
+#: includes/class-scraper-alerts.php:91
+#, php-format
+msgid "Scraper Log: %s"
+msgstr "Scraper-log: %s"
+
+#. translators: 1: site name, 2: source names.
+#: includes/class-scraper-alerts.php:95
+#, php-format
+msgid "[%1$s] Scraper stopped working: %2$s"
+msgstr "[%1$s] Scraper virker ikke længere: %2$s"
+
+#. translators: 1: site name, 2: source names.
+#: includes/class-scraper-alerts.php:97
+#, php-format
+msgid "[%1$s] Scraper works again: %2$s"
+msgstr "[%1$s] Scraper virker igen: %2$s"
+
+#: includes/class-scraper-base.php:72
+msgid "Could not load the source. Its site may be down, or its address has changed."
+msgstr "Kunne ikke hente kilden. Siden kan være nede, eller adressen kan være ændret."
+
+#: includes/class-scraper-base.php:74
+msgid "The source loaded, but no events were found in it. Its site may have changed."
+msgstr "Kilden blev hentet, men der blev ikke fundet nogen begivenheder i den. Siden kan være ændret."
+
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:449
+#: includes/class-scraper-base.php:481
 #, php-format
 msgid "Could not download the GPX file %1$s: %2$s"
 msgstr "Kunne ikke hente GPX-filen %1$s: %2$s"
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:472
+#: includes/class-scraper-base.php:504
 #, php-format
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr "Kunne ikke tilføje GPX-filen %1$s: %2$s"

@@ -162,9 +162,11 @@ will see them. Harmless at this scale.
 
 ## Email
 
-The site sends real email from two places: WordPress core (registration, password
-reset) and the join flow (sign-up and cancellation confirmations to both the
-attendee and the organiser — see `docs/authentication.md`). Everything goes
+The site sends real email from three places: WordPress core (registration, password
+reset), the join flow (sign-up and cancellation confirmations to both the
+attendee and the organiser — see `docs/authentication.md`), and the nightly
+scraper run, which emails `kontakt@allevandreture.dk` when a source breaks or
+works again (see `docs/scrapers.md` → Alerts when a source breaks). Everything goes
 through `wp_mail()`, so the transport is configured once, per environment, and
 nothing in the plugin needs to know about it.
 
@@ -199,17 +201,21 @@ Deliberately configured in PHP rather than in WordPress:
 > **Known local wrinkle, unrelated to Mailpit:** mail sent with WordPress's
 > *default* From address fails locally, because that address is derived from the
 > site host and becomes `wordpress@localhost` — no TLD, which PHPMailer rejects
-> as invalid. The join emails are unaffected: they set their own valid From
-> (`vandrekalender_join_email_from`, defaulting to the admin email). Core's
+> as invalid. The join emails and the scraper alerts are unaffected: they set their own valid From
+> (the admin email; for the join emails via `vandrekalender_join_email_from`). Core's
 > password-reset mail does hit it.
 
-### Production — needs a real transport
+### Production — FluentSMTP
 
-`wp_mail()` on Nordicway falls through to PHP `mail()`, which sends as
-`wordpress@vandrekalender.dk` and will not pass SPF/DKIM — expect spam foldering
-or silent drops. FluentSMTP ships with the site (currently **inactive**);
-activate it and point it at the `kontakt@vandrekalender.dk` mailbox. No code
-change is needed — every `wp_mail()` call picks it up automatically.
+FluentSMTP is active on production (set up 5 Sep 2026, see
+`docs/migration-to-allevandreture.md`). It sends over SMTP as the
+`kontakt@allevandreture.dk` mailbox, with "Force From Email" and "Force Sender
+Name" on, so every `wp_mail()` (core, join emails, scraper alerts) goes out as
+"Alle Vandreture" <kontakt@allevandreture.dk>, whatever From the code sets. Its
+settings live in the database (`fluentmail-settings`), not in the repo.
+
+Staging has no working outbound mail: there is no SMTP connection there, and
+PHP `mail()` is not delivered.
 
 ---
 

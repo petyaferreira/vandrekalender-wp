@@ -24,6 +24,13 @@ abstract class Vandrekalender_Scraper_Base {
 	protected array $warnings = [];
 
 	/**
+	 * Why the source gave no events in the current run, or '' if it gave some.
+	 *
+	 * @var string
+	 */
+	protected string $source_problem = '';
+
+	/**
 	 * Fetch raw HTML from the event source.
 	 *
 	 * @return string Raw HTML body.
@@ -45,6 +52,7 @@ abstract class Vandrekalender_Scraper_Base {
 	 */
 	public function run(): int {
 		$this->seen_source_urls = [];
+		$this->source_problem   = '';
 
 		$html   = $this->fetch();
 		$events = $this->parse( $html );
@@ -57,9 +65,33 @@ abstract class Vandrekalender_Scraper_Base {
 			}
 		}
 
+		// Every source has always listed upcoming events, so finding none
+		// almost always means its site moved or changed and the scraper needs
+		// fixing. Shown in the Scraper Log and emailed by the nightly run.
+		if ( '' === $html ) {
+			$this->source_problem = __( 'Could not load the source. Its site may be down, or its address has changed.', 'vandrekalender-events' );
+		} elseif ( empty( $this->seen_source_urls ) ) {
+			$this->source_problem = __( 'The source loaded, but no events were found in it. Its site may have changed.', 'vandrekalender-events' );
+		}
+		if ( '' !== $this->source_problem ) {
+			$this->record_warning( $this->source_problem );
+		}
+
 		$this->unpublish_stale_events();
 
 		return $count;
+	}
+
+	/**
+	 * Why the last run found no events at the source, or '' if it found some.
+	 *
+	 * Read by Vandrekalender_Scraper_Scheduler::execute(), which emails an
+	 * alert when a source stops working (Vandrekalender_Scraper_Alerts).
+	 *
+	 * @return string
+	 */
+	public function source_problem(): string {
+		return $this->source_problem;
 	}
 
 	/**
