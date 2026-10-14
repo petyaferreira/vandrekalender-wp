@@ -1,6 +1,6 @@
 # Route GPX on events: implementation plan
 
-Status: planned, September 2026. Owner: Petya. Split into small PRs, one per section below, in order. Each PR must pass `composer run phpcs`, build with `npm run build` in the plugin, and be tested on the local Docker stack before opening.
+Status: done (PRs 1–4 merged by 13 October 2026; PR 5 dropped, PR 6 moved to [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31)). Owner: Petya. Split into small PRs, one per section below, in order. Each PR must pass `composer run phpcs`, build with `npm run build` in the plugin, and be tested on the local Docker stack before opening.
 
 ## Goal
 
@@ -108,39 +108,20 @@ For each source with GPX links: in `parse()`, collect `<a>` elements whose `href
 
 Test: run `./scrape.sh` twice on local and confirm the second run does not re download (check the scraper log and that the attachment ID is unchanged).
 
-## PR 5 (optional, later): prefill distance from the GPX
+## PR 5: prefill distance from the GPX (dropped)
 
-In the editor, after a GPX is selected, fetch the file URL, parse the `trkpt` points in the browser and sum haversine distances; if `distance_km` is empty, fill it rounded to one decimal. Small and self contained, nice for organisers, but not needed for the feature to work.
+Dropped on 14 October 2026: Petya decided it isn't needed. The idea was to fill an empty `distance_km` from the track's length when a GPX is selected in the editor.
 
-## PR 6 (follow-up): bundle Leaflet instead of loading it from cdnjs
+## PR 6: bundle Leaflet (moved)
 
-Today Leaflet 1.9.4, leaflet.markercluster 1.5.3 and leaflet-gpx 2.2.0 are loaded from cdnjs with the version pinned in the URL, in both `blocks/event-map/` and `blocks/event-route-map/` (`view.js` for the scripts, `render.php` for the CSS). Pinning is correct and stays, but four things are weak:
-
-1. No integrity check. If cdnjs served a changed file, the browser would run it.
-2. No update signal. The libraries are only URLs, so nothing tells us when a security fix is released.
-3. The version is written in four places (two `view.js`, two `render.php`).
-4. Every visitor's IP goes to Cloudflare (GDPR).
-
-Change:
-
-- `npm install --save-exact leaflet leaflet.markercluster leaflet-gpx` in the plugin, so the exact versions live in `package.json` and `package-lock.json`.
-- Both `view.js` files keep lazy loading, but with a dynamic `import()` of the npm packages, so webpack splits them into their own chunk in `build/` and the pages without a map do not pay for them.
-- CSS: import the Leaflet (and markercluster) CSS from the packages so it ends up in the built block stylesheet, and remove the cdnjs `wp_enqueue_style()` calls from both `render.php`. This keeps the rule from `docs/frontend.md` that CSS is never injected from JS.
-- Marker icons: Leaflet's default icon images break when bundled. The route map already uses its own icons; check the event map does too, otherwise point `L.Icon.Default` at the bundled images.
-- Add `.github/dependabot.yml` with the `npm` ecosystem for `wp-content/plugins/vandrekalender-events` and `wp-content/themes/vandrekalender-theme` (weekly), so GitHub opens a PR for new versions and security advisories.
-- When nothing loads from cdnjs any more, remove cdnjs from the CSP if nothing else uses it.
-- Update `docs/frontend.md` (the Event Map section describes the cdnjs loading) and the "Leaflet and leaflet-gpx from cdnjs" decision below.
-
-Branch: `feature/gpx-6-bundle-leaflet`, stacked on the last GPX branch, or from `main` if the GPX PRs are already merged by then.
-
-Test: event map on the front page (markers, clusters, popups) and the route map on an event with GPX (tracks, start and finish markers, tab switching) still work; the network tab shows no requests to cdnjs; `npm run build` passes; phone width.
+Moved to [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31), because it covers the event map too and isn't GPX-specific.
 
 ## Decisions and why
 
 - GPX stays a file; we do not store the geometry in post meta. Tracks can have thousands of points and the map only needs them in the browser.
 - One code path on the frontend: everything is an attachment ID, whether uploaded or scraped. Scrapers download the file instead of linking to the source, so the map does not break when the source site changes or blocks hotlinking.
 - Fields live inside the existing route objects, not as new meta keys, because a GPX belongs to a distance, not to the event.
-- Leaflet and leaflet-gpx from cdnjs, consistent with the Event Map block and the CSP already allowing cdnjs. Pinned versions, never "latest". To be replaced by bundling through npm in PR 6 (8 October 2026), see there for why.
+- Leaflet and leaflet-gpx from cdnjs, consistent with the Event Map block and the CSP already allowing cdnjs. Pinned versions, never "latest". To be replaced by bundling through npm (decided 8 October 2026), see [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31) for why.
 - Map in the main column, GPX download public, no route icon on cards yet (see Decisions made below).
 
 ## Decisions made (29 September 2026)

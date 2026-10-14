@@ -44,6 +44,8 @@ Why this matters for security: without verification, anyone could register as `f
 
 ## The Organizer Entity
 
+> **Not built yet.** This section is the design. Whether and when to build it is open in [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32); today the organiser is only the free-text `event_organiser_name`.
+
 The organizer is promoted from a free-text field to a real entity, implemented as a **custom taxonomy** named `organizer`.
 
 - Each organization (DVL, Mammutmarch, …) is one taxonomy term.
@@ -93,6 +95,8 @@ function vk_attach_user_to_organizer($user_id, $email) {
 Many volunteer organizations (DVL chapters in particular) have members on private Gmail addresses, so domain match will not catch everyone. The site admin can set `organizer_id` on any user from wp-admin. Low volume, ~30 seconds per case.
 
 ### V2 — Member invitations
+
+Tracked in [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41).
 
 A verified organization member can invite a colleague by email, regardless of the colleague's email domain:
 
@@ -213,7 +217,7 @@ The logged-out branch deliberately skips the nonce check: it changes nothing but
 
 The organiser address is `event_organiser_email`, falling back to the event's author (on a manually created event, that is the person running the walk). From defaults to the site admin address rather than WordPress's `wordpress@<domain>`, which rarely passes SPF; Reply-To is crossed over so the two can simply reply to each other. Transport per environment is in `docs/deployment.md` → Email.
 
-Because email verification is not yet enforced (see above), a join today only proves control of the account, not of the address. When verification lands, the pending-join cookie should be consumed *after* the verification step, not before.
+Because email verification is not yet enforced (see above; [#40](https://github.com/petyaferreira/vandrekalender-wp/issues/40)), a join today only proves control of the account, not of the address. When verification lands, the pending-join cookie should be consumed *after* the verification step, not before.
 
 ## Interaction with the Claim Flow
 

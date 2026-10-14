@@ -18,7 +18,7 @@ Walking events calendar for Denmark. Aggregates events from scrapers, Facebook, 
 | Monetisation and business model | `docs/monetisation.md` |
 | Deployment, CI/CD, environments | `docs/deployment.md` |
 | Internationalisation — Polylang, translation functions, REST API lang filtering | `docs/i18n.md` |
-| Route GPX feature — planned PR by PR, in order | `docs/route-gpx-plan.md` |
+| Route GPX feature — plan, PR by PR (done) | `docs/route-gpx-plan.md` |
 | DAWA → Adressevælger migration (address search) — planned PR by PR | `docs/dawa-migration-plan.md` |
 
 ---
@@ -82,9 +82,23 @@ Before calling a change done, grep the repo for the old names (service name, URL
 
 ---
 
+## Tasks and issues
+
+GitHub Issues (`petyaferreira/vandrekalender-wp`) is the project's only to-do list. There is no separate board tool.
+
+- **Something found during work that is not part of the current task becomes an issue**, not a note in a doc or a TODO in code. Create it with `gh issue create` (a clear title, what is wrong or wanted, where it was found, and labels), and tell Petya its number.
+- **Work starts from an issue.** Read the issue (`gh issue view <n>`) before starting. If Petya asks for something that has no issue yet, create one first.
+- **Branches** for issue work branch from `main`: `fix/<issue>-<short-name>` for bugs, `feature/<issue>-<short-name>` otherwise (for example `fix/30-opdagverden-landmarks`). Steps of a planned feature follow the plan's naming below.
+- **PRs** say `Closes #<n>` in the description, so merging closes the issue. A PR that does only part of an issue says `Part of #<n>` instead.
+- **Labels:** `bug`, `enhancement`, `documentation`, plus the area (`scrapers`, `frontend`, `admin`), `needs-decision` (Petya decides before any work starts) and `v2` (later, after v1).
+- **Docs describe how things work now.** Open work in a doc is a one-line link to its issue, not a to-do list. When an issue is closed, update the doc so it describes the finished behaviour and remove the link.
+- **Plan files** (`docs/*-plan.md`) are only for features that need several PRs. A plan links to its issue, and gets a short status note when a step is done, dropped or moved.
+
+---
+
 ## Working on a planned feature (PR workflow)
 
-Used for features that are split into small steps in a plan file, for example `docs/route-gpx-plan.md`. Do one PR (one step) at a time.
+Used for features that are split into small steps in a plan file, for example `docs/route-gpx-plan.md`. Do one PR (one step) at a time. The review loop below applies to every PR, planned or not.
 
 **Branches and PRs**
 - Never merge a PR, never push to `main`, never force push. Petya merges.

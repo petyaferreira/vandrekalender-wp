@@ -2,7 +2,7 @@
 
 > Source of truth for blocks, templates, filters, and the calendar UI.
 
-**Status: stub — to be filled in when reviewing Vandrekalender_HomepageStructure_v2.docx and Vandrekalender_Sitemap_v4.docx**
+**Status: stub — to be filled in ([#44](https://github.com/petyaferreira/vandrekalender-wp/issues/44)).**
 
 ---
 

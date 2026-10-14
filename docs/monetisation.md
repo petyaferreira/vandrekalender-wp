@@ -2,7 +2,7 @@
 
 > Source of truth for the business model and revenue strategy.
 
-**Status: stub — to be filled in when reviewing Vandrekalender_Monetisation.docx**
+**Status: stub — to be filled in ([#45](https://github.com/petyaferreira/vandrekalender-wp/issues/45)).**
 
 ---
 
