@@ -295,7 +295,7 @@ File: `includes/class-event-rest-api.php`
 ### Scheduler
 File: `includes/class-scraper-scheduler.php`
 - Registers WP-Cron events on plugin activation
-- Runs each scraper on its own schedule (weekly default)
+- Runs all scrapers once a day (02:12 site time)
 
 ### Base Scraper
 File: `includes/class-scraper-base.php`
