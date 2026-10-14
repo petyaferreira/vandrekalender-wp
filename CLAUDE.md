@@ -94,6 +94,8 @@ GitHub Issues (`petyaferreira/vandrekalender-wp`) is the project's only to-do li
 - **Docs describe how things work now.** Open work in a doc is a one-line link to its issue, not a to-do list. When an issue is closed, update the doc so it describes the finished behaviour and remove the link.
 - **Plan files** (`docs/*-plan.md`) are only for features that need several PRs. A plan links to its issue, and gets a short status note when a step is done, dropped or moved.
 
+---
+
 ## Working on a planned feature (PR workflow)
 
 Used for features that are split into small steps in a plan file, for example `docs/route-gpx-plan.md`. Do one PR (one step) at a time. The review loop below applies to every PR, planned or not.
