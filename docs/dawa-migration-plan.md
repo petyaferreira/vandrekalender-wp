@@ -135,16 +135,11 @@ After the fix is live, re-geocode events scraped since 1 Oct (both the missing c
 - Both services retry once on a dropped connection before treating the service as down for the run.
 - Not done: DAGI/v2 (`DAGI_Kommuneinddeling`) could give the municipality by point-in-polygon instead of "the nearest address's municipality". Only worth it if border cases ever matter ([#43](https://github.com/petyaferreira/vandrekalender-wp/issues/43)).
 
-### Place names (follow-up)
+### Place names (not needed for now)
 
-Tracked in [#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30).
-
-`Geocoder::geocode_place()` (Opdag Verden landmarks such as "Stevns Klint", "Mols Bjerge") still returns nothing; Opdag Verden falls back to the address search. Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
-- `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match, and Opdag Verden writes "Stevns klint".
+Opdag Verden was the only user of `Geocoder::geocode_place()`, which never returned anything after DAWA closed. Since [#30](https://github.com/petyaferreira/vandrekalender-wp/issues/30) it takes its pin from the Google Maps link in the trip description, the trip's route page, or the region centre, and `geocode_place()` is removed. If a source ever needs landmark names again: Datafordeler has a place-name register, **`DS/v2`** (Danske Stednavne), reachable with the same key, but:
+- `DS_Stednavn` can only be filtered with `eq` / `in` on the exact spelling (`skrivemaade`). There is no case-insensitive or partial match.
 - The geometry is not on the name: it is on the named place (`navngivetSted_objectid`), which lives in one of ~30 category types (`DS_Naturareal`, `DS_Landskabsform`, `DS_Bebyggelse`, `DS_Soe`, `DS_Sevaerdighed` and so on), each with full polygon geometry in EPSG:25832. We would need to query the right type and compute a representative point ourselves.
-- The Opdag Verden scraper found **0 events** on 17 Sep and 8 Oct 2026. That was the scraper, not the source: the site had moved to a new system and the scraper no longer matched it (fixed 13 Oct 2026, see `docs/scrapers.md`). Since then about 40 landmark lookups per run fall back to the address search, and many find nothing ("Hald Sø", "Enebærodde"), so those events get no map pin.
-
-Worth revisiting now that Opdag Verden events are scraped again. A cheaper alternative is a small hand-kept map of their recurring landmarks to coordinates.
 
 ### PR 4 (last step): Danish translation catch-up
 

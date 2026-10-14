@@ -25,8 +25,8 @@ defined( 'ABSPATH' ) || exit;
  * Adressevælger has no reverse geocoding, so reverse() and
  * municipality_from_coords() ask Datafordeler's DAR register (GraphQL, API
  * key in VANDREKALENDER_DATAFORDELER_API_KEY) for the nearest address point.
- * It has no place-name search either; geocode_place() returns nothing and
- * says so in the Scraper Log.
+ * There is no place-name search ("Stevns Klint"); see docs/dawa-migration-plan.md
+ * → Place names.
  *
  * Problems are collected per run and attached to the scraper's row in the
  * Scraper Log (see take_issues()), so a broken lookup is visible instead of
@@ -275,25 +275,6 @@ class Vandrekalender_Geocoder {
 	 */
 	private static function postcode_of( string $titel ): string {
 		return preg_match( '/,\s*(\d{4})\s+[^,]*$/u', $titel, $m ) ? $m[1] : '';
-	}
-
-	/**
-	 * Geocode a Danish landmark or place name ("Stevns Klint", "Mols Bjerge").
-	 *
-	 * Not built yet: Adressevælger only searches addresses, and Datafordeler's
-	 * place-name register (DS/v2) only matches exact spellings and keeps the
-	 * geometry in ~30 category types (see docs/dawa-migration-plan.md →
-	 * Place names). Callers fall back to geocode().
-	 *
-	 * @param string $name Place name, e.g. "Stevns Klint".
-	 * @return array|null Always null for now.
-	 */
-	public function geocode_place( string $name ): ?array {
-		if ( '' !== trim( $name ) ) {
-			self::record_issue( __( 'Place-name lookup is not built yet (see docs/dawa-migration-plan.md); tried the address search instead.', 'vandrekalender-events' ) );
-		}
-
-		return null;
 	}
 
 	/**

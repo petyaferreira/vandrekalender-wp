@@ -64,6 +64,20 @@ class Vandrekalender_Municipalities {
 	}
 
 	/**
+	 * A point near the middle of each region, on land, for an approximate pin.
+	 *
+	 * Used when a scraper knows only the region of a walk, so the walk still
+	 * shows on the map (see Vandrekalender_Scraper_Opdagverden).
+	 */
+	const REGION_CENTRES = [
+		'hovedstaden' => [ 55.83, 12.33 ],
+		'sjaelland'   => [ 55.45, 11.78 ],
+		'syddanmark'  => [ 55.49, 9.47 ],
+		'midtjylland' => [ 56.17, 9.55 ],
+		'nordjylland' => [ 57.03, 9.90 ],
+	];
+
+	/**
 	 * Region slugs keyed by lowercase municipality name.
 	 *
 	 * @return array<string, string>

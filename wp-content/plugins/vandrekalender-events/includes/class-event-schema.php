@@ -224,7 +224,11 @@ class Vandrekalender_Event_Schema {
 		$lat = $this->meta_single( $meta, \Vandrekalender\Event::META_LAT );
 		$lng = $this->meta_single( $meta, \Vandrekalender\Event::META_LNG );
 
-		if ( is_numeric( $lat ) && is_numeric( $lng ) && ! ( 0.0 === (float) $lat && 0.0 === (float) $lng ) ) {
+		// An approximate pin (region centre, somewhere on the route) would
+		// send search engines to the wrong spot, so only exact ones go out.
+		$approximate = (bool) $this->meta_single( $meta, \Vandrekalender\Event::META_LOCATION_APPROXIMATE );
+
+		if ( ! $approximate && is_numeric( $lat ) && is_numeric( $lng ) && ! ( 0.0 === (float) $lat && 0.0 === (float) $lng ) ) {
 			$location['geo'] = [
 				'@type'     => 'GeoCoordinates',
 				'latitude'  => (float) $lat,
