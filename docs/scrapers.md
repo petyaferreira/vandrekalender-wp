@@ -159,7 +159,7 @@ This section describes the code that exists today.
 
 The base class then provides:
 
-- `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated. Afterwards it drafts stale events — see Removal below.
+- `run(): int` — calls `fetch()`, then `parse()`, then `upsert_event()` for each result; returns the count created/updated. Afterwards it drafts stale events — see Removal below. If `fetch()` returned nothing, or no events were found, it records why as a warning and in `source_problem()` — see [Alerts](#alerts-when-a-source-breaks) below.
 - `upsert_event( array $event ): bool` — see Deduplication below.
 - `sideload_gpx( int $post_id, string $url ): int` — downloads a GPX file into the media library, attached to the event. See [GPX files](#gpx-files-route-maps) below.
 - `record_warning( string $message ): void` — records a problem that does not stop the run; shown under the scraper's row in the Scraper Log (read by the scheduler with `take_warnings()`).
@@ -195,6 +195,17 @@ Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()`
 **Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`, plus the scraper's own `take_warnings()`, e.g. a failed GPX download) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
 
 **Repairing events from the outage.** `wp vandrekalender regeocode [--since=2026-10-01] [--dry-run]` repairs scraped events created since the given date: an address but no coordinates gets geocoded, and coordinates but no municipality (DVL) gets the reverse lookup. Locally it fixed 164 of 165 DVL events; the miss was a trip in Germany. It ran on production on 9 Oct 2026 (25 events fixed, 1 without a match). The command is kept on purpose: it only touches events missing coordinates or a municipality, so it is safe to run again after any future geocoder outage.
+
+### Alerts when a source breaks
+
+When a source's site moves or changes, its scraper usually does not fail: it just finds no events. Mammutmarch and Opdag Verden did this for a month in autumn 2026 and only showed "0 events" in the Scraper Log. So:
+
+- `run()` sets `source_problem()` when `fetch()` returned an empty string ("Could not load the source…") or no source URL was seen ("The source loaded, but no events were found…"). Every source has always listed upcoming events, so either case almost always means the scraper needs fixing. The message is also a warning on the scraper's row in the Scraper Log and in `./scrape.sh`.
+- `Scheduler::execute()` stores it as `problem` in the scraper's log entry. A scraper that throws gets its error message as `problem`.
+- After a **cron** run (production only), `Vandrekalender_Scraper_Alerts::notify()` compares the sources with a `problem` against the ones stored in the `vandrekalender_scraper_alerts` option. It emails `kontakt@allevandreture.dk` (filter `vandrekalender_scraper_alert_email`) when a source newly breaks or works again, and sends nothing while a source stays broken, so a broken source gives one email, not one every night. If `wp_mail()` fails, the option is not updated and the next run tries again. Manual runs never email.
+- Emails go through `wp_mail()` with the admin email as From, so on production they need the real mail transport described in `docs/deployment.md` → Email.
+
+If a source ever legitimately lists no events for a while (between seasons), expect one "stopped working" email and one "works again" email when it lists events again.
 
 ### Adding a new scraper
 
@@ -358,7 +369,8 @@ Scraper Log:
 ```
 
 Both cron and manual runs go through `Scheduler::execute()`, so both appear in
-**Events → Scraper Log**.
+**Events → Scraper Log**. Only cron runs send the alert email when a source
+breaks — see [Alerts when a source breaks](#alerts-when-a-source-breaks).
 
 ## Key files
 
@@ -367,6 +379,7 @@ wp-content/plugins/vandrekalender-events/includes/
 ├── class-scraper-base.php          ← abstract base: fetch/parse/run/upsert_event/remote_get
 ├── class-scraper-scheduler.php     ← schedule (daily 02:12, prod-gated) + execute() run/log
 ├── class-scraper-log.php           ← rolling run history (vandrekalender_scraper_runs option)
+├── class-scraper-alerts.php        ← emails kontakt@ when a source breaks or works again
 ├── class-scraper-admin.php         ← Events → Scraper Log admin screen
 ├── class-geocoder.php              ← server-side Adressevælger geocoding (address → lat/lng/municipality)
 ├── class-utm-converter.php         ← EPSG:25832 → lat/lng, same formula as the editor

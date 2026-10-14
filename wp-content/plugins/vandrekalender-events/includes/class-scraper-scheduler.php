@@ -10,6 +10,8 @@ defined( 'ABSPATH' ) || exit;
  * never auto-run; locally the pipeline is triggered by hand (`./scrape.sh` /
  * `wp vandrekalender scrape`). Every run, automatic or manual, is recorded via
  * Vandrekalender_Scraper_Log so the Scraper Log admin page shows its history.
+ * Automatic runs also email an alert when a source stops or starts working
+ * again (Vandrekalender_Scraper_Alerts).
  *
  * @package Vandrekalender
  */
@@ -131,17 +133,19 @@ class Vandrekalender_Scraper_Scheduler {
 				$count  = (int) $scraper->run();
 				$total += $count;
 				$result = [
-					'name'   => $name,
-					'count'  => $count,
-					'status' => 'ok',
-					'error'  => '',
+					'name'    => $name,
+					'count'   => $count,
+					'status'  => 'ok',
+					'error'   => '',
+					'problem' => $scraper->source_problem(),
 				];
 			} catch ( \Throwable $e ) {
 				$result = [
-					'name'   => $name,
-					'count'  => 0,
-					'status' => 'error',
-					'error'  => $e->getMessage(),
+					'name'    => $name,
+					'count'   => 0,
+					'status'  => 'error',
+					'error'   => $e->getMessage(),
+					'problem' => $e->getMessage(),
 				];
 			}
 
@@ -161,6 +165,12 @@ class Vandrekalender_Scraper_Scheduler {
 		];
 
 		Vandrekalender_Scraper_Log::record( $entry );
+
+		// Only the nightly run on production emails; a manual run prints its
+		// problems in the terminal.
+		if ( 'cron' === $entry['trigger'] ) {
+			Vandrekalender_Scraper_Alerts::notify( $entry );
+		}
 
 		return $entry;
 	}

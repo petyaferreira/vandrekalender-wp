@@ -162,9 +162,11 @@ will see them. Harmless at this scale.
 
 ## Email
 
-The site sends real email from two places: WordPress core (registration, password
-reset) and the join flow (sign-up and cancellation confirmations to both the
-attendee and the organiser — see `docs/authentication.md`). Everything goes
+The site sends real email from three places: WordPress core (registration, password
+reset), the join flow (sign-up and cancellation confirmations to both the
+attendee and the organiser — see `docs/authentication.md`), and the nightly
+scraper run, which emails `kontakt@allevandreture.dk` when a source breaks or
+works again (see `docs/scrapers.md` → Alerts when a source breaks). Everything goes
 through `wp_mail()`, so the transport is configured once, per environment, and
 nothing in the plugin needs to know about it.
 
@@ -199,8 +201,8 @@ Deliberately configured in PHP rather than in WordPress:
 > **Known local wrinkle, unrelated to Mailpit:** mail sent with WordPress's
 > *default* From address fails locally, because that address is derived from the
 > site host and becomes `wordpress@localhost` — no TLD, which PHPMailer rejects
-> as invalid. The join emails are unaffected: they set their own valid From
-> (`vandrekalender_join_email_from`, defaulting to the admin email). Core's
+> as invalid. The join emails and the scraper alerts are unaffected: they set their own valid From
+> (the admin email; for the join emails via `vandrekalender_join_email_from`). Core's
 > password-reset mail does hit it.
 
 ### Production — needs a real transport

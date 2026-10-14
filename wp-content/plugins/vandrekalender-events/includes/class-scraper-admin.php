@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Vandrekalender_Scraper_Admin {
 
+	const PAGE_SLUG = 'vandrekalender-scraper-log';
+
 	/**
 	 * Constructor.
 	 */
@@ -31,7 +33,7 @@ class Vandrekalender_Scraper_Admin {
 			__( 'Scraper Log', 'vandrekalender-events' ),
 			__( 'Scraper Log', 'vandrekalender-events' ),
 			'manage_options',
-			'vandrekalender-scraper-log',
+			self::PAGE_SLUG,
 			[ $this, 'render_page' ]
 		);
 	}
