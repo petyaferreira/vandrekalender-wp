@@ -319,15 +319,15 @@
         },
         {
             "name": "wpackagist-plugin/webp-converter-for-media",
-            "version": "6.6.5",
+            "version": "6.7.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/webp-converter-for-media/",
-                "reference": "tags/6.6.5"
+                "reference": "tags/6.7.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/webp-converter-for-media.6.6.5.zip"
+                "url": "https://downloads.wordpress.org/plugin/webp-converter-for-media.6.7.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
