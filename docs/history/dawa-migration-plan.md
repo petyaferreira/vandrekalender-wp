@@ -2,7 +2,7 @@
 
 Status: DAWA was shut down on 1 October 2026. Every call to `api.dataforsyningen.dk` now returns `410 Gone`. The event editor address field shows no suggestions and the server side geocoder (scrapers, Facebook importer) cannot find coordinates. Production is affected.
 
-Work one PR (one step) at a time, as described in [docs/contributing/pull-requests.md](contributing/pull-requests.md). This is a hotfix, so branch from `main`, not from a GPX branch. Do not touch the `feature/gpx-*` branches.
+Work one PR (one step) at a time, as described in [docs/contributing/pull-requests.md](../contributing/pull-requests.md). This is a hotfix, so branch from `main`, not from a GPX branch. Do not touch the `feature/gpx-*` branches.
 
 ## What replaces what
 

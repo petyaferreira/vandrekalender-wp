@@ -10,7 +10,7 @@
  * Much simpler than Event Map: no filters, no clustering, and no
  * Interactivity API router involvement — the single event page is not a
  * router region, so a plain classic view script is enough (see
- * docs/route-gpx-plan.md, PR 3b).
+ * docs/history/route-gpx-plan.md, PR 3b).
  *
  * @package Vandrekalender
  */

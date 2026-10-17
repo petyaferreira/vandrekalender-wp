@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
  * Allow GPX files in the Media Library.
  *
  * GPX (`.gpx`) is an XML format for GPS tracks, used to attach a route to an
- * event (see docs/route-gpx-plan.md). WordPress does not allow it by default,
+ * event (see docs/history/route-gpx-plan.md). WordPress does not allow it by default,
  * and PHP's finfo sniffs a GPX file's content as generic XML rather than
  * `application/gpx+xml`, which core's upload security check then rejects — so
  * both the allowed-mimes list and the type-sniffing result need a filter, on

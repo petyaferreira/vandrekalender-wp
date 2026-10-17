@@ -73,7 +73,7 @@ Route display name is derived at render time — never stored: `{post_title} {di
 
 ## Event Location — Post Meta
 
-Address input in the editor uses **Adressevælger** (`adressevaelger.dk`, Klimadatastyrelsen), the official Danish address register. It replaced DAWA, which shut down on 1 October 2026 (see `docs/dawa-migration-plan.md`). Free, but every call needs a token (`VANDREKALENDER_ADRESSEVAELGER_TOKEN`, see `docs/deployment.md` → Address search token).
+Address input in the editor uses **Adressevælger** (`adressevaelger.dk`, Klimadatastyrelsen), the official Danish address register. It replaced DAWA, which shut down on 1 October 2026 (see `docs/history/dawa-migration-plan.md`). Free, but every call needs a token (`VANDREKALENDER_ADRESSEVAELGER_TOKEN`, see `docs/deployment.md` → Address search token).
 
 The editor searches `/husnumre/soeg` while the user types, then fetches `/husnumre/{id}` for the picked house number. That lookup returns coordinates in **EPSG:25832** (UTM 32N, metres), which the editor converts to WGS84 latitude/longitude with our own helper `resources/event-meta-fields/utm-to-latlng.js` before saving (see *Coordinate conversion* below), and a four-digit municipality **code** (e.g. `0101`), which is mapped to its name with the static list in `data/municipalities.json`.
 
@@ -175,7 +175,7 @@ All scraping fields are admin only — never visible to event creators or the pu
 | `event_claimed_at` | string (datetime) | — | Timestamp when the event was claimed |
 | `event_claim_token` | string | — | Single-use random token emailed to the organiser during the claim flow. Cleared after successful claim |
 | `event_claim_token_expires` | string (datetime) | — | Expiry timestamp for the claim token. Token is invalid after 48 hours |
-| `event_series_key` | string | — | `sanitize_title( event_source_name . ' ' . base_title )`, set on every scraped, unclaimed event. Groups recurring occurrences of the same walk (e.g. DVL's weekly walks) so a past occurrence can 301-redirect to the next upcoming one instead of being drafted. Empty for manually created and claimed events — they are never redirected. See `docs/past-events-brief.md` |
+| `event_series_key` | string | — | `sanitize_title( event_source_name . ' ' . base_title )`, set on every scraped, unclaimed event. Groups recurring occurrences of the same walk (e.g. DVL's weekly walks) so a past occurrence can 301-redirect to the next upcoming one instead of being drafted. Empty for manually created and claimed events — they are never redirected. See `docs/history/past-events-brief.md` |
 
 ### Claim Flow
 

@@ -301,7 +301,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * Register the `wp vandrekalender backfill-series-key` command.
  *
  * Sets event_series_key on scraped, unclaimed events created before the
- * meta existed, so the past-event redirect (see docs/past-events-brief.md)
+ * meta existed, so the past-event redirect (see docs/history/past-events-brief.md)
  * can find sibling occurrences for posts scraped before this change.
  */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -369,7 +369,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * Register the `wp vandrekalender restore-past-drafts` command.
  *
  * Republishes scraped, unclaimed past events that cleanup_past_events()
- * drafted before it was removed (see docs/past-events-brief.md) — that
+ * drafted before it was removed (see docs/history/past-events-brief.md) — that
  * method drafted every unclaimed scraped event more than a week past its
  * date, turning already-indexed URLs into 404s. A draft whose event_date
  * is on or after its own post_modified date was drafted for a different

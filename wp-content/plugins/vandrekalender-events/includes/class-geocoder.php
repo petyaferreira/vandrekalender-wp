@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * Adressevælger has no reverse geocoding, so reverse() and
  * municipality_from_coords() ask Datafordeler's DAR register (GraphQL, API
  * key in VANDREKALENDER_DATAFORDELER_API_KEY) for the nearest address point.
- * There is no place-name search ("Stevns Klint"); see docs/dawa-migration-plan.md
+ * There is no place-name search ("Stevns Klint"); see docs/history/dawa-migration-plan.md
  * → Place names.
  *
  * Problems are collected per run and attached to the scraper's row in the

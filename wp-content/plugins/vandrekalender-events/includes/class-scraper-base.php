@@ -249,7 +249,7 @@ abstract class Vandrekalender_Scraper_Base {
 
 		// Groups recurring occurrences of the same walk (same source, same
 		// title before the date suffix) so a past one can redirect to the
-		// next. See docs/past-events-brief.md.
+		// next. See docs/history/past-events-brief.md.
 		$event[ \Vandrekalender\Event::META_SERIES_KEY ] = sanitize_title(
 			( $event[ \Vandrekalender\Event::META_SOURCE_NAME ] ?? '' ) . ' ' . $base_title
 		);

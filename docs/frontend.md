@@ -2,7 +2,7 @@
 
 > Source of truth for blocks, templates, filters, and the calendar UI.
 
-**Status: stub — to be filled in ([#44](https://github.com/petyaferreira/vandrekalender-wp/issues/44)).**
+**Status: stub — to be filled in ([#44](https://github.com/petyaferreira/vandrekalender-wp/issues/44)).** Design references: [design/](design/index.md).
 
 ---
 

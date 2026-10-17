@@ -208,7 +208,7 @@ Deliberately configured in PHP rather than in WordPress:
 ### Production — FluentSMTP
 
 FluentSMTP is active on production (set up 5 Sep 2026, see
-`docs/migration-to-allevandreture.md`). It sends over SMTP as the
+`docs/history/migration-to-allevandreture.md`). It sends over SMTP as the
 `kontakt@allevandreture.dk` mailbox, with "Force From Email" and "Force Sender
 Name" on, so every `wp_mail()` (core, join emails, scraper alerts) goes out as
 "Alle Vandreture" <kontakt@allevandreture.dk>, whatever From the code sets. Its
@@ -365,7 +365,7 @@ from visitors but not from anyone with wp-admin dev tools open. Keeping it out o
 the repo is about being able to change it per environment without a code change,
 not about hiding it. Do not reuse it for anything else. Whether a future personal
 KDS token may stay browser-side is an open decision, see
-`docs/dawa-migration-plan.md` → Token.
+`docs/history/dawa-migration-plan.md` → Token.
 
 ---
 
