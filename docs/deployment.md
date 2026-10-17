@@ -410,7 +410,7 @@ One key serves all three of our environments.
 
 ## GitHub Actions Workflows
 
-- `ci.yml` — triggers on push to `main`, calls the reusable deploy workflow targeting staging
+- `ci.yml` — on every push and pull request, the Validate job runs `./validate.sh` (PHPCS, Prettier, theme + plugin build). On push to `main` (or a manual run) it also calls the reusable deploy workflow targeting staging, without waiting for Validate.
 - `deploy-to-nordicway.yml` — reusable workflow: builds assets, rsyncs, SCPs to Nordicway
 
 ### Deploy Steps

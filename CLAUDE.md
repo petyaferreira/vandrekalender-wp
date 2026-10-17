@@ -63,11 +63,14 @@ npm run build   # production
 ## Code Standards
 
 ```bash
-composer run phpcs    # check
-composer run phpcbf   # auto-fix
+./validate.sh         # the one check: PHPCS, Prettier, theme + plugin build
+composer run phpcs    # PHPCS only
+composer run phpcbf   # auto-fix PHP
 ```
 
-WordPress-Extra ruleset. Text domains: `vandrekalender-theme`, `vandrekalender-events`. Pre-commit hook blocks violations on staged PHP files.
+`./validate.sh` never changes source files, runs every check even after one fails, and ends with `validate: failed checks: <names>` (exit 1) or `validate: all checks passed`. CI's Validate job runs the same script on every push and pull request.
+
+WordPress-Extra ruleset. Text domains: `vandrekalender-theme`, `vandrekalender-events`. The pre-commit hook auto-fixes staged PHP (phpcbf) and JS/SCSS/CSS/JSON (Prettier), and blocks the commit if PHP violations remain.
 
 ### Clean up after every change
 
@@ -111,8 +114,7 @@ Used for features that are split into small steps in a plan file, for example `d
 - Only do the step you were asked to do. Do not start the next step.
 
 **Before opening a PR**
-- `composer run phpcs` must pass (it runs on the host, not in Docker).
-- `npm run build` must pass in the plugin (and the theme if it was touched).
+- `./validate.sh` must pass (it runs on the host, not in Docker).
 - Test the change on the local Docker stack as the plan describes. Use `./wp.sh` for WP-CLI and `curl` against `http://localhost:8080` for pages and REST. Say clearly in the PR description which tests you ran and which ones you could not run (for example anything that needs clicking in the browser).
 - Update the docs that the plan names (for example `docs/data-model.md`).
 
