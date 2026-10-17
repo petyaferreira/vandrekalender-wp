@@ -96,4 +96,4 @@ For production: Actions → `Deploy to Nordicway` → choose `production`.
 
 ## See Also
 
-[CLAUDE.md](CLAUDE.md) — full developer and AI context for this project.
+[CLAUDE.md](CLAUDE.md) — the map for developers and agents: links to [how we work](docs/contributing/index.md), [principles](docs/principles/index.md) and [how the product works](docs/index.md).
