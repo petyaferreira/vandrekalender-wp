@@ -4,7 +4,7 @@ Decided 13 August 2026, when `Vandrekalender_Event_Schema` was added.
 
 ## Decision
 
-`includes/class-event-schema.php` prints the schema.org/Event JSON-LD on event pages: one block on upcoming events, nothing on past events or events without a location. It is the only structured data on the site. Rank Math stays installed for Open Graph, Twitter and robots meta and its XML sitemap, with its Event schema off (`pt_event_default_rich_snippet` unset).
+`includes/class-event-schema.php` prints the schema.org/Event JSON-LD on event pages: one block on upcoming events, nothing on past events or events without a location. It is the only structured data on the site. Rank Math stays installed for Open Graph, Twitter and robots meta and its XML sitemap, and emits no structured data of its own.
 
 ## Why
 
