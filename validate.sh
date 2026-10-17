@@ -1,5 +1,6 @@
 #!/bin/bash
-# The single check that a change is ready: PHPCS, Prettier and both builds.
+# The single check that a change is ready: CLAUDE.md size, PHPCS, Prettier and
+# both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
 # Read-only for source files: it reports problems and never fixes them. The
@@ -60,6 +61,18 @@ build() {
     return 1
 }
 
+# CLAUDE.md is read by every agent on every task, so it stays a map.
+MAX_CLAUDE_MD_LINES=25
+
+claude_md_size() {
+    local lines
+    # awk, not wc -l: wc skips a last line that has no trailing newline.
+    lines=$(awk 'END { print NR }' CLAUDE.md)
+    echo "CLAUDE.md: $lines of $MAX_CLAUDE_MD_LINES lines"
+    [ "$lines" -le "$MAX_CLAUDE_MD_LINES" ]
+}
+
+run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs
 run prettier "fix with: ./node_modules/.bin/prettier --write <file>" prettier_check
 run theme-build "see the webpack error above" build "$THEME_DIR"
