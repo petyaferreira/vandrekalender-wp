@@ -38,6 +38,7 @@ fi
 echo -e "${GREEN}"
 echo "=================================================="
 echo "Git hooks setup complete!"
+echo "  ./validate.sh         — run every check (same as CI)"
 echo "  composer run phpcs    — check standards"
 echo "  composer run phpcbf   — auto-fix"
 echo "  npx prettier --write <file> — format JS/SCSS"
