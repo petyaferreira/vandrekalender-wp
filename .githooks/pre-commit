@@ -77,14 +77,10 @@ else
             continue
         fi
 
-        TEMP_FILE="$TEMP_DIR/$(basename "$FILE")"
-        git show ":$FILE" >"$TEMP_FILE" 2>/dev/null
-
-        if [ $? -ne 0 ]; then
-            continue
-        fi
-
-        if ./node_modules/.bin/prettier --check "$TEMP_FILE" >/dev/null 2>&1; then
+        # Check the staged version through stdin under its real path, so
+        # Prettier finds .prettierrc and .prettierignore. A copy in a temp
+        # dir would be checked against Prettier's defaults instead (#56).
+        if git show ":$FILE" | ./node_modules/.bin/prettier --check --stdin-filepath "$FILE" >/dev/null 2>&1; then
             echo -e "${GREEN}✓ $FILE${NC}"
             continue
         fi
