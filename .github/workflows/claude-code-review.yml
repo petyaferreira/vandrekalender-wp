@@ -31,6 +31,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Comments posted after this time belong to this run (see the last step).
+      - name: Record start time
+        id: start
+        run: echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
@@ -65,3 +70,27 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
+      # The action can skip without reviewing and still pass, for example when
+      # this PR changes this workflow file (the action requires it to match
+      # main). So do not trust its status: check for the summary comment the
+      # prompt above requires, and fail loudly when there is none.
+      - name: Fail if no review was posted
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          STARTED: ${{ steps.start.outputs.at }}
+        run: |
+          posted=$(gh api --paginate "repos/${{ github.repository }}/issues/$PR/comments" \
+            --jq ".[] | select(.user.login == \"claude[bot]\" and .created_at >= \"$STARTED\") | .id" | wc -l)
+          if [ "$posted" -gt 0 ]; then
+            echo "Review posted."
+            exit 0
+          fi
+          echo "::error::No review was posted by this run, so this PR is NOT reviewed. A green check here would have been wrong."
+          if gh pr diff "$PR" --name-only | grep -qx '.github/workflows/claude-code-review.yml'; then
+            echo "::error::Cause: this PR changes .github/workflows/claude-code-review.yml, and the review action does not run until that file matches main. Ask Petya to review this PR by hand (docs/contributing/pull-requests.md, Review loop)."
+          else
+            echo "::error::Read the 'Run Claude Code Review' step log above for the cause."
+          fi
+          exit 1

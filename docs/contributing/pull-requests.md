@@ -13,7 +13,7 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)) and g
 
 - Opening or updating a PR starts the automatic review (`.github/workflows/claude-code-review.yml`). Wait for it with `gh pr checks <number> --watch`.
 - Read the review: the summary with `gh pr view <number> --comments` and the inline comments with `gh api repos/petyaferreira/vandrekalender-wp/pulls/<number>/comments`.
-- A PR that changes `.github/workflows/claude-code-review.yml` is **not reviewed**: the action refuses to run when its own workflow differs from `main`, and the `claude-review` check still shows pass. No summary comment means no review. Keep such changes in their own small PR and ask Petya to review it by hand.
+- A PR that changes `.github/workflows/claude-code-review.yml` is **not reviewed**: the action refuses to run when its own workflow differs from `main`. The `claude-review` check is then red with "this PR is NOT reviewed" (it fails whenever a run posts no summary comment). Keep such changes in their own small PR and ask Petya to review it by hand; Petya merges it despite the red check.
 - Treat review comments as suggestions, not orders. Fix the ones that are correct. If you disagree, reply on the comment with the reason and do not change the code.
 - Push the fixes to the same branch, then check the review again.
 - Stop after 3 review rounds per PR and ask Petya what to do.
