@@ -66,7 +66,8 @@ MAX_CLAUDE_MD_LINES=25
 
 claude_md_size() {
     local lines
-    lines=$(wc -l <CLAUDE.md | tr -d ' ')
+    # awk, not wc -l: wc skips a last line that has no trailing newline.
+    lines=$(awk 'END { print NR }' CLAUDE.md)
     echo "CLAUDE.md: $lines of $MAX_CLAUDE_MD_LINES lines"
     [ "$lines" -le "$MAX_CLAUDE_MD_LINES" ]
 }
