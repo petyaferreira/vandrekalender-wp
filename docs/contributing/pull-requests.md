@@ -21,7 +21,7 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)) and g
 
 ## Planned features
 
-Used for features that are split into small steps in a plan file, for example `docs/route-gpx-plan.md`. Do one PR (one step) at a time.
+Used for features that are split into small steps in a plan file, for example `docs/history/route-gpx-plan.md`. Do one PR (one step) at a time.
 
 - Branch names: `feature/<feature>-<step number>-<short name>`, for example `feature/gpx-1-uploads`.
 - Step 1 branches from `main` and its PR targets `main`.

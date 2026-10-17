@@ -20,4 +20,5 @@ Events moved from `/event/{slug}/` to `/begivenhed/{slug}/`. Google had hundreds
 
 ## Related
 
+- [Decisions](../decisions/index.md): record a "no" there when the next agent would otherwise propose it again
 - [Clean up after every change](cleanup.md): a one-way door still needs the old way cleaned up, carefully

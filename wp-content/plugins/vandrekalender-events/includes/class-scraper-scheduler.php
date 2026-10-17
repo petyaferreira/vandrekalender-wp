@@ -177,7 +177,7 @@ class Vandrekalender_Scraper_Scheduler {
 
 	// Past events are no longer drafted after their date passes — they stay
 	// published. See docs/scrapers.md ("Past-events cleanup") and
-	// docs/past-events-brief.md for why, and how duplicate-content risk from
+	// docs/history/past-events-brief.md for why, and how duplicate-content risk from
 	// recurring occurrences is handled instead (redirect to the next
 	// occurrence, in Vandrekalender_Event_Past_Events).
 }

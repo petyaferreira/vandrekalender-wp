@@ -9,15 +9,20 @@ These pages describe the product as it is now (source of truth). Open the one th
 | Scraping pipeline — sources, patterns, how to add a scraper | [scrapers.md](scrapers.md) |
 | Frontend — blocks, templates, filter bar, event cards | [frontend.md](frontend.md) |
 | Sitemap and URL structure | [sitemap.md](sitemap.md) |
-| Monetisation and business model | [monetisation.md](monetisation.md) |
 | Deployment, CI/CD, environments, installing plugins | [deployment.md](deployment.md) |
 | Internationalisation — Polylang, translation functions, language matching | [i18n.md](i18n.md) |
-| Route GPX feature — plan, PR by PR (done) | [route-gpx-plan.md](route-gpx-plan.md) |
-| DAWA → Adressevælger migration (address search) — plan, PR by PR (done) | [dawa-migration-plan.md](dawa-migration-plan.md) |
 
-How we work (issues, PRs, local dev): [contributing/](contributing/index.md). Rules for how we build: [principles/](principles/index.md).
+## Other folders
 
-Background, not rules: briefs for finished work ([past-events-brief.md](past-events-brief.md), [migration-to-allevandreture.md](migration-to-allevandreture.md)), [AlleVandreture_GDPR_Plan.md](AlleVandreture_GDPR_Plan.md), naming research, HTML mockups, `shared/` (original .docx specs) and `history/` (the archived first build plan).
+| Folder | What is in it | Kept true? |
+|---|---|---|
+| [contributing/](contributing/index.md) | How we work: issues, PRs, code standards, local dev | Yes |
+| [principles/](principles/index.md) | Rules for how we build, each with an example from this repo | Yes |
+| [decisions/](decisions/index.md) | Decisions already taken, with the reason. Check before proposing a big change | Yes |
+| `plans/` | Plans for features that need several PRs, while they are being built (none right now) | Yes, until done |
+| [design/](design/index.md) | Current design references | Yes |
+| [business/](business/index.md) | Not about code: GDPR, naming, monetisation, pitch | Owned by Petya |
+| [history/](history/index.md) | Frozen: finished plans and briefs, original specs, old mockups. Never a description of the code now | No |
 
 ## Code map
 
