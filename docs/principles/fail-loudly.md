@@ -12,6 +12,8 @@ __( 'Municipality code "%s" is not in data/municipalities.json, so the event get
 
 One layer down, `class-municipalities.php` writes to the server log when the file itself is missing or invalid.
 
+The review bot is the same rule applied to CI. The review action can skip without reviewing and still exit green (it does so when a PR changes its own workflow file). So the last step of `claude-review.yml` ignores the action's status and checks for the outcome it promised, a summary comment from `claude[bot]` during this run, and fails with the cause when there is none (#61). Check the outcome with a source the checked thing does not control.
+
 `./validate.sh` follows the same rule: a missing `vendor/` or `node_modules/` is a failed check with the install command, never a skipped one.
 
 ## Related
