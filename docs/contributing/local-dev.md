@@ -37,9 +37,9 @@ npm run build   # production
 
 **Plugins** are installed with Composer (`composer require wpackagist-plugin/<slug>`, then `./wp.sh plugin activate <slug>`), never with `./wp.sh plugin install` or the WP admin: plugin folders are not committed, so anything else is invisible to deploys and gone after the next `composer install`. Details: [deployment.md](../deployment.md).
 
-## Reference projects (on this machine)
+## Reference projects
 
-| Project | Path | What to reference |
+| Project | Where | What to reference |
 |---|---|---|
-| master-of-magic-wp | `/Users/petyanaydenova/Documents/petya/master-of-magic-wp` | Nordicway deploy workflow |
-| paychex-wp | `/Users/petyanaydenova/Documents/paychex` | Composer config, pre-commit hook, build tooling, Interactivity API block patterns (`src/wp-content/plugins/paychex-blocks/`) |
+| master-of-magic-wp | [petyaferreira/master-of-magic-wp](https://github.com/petyaferreira/master-of-magic-wp) (public) | Nordicway deploy workflow |
+| paychex-wp | Private work repo, only on Petya's laptop (`~/Documents/paychex`). Agents elsewhere (CI, review bot, cloud) cannot read it | Composer config, pre-commit hook, build tooling, Interactivity API block patterns (`src/wp-content/plugins/paychex-blocks/`) |
