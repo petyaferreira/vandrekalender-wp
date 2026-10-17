@@ -15,7 +15,7 @@ When CI's `Build` job became `Validate` (#55), the same PR updated every place t
 
 ## Enforcement
 
-The review bot (`.github/workflows/claude-code-review.yml`) checks every PR against this page and flags leftovers, unless the PR description names the later PR that handles them. Leftovers that need a later deploy before they can go become a GitHub issue in the same change.
+The review bot (`.github/workflows/claude-code-review.yml`) checks every PR for leftovers and flags leftovers, unless the PR description names the later PR that handles them. Leftovers that need a later deploy before they can go become a GitHub issue in the same change.
 
 ## Related
 
