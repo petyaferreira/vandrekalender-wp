@@ -9,6 +9,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0003](0003-no-claude-code-hooks.md) | No Claude Code hooks; the pre-commit hook and `./validate.sh` do the checking | 14 Oct 2026 |
 | [0004](0004-own-event-json-ld.md) | Our own Event JSON-LD is the only structured data; Rank Math's schema stays off | 13 Aug 2026 |
 | [0005](0005-unit-tests-without-wordpress.md) | Tests run with plain PHPUnit and stand-ins, not the WordPress test suite | 19 Oct 2026 |
+| [0006](0006-agents-merge-low-risk-prs.md) | Agents merge low-risk PRs, only through `./merge-low-risk.sh` | 19 Oct 2026 |
 
 ## Format
 

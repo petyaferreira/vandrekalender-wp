@@ -1,6 +1,6 @@
 # Pull requests
 
-Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)) and goes through the two sections below. Features split into steps in a plan file also follow [Planned features](#planned-features).
+Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)), goes through the two sections below, and is merged according to its [risk category](#risk-categories). Features split into steps in a plan file also follow [Planned features](#planned-features).
 
 ## Before opening a PR
 
@@ -19,6 +19,20 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)) and g
 - Push the fixes to the same branch, then check the review again.
 - Stop after 3 review rounds per PR and ask Petya what to do.
 - If an earlier PR in the stack changes after later PRs exist, tell Petya and rebase the later branches on top of it.
+
+## Risk categories
+
+`./pr-risk.sh <PR>` says how risky a PR is, from the files it changes. The agent does not decide; the script does, and a PR takes the highest category of its files. Why: [decision 0006](../decisions/0006-agents-merge-low-risk-prs.md).
+
+| Category | Files | Merged by |
+|---|---|---|
+| Low | Docs that describe the product: `docs/*.md`, `docs/business/`, `docs/history/`, `docs/design/`, `README.md` | The agent, with `./merge-low-risk.sh <PR>` |
+| Medium | Theme and plugin code, `docs/plans/` | Petya |
+| High | The guardrails: `CLAUDE.md`, `docs/contributing/`, `docs/principles/`, `docs/decisions/`, `validate.sh`, `composer.*`, `package*.json`, `.github/`, `.githooks/`, `.claude/`, `phpcs.xml`, `phpunit.xml.dist`, `tests/`, these two scripts, and any file not listed | Petya, reviewing carefully |
+
+For a low-risk PR, when the review loop is done, run `./merge-low-risk.sh <PR>`. It merges only when the PR is open, not a draft, targets `main`, is low risk, and on its head commit Validate and `claude-review` passed and the review summary ends with `Verdict: no findings`. Otherwise it says why and merges nothing: fix that, or leave the PR for Petya. Never merge any other way (`.claude/settings.json` blocks `gh pr merge`). Merged PRs get the `auto-merged` label, so Petya can check them: `gh pr list --state merged --label auto-merged`.
+
+To keep a PR low risk, keep product docs out of PRs that touch anything else.
 
 ## Planned features
 
