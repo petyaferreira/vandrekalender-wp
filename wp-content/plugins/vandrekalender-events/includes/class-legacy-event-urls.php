@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
  * Events used to live under /event/ before Polylang mapped the Danish
  * (default-language) slug to /begivenhed/. Google still has hundreds of the
  * old URLs indexed, and they 404 today. The English base (/en/event/) is
- * unchanged and needs no redirect. See docs/past-events-brief.md.
+ * unchanged and needs no redirect. See docs/history/past-events-brief.md.
  *
  * Implemented as a 404-time check rather than a new rewrite rule, so it
  * needs no rewrite-rule flush to take effect on deploy.

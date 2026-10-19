@@ -79,7 +79,7 @@ const normalizeRoutes = raw => {
     // Set by scrapers only; the editor never shows or edits it, but must
     // still round-trip it unchanged — routes save as one meta array, so
     // dropping it here would erase the scraper's re-download guard on the
-    // next editor save (see docs/route-gpx-plan.md).
+    // next editor save (see docs/history/route-gpx-plan.md).
     gpx_source_url:
       typeof r?.gpx_source_url === 'string' ? r.gpx_source_url : '',
     gpx_name: typeof r?.gpx_name === 'string' ? r.gpx_name : '',

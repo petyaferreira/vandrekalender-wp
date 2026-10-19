@@ -3,7 +3,7 @@
  *
  * Plain classic script, not the Interactivity API: the single event page is
  * not a router region, so there is no <head>-morphing hazard to guard
- * against and no shared state to coordinate (see docs/route-gpx-plan.md,
+ * against and no shared state to coordinate (see docs/history/route-gpx-plan.md,
  * PR 3b). Lazy-loads Leaflet and the leaflet-gpx plugin from a CDN, draws
  * one L.GPX layer per route that has a file, and shows only the currently
  * selected route's track (matching the Event Info Card's active tab on
@@ -76,7 +76,7 @@ async function ensureLeafletGpx() {
 
 /**
  * A plain, single-colour marker icon — leaflet-gpx's own default start/end
- * markers point at GitHub-hosted images (see docs/route-gpx-plan.md), so
+ * markers point at GitHub-hosted images (see docs/history/route-gpx-plan.md), so
  * these replace them instead of disabling them outright.
  *
  * @param {string} modifier 'start' or 'end', for the CSS modifier class.

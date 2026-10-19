@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * duplicate-content problem that cleanup_past_events() used to solve by
  * drafting the page instead. A one-off past event, or a recurring one with
  * no next occurrence yet, stays public with a notice and a short list of
- * upcoming walks nearby. See docs/past-events-brief.md.
+ * upcoming walks nearby. See docs/history/past-events-brief.md.
  *
  * @package Vandrekalender
  */

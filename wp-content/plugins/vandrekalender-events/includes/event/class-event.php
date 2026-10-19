@@ -465,7 +465,7 @@ class Event {
 	 * Strip gpx_source_url from public REST responses.
 	 *
 	 * Scrapers set it to avoid re-downloading a GPX file already sideloaded
-	 * for the same route (see docs/route-gpx-plan.md); it points at a
+	 * for the same route (see docs/history/route-gpx-plan.md); it points at a
 	 * third-party URL, so it has no reason to reach a public REST client.
 	 *
 	 * Only the default `view` context is stripped. The block editor requests
@@ -505,7 +505,7 @@ class Event {
 	 * Shared by the core `rest_prepare_event` filter above and by
 	 * Vandrekalender_Event_Rest_Api::format_event(), which also puts the raw
 	 * `event_routes` meta into its own public response. Both need the same
-	 * "never public" rule from docs/route-gpx-plan.md.
+	 * "never public" rule from docs/history/route-gpx-plan.md.
 	 *
 	 * @param array $routes A route array, as stored in event_routes meta.
 	 * @return array The same routes with gpx_source_url removed from each.
@@ -529,7 +529,7 @@ class Event {
 	 * string when the route has no gpx_id or the attachment no longer
 	 * exists. Shared by Vandrekalender_Event_Rest_Api::format_event() and the
 	 * event-info-card and event-route-map block renders (see
-	 * docs/route-gpx-plan.md, PR 3).
+	 * docs/history/route-gpx-plan.md, PR 3).
 	 *
 	 * @param array $routes A route array, as stored in event_routes meta.
 	 * @return array The same routes with gpx_url added to each.

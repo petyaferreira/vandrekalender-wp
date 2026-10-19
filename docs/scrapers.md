@@ -190,7 +190,7 @@ A hit in the wrong town is rejected rather than pinned in the wrong part of the 
 
 Results are cached for a month per ~10 m. `Geocoder::municipality_from_coords()` (DVL) is the municipality part of it, and the editor uses it through `GET /vandrekalender/v1/geocode/reverse?lat=&lng=`. That endpoint needs `edit_events` (administrators and event organisers; organisers have no `edit_posts`) and is limited to 60 lookups per user per 10 minutes (HTTP 429 after that), since anyone can sign up as an organiser and each call spends our Datafordeler quota. The key never reaches a browser. Each service retries once on a dropped connection, so during a real outage a lookup can take up to twice the timeout (Datafordeler 15 s → up to 30 s) before it gives up. Checked on 60 random DVL meeting points against the municipality DAWA had stored: 60 of 60 found, 59 the same. The one difference was Rødovre Station, whose nearest address officially lies in Hvidovre (same region). The nearest address was a median 27 m away, 948 m at most. Points with no Danish address within 3 km (abroad, at sea) get nothing.
 
-**Place names: not built.** There is no lookup for landmark names ("Stevns Klint"); Opdag Verden no longer needs one (see its row above). See `docs/dawa-migration-plan.md` → Place names.
+**Place names: not built.** There is no lookup for landmark names ("Stevns Klint"); Opdag Verden no longer needs one (see its row above). See `docs/history/dawa-migration-plan.md` → Place names.
 
 **Scraper Log.** Problems do not stop a scraper but are collected per run (`Geocoder::take_issues()`, plus the scraper's own `take_warnings()`, e.g. a failed GPX download) and shown under the run's row in **Events → Scraper Log**, and as warnings in `./scrape.sh`: a missing token, failed requests (with the HTTP status or error), unknown municipality codes, and the two lookups above.
 
@@ -228,7 +228,7 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 
 ### GPX files (route maps)
 
-A route can carry a GPX track, shown on the event page by the Event Route Map block (see `docs/route-gpx-plan.md` and `docs/data-model.md` → `event_routes`). Scrapers only set a route's `gpx_source_url`, the URL of the `.gpx` file on the source site. After writing the meta, `upsert_event()` (`attach_route_gpx_files()`) fills in `gpx_id` and `gpx_name`:
+A route can carry a GPX track, shown on the event page by the Event Route Map block (see `docs/history/route-gpx-plan.md` and `docs/data-model.md` → `event_routes`). Scrapers only set a route's `gpx_source_url`, the URL of the `.gpx` file on the source site. After writing the meta, `upsert_event()` (`attach_route_gpx_files()`) fills in `gpx_id` and `gpx_name`:
 
 - **Unchanged URL.** Stored routes are matched by route `id`. If the stored route has a file and the same `gpx_source_url`, its file is kept, so a source is downloaded once, not on every run. This also keeps a file someone chose with Replace in the editor (Replace leaves `gpx_source_url` alone).
 - **New or changed URL.** If another route of the event already has a file for that URL, it is reused, so one GPX linked from several routes is downloaded once. Otherwise `sideload_gpx()` downloads it with `download_url()` and adds it with `media_handle_sideload()`, attached to the event. The GPX filters in `Vandrekalender_Gpx_Uploads` apply to sideloads too: the file must be a GPX track (`gpx` root and at least one point) under 5 MB. A URL that does not end in `.gpx` gets the extension added to the filename, since the type check goes by extension.
@@ -274,7 +274,7 @@ All meta keys use the **canonical, no-underscore schema keys** registered in `cl
 
 ### Past-events cleanup
 
-**Past events stay published.** Nothing drafts an event just because its date passed — `Vandrekalender_Scraper_Scheduler` no longer runs a cleanup sweep. That sweep (`cleanup_past_events()`, removed 2026-09-17) used to move every published, scraped, unclaimed event to **draft** once its `event_date` was more than 7 days past. It solved the duplicate-content problem recurring sources create (a fresh page per occurrence), but at the cost of turning every already-indexed URL into a 404 — Search Console showed hundreds of `Not found (404)` rows for it. See `docs/past-events-brief.md` for the full incident writeup.
+**Past events stay published.** Nothing drafts an event just because its date passed — `Vandrekalender_Scraper_Scheduler` no longer runs a cleanup sweep. That sweep (`cleanup_past_events()`, removed 2026-09-17) used to move every published, scraped, unclaimed event to **draft** once its `event_date` was more than 7 days past. It solved the duplicate-content problem recurring sources create (a fresh page per occurrence), but at the cost of turning every already-indexed URL into a 404 — Search Console showed hundreds of `Not found (404)` rows for it. See `docs/history/past-events-brief.md` for the full incident writeup.
 
 Recurring occurrences are deduplicated differently instead, without touching publish status:
 
