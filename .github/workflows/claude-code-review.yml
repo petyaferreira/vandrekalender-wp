@@ -64,6 +64,11 @@ jobs:
             Always finish by posting one summary comment with
             `gh pr comment ${{ github.event.pull_request.number }} --body "..."`,
             also when you left inline comments or found nothing.
+            End the summary with one last line, exactly one of:
+            `Verdict: no findings` when nothing needs changing before merge
+            (optional nits do not count), or `Verdict: changes requested`.
+            ./merge-low-risk.sh reads this line to decide whether an agent may
+            merge, so never write `no findings` when you are unsure.
 
             This runs as a single, one-shot job with no later turn to resume from:
             do not spawn a subagent or any other background/async task and wait
