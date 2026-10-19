@@ -74,6 +74,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_taxonomies' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_action( 'restrict_manage_posts', [ $this, 'render_organiser_filter' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
 		// Hook directly into meta saves — fires at the exact moment each value is
@@ -786,6 +787,34 @@ class Event {
 					'slug'       => 'arrangor',
 					'with_front' => false,
 				],
+			]
+		);
+	}
+
+	/**
+	 * Organiser dropdown above the admin Events list. The taxonomy's query
+	 * var (event_organiser=<slug>) does the filtering, so this only renders
+	 * the select. No counts: term counts are published events only, while the
+	 * list also shows drafts. Event authors only list their own events, so
+	 * they get none.
+	 *
+	 * @param string $post_type Post type of the list screen.
+	 * @return void
+	 */
+	public function render_organiser_filter( string $post_type ): void {
+		if ( self::CUSTOMPOSTTYPE !== $post_type || ! current_user_can( 'edit_others_events' ) ) {
+			return;
+		}
+
+		wp_dropdown_categories(
+			[
+				'taxonomy'        => self::TAX_ORGANISER,
+				'name'            => self::TAX_ORGANISER,
+				'value_field'     => 'slug',
+				'selected'        => sanitize_title( wp_unslash( $_GET[ self::TAX_ORGANISER ] ?? '' ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filter.
+				'show_option_all' => __( 'All Organisers', 'vandrekalender-events' ),
+				'hide_empty'      => false,
+				'orderby'         => 'name',
 			]
 		);
 	}
