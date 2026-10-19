@@ -820,6 +820,27 @@ class Event {
 	}
 
 	/**
+	 * Up to three initials for an organiser's badge, until it has a logo:
+	 * "Over Stok og Sten" → "OSS". Short joining words are skipped.
+	 *
+	 * @param string $name Organiser name.
+	 * @return string
+	 */
+	public static function organiser_initials( string $name ): string {
+		$skip     = [ 'og', 'en', 'et', 'i', 'på', 'af', 'the', 'and', 'of' ];
+		$initials = '';
+
+		foreach ( preg_split( '/\s+/u', trim( $name ) ) as $word ) {
+			if ( '' === $word || in_array( mb_strtolower( $word ), $skip, true ) ) {
+				continue;
+			}
+			$initials .= mb_strtoupper( mb_substr( $word, 0, 1 ) );
+		}
+
+		return mb_substr( $initials, 0, 3 );
+	}
+
+	/**
 	 * The event_organiser term name for a scraper source, '' when the source
 	 * gets none (see ORGANISER_SOURCES).
 	 *
