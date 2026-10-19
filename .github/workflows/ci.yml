@@ -10,7 +10,8 @@ on:
 jobs:
   # Runs on every push and every pull request. Needs no secrets and deploys
   # nowhere: it runs ./validate.sh, the same command used locally (PHPCS,
-  # Prettier and both builds), so a change that is green locally is green here.
+  # Prettier, unit tests and both builds), so a change that is green locally is
+  # green here.
   # Before this existed, nothing verified a pull request until after it was
   # merged and the deploy either worked or did not.
   validate:
@@ -24,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      # With dev packages: PHPCS is one.
+      # With dev packages: PHPCS and PHPUnit are two.
       - name: Install Composer packages
         run: composer install --no-interaction --prefer-dist
 

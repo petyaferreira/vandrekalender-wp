@@ -1,6 +1,6 @@
 #!/bin/bash
-# The single check that a change is ready: CLAUDE.md size, PHPCS, Prettier and
-# both builds.
+# The single check that a change is ready: CLAUDE.md size, PHPCS, Prettier,
+# unit tests and both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
 # Read-only for source files: it reports problems and never fixes them. The
@@ -52,6 +52,11 @@ prettier_check() {
         xargs -0 ./node_modules/.bin/prettier --check --log-level warn
 }
 
+# No WordPress, database or network: see docs/contributing/tests.md.
+phpunit() {
+    require ./vendor/bin/phpunit "composer install" && ./vendor/bin/phpunit
+}
+
 # webpack output is only shown when the build fails.
 build() {
     require "$1/node_modules" "cd $1 && npm install" || return 1
@@ -75,6 +80,7 @@ claude_md_size() {
 run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs
 run prettier "fix with: ./node_modules/.bin/prettier --write <file>" prettier_check
+run tests "a test shows expected vs actual above: fix the code, or if the source site changed, save fresh fixtures and update the expected values on purpose (docs/contributing/tests.md)" phpunit
 run theme-build "see the webpack error above" build "$THEME_DIR"
 run plugin-build "see the webpack error above" build "$PLUGIN_DIR"
 

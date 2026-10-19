@@ -44,6 +44,12 @@ wp-content/themes/vandrekalender-theme/
 ├── templates/, parts/          ← FSE page templates, header + footer
 └── resources/                  ← theme JS/SCSS → public/
 
+tests/                          ← PHPUnit without WordPress (docs/contributing/tests.md)
+├── wp-stubs.php                ← stand-ins for the WordPress functions the tests reach
+├── fakes/                      ← fake geocoder, scrapers that read fixtures
+├── fixtures/                   ← saved copies of source sites
+└── Scrapers/                   ← one test per scraper (DVL so far)
+
 .github/workflows/
 ├── ci.yml                      ← Validate on every push/PR; staging deploy on main after Validate
 └── deploy-to-nordicway.yml     ← reusable deploy workflow

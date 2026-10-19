@@ -215,6 +215,7 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
 5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
 6. Register the scraper in the `$scrapers` list in `Vandrekalender_Scraper_Scheduler::execute()` (`class-scraper-scheduler.php`).
+7. Add a test on saved copies of the source, like `tests/Scrapers/DvlScraperTest.php` ([tests.md](contributing/tests.md)). DVL is the only scraper with tests so far.
 
 ### Deduplication
 

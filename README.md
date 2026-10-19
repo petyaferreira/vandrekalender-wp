@@ -64,7 +64,8 @@ Commit `composer.lock` after any `require` or `update` so CI uses the exact same
 ## Code Standards
 
 ```bash
-./validate.sh          # all checks: PHPCS, Prettier, theme + plugin build (CI runs the same)
+./validate.sh          # all checks: PHPCS, Prettier, unit tests, theme + plugin build (CI runs the same)
+./vendor/bin/phpunit   # unit tests only
 composer run phpcs     # check PHP
 composer run phpcbf    # auto-fix PHP
 ```

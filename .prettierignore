@@ -6,6 +6,8 @@ wp-content/plugins/vandrekalender-events/build/
 wp-content/plugins/vandrekalender-events/node_modules/
 wp-content/uploads/
 *.sql
+# Saved copies of source sites, kept byte for byte
+tests/fixtures/
 *.lock
 composer.lock
 package-lock.json
