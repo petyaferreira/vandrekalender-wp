@@ -1,6 +1,6 @@
 # Organisers: taxonomy, organiser pages and filters
 
-Status: planned, no step started. Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
+Status: in progress (step 1 done, step 2 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
 
 ## Goal
 
@@ -36,7 +36,7 @@ After merge: Petya runs the backfill on staging, then production (`--dry-run` fi
 
 ## Step 2: admin Events list
 
-`show_admin_column` already adds the column. Add an organiser dropdown to the Events list filters (`restrict_manage_posts`), with the term counts. Closes [#33](https://github.com/petyaferreira/vandrekalender-wp/issues/33).
+`show_admin_column` already adds the column. Add an organiser dropdown to the Events list filters (`restrict_manage_posts`); no term counts, since they count published events only and the list shows drafts too. Closes [#33](https://github.com/petyaferreira/vandrekalender-wp/issues/33).
 
 ## Step 3: event page info card
 
@@ -59,4 +59,4 @@ The organiser name on each card in `blocks/event-cards/render.php`, where the mo
 
 ## Status
 
-(One line per step when it is merged, dropped or moved.)
+- Step 1: merged in [#92](https://github.com/petyaferreira/vandrekalender-wp/pull/92) (19 October 2026), with the editor field in [#93](https://github.com/petyaferreira/vandrekalender-wp/pull/93). Before it, the user role was renamed to `event_author` ([#90](https://github.com/petyaferreira/vandrekalender-wp/issues/90)), so it is not confused with `event_organiser`.
