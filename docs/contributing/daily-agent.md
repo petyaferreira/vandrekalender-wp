@@ -15,6 +15,21 @@ A Claude Code scheduled cloud agent runs every day at 22:00 (Europe/Copenhagen).
 
 One issue per run, even when it finished early. In the cloud there is no Docker stack: say in the PR that the change was not tested on the local stack.
 
+## Setup in the cloud
+
+Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`):
+
+```bash
+COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist
+npm ci
+(cd wp-content/themes/vandrekalender-theme && npm ci)
+(cd wp-content/plugins/vandrekalender-events && npm ci)
+```
+
+The sandbox runs as root, and Composer then turns its plugins off. This repo needs two: one registers the WordPress standard with PHPCS (without it the `phpcs` check fails), the other installs the WordPress plugins into `wp-content/`. `COMPOSER_ALLOW_SUPERUSER=1` turns them back on; the sandbox is discarded after each run.
+
+Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreira/vandrekalender-wp/issues/81)): PHP 8.3, Composer 2.8, Node 22, and `gh` can reach the repo with push rights. `gh auth status` reports the token as invalid there although API calls work; trust the API calls, not that line.
+
 ## For Petya
 
 - Mark a card for it: add the `agent-ready` label. Good cards are clear and small; product-docs cards are finished completely (merged), code cards come back as a PR for review.
