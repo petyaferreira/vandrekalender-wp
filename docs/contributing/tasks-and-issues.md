@@ -4,7 +4,11 @@ Open this when starting work, picking the next task, or finding a problem outsid
 
 GitHub Issues (`petyaferreira/vandrekalender-wp`) is the project's only to-do list. There is no separate board tool.
 
-- **Something found during work that is not part of the current task becomes an issue**, not a note in a doc or a TODO in code. Do not ask Petya first: check that it is a real problem (for example on production, not only locally), create it with `gh issue create` (a clear title, what is wrong or wanted, where it was found, and labels), and tell Petya its number and title in the next message. If it turns out not to be a problem, say so instead.
+- **Something found during work that is not part of the current task** is fixed now, filed as an issue, or dropped. Never a note in a doc or a TODO in code. Every issue is a card someone has to work later, so the bar is high:
+  - **Fix it in the current PR** when it is small, low-risk and in files the PR already changes. Say so in the PR description. Example: a stale line in a doc the PR already edits.
+  - **File an issue** only when all three hold: it is real (checked, for example on production, not only locally), it will matter again (not a one-off), and the next agent can act on it without this session: what is wrong, where, and how to see it. Do not file one-off confusion, nits that only matter to this session, or guesses.
+  - **Search first**: `gh issue list --state open --search "<words>"`. If an open issue covers it, comment there instead of filing a second one.
+  - Do not ask Petya before filing: create it with `gh issue create` (a clear title, what is wrong or wanted, where it was found, and labels), and tell Petya its number and title in the next message. If it turns out not to be a problem, say so instead.
 - **Work starts from an issue.** Read the issue (`gh issue view <n>`) before starting. If Petya asks for something that has no issue yet, create one first.
 - **Branches** for issue work branch from `main`: `fix/<issue>-<short-name>` for bugs, `feature/<issue>-<short-name>` otherwise (for example `fix/30-opdagverden-landmarks`). Steps of a planned feature follow [pull-requests.md → Planned features](pull-requests.md#planned-features).
 - **PRs** say `Closes #<n>` in the description, so merging closes the issue. A PR that does only part of an issue says `Part of #<n>` instead.
