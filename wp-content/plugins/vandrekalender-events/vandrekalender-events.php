@@ -366,6 +366,73 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 /**
+ * Register the `wp vandrekalender backfill-organiser` command.
+ *
+ * Sets the event_organiser term on scraped, unclaimed events created before
+ * the taxonomy existed (#32), as upsert_event() now does on every run, and
+ * lists manual and Facebook events without one, to set by hand.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender backfill-organiser',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+
+			$post_ids = get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+				]
+			);
+
+			$counts  = [];
+			$skipped = 0;
+			$by_hand = 0;
+
+			foreach ( $post_ids as $post_id ) {
+				$source = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE, true );
+				$terms  = wp_get_post_terms( $post_id, \Vandrekalender\Event::TAX_ORGANISER, [ 'fields' => 'names' ] );
+
+				if ( 'scraped' !== $source || get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ) ) {
+					if ( empty( $terms ) ) {
+						WP_CLI::log( sprintf( 'Set by hand %d (%s): %s, organiser "%s"', $post_id, $source ? $source : 'manual', get_the_title( $post_id ), get_post_meta( $post_id, \Vandrekalender\Event::META_ORGANISER_NAME, true ) ) );
+						++$by_hand;
+					}
+					continue;
+				}
+
+				$organiser = \Vandrekalender\Event::organiser_term_for_source( (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_NAME, true ) );
+				if ( '' === $organiser ) {
+					++$skipped;
+					continue;
+				}
+
+				if ( ! $dry_run ) {
+					wp_set_object_terms( $post_id, [ $organiser ], \Vandrekalender\Event::TAX_ORGANISER );
+				}
+				$counts[ $organiser ] = ( $counts[ $organiser ] ?? 0 ) + 1;
+			}
+
+			foreach ( $counts as $organiser => $count ) {
+				WP_CLI::log( sprintf( '%s: %d events', $organiser, $count ) );
+			}
+
+			WP_CLI::success(
+				sprintf(
+					'%d scraped events %s, %d from sources without an organiser term, %d to set by hand.',
+					array_sum( $counts ),
+					$dry_run ? 'would get a term' : 'got a term',
+					$skipped,
+					$by_hand
+				)
+			);
+		}
+	);
+}
+
+/**
  * Register the `wp vandrekalender restore-past-drafts` command.
  *
  * Republishes scraped, unclaimed past events that cleanup_past_events()

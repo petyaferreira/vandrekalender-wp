@@ -214,8 +214,9 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 3. Implement `fetch()` — for an HTML listing usually `return $this->remote_get( self::SOURCE_URL );`; a JSON source can return the JSON for `parse()` to decode (Mammutmarch).
 4. Implement `parse( $html )` — return an array of event arrays. Each must include at least `post_title`, `event_date`, and `event_source_url` (the dedup key). Call `$this->mark_source_url_seen( $url )` for each URL as it is discovered in the listing, so events removed at the source get drafted (see Removal below).
 5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
-6. Register the scraper in the `$scrapers` list in `Vandrekalender_Scraper_Scheduler::execute()` (`class-scraper-scheduler.php`).
-7. Add a test on saved copies of the source, like `tests/Scrapers/DvlScraperTest.php` ([tests.md](contributing/tests.md)). DVL is the only scraper with tests so far.
+6. If the source is one organisation (not a platform listing many), add its `SOURCE_NAME` to `Event::ORGANISER_SOURCES`, so its events get that `event_organiser` term.
+7. Register the scraper in the `$scrapers` list in `Vandrekalender_Scraper_Scheduler::execute()` (`class-scraper-scheduler.php`).
+8. Add a test on saved copies of the source, like `tests/Scrapers/DvlScraperTest.php` ([tests.md](contributing/tests.md)). DVL is the only scraper with tests so far.
 
 ### Deduplication
 
@@ -225,7 +226,7 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 - It queries for an existing event with the same `event_source_url`. If found and `event_claimed` is truthy, it is **skipped entirely** — a claimed event is owned by its organiser, who is the source of truth.
 - Otherwise it updates the existing post, or inserts a new one published immediately.
 - Reserved keys (`post_title`, `post_content`, `post_status`, `post_type`, `ID`) become post fields; every other key is written as post meta.
-- After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`.
+- After writing the scraper's fields, `upsert_event()` sets the source-tracking meta itself: `event_source = 'scraped'`, `event_scraped_at` = current time, and (on insert only) `event_claimed = false`. It also sets the `event_organiser` term from `event_source_name` ([data-model.md](data-model.md#event_organiser)).
 
 ### GPX files (route maps)
 

@@ -44,7 +44,7 @@ Why this matters for security: without verification, anyone could register as `f
 
 ## The Organizer Entity
 
-> **Not built yet.** This section is the design. Whether and when to build it is open in [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32); today the organiser is only the free-text `event_organiser_name`.
+> **Partly built.** The taxonomy exists as `event_organiser` ([data-model.md](data-model.md#event_organiser)), with one term per organisation set by the scrapers. Everything about members (`organizer_id`, `email_domain`, shared editing, "Post as", claiming) is the design below, not built: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86). Where it says `organizer` taxonomy, read `event_organiser`.
 
 The organizer is promoted from a free-text field to a real entity, implemented as a **custom taxonomy** named `organizer`.
 
