@@ -8,6 +8,7 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)) and g
 - Test the change on the local Docker stack (as the plan describes, for planned features). Use `./wp.sh` for WP-CLI and `curl` against `http://localhost:8080` for pages and REST. Say clearly in the PR description which tests you ran and which ones you could not run (for example anything that needs clicking in the browser).
 - Frontend changes are verified with a screenshot of each state plus a computed-style probe of a known-good element (`getComputedStyle`, `getBoundingClientRect()`), never with element counts alone. While fixing the event map (July 2026), tile and marker counts looked healthy through four wrong fixes while the map was visibly broken.
 - Update the docs the change affects (for a planned feature, the docs the plan names, for example `docs/data-model.md`).
+- If the change chose one approach over a real alternative that someone could propose again (a tool, a library, a way of testing or deploying), add a decision record in the same PR ([decisions/](../decisions/index.md)) and name it in the PR description. Do not wait to be asked: in #68 the choice of plain PHPUnit over the WordPress test suite was only recorded (0005) after Petya asked.
 
 ## Review loop
 
