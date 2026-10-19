@@ -1,6 +1,6 @@
 #!/bin/bash
 # The single check that a change is ready: CLAUDE.md size, PHPCS, Prettier,
-# unit tests and both builds.
+# unit tests, the PR risk rules and both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
 # Read-only for source files: it reports problems and never fixes them. The
@@ -80,6 +80,7 @@ claude_md_size() {
 run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs
 run prettier "fix with: ./node_modules/.bin/prettier --write <file>" prettier_check
+run pr-risk "a path is in the wrong risk category: fix classify() in pr-risk.sh, or the expected category in its self-test if the rule changed on purpose (docs/decisions/0006-agents-merge-low-risk-prs.md)" ./pr-risk.sh --self-test
 run tests "a test shows expected vs actual above: fix the code, or if the source site changed, save fresh fixtures and update the expected values on purpose (docs/contributing/tests.md)" phpunit
 run theme-build "see the webpack error above" build "$THEME_DIR"
 run plugin-build "see the webpack error above" build "$PLUGIN_DIR"

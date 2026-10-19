@@ -4,7 +4,7 @@ Decided 14 October 2026 with Petya ([#48](https://github.com/petyaferreira/vandr
 
 ## Decision
 
-`main` has no branch protection rules and no required status checks. Petya is the only person who merges; agents never merge or push to `main` (`CLAUDE.md`).
+`main` has no branch protection rules and no required status checks. Agents never push to `main`, and merge only low-risk PRs through `./merge-low-risk.sh`, which refuses unless every check is green ([0006](0006-agents-merge-low-risk-prs.md)). Petya merges the rest.
 
 ## Why
 
@@ -20,4 +20,4 @@ Required status checks, required reviews, or "protect main" settings.
 
 ## Revisit when
 
-A second person gets merge rights.
+A second person gets merge rights, or agents merge more than low-risk PRs (0006).

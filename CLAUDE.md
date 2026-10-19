@@ -4,7 +4,7 @@ Walking events calendar for Denmark (v1: walking tours in Denmark only). Aggrega
 
 `./validate.sh` is the single check that a change is ready. CI runs the same script, and staging deploys only when it passes.
 
-Never merge a PR, never push to `main`, never force push. Petya merges.
+Never push to `main`, never force push. Merge only low-risk PRs, only with `./merge-low-risk.sh`; Petya merges the rest ([risk categories](docs/contributing/pull-requests.md#risk-categories)).
 
 This file is a map, not the docs. Open the page the task needs:
 
