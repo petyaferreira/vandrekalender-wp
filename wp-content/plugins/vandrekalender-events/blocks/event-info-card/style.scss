@@ -119,6 +119,12 @@
       font-weight: 600;
       color: var(--wp--preset--color--forest, #2d5f3f);
     }
+
+    // The organiser's name is the value itself, so it keeps the row's size.
+    .vk-info-card__organiser-link {
+      margin-top: 0;
+      font-size: inherit;
+    }
   }
 
   &__cta {

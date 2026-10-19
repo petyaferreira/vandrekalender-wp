@@ -1,6 +1,6 @@
 # Organisers: taxonomy, organiser pages and filters
 
-Status: in progress (step 1 done, step 2 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
+Status: in progress (steps 1–2 done, step 3 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
 
 ## Goal
 
@@ -60,3 +60,4 @@ The organiser name on each card in `blocks/event-cards/render.php`, where the mo
 ## Status
 
 - Step 1: merged in [#92](https://github.com/petyaferreira/vandrekalender-wp/pull/92) (19 October 2026), with the editor field in [#93](https://github.com/petyaferreira/vandrekalender-wp/pull/93). Before it, the user role was renamed to `event_author` ([#90](https://github.com/petyaferreira/vandrekalender-wp/issues/90)), so it is not confused with `event_organiser`.
+- Step 2: merged in [#94](https://github.com/petyaferreira/vandrekalender-wp/pull/94) (19 October 2026), closing #33.
