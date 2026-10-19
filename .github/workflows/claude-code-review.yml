@@ -54,6 +54,12 @@ jobs:
             replaces or removes (dead code, unused packages, old names, stale
             comments or docs), unless the PR description says a later PR
             handles them.
+            Check decisions against docs/decisions/ (read index.md): flag a PR
+            that chooses one approach over a real alternative someone could
+            propose again (a tool, a library, a way of testing, building or
+            deploying) without adding a decision record, and name the decision
+            to record. Also flag a PR that goes against an existing record
+            without updating it.
             Leave inline feedback on specific lines with the create_inline_comment tool.
             Always finish by posting one summary comment with
             `gh pr comment ${{ github.event.pull_request.number }} --body "..."`,

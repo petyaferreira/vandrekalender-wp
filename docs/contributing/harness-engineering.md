@@ -15,7 +15,7 @@ The repo is set up so an agent can take an issue to a reviewed PR without someon
 1. **A check in `./validate.sh`** — when the mistake is visible in one file without guessing. Put the why and the fix in the failure message. Example: `claude-md-size`.
 2. **A test** — when the failure is behaviour and a static check would be guessing. (There are no automated tests yet.)
 3. **A script** — when the workflow has several steps: `./validate.sh`, `./scrape.sh`, `./wp.sh`.
-4. **The review bot prompt** (`.github/workflows/claude-code-review.yml`) — for judgement calls a script cannot make, such as cleanup leftovers.
+4. **The review bot prompt** (`.github/workflows/claude-code-review.yml`) — for judgement calls a script cannot make, such as cleanup leftovers or a choice made without a decision record.
 5. **Docs** — describe how things work and point at the check. A rule that lives only in prose is last.
 
 Based on kody's harness engineering guide and OpenAI's "Harness engineering: leveraging Codex in an agent-first world".
