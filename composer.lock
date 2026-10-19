@@ -211,15 +211,15 @@
         },
         {
             "name": "wpackagist-plugin/fluentform",
-            "version": "6.2.15",
+            "version": "6.2.16",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fluentform/",
-                "reference": "tags/6.2.15"
+                "reference": "tags/6.2.16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.15.zip"
+                "url": "https://downloads.wordpress.org/plugin/fluentform.6.2.16.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -265,15 +265,15 @@
         },
         {
             "name": "wpackagist-plugin/polylang",
-            "version": "3.8.11",
+            "version": "3.9.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/polylang/",
-                "reference": "tags/3.8.11"
+                "reference": "trunk"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/polylang.3.8.11.zip"
+                "url": "https://downloads.wordpress.org/plugin/polylang.zip?timestamp=1792398807"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
