@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-19T11:24:39+00:00\n"
+"POT-Creation-Date: 2026-10-19T14:53:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -203,7 +203,7 @@ msgstr[1] ""
 #: build/blocks/event-info-card/render.php:105
 #: build/blocks/event-info-card/render.php:217
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:792
+#: resources/event-meta-fields/index.js:795
 msgid "Route"
 msgstr ""
 
@@ -1044,7 +1044,7 @@ msgstr ""
 
 #: includes/event/class-event.php:766
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:913
+#: resources/event-meta-fields/index.js:949
 msgid "Organiser"
 msgstr ""
 
@@ -1222,215 +1222,225 @@ msgid "Add tab"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:147
+#: resources/event-meta-fields/index.js:150
 msgid "—"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:188
+#: resources/event-meta-fields/index.js:191
 msgid "Address search is unavailable. Try again later, or paste coordinates below."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:423
+#: resources/event-meta-fields/index.js:426
 msgid "Location"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:428
+#: resources/event-meta-fields/index.js:431
 msgid "Place name (optional)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:431
+#: resources/event-meta-fields/index.js:434
 msgid "e.g. Dyrehaven or Silkeborg Sti"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:435
+#: resources/event-meta-fields/index.js:438
 msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:445
+#: resources/event-meta-fields/index.js:448
 msgid "Address"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:448
+#: resources/event-meta-fields/index.js:451
 msgid "Start typing an address…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:464
+#: resources/event-meta-fields/index.js:467
 msgid "Address search is not configured. Paste coordinates below instead."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:487
+#: resources/event-meta-fields/index.js:490
 msgid "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:493
+#: resources/event-meta-fields/index.js:496
 msgid "Municipality"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:497
+#: resources/event-meta-fields/index.js:500
 msgid "Choose municipality…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:554
+#: resources/event-meta-fields/index.js:557
 msgid "Coordinates"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:242
+#: resources/event-meta-fields/index.js:245
 msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:558
+#: resources/event-meta-fields/index.js:561
 msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:570
+#: resources/event-meta-fields/index.js:573
 msgid "Looking up the nearest address…"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:603
+#: resources/event-meta-fields/index.js:606
 msgid "GPX route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:621
+#: resources/event-meta-fields/index.js:624
 msgid "Replace"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:627
-#: resources/event-meta-fields/index.js:776
-#: resources/event-meta-fields/index.js:799
+#: resources/event-meta-fields/index.js:630
+#: resources/event-meta-fields/index.js:779
+#: resources/event-meta-fields/index.js:802
 msgid "Remove"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:637
+#: resources/event-meta-fields/index.js:640
 msgid "Upload GPX"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:676
+#: resources/event-meta-fields/index.js:679
 msgid "Event Details"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:686
+#: resources/event-meta-fields/index.js:689
 msgid "Event Date"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:710
+#: resources/event-meta-fields/index.js:713
 msgid "Routes"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:715
+#: resources/event-meta-fields/index.js:718
 msgid "No routes added yet."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:804
+#: resources/event-meta-fields/index.js:807
 msgid "Distance (km)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:815
+#: resources/event-meta-fields/index.js:818
 msgid "Start Time"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:824
+#: resources/event-meta-fields/index.js:827
 msgid "Cutoff Time (hours)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:830
+#: resources/event-meta-fields/index.js:833
 msgid "Maximum hours allowed to finish the route."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:839
+#: resources/event-meta-fields/index.js:842
 msgid "Price (DKK)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:883
+#: resources/event-meta-fields/index.js:886
 msgid "Done"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:739
+#: resources/event-meta-fields/index.js:742
 msgid "Start:"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:745
+#: resources/event-meta-fields/index.js:748
 msgid "GPX"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:755
+#: resources/event-meta-fields/index.js:758
 msgid "Incomplete route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:769
+#: resources/event-meta-fields/index.js:772
 msgid "Edit"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:897
+#: resources/event-meta-fields/index.js:900
 msgid "Add route"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:919
+#: resources/event-meta-fields/index.js:924
+msgid "Organisation"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:931
+msgid "Links the walk to the organisation page. Scraped events get it automatically. New organisations: Events → Organisers."
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:957
 msgid "Name"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:922
+#: resources/event-meta-fields/index.js:960
 msgid "Organiser or club name"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:928
+#: resources/event-meta-fields/index.js:966
 msgid "Website"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:939
+#: resources/event-meta-fields/index.js:977
 msgid "Contact email (admin only)"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:944
+#: resources/event-meta-fields/index.js:982
 msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1008
+#: resources/event-meta-fields/index.js:1046
 msgid "New here?"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1013
-#: resources/event-meta-fields/index.js:1024
+#: resources/event-meta-fields/index.js:1051
+#: resources/event-meta-fields/index.js:1062
 msgid "Watch the how-to video"
 msgstr ""
 

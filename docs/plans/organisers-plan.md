@@ -26,7 +26,7 @@ Region and length are the model to copy: taxonomies registered in `includes/even
 
 Nothing visible to visitors yet.
 
-1. Register `event_organiser` in `class-event.php` (constant `TAX_ORGANISER`), as above. The editor shows the default term panel to admins.
+1. Register `event_organiser` in `class-event.php` (constant `TAX_ORGANISER`), as above. Admins pick the term in an **Organisation** field in the editor's existing Organiser panel; the default taxonomy panel is hidden (follow-up PR to step 1).
 2. `upsert_event()` sets the term from `event_source_name` for the sources listed in `Event::ORGANISER_SOURCES` (DVL, Mammutmarch, Opdag Verden; the term has the source's name). Sportstiming is not listed. One list, used by the scrapers and the backfill.
 3. `wp vandrekalender backfill-organiser [--dry-run]`, like `backfill-series-key`: for scraped events, set the term from `event_source_name` (skip Sportstiming); list manual and Facebook events without a term, so Petya can set them by hand.
 4. Unit tests for the mapping (source name → term or none).

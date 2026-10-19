@@ -11,6 +11,7 @@
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
             "Route": ["Rute"],
+            "Organiser": ["Arrang\u00f8r"],
             "\u2014": ["\u2014"],
             "Address search is unavailable. Try again later, or paste coordinates below.": [
                 "Adresses\u00f8gning er ikke tilg\u00e6ngelig. Pr\u00f8v igen senere, eller inds\u00e6t koordinater nedenfor."
@@ -62,7 +63,10 @@
             "Incomplete route": ["Ufuldst\u00e6ndig rute"],
             "Edit": ["Rediger"],
             "Add route": ["Tilf\u00f8j rute"],
-            "Organiser": ["Arrang\u00f8r"],
+            "Organisation": ["Organisation"],
+            "Links the walk to the organisation page. Scraped events get it automatically. New organisations: Events \u2192 Organisers.": [
+                "Knytter turen til organisationens side. Hentede ture f\u00e5r den automatisk. Nye organisationer: Begivenheder \u2192 Arrang\u00f8rer."
+            ],
             "Name": ["Navn"],
             "Organiser or club name": ["Arrang\u00f8r- eller klubnavn"],
             "Website": ["Hjemmeside"],
