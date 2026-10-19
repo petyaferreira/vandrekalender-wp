@@ -4,7 +4,7 @@ Decided 14 October 2026 with Petya ([#48](https://github.com/petyaferreira/vandr
 
 ## Decision
 
-There is no form on the public site for creating events. Organisers log in and create and edit events in the WordPress editor, with the event fields in the editor sidebar (`resources/event-meta-fields/`). The Event Organizer role sees only the Events menu in wp-admin ([authentication.md](../authentication.md)).
+There is no form on the public site for creating events. Organisers log in and create and edit events in the WordPress editor, with the event fields in the editor sidebar (`resources/event-meta-fields/`). The Event Author role sees only the Events menu in wp-admin ([authentication.md](../authentication.md)).
 
 ## Why
 

@@ -63,10 +63,10 @@ add_action( 'after_setup_theme', 'vandrekalender_editor_styles' );
  * that record in the page before the editor starts, so the canvas is styled on
  * its very first paint. Users who cannot edit theme options do not get the
  * benefit of that embedded copy and their editor has to make the request.
- * Measured on production as an Event Organizer: the canvas paints the post at
+ * Measured on production as an Event Author: the canvas paints the post at
  * 918 ms, the request for /wp/v2/global-styles runs from 1299 to 1450 ms, and
  * the theme styles land at 1470 ms. Those 552 ms are the visible jump from raw
- * left-aligned HTML to the real layout, and they are why organizers see it and
+ * left-aligned HTML to the real layout, and they are why event authors see it and
  * admins do not.
  *
  * Adding the same CSS to the editor settings here closes the gap: the canvas

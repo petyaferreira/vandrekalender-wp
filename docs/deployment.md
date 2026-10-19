@@ -284,7 +284,7 @@ define( 'WP_GOOGLE_LOGIN_USER_REGISTRATION', true );
 `WP_GOOGLE_LOGIN_USER_REGISTRATION` is **required for new users**. Without it the
 plugin only logs in people who already have a WordPress account and rejects
 everyone else. New accounts are created with the site's `default_role`, which is
-`event_organizer`.
+`event_author`.
 
 | Environment | Where the values come from |
 |---|---|
