@@ -18,6 +18,8 @@ Petya's review time is the scarce resource, and a docs PR that passed Validate a
 - **Agents cannot go around the script in Claude Code**: `.claude/settings.json` (shared, in the repo) denies `gh pr merge`, merging through `gh api`, force pushes and pushes to `main`. Before this, those rules lived only in one machine's untracked `settings.local.json`. These are permission rules, not the hooks that decision [0003](0003-no-claude-code-hooks.md) rules out.
 - **The worst case is staging**: a merge to `main` deploys to staging; production is deployed by hand.
 
+The [daily agent](0007-daily-scheduled-agent.md) merges its low-risk PRs the same way.
+
 ## Do not propose
 
 - Agents merging medium or high risk PRs, or merging any PR without the script.
