@@ -24,7 +24,7 @@ PHPUnit, without WordPress, a database, Docker or the network:
 - `tests/fakes/` replaces classes: a `Vandrekalender_Geocoder` that returns a fixed municipality without calling Datafordeler, and per scraper a subclass whose `remote_get()` returns files from `tests/fixtures/<source>/` instead of fetching.
 - Test code follows the same PHPCS rules as the plugin (`phpcs.xml` includes `tests/`). The few exceptions are `phpcs:ignore` comments in the file with the reason, for example test files named like their class (`DvlScraperTest.php`) as PHPUnit requires. Not `exclude-pattern` in `phpcs.xml`: the pre-commit hook checks a copy in a temporary folder, where path patterns do not match.
 
-Code that needs a real database (`upsert_event()`, unpublishing, GPX sideloading) is not covered. That would need the WordPress test suite in Docker; add it only when a bug there makes it worth it.
+Code that needs a real database (`upsert_event()`, unpublishing, GPX sideloading) is not covered. Why there is no WordPress test suite, and when to add one: [decision 0005](../decisions/0005-unit-tests-without-wordpress.md).
 
 ## Fixtures
 
