@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-19T10:49:05+00:00\n"
+"POT-Creation-Date: 2026-10-19T11:24:39+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -127,7 +127,7 @@ msgid "Long (25+ km)"
 msgstr "Lang (25+ km)"
 
 #: blocks/event-filters/render.php:31 build/blocks/event-filters/render.php:31
-#: includes/event/class-event.php:688
+#: includes/event/class-event.php:695
 msgid "Region"
 msgstr "Region"
 
@@ -137,7 +137,7 @@ msgstr "Alle regioner"
 
 #: blocks/event-filters/render.php:41 blocks/event-filters/render.php:42
 #: build/blocks/event-filters/render.php:41
-#: build/blocks/event-filters/render.php:42 includes/event/class-event.php:723
+#: build/blocks/event-filters/render.php:42 includes/event/class-event.php:730
 msgid "Length"
 msgstr "Længde"
 
@@ -647,7 +647,7 @@ msgstr "Når du så vil importere: åbn gruppens side med begivenheder på Faceb
 msgid "Recent Facebook imports"
 msgstr "Seneste importer fra Facebook"
 
-#: includes/class-facebook-importer.php:646 includes/event/class-event.php:92
+#: includes/class-facebook-importer.php:646 includes/event/class-event.php:98
 msgid "Event"
 msgstr "Begivenhed"
 
@@ -859,142 +859,176 @@ msgid "The source loaded, but no events were found in it. Its site may have chan
 msgstr "Kilden blev hentet, men der blev ikke fundet nogen begivenheder i den. Siden kan være ændret."
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:481
+#: includes/class-scraper-base.php:485
 #, php-format
 msgid "Could not download the GPX file %1$s: %2$s"
 msgstr "Kunne ikke hente GPX-filen %1$s: %2$s"
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:504
+#: includes/class-scraper-base.php:508
 #, php-format
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr "Kunne ikke tilføje GPX-filen %1$s: %2$s"
 
-#: includes/event/class-event.php:91 includes/event/class-event.php:93
+#: includes/event/class-event.php:97 includes/event/class-event.php:99
 msgid "Events"
 msgstr "Begivenheder"
 
-#: includes/event/class-event.php:94
+#: includes/event/class-event.php:100
 msgid "Add New Event"
 msgstr "Tilføj ny begivenhed"
 
-#: includes/event/class-event.php:95
+#: includes/event/class-event.php:101
 msgid "Edit Event"
 msgstr "Rediger begivenhed"
 
-#: includes/event/class-event.php:96
+#: includes/event/class-event.php:102
 msgid "View Event"
 msgstr "Vis begivenhed"
 
-#: includes/event/class-event.php:97
+#: includes/event/class-event.php:103
 msgid "View Events"
 msgstr "Vis begivenheder"
 
-#: includes/event/class-event.php:98
+#: includes/event/class-event.php:104
 msgid "Update Event"
 msgstr "Opdater begivenhed"
 
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:105
 msgid "All Events"
 msgstr "Alle begivenheder"
 
-#: includes/event/class-event.php:100
+#: includes/event/class-event.php:106
 msgid "Search Events"
 msgstr "Søg i begivenheder"
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:107
 msgid "No events found."
 msgstr "Ingen begivenheder fundet."
 
-#: includes/event/class-event.php:102
+#: includes/event/class-event.php:108
 msgid "No events found in trash."
 msgstr "Ingen begivenheder fundet i papirkurven."
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:599
+#: includes/event/class-event.php:606
 #, php-format
 msgid "%s° N"
 msgstr "%s° N"
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:599
+#: includes/event/class-event.php:606
 #, php-format
 msgid "%s° S"
 msgstr "%s° S"
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:604
+#: includes/event/class-event.php:611
 #, php-format
 msgid "%s° E"
 msgstr "%s° Ø"
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:604
+#: includes/event/class-event.php:611
 #, php-format
 msgid "%s° W"
 msgstr "%s° V"
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:609
+#: includes/event/class-event.php:616
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr "GPS %1$s, %2$s"
 
-#: includes/event/class-event.php:687 includes/event/class-event.php:695
+#: includes/event/class-event.php:694 includes/event/class-event.php:702
 msgid "Regions"
 msgstr "Regioner"
 
-#: includes/event/class-event.php:689
+#: includes/event/class-event.php:696
 msgid "Search Regions"
 msgstr "Søg i regioner"
 
-#: includes/event/class-event.php:690
+#: includes/event/class-event.php:697
 msgid "All Regions"
 msgstr "Alle regioner"
 
-#: includes/event/class-event.php:691
+#: includes/event/class-event.php:698
 msgid "Edit Region"
 msgstr "Rediger region"
 
-#: includes/event/class-event.php:692
+#: includes/event/class-event.php:699
 msgid "Update Region"
 msgstr "Opdater region"
 
-#: includes/event/class-event.php:693
+#: includes/event/class-event.php:700
 msgid "Add New Region"
 msgstr "Tilføj ny region"
 
-#: includes/event/class-event.php:694
+#: includes/event/class-event.php:701
 msgid "New Region Name"
 msgstr "Navn på ny region"
 
-#: includes/event/class-event.php:722 includes/event/class-event.php:730
+#: includes/event/class-event.php:729 includes/event/class-event.php:737
 msgid "Lengths"
 msgstr "Længder"
 
-#: includes/event/class-event.php:724
+#: includes/event/class-event.php:731
 msgid "Search Lengths"
 msgstr "Søg i længder"
 
-#: includes/event/class-event.php:725
+#: includes/event/class-event.php:732
 msgid "All Lengths"
 msgstr "Alle længder"
 
-#: includes/event/class-event.php:726
+#: includes/event/class-event.php:733
 msgid "Edit Length"
 msgstr "Rediger længde"
 
-#: includes/event/class-event.php:727
+#: includes/event/class-event.php:734
 msgid "Update Length"
 msgstr "Opdater længde"
 
-#: includes/event/class-event.php:728
+#: includes/event/class-event.php:735
 msgid "Add New Length"
 msgstr "Tilføj ny længde"
 
-#: includes/event/class-event.php:729
+#: includes/event/class-event.php:736
 msgid "New Length Name"
 msgstr "Navn på ny længde"
+
+#: includes/event/class-event.php:765 includes/event/class-event.php:773
+msgid "Organisers"
+msgstr "Arrangører"
+
+#: includes/event/class-event.php:766
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:913
+msgid "Organiser"
+msgstr "Arrangør"
+
+#: includes/event/class-event.php:767
+msgid "Search Organisers"
+msgstr "Søg i arrangører"
+
+#: includes/event/class-event.php:768
+msgid "All Organisers"
+msgstr "Alle arrangører"
+
+#: includes/event/class-event.php:769
+msgid "Edit Organiser"
+msgstr "Redigér arrangør"
+
+#: includes/event/class-event.php:770
+msgid "Update Organiser"
+msgstr "Opdatér arrangør"
+
+#: includes/event/class-event.php:771
+msgid "Add New Organiser"
+msgstr "Tilføj ny arrangør"
+
+#: includes/event/class-event.php:772
+msgid "New Organiser Name"
+msgstr "Ny arrangørs navn"
 
 #. translators: %s: trip title.
 #: includes/scrapers/class-scraper-opdagverden.php:152
@@ -1296,11 +1330,6 @@ msgstr "Rediger"
 #: resources/event-meta-fields/index.js:897
 msgid "Add route"
 msgstr "Tilføj rute"
-
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:913
-msgid "Organiser"
-msgstr "Arrangør"
 
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:919
