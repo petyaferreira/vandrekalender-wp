@@ -58,6 +58,7 @@
 
     <file>wp-content/themes/vandrekalender-theme</file>
     <file>wp-content/plugins/vandrekalender-events</file>
+    <file>tests</file>
 
     <arg value="sp"/>
     <arg name="colors"/>
