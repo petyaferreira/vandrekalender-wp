@@ -30,7 +30,7 @@ Nothing visible to visitors yet.
 2. `upsert_event()` sets the term from `event_source_name` for the sources listed in `Event::ORGANISER_SOURCES` (DVL, Mammutmarch, Opdag Verden; the term has the source's name). Sportstiming is not listed. One list, used by the scrapers and the backfill.
 3. `wp vandrekalender backfill-organiser [--dry-run]`, like `backfill-series-key`: for scraped events, set the term from `event_source_name` (skip Sportstiming); list manual and Facebook events without a term, so Petya can set them by hand.
 4. Unit tests for the mapping (source name → term or none).
-5. Docs: `data-model.md` (the taxonomy replaces the `organizer` section; `email_domain` and `post_as` move to #86), `scrapers.md` (which term each scraper sets).
+5. Docs: `data-model.md` (its `organizer` taxonomy sections become `event_organiser`; `email_domain` and `post_as` stay only in the `authentication.md` design, for #86), `authentication.md` (the design note says the taxonomy is built as `event_organiser` and links #86), `scrapers.md` (which sources get a term).
 
 After merge: Petya runs the backfill on staging, then production (`--dry-run` first).
 
