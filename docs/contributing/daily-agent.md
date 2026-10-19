@@ -22,8 +22,8 @@ Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`):
 ```bash
 COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist
 npm ci
-(cd wp-content/themes/vandrekalender-theme && npm ci)
-(cd wp-content/plugins/vandrekalender-events && npm ci)
+(cd wp-content/themes/vandrekalender-theme && (npm ci || npm install))
+(cd wp-content/plugins/vandrekalender-events && (npm ci || npm install))
 ```
 
 The sandbox runs as root, and Composer then turns its plugins off. This repo needs two: one registers the WordPress standard with PHPCS (without it the `phpcs` check fails), the other installs the WordPress plugins into `wp-content/`. `COMPOSER_ALLOW_SUPERUSER=1` turns them back on; the sandbox is discarded after each run.
