@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-19T10:49:05+00:00\n"
+"POT-Creation-Date: 2026-10-19T11:24:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -138,7 +138,7 @@ msgstr ""
 
 #: blocks/event-filters/render.php:31
 #: build/blocks/event-filters/render.php:31
-#: includes/event/class-event.php:688
+#: includes/event/class-event.php:695
 msgid "Region"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 #: blocks/event-filters/render.php:42
 #: build/blocks/event-filters/render.php:41
 #: build/blocks/event-filters/render.php:42
-#: includes/event/class-event.php:723
+#: includes/event/class-event.php:730
 msgid "Length"
 msgstr ""
 
@@ -683,7 +683,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:92
+#: includes/event/class-event.php:98
 msgid "Event"
 msgstr ""
 
@@ -897,144 +897,179 @@ msgid "The source loaded, but no events were found in it. Its site may have chan
 msgstr ""
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:481
+#: includes/class-scraper-base.php:485
 #, php-format
 msgid "Could not download the GPX file %1$s: %2$s"
 msgstr ""
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:504
+#: includes/class-scraper-base.php:508
 #, php-format
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:91
-#: includes/event/class-event.php:93
+#: includes/event/class-event.php:97
+#: includes/event/class-event.php:99
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:94
+#: includes/event/class-event.php:100
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:95
+#: includes/event/class-event.php:101
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:96
+#: includes/event/class-event.php:102
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:97
+#: includes/event/class-event.php:103
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:98
+#: includes/event/class-event.php:104
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:105
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:100
+#: includes/event/class-event.php:106
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:107
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:102
+#: includes/event/class-event.php:108
 msgid "No events found in trash."
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:599
+#: includes/event/class-event.php:606
 #, php-format
 msgid "%s° N"
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:599
+#: includes/event/class-event.php:606
 #, php-format
 msgid "%s° S"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:604
+#: includes/event/class-event.php:611
 #, php-format
 msgid "%s° E"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:604
+#: includes/event/class-event.php:611
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:609
+#: includes/event/class-event.php:616
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:687
-#: includes/event/class-event.php:695
+#: includes/event/class-event.php:694
+#: includes/event/class-event.php:702
 msgid "Regions"
 msgstr ""
 
-#: includes/event/class-event.php:689
+#: includes/event/class-event.php:696
 msgid "Search Regions"
 msgstr ""
 
-#: includes/event/class-event.php:690
+#: includes/event/class-event.php:697
 msgid "All Regions"
 msgstr ""
 
-#: includes/event/class-event.php:691
+#: includes/event/class-event.php:698
 msgid "Edit Region"
 msgstr ""
 
-#: includes/event/class-event.php:692
+#: includes/event/class-event.php:699
 msgid "Update Region"
 msgstr ""
 
-#: includes/event/class-event.php:693
+#: includes/event/class-event.php:700
 msgid "Add New Region"
 msgstr ""
 
-#: includes/event/class-event.php:694
+#: includes/event/class-event.php:701
 msgid "New Region Name"
 msgstr ""
 
-#: includes/event/class-event.php:722
-#: includes/event/class-event.php:730
+#: includes/event/class-event.php:729
+#: includes/event/class-event.php:737
 msgid "Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:724
+#: includes/event/class-event.php:731
 msgid "Search Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:725
+#: includes/event/class-event.php:732
 msgid "All Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:726
+#: includes/event/class-event.php:733
 msgid "Edit Length"
 msgstr ""
 
-#: includes/event/class-event.php:727
+#: includes/event/class-event.php:734
 msgid "Update Length"
 msgstr ""
 
-#: includes/event/class-event.php:728
+#: includes/event/class-event.php:735
 msgid "Add New Length"
 msgstr ""
 
-#: includes/event/class-event.php:729
+#: includes/event/class-event.php:736
 msgid "New Length Name"
+msgstr ""
+
+#: includes/event/class-event.php:765
+#: includes/event/class-event.php:773
+msgid "Organisers"
+msgstr ""
+
+#: includes/event/class-event.php:766
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:913
+msgid "Organiser"
+msgstr ""
+
+#: includes/event/class-event.php:767
+msgid "Search Organisers"
+msgstr ""
+
+#: includes/event/class-event.php:768
+msgid "All Organisers"
+msgstr ""
+
+#: includes/event/class-event.php:769
+msgid "Edit Organiser"
+msgstr ""
+
+#: includes/event/class-event.php:770
+msgid "Update Organiser"
+msgstr ""
+
+#: includes/event/class-event.php:771
+msgid "Add New Organiser"
+msgstr ""
+
+#: includes/event/class-event.php:772
+msgid "New Organiser Name"
 msgstr ""
 
 #. translators: %s: trip title.
@@ -1361,11 +1396,6 @@ msgstr ""
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:897
 msgid "Add route"
-msgstr ""
-
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:913
-msgid "Organiser"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1

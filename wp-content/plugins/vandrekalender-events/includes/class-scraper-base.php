@@ -317,6 +317,10 @@ abstract class Vandrekalender_Scraper_Base {
 			}
 		}
 
+		// One organiser term per organisation, from the source (#32).
+		$organiser = \Vandrekalender\Event::organiser_term_for_source( (string) ( $event[ \Vandrekalender\Event::META_SOURCE_NAME ] ?? '' ) );
+		wp_set_object_terms( $post_id, '' === $organiser ? [] : [ $organiser ], \Vandrekalender\Event::TAX_ORGANISER );
+
 		// Source-tracking fields, set by the pipeline rather than each scraper.
 		update_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE, 'scraped' );
 		update_post_meta( $post_id, \Vandrekalender\Event::META_SCRAPED_AT, current_time( 'mysql' ) );

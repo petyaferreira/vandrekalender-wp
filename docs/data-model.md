@@ -137,26 +137,17 @@ When a user searches "Valby", it is geocoded to coordinates, then a custom SQL h
 
 ## Organiser — Taxonomy & Post Meta
 
-### `organizer` Taxonomy
+### `event_organiser` Taxonomy
 
-Custom taxonomy representing organizations (DVL, Mammutmarch, etc.). **Not built yet** ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)). See `docs/authentication.md` for the full organization model.
-
-Each organizer term carries:
-
-| Meta Key | Type | Notes |
-|---|---|---|
-| `email_domain` | string | Organization's email domain (e.g. `dvl.dk`). Used for automatic user attachment and claim flow validation |
-
-**Archive pages:** taxonomy term archive pages are served as `/arrangor/[slug]` public profile pages (native WordPress).
+One term per organisation (Dansk Vandrelaug, Mammutmarch, Opdag Verden). Built in [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32); see the Taxonomies section below.
 
 ### Post Meta
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `event_organiser_name` | string | — | Organiser display name. Retained for fallback/display when the organizer taxonomy is not set. For manually created events defaults to the WP author's `display_name`. For scraped events set by the scraper from the source data |
+| `event_organiser_name` | string | — | Organiser display name, also when the event has an `event_organiser` term: a DVL walk shows its chapter ("DVL Herning Ikast") and belongs to the Dansk Vandrelaug term. For manually created events defaults to the WP author's `display_name`. For scraped events set by the scraper from the source data |
 | `event_organiser_url` | string (url) | — | Organiser's website or Facebook page |
 | `event_organiser_email` | string (email) | — | Contact email. Admin only — never displayed publicly |
-| `post_as` | string (enum) | — | Organization membership posting context. Values: `organization` (default—event attached to the user's organizer term) or `private` (no organizer term attached, event visible only to author). Author-only control — only the post author can change this field |
 
 ---
 
@@ -190,15 +181,12 @@ All scraping fields are admin only — never visible to event creators or the pu
 
 ## Taxonomies
 
-### `organizer`
+### `event_organiser`
 
-> **Not built yet** — design only, see [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32).
+One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewrite slug `arrangor`, so a term's archive is `/arrangor/<term-slug>/`. Shown as an admin column on the Events list.
 
-Custom taxonomy representing organizations (e.g. DVL, Mammutmarch, individual organizers). Defines shared event ownership and team membership. See `docs/authentication.md` for the full organization and user role model.
-
-- Each event is attached to exactly one organizer term (or none, if posted privately via the `post_as` field)
-- Term meta `email_domain` enables automatic user attachment and claim flow validation
-- Archive pages at `/arrangor/[slug]` are public organizer profile pages
+- **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
+- **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the editor's Organisers panel. Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
 
 ### `event_region`
 

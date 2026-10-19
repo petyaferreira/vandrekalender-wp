@@ -24,8 +24,14 @@ class Event {
 	public const CUSTOMPOSTTYPE = 'event';
 
 	// Taxonomies.
-	public const TAX_REGION = 'event_region';
-	public const TAX_LENGTH = 'event_length';
+	public const TAX_REGION    = 'event_region';
+	public const TAX_LENGTH    = 'event_length';
+	public const TAX_ORGANISER = 'event_organiser';
+
+	// Scraper sources whose events get an event_organiser term of the same
+	// name. A source missing here gets none: Sportstiming is a sign-up
+	// platform for many organisers, not one (#88).
+	public const ORGANISER_SOURCES = [ 'Dansk Vandrelaug', 'Mammutmarch', 'Opdag Verden' ];
 
 	// Meta keys.
 	public const META_DATE                 = 'event_date';
@@ -129,6 +135,7 @@ class Event {
 	public function register_taxonomies(): void {
 		$this->register_region_taxonomy();
 		$this->register_length_taxonomy();
+		$this->register_organiser_taxonomy();
 	}
 
 	/**
@@ -740,6 +747,58 @@ class Event {
 				],
 			]
 		);
+	}
+
+	/**
+	 * Register the organiser taxonomy (one term per organisation, e.g. all
+	 * DVL chapters share "Dansk Vandrelaug"). Scrapers assign it; on other
+	 * events only admins can, until organisations have members (#86).
+	 *
+	 * @return void
+	 */
+	private function register_organiser_taxonomy(): void {
+		register_taxonomy(
+			self::TAX_ORGANISER,
+			self::CUSTOMPOSTTYPE,
+			[
+				'labels'            => [
+					'name'          => __( 'Organisers', 'vandrekalender-events' ),
+					'singular_name' => __( 'Organiser', 'vandrekalender-events' ),
+					'search_items'  => __( 'Search Organisers', 'vandrekalender-events' ),
+					'all_items'     => __( 'All Organisers', 'vandrekalender-events' ),
+					'edit_item'     => __( 'Edit Organiser', 'vandrekalender-events' ),
+					'update_item'   => __( 'Update Organiser', 'vandrekalender-events' ),
+					'add_new_item'  => __( 'Add New Organiser', 'vandrekalender-events' ),
+					'new_item_name' => __( 'New Organiser Name', 'vandrekalender-events' ),
+					'menu_name'     => __( 'Organisers', 'vandrekalender-events' ),
+				],
+				'hierarchical'      => false,
+				'public'            => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'capabilities'      => [
+					'manage_terms' => 'manage_categories',
+					'edit_terms'   => 'manage_categories',
+					'delete_terms' => 'manage_categories',
+					'assign_terms' => 'manage_categories',
+				],
+				'rewrite'           => [
+					'slug'       => 'arrangor',
+					'with_front' => false,
+				],
+			]
+		);
+	}
+
+	/**
+	 * The event_organiser term name for a scraper source, '' when the source
+	 * gets none (see ORGANISER_SOURCES).
+	 *
+	 * @param string $source_name event_source_name of a scraped event.
+	 * @return string
+	 */
+	public static function organiser_term_for_source( string $source_name ): string {
+		return in_array( $source_name, self::ORGANISER_SOURCES, true ) ? $source_name : '';
 	}
 
 	/**
