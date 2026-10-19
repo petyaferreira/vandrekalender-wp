@@ -75,6 +75,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
 		add_action( 'restrict_manage_posts', [ $this, 'render_organiser_filter' ] );
+		add_action( 'template_redirect', [ $this, 'redirect_old_organiser_urls' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
 		// Hook directly into meta saves — fires at the exact moment each value is
@@ -784,11 +785,38 @@ class Event {
 					'assign_terms' => 'manage_categories',
 				],
 				'rewrite'           => [
-					'slug'       => 'arrangor',
+					'slug'       => 'arrangoerer',
 					'with_front' => false,
 				],
 			]
 		);
+	}
+
+	/**
+	 * 301 from /arrangor/<slug>/, the organiser page base for its first day
+	 * on production (19 October 2026), to /arrangoerer/<slug>/. A 404-time
+	 * check like Vandrekalender_Legacy_Event_Urls, so it needs no rewrite rule.
+	 *
+	 * @return void
+	 */
+	public function redirect_old_organiser_urls(): void {
+		if ( ! is_404() ) {
+			return;
+		}
+
+		global $wp;
+
+		if ( ! isset( $wp->request ) || ! preg_match( '#^arrangor/([^/]+)/?$#', $wp->request, $matches ) ) {
+			return;
+		}
+
+		$term = get_term_by( 'slug', sanitize_title( $matches[1] ), self::TAX_ORGANISER );
+		$link = $term ? get_term_link( $term ) : '';
+
+		if ( $link && ! is_wp_error( $link ) ) {
+			wp_safe_redirect( $link, 301 );
+			exit;
+		}
 	}
 
 	/**

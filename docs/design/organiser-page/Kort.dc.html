@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Arrangør på ture og turkort</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;font-size:16px;line-height:1.5;color:#1D1A14}
+a{color:#1E6FA5}a:hover,a:focus,a:active{color:#154F78}
+</style>
+</helmet>
+<div style="width: 1100px; height: 1180px; box-sizing: border-box; padding: 48px; background: #FAF5EC; display: flex; flex-direction: column; gap: 40px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 40px; line-height: 1.2">Hvor skal arrangørnavnet stå?</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: #1D1A14; max-width: 760px">Anbefaling: B. En lille linje med logo og navn under titlen. Den er et eget link til arrangørsiden, og selve kortet linker stadig til turen.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start">
+<sc-for list="{{variants}}" as="v" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">{{v.label}}</div>
+<article style="background: #FFFFFF; border: 1px solid #C2D9B0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
+<div style="height: 160px; background: #C2D9B0; position: relative; display: flex; align-items: flex-end; padding: 12px; box-sizing: border-box"></div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<sc-if value="{{v.topline}}" hint-placeholder-val="{{false}}">
+<a href="#" style="align-self: flex-start; font-size: 12px; font-weight: 600; text-decoration: underline">Dansk Vandrelaug</a>
+</sc-if>
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D97535">TIRS 20. OKT 2026</div>
+<div style="font-family: 'Newsreader', serif; font-weight: 300; font-size: 20px; line-height: 1.2">Motionstur fra Friheden St.</div>
+<sc-if value="{{v.line}}" hint-placeholder-val="{{false}}">
+<a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; font-weight: 600; text-decoration: none"><span style="width: 24px; height: 24px; border-radius: 50%; background: #FAF5EC; border: 1px solid #C2D9B0; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: #2D5F3F">DVL</span>Dansk Vandrelaug</a>
+</sc-if>
+<div style="font-size: 14px; color: #7A7268; line-height: 1.5">Friheden St, Hvidovre</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px">
+<span style="font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: #C2D9B0; color: #1D1A14">10 km</span>
+<span style="font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: #FAF5EC; color: #7A5230">Gratis</span>
+<span style="font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: #2D5F3F; color: #FFFFFF">Hovedstaden</span>
+</div>
+</div>
+</article>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #1D1A14">{{v.note}}</p>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+<div style="width: 420px; background: #FFFFFF; border: 1px solid #C2D9B0; border-radius: 12px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">På turens egen side</div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; border-top: 1px solid #C2D9B0; padding-top: 12px"><span style="color: #7A7268">Dato</span><span style="font-weight: 600">søn 25. okt 2026</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; border-top: 1px solid #C2D9B0; padding-top: 12px"><span style="color: #7A7268">Starttid</span><span style="font-weight: 600">kl. 10:00</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; border-top: 1px solid #C2D9B0; padding-top: 12px"><span style="color: #7A7268">Sted</span><span style="font-weight: 600">Arnborg Kirke, Gl</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; border-top: 1px solid #C2D9B0; padding-top: 12px"><span style="color: #7A7268">Arrangør</span><a href="#" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none"><span style="width: 24px; height: 24px; border-radius: 50%; background: #FAF5EC; border: 1px solid #C2D9B0; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: #2D5F3F">DVL</span>Dansk Vandrelaug ›</a></div>
+</div>
+<p style="margin: 0; flex: 1 1 300px; font-size: 14px; line-height: 1.5; color: #1D1A14">På turens side får arrangøren en egen række i faktaboksen, lige over knappen "Book din plads". Rækken linker til arrangørsiden. Hvis en tur ikke har en arrangør, skjules rækken.</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+variants: [
+{ label: 'Nu', line: false, topline: false, note: 'Arrangøren kan ikke ses, før man åbner turen.' },
+{ label: 'A. Lille tekst over datoen', line: false, topline: true, note: 'Diskret, men let at overse og svær at ramme med en finger. Ingen logo.' },
+{ label: 'B. Linje med logo under titlen (anbefalet)', line: true, topline: false, note: 'Titlen holdes først. Rækken er mindst 32 px høj, så den er nem at trykke på. Logoet gør det hurtigt at genkende arrangører. Mangler logo, bruges initialer.' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

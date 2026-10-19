@@ -20,7 +20,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | `/begivenhed/[slug]` | Single event detail page | V1 |
 | `/om` | About page — site mission, how it works, membership info | V1 |
 | `/kontakt` | Contact form | V1 |
-| `/arrangor/[slug]` | Organiser page — all events of one `event_organiser` term, e.g. `/arrangor/dansk-vandrelaug/` | Live with the generic archive template (`taxonomy.html`); its own template is step 5 of [the organisers plan](plans/organisers-plan.md) |
+| `/arrangoerer/[slug]` | Organiser page — all events of one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` | Live with the generic archive template (`taxonomy.html`); its own template is step 5 of [the organisers plan](plans/organisers-plan.md) |
 | `/privatlivspolitik` | Privacy policy (GDPR) | V1 |
 | `/vilkaar` | Terms of use | V1 |
 | `/cookies` | Cookie policy | V1 |
@@ -86,7 +86,7 @@ Users with the "Event Author" role access these WordPress native pages. No custo
 
 ## URL Conventions
 
-- All URLs use Danish words for local SEO (e.g., `/begivenhed`, `/arrangor`, `/privatlivspolitik`)
+- All URLs use Danish words for local SEO (e.g., `/begivenhed`, `/arrangoerer`, `/privatlivspolitik`)
 - Event slugs auto-generated from titles: lowercase, hyphens, Danish characters (æ→ae, ø→oe, å→aa)
 - No trailing slashes
 - No date or ID in event URLs — slug only
@@ -129,7 +129,7 @@ All three tabs update simultaneously when filters change.
 | User settings (profile page) | V1 |
 | Membership management (email domain match, admin assignment) | V1 |
 | Membership copy on `/om` and `/vilkaar` | V1 |
-| Organiser archive page (`/arrangor`, a list of all organisers) | Not built; decided with the step 5 design of [the organisers plan](plans/organisers-plan.md) |
+| Organiser overview page (`/arrangoerer/`, all organisers) | Not built; step 5 of [the organisers plan](plans/organisers-plan.md) |
 | Member invitations | V2 |
 | Custom admin/creator pages (beyond native WP) | V2+ |
 

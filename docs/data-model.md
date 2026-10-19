@@ -183,7 +183,7 @@ All scraping fields are admin only — never visible to event creators or the pu
 
 ### `event_organiser`
 
-One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewrite slug `arrangor`, so a term's archive is `/arrangor/<term-slug>/`. Shown as a column and a dropdown filter on the admin Events list.
+One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewrite slug `arrangoerer`, so a term's archive is `/arrangoerer/<term-slug>/`. The slug was `arrangor` on its first day on production (19 October 2026); `Event::redirect_old_organiser_urls()` 301s `/arrangor/<slug>/` there. Shown as a column and a dropdown filter on the admin Events list.
 
 - **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
 - **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the **Organisation** field of the editor's Organiser panel (the default taxonomy panel is hidden). Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
