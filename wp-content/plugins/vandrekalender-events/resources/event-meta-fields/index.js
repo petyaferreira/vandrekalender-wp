@@ -4,6 +4,7 @@ import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
   BaseControl,
   Button,
+  ComboboxControl,
   Flex,
   Icon,
   SelectControl,
@@ -29,6 +30,8 @@ import { utmToLatLng } from './utm-to-latlng';
 // event_region and event_length are auto-assigned on save — hide their panels.
 dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_region');
 dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_length');
+// event_organiser is picked in the Organiser panel below, one term per event.
+dispatch('core/editor').removeEditorPanel('taxonomy-panel-event_organiser');
 
 const POST_TYPE = 'event';
 const EMPTY_META = {};
@@ -902,6 +905,39 @@ const EventDetailsPanel = ({ meta, setMeta }) => {
 
 // ── Organiser panel ───────────────────────────────────────────────────────────
 
+const OrganiserTermControl = () => {
+  const { terms, termIds } = useSelect(
+    select => ({
+      terms: select('core').getEntityRecords('taxonomy', 'event_organiser', {
+        per_page: -1,
+        orderby: 'name',
+        _fields: 'id,name',
+      }),
+      termIds: select('core/editor').getEditedPostAttribute('event_organiser'),
+    }),
+    []
+  );
+  const { editPost } = useDispatch('core/editor');
+
+  return (
+    <ComboboxControl
+      label={__('Organisation', 'vandrekalender-events')}
+      value={termIds?.[0] ?? null}
+      options={(terms ?? []).map(term => ({
+        value: term.id,
+        label: term.name,
+      }))}
+      onChange={id => editPost({ event_organiser: id ? [id] : [] })}
+      help={__(
+        'Links the walk to the organisation page. Scraped events get it automatically. New organisations: Events → Organisers.',
+        'vandrekalender-events'
+      )}
+      __next40pxDefaultSize
+      __nextHasNoMarginBottom
+    />
+  );
+};
+
 const OrganiserPanel = ({ meta, setMeta }) => {
   // PHP strips event_organiser_email from the REST response for non-admins.
   // If the key is present (even as empty string), the current user is an admin.
@@ -915,6 +951,8 @@ const OrganiserPanel = ({ meta, setMeta }) => {
       initialOpen={false}
     >
       <Flex direction="column" gap={2}>
+        {isAdmin && <OrganiserTermControl />}
+
         <TextControl
           label={__('Name', 'vandrekalender-events')}
           value={meta.event_organiser_name || ''}

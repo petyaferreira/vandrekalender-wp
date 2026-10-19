@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-19T11:24:39+00:00\n"
+"POT-Creation-Date: 2026-10-19T14:53:06+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -184,7 +184,7 @@ msgstr[1] "%s timer"
 #: build/blocks/event-info-card/render.php:105
 #: build/blocks/event-info-card/render.php:217
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:792
+#: resources/event-meta-fields/index.js:795
 msgid "Route"
 msgstr "Rute"
 
@@ -1002,7 +1002,7 @@ msgstr "Arrangører"
 
 #: includes/event/class-event.php:766
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:913
+#: resources/event-meta-fields/index.js:949
 msgid "Organiser"
 msgstr "Arrangør"
 
@@ -1155,215 +1155,225 @@ msgid "Add tab"
 msgstr "Tilføj faneblad"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:147
+#: resources/event-meta-fields/index.js:150
 msgid "—"
 msgstr "—"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:188
+#: resources/event-meta-fields/index.js:191
 msgid "Address search is unavailable. Try again later, or paste coordinates below."
 msgstr "Adressesøgning er ikke tilgængelig. Prøv igen senere, eller indsæt koordinater nedenfor."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:423
+#: resources/event-meta-fields/index.js:426
 msgid "Location"
 msgstr "Placering"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:428
+#: resources/event-meta-fields/index.js:431
 msgid "Place name (optional)"
 msgstr "Stednavn (valgfrit)"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:431
+#: resources/event-meta-fields/index.js:434
 msgid "e.g. Dyrehaven or Silkeborg Sti"
 msgstr "f.eks. Dyrehaven eller Silkeborg Sti"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:435
+#: resources/event-meta-fields/index.js:438
 msgid "Human-readable name shown on event cards. Falls back to municipality if left empty."
 msgstr "Læsbart navn der vises på begivenhedskort. Bruger kommunen hvis feltet er tomt."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:445
+#: resources/event-meta-fields/index.js:448
 msgid "Address"
 msgstr "Adresse"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:448
+#: resources/event-meta-fields/index.js:451
 msgid "Start typing an address…"
 msgstr "Begynd at skrive en adresse…"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:464
+#: resources/event-meta-fields/index.js:467
 msgid "Address search is not configured. Paste coordinates below instead."
 msgstr "Adressesøgning er ikke sat op. Indsæt koordinater nedenfor i stedet."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:487
+#: resources/event-meta-fields/index.js:490
 msgid "We could not work out the municipality for this address, so the walk will not show up under a region. Choose the municipality below."
 msgstr "Vi kunne ikke finde kommunen for denne adresse, så turen vises ikke under en region. Vælg kommunen nedenfor."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:493
+#: resources/event-meta-fields/index.js:496
 msgid "Municipality"
 msgstr "Kommune"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:497
+#: resources/event-meta-fields/index.js:500
 msgid "Choose municipality…"
 msgstr "Vælg kommune…"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:554
+#: resources/event-meta-fields/index.js:557
 msgid "Coordinates"
 msgstr "Koordinater"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:242
+#: resources/event-meta-fields/index.js:245
 msgid "The nearest address could not be looked up. The pin is saved; add the address by hand if you need it."
 msgstr "Den nærmeste adresse kunne ikke slås op. Nålen er gemt; tilføj adressen manuelt, hvis du har brug for den."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:558
+#: resources/event-meta-fields/index.js:561
 msgid "Filled automatically when an address is chosen. Or paste coordinates as \"56.052777, 9.749856\" or \"56.8036° N, 9.0192° E\" and the nearest address is looked up for you."
 msgstr "Udfyldes automatisk når en adresse vælges. Eller indsæt koordinater som \"56.052777, 9.749856\" eller \"56.8036° N, 9.0192° E\", så slås den nærmeste adresse op for dig."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:570
+#: resources/event-meta-fields/index.js:573
 msgid "Looking up the nearest address…"
 msgstr "Slår den nærmeste adresse op…"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:603
+#: resources/event-meta-fields/index.js:606
 msgid "GPX route"
 msgstr "GPX-rute"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:621
+#: resources/event-meta-fields/index.js:624
 msgid "Replace"
 msgstr "Erstat"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:627
-#: resources/event-meta-fields/index.js:776
-#: resources/event-meta-fields/index.js:799
+#: resources/event-meta-fields/index.js:630
+#: resources/event-meta-fields/index.js:779
+#: resources/event-meta-fields/index.js:802
 msgid "Remove"
 msgstr "Fjern"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:637
+#: resources/event-meta-fields/index.js:640
 msgid "Upload GPX"
 msgstr "Upload GPX"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:676
+#: resources/event-meta-fields/index.js:679
 msgid "Event Details"
 msgstr "Begivenhedsdetaljer"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:686
+#: resources/event-meta-fields/index.js:689
 msgid "Event Date"
 msgstr "Dato for begivenhed"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:710
+#: resources/event-meta-fields/index.js:713
 msgid "Routes"
 msgstr "Ruter"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:715
+#: resources/event-meta-fields/index.js:718
 msgid "No routes added yet."
 msgstr "Ingen ruter tilføjet endnu."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:804
+#: resources/event-meta-fields/index.js:807
 msgid "Distance (km)"
 msgstr "Distance (km)"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:815
+#: resources/event-meta-fields/index.js:818
 msgid "Start Time"
 msgstr "Starttidspunkt"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:824
+#: resources/event-meta-fields/index.js:827
 msgid "Cutoff Time (hours)"
 msgstr "Makstid (timer)"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:830
+#: resources/event-meta-fields/index.js:833
 msgid "Maximum hours allowed to finish the route."
 msgstr "Maksimalt antal timer til at gennemføre ruten."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:839
+#: resources/event-meta-fields/index.js:842
 msgid "Price (DKK)"
 msgstr "Pris (DKK)"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:883
+#: resources/event-meta-fields/index.js:886
 msgid "Done"
 msgstr "Færdig"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:739
+#: resources/event-meta-fields/index.js:742
 msgid "Start:"
 msgstr "Start:"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:745
+#: resources/event-meta-fields/index.js:748
 msgid "GPX"
 msgstr "GPX"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:755
+#: resources/event-meta-fields/index.js:758
 msgid "Incomplete route"
 msgstr "Ufuldstændig rute"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:769
+#: resources/event-meta-fields/index.js:772
 msgid "Edit"
 msgstr "Rediger"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:897
+#: resources/event-meta-fields/index.js:900
 msgid "Add route"
 msgstr "Tilføj rute"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:919
+#: resources/event-meta-fields/index.js:924
+msgid "Organisation"
+msgstr "Organisation"
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:931
+msgid "Links the walk to the organisation page. Scraped events get it automatically. New organisations: Events → Organisers."
+msgstr "Knytter turen til organisationens side. Hentede ture får den automatisk. Nye organisationer: Begivenheder → Arrangører."
+
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:957
 msgid "Name"
 msgstr "Navn"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:922
+#: resources/event-meta-fields/index.js:960
 msgid "Organiser or club name"
 msgstr "Arrangør- eller klubnavn"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:928
+#: resources/event-meta-fields/index.js:966
 msgid "Website"
 msgstr "Hjemmeside"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:939
+#: resources/event-meta-fields/index.js:977
 msgid "Contact email (admin only)"
 msgstr "Kontakt-e-mail (kun admin)"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:944
+#: resources/event-meta-fields/index.js:982
 msgid "Stored securely. Never shown publicly. Used for the event claim flow."
 msgstr "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1008
+#: resources/event-meta-fields/index.js:1046
 msgid "New here?"
 msgstr "Ny her?"
 
 #: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:1013
-#: resources/event-meta-fields/index.js:1024
+#: resources/event-meta-fields/index.js:1051
+#: resources/event-meta-fields/index.js:1062
 msgid "Watch the how-to video"
 msgstr "Se hvordan-videoen"
 
