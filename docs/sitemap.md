@@ -38,13 +38,13 @@ See `docs/authentication.md` for full details.
 | `/auth/callback` | OAuth redirect handler (technical, not user-facing) | Google OAuth callback |
 | `/wp-login.php?action=lostpassword` | Password reset | Native WordPress |
 
-**User roles:** All new users are assigned the "Event Organizer" role automatically. See `docs/authentication.md` for organizer taxonomy, email domain matching, and team membership.
+**User roles:** All new users are assigned the "Event Author" role (`event_author`) automatically. See `docs/authentication.md` for organizer taxonomy, email domain matching, and team membership.
 
 ---
 
 ## Logged-in User Pages (Native WordPress)
 
-Users with "Event Organizer" role access these WordPress native pages. No custom front-end pages in V1.
+Users with the "Event Author" role access these WordPress native pages. No custom front-end pages in V1.
 
 | URL | Purpose | Notes |
 |---|---|---|

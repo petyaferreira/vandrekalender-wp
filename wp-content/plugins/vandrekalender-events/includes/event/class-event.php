@@ -104,7 +104,7 @@ class Event {
 				// 'custom-fields' enables the meta box panel in the editor.
 				'supports'        => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
 				// Own capability set (edit_events, publish_events, …) so the
-				// event_organizer role can work with events without gaining
+				// event_author role can work with events without gaining
 				// access to regular posts. Granted in Vandrekalender_Roles.
 				'capability_type' => [ 'event', 'events' ],
 				'map_meta_cap'    => true,

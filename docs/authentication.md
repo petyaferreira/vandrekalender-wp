@@ -22,7 +22,7 @@ WordPress has no built-in concept of group ownership (every post has exactly one
 | Role | Capabilities | Notes |
 |---|---|---|
 | Administrator | Full site management | Site admin only |
-| Event Organizer | `edit_posts`, `publish_posts` on the `event` post type only | Assigned automatically to every new user. Restricted wp-admin: only the Events menu is visible |
+| Event Author (`event_author`, Danish "Turopretter") | `edit_posts`, `publish_posts` on the `event` post type only | Assigned automatically to every new user. Restricted wp-admin: only the Events menu is visible. Called `event_organizer` until [#90](https://github.com/petyaferreira/vandrekalender-wp/issues/90); its users moved over automatically. Not the same as the organisation that runs a walk (the `event_organiser` taxonomy) |
 
 Role management via the Members plugin (as defined in the Sitemap document).
 
@@ -199,7 +199,7 @@ The "Jeg kommer" button (in the Event Info Card, only on events with `event_sour
 1. The button is a real form posting to `admin-post.php?action=vk_join_event`, so it works without JavaScript — and, more importantly, so the logged-out branch runs server-side.
 2. Logged out: `Vandrekalender_Event_Join` sets a 30-minute, HttpOnly, `SameSite=Lax` cookie `vk_pending_join = <event_id>` and redirects to `wp_login_url( <event permalink> )`. Lax is deliberate and is the strictest setting that survives Google's callback, which arrives as a cross-site top-level navigation.
 3. **One hook covers both login methods.** Login with Google runs through the standard `authenticate` filter on `wp-login.php`, so `wp_login` fires for Google exactly as it does for a native login. `process_pending_join()` (priority 5, ahead of the Google plugin's own redirect) reads the cookie, records the join, sends both emails, and clears the cookie. There is no separate OAuth callback handler to keep in sync.
-4. Destination: `redirect_to` on the login URL already points at the event, which the Google plugin copies into its OAuth `state`. The `login_redirect` filter (priority 20, after the organizer dashboard's) is the belt-and-braces for the native path. Either way the visitor lands on the event page with `?joined=1`, never in wp-admin.
+4. Destination: `redirect_to` on the login URL already points at the event, which the Google plugin copies into its OAuth `state`. The `login_redirect` filter (priority 20, after the author dashboard's) is the belt-and-braces for the native path. Either way the visitor lands on the event page with `?joined=1`, never in wp-admin.
 5. No pending cookie → every one of these hooks is a no-op and login behaves exactly as before.
 
 The logged-out branch deliberately skips the nonce check: it changes nothing but a cookie, and a logged-out nonce baked into page-cached HTML would go stale and greet real visitors with "Are you sure you want to do this?". The logged-in branch checks the nonce normally.
@@ -227,7 +227,7 @@ When a scraped event is claimed (domain-matched token email, per DataModel v3), 
 
 | Feature | Phase |
 |---|---|
-| Event Organizer role + restricted wp-admin | V1 |
+| Event Author role + restricted wp-admin | V1 |
 | Google OAuth login | V1 |
 | Email/password registration with mandatory email verification | V1 |
 | Organizer taxonomy + term `email_domain` seeded by scraper | V1 |

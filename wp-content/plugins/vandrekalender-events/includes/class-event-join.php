@@ -61,7 +61,7 @@ class Vandrekalender_Event_Join {
 		// Priority 5: before Login with Google's own wp_login handler, which
 		// redirects and ends the request.
 		add_action( 'wp_login', [ $this, 'process_pending_join' ], 5, 2 );
-		// Priority 20: after the organizer dashboard's login_redirect filter,
+		// Priority 20: after the author dashboard's login_redirect filter,
 		// so a pending join wins over the default wp-admin destination.
 		add_filter( 'login_redirect', [ $this, 'redirect_to_joined_event' ], 20, 3 );
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
@@ -83,7 +83,7 @@ class Vandrekalender_Event_Join {
 	 * The organiser runs the walk, so under our model they are not one of its
 	 * attendees — the button becomes an informational line for them, and a
 	 * self-join is refused server-side (see join()). "Organiser" here means the
-	 * `post_author`; the shared-ownership organizer taxonomy is a separate,
+	 * `post_author`; the shared-ownership organiser taxonomy is a separate,
 	 * later question (see docs/authentication.md).
 	 *
 	 * @param int $event_id Event post ID.

@@ -1,8 +1,8 @@
 <?php
 /**
- * Organizer dashboard.
+ * Author dashboard.
  *
- * Replaces the default WordPress Dashboard screen for the Event Organizer role
+ * Replaces the default WordPress Dashboard screen for the Event Author role
  * with a single onboarding widget whose only job is to get a new user to their
  * first event as fast as possible. Administrators keep the normal dashboard.
  *
@@ -12,9 +12,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Custom dashboard widget for the Event Organizer role.
+ * Custom dashboard widget for the Event Author role.
  */
-class Vandrekalender_Organizer_Dashboard {
+class Vandrekalender_Author_Dashboard {
 
 	/**
 	 * The onboarding video, shipped with the plugin.
@@ -42,14 +42,14 @@ class Vandrekalender_Organizer_Dashboard {
 	/**
 	 * Dashboard widget ID.
 	 */
-	private const WIDGET_ID = 'vandrekalender_organizer_welcome';
+	private const WIDGET_ID = 'vandrekalender_author_welcome';
 
 	/**
 	 * Video formats browsers actually play.
 	 *
 	 * Deliberately narrow. WordPress happily accepts a video/quicktime upload
 	 * — a .mov straight off a Mac screen recording — but Chrome and Firefox
-	 * refuse the container outright, so the organizer gets a dead player with
+	 * refuse the container outright, so the event author gets a dead player with
 	 * no error. Anything outside this list renders nothing at all, plus an
 	 * admin-only warning from render_format_warning().
 	 */
@@ -67,27 +67,27 @@ class Vandrekalender_Organizer_Dashboard {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_video_data' ], 20 );
 		add_action( 'admin_head', [ $this, 'print_styles' ] );
 		add_action( 'admin_notices', [ $this, 'render_format_warning' ] );
-		add_filter( 'login_redirect', [ $this, 'redirect_organizers_to_dashboard' ], 10, 3 );
+		add_filter( 'login_redirect', [ $this, 'redirect_authors_to_dashboard' ], 10, 3 );
 		add_filter( 'get_user_option_screen_layout_dashboard', [ $this, 'force_single_column' ] );
 		add_filter( 'screen_layout_columns', [ $this, 'force_single_column_option' ] );
 	}
 
 	/**
-	 * Whether the current user gets the organizer dashboard.
+	 * Whether the current user gets the author dashboard.
 	 *
-	 * Administrators are excluded even if they also hold the organizer role —
+	 * Administrators are excluded even if they also hold the event author role —
 	 * they need the real dashboard.
 	 *
 	 * @return bool
 	 */
-	private static function is_organizer(): bool {
+	private static function is_event_author(): bool {
 		if ( current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 
 		$user = wp_get_current_user();
 
-		return $user && in_array( Vandrekalender_Roles::EVENT_ORGANIZER, (array) $user->roles, true );
+		return $user && in_array( Vandrekalender_Roles::EVENT_AUTHOR, (array) $user->roles, true );
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Vandrekalender_Organizer_Dashboard {
 	 * @return void
 	 */
 	public function setup_dashboard(): void {
-		if ( ! self::is_organizer() ) {
+		if ( ! self::is_event_author() ) {
 			return;
 		}
 
@@ -306,11 +306,11 @@ class Vandrekalender_Organizer_Dashboard {
 	}
 
 	/**
-	 * Land organizers on the dashboard after login, not on their profile.
+	 * Land event authors on the dashboard after login, not on their profile.
 	 *
 	 * Core sends any user without edit_posts to profile.php, and the
-	 * event_organizer role has edit_events but deliberately never edit_posts —
-	 * so without this an organizer never sees the onboarding widget they just
+	 * event_author role has edit_events but deliberately never edit_posts —
+	 * so without this an event author never sees the onboarding widget they just
 	 * logged in for.
 	 *
 	 * Returns index.php rather than admin_url() on purpose: that fallback is
@@ -322,12 +322,12 @@ class Vandrekalender_Organizer_Dashboard {
 	 * @param \WP_User|\WP_Error $user     Logged-in user, or an error.
 	 * @return string
 	 */
-	public function redirect_organizers_to_dashboard( $redirect_to, $requested, $user ) {
+	public function redirect_authors_to_dashboard( $redirect_to, $requested, $user ) {
 		if ( ! $user instanceof \WP_User || user_can( $user, 'manage_options' ) ) {
 			return $redirect_to;
 		}
 
-		if ( ! in_array( Vandrekalender_Roles::EVENT_ORGANIZER, (array) $user->roles, true ) ) {
+		if ( ! in_array( Vandrekalender_Roles::EVENT_AUTHOR, (array) $user->roles, true ) ) {
 			return $redirect_to;
 		}
 
@@ -340,16 +340,16 @@ class Vandrekalender_Organizer_Dashboard {
 	}
 
 	/**
-	 * Lay the organizer dashboard out in a single full-width column.
+	 * Lay the author dashboard out in a single full-width column.
 	 *
 	 * There is only one widget, and the how-to video is a full-resolution
 	 * screen recording — unreadable squeezed into one of the default columns.
 	 *
 	 * @param mixed $columns Stored column preference.
-	 * @return mixed 1 for organizers, the original value otherwise.
+	 * @return mixed 1 for event authors, the original value otherwise.
 	 */
 	public function force_single_column( $columns ) {
-		return self::is_organizer() ? 1 : $columns;
+		return self::is_event_author() ? 1 : $columns;
 	}
 
 	/**
@@ -359,7 +359,7 @@ class Vandrekalender_Organizer_Dashboard {
 	 * @return array
 	 */
 	public function force_single_column_option( $columns ): array {
-		if ( self::is_organizer() ) {
+		if ( self::is_event_author() ) {
 			$columns['dashboard'] = 1;
 		}
 
@@ -370,7 +370,7 @@ class Vandrekalender_Organizer_Dashboard {
 	 * Warn administrators when the configured video is not web-playable.
 	 *
 	 * Without this the failure is invisible to the person who can fix it:
-	 * organizers see no player, administrators never see the widget at all.
+	 * event authors see no player, administrators never see the widget at all.
 	 *
 	 * @return void
 	 */
@@ -396,7 +396,7 @@ class Vandrekalender_Organizer_Dashboard {
 
 			$message = sprintf(
 				/* translators: 1: attachment ID, 2: MIME type of the configured file, 3: option name. */
-				esc_html__( 'The onboarding video override (attachment %1$s, %2$s) is not a format browsers can play, so no video is shown to organizers. Re-export it as MP4 (H.264/AAC), or delete the %3$s option to fall back to the video bundled with the plugin.', 'vandrekalender-events' ),
+				esc_html__( 'The onboarding video override (attachment %1$s, %2$s) is not a format browsers can play, so no video is shown to event authors. Re-export it as MP4 (H.264/AAC), or delete the %3$s option to fall back to the video bundled with the plugin.', 'vandrekalender-events' ),
 				esc_html( (string) $attachment_id ),
 				esc_html( $mime ? $mime : __( 'file missing', 'vandrekalender-events' ) ),
 				'<code>' . esc_html( self::VIDEO_OPTION ) . '</code>'
@@ -404,7 +404,7 @@ class Vandrekalender_Organizer_Dashboard {
 		} else {
 			$message = sprintf(
 				/* translators: %s: expected path of the bundled video file. */
-				esc_html__( 'The onboarding video is missing at %s, so no video is shown to organizers. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it.', 'vandrekalender-events' ),
+				esc_html__( 'The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it.', 'vandrekalender-events' ),
 				'<code>' . esc_html( self::BUNDLED_VIDEO ) . '</code>'
 			);
 		}
@@ -426,7 +426,7 @@ class Vandrekalender_Organizer_Dashboard {
 	public function print_styles(): void {
 		$screen = get_current_screen();
 
-		if ( ! $screen || 'dashboard' !== $screen->id || ! self::is_organizer() ) {
+		if ( ! $screen || 'dashboard' !== $screen->id || ! self::is_event_author() ) {
 			return;
 		}
 

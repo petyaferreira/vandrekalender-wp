@@ -992,7 +992,7 @@ registerPlugin('vandrekalender-event-document-fields', {
  *
  * Rendered as an editor notice rather than a PHP admin notice: core hides
  * classic notices on block editor screens. window.vkOnboardingVideo is set
- * from PHP (Vandrekalender_Organizer_Dashboard) and is only present when an
+ * from PHP (Vandrekalender_Author_Dashboard) and is only present when an
  * onboarding video is configured and a new event is being created.
  */
 const OnboardingVideo = () => {
