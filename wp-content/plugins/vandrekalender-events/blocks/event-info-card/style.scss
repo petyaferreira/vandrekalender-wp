@@ -119,6 +119,33 @@
       font-weight: 600;
       color: var(--wp--preset--color--forest, #2d5f3f);
     }
+
+    // The organiser's name is the value itself, so it keeps the row's size.
+    .vk-info-card__organiser-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 32px;
+      margin-top: 0;
+      font-size: inherit;
+      text-decoration: none;
+    }
+
+    // Initials until organisers have logos (docs/design/organiser-page/).
+    .vk-info-card__organiser-badge {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
+      border-radius: 50%;
+      background: var(--wp--preset--color--cream, #faf5ec);
+      color: var(--wp--preset--color--forest, #2d5f3f);
+      font-size: var(--wp--preset--font-size--2-x-small, 0.625rem);
+      font-weight: 600;
+    }
   }
 
   &__cta {

@@ -44,6 +44,17 @@ $vk_book_url = $vk_source_url ? $vk_source_url : $vk_organiser_url;
 $vk_place    = $vk_place_name ? $vk_place_name : $vk_municipality;
 $vk_place    = $vk_place ? $vk_place : \Vandrekalender\Event::coordinates_label( $vk_post_id );
 
+// Organiser: with an event_organiser term, the organisation ("Dansk
+// Vandrelaug", not the chapter) with its badge, linked to its page; without
+// one, the event's own organiser name as plain text.
+$vk_organiser_terms = get_the_terms( $vk_post_id, \Vandrekalender\Event::TAX_ORGANISER );
+$vk_organiser_term  = is_array( $vk_organiser_terms ) ? $vk_organiser_terms[0] : null;
+$vk_organiser_link  = $vk_organiser_term ? get_term_link( $vk_organiser_term ) : '';
+$vk_organiser_link  = is_wp_error( $vk_organiser_link ) ? '' : $vk_organiser_link;
+$vk_organiser_name  = $vk_organiser_term
+	? $vk_organiser_term->name
+	: (string) get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ORGANISER_NAME, true );
+
 $vk_date_label     = $vk_date ? date_i18n( get_option( 'date_format' ), strtotime( $vk_date ) ) : '';
 $vk_directions_url = \Vandrekalender\Event::directions_url( $vk_post_id );
 
@@ -241,6 +252,22 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 						<a class="vk-info-card__directions" href="<?php echo esc_url( $vk_directions_url ); ?>" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Show directions', 'vandrekalender-events' ); ?> ›
 						</a>
+					<?php endif; ?>
+				</dd>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $vk_organiser_name ) : ?>
+			<div class="vk-info-card__row">
+				<dt><?php esc_html_e( 'Organiser', 'vandrekalender-events' ); ?></dt>
+				<dd>
+					<?php if ( $vk_organiser_link ) : ?>
+						<a class="vk-info-card__organiser-link" href="<?php echo esc_url( $vk_organiser_link ); ?>">
+							<span class="vk-info-card__organiser-badge" aria-hidden="true"><?php echo esc_html( \Vandrekalender\Event::organiser_initials( $vk_organiser_name ) ); ?></span>
+							<?php echo esc_html( $vk_organiser_name ); ?> ›
+						</a>
+					<?php else : ?>
+						<?php echo esc_html( $vk_organiser_name ); ?>
 					<?php endif; ?>
 				</dd>
 			</div>
