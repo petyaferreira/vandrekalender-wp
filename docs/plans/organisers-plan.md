@@ -1,6 +1,6 @@
 # Organisers: taxonomy, organiser pages and filters
 
-Status: in progress (steps 1–2 done, step 3 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
+Status: in progress (steps 1–3 done, step 4 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
 
 ## Goal
 

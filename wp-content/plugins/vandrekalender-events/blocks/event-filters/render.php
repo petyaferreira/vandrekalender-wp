@@ -3,9 +3,11 @@
  * Server render for the Event Filters block.
  *
  * Renders the filter controls. Region options come from the event_region
- * taxonomy; length options are the fixed kort/mellem/lang buckets. The view
- * script reads the controls, writes them to the URL query string, and tells the
- * calendar block to re-fetch.
+ * taxonomy; organiser options are the event_organiser terms that have an
+ * upcoming event, so the list never offers a filter that shows nothing. Length
+ * options are the fixed kort/mellem/lang buckets. The view script reads the
+ * controls, writes them to the URL query string, and tells the calendar block
+ * to re-fetch.
  *
  * @package Vandrekalender
  */
@@ -19,6 +21,28 @@ $vk_regions = get_terms(
 	]
 );
 $vk_regions = is_wp_error( $vk_regions ) ? [] : $vk_regions;
+
+// Upcoming = the same default floor the cards use (build_query_args() with no
+// date params starts at today).
+$vk_upcoming_ids = get_posts(
+	array_merge(
+		Vandrekalender_Event_Rest_Api::build_query_args( [] ),
+		[
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		]
+	)
+);
+$vk_organisers   = $vk_upcoming_ids ? wp_get_object_terms(
+	$vk_upcoming_ids,
+	\Vandrekalender\Event::TAX_ORGANISER,
+	[
+		'orderby' => 'name',
+		'order'   => 'ASC',
+	]
+) : [];
+$vk_organisers   = is_wp_error( $vk_organisers ) ? [] : $vk_organisers;
 
 $vk_lengths = [
 	'kort'   => __( 'Short (0–10 km)', 'vandrekalender-events' ),
@@ -36,6 +60,18 @@ $vk_lengths = [
 			<?php endforeach; ?>
 		</select>
 	</div>
+
+	<?php if ( $vk_organisers ) : ?>
+		<div class="vk-filters__field">
+			<label class="vk-filters__label" for="vk-filter-organiser"><?php esc_html_e( 'Organiser', 'vandrekalender-events' ); ?></label>
+			<select class="vk-filters__select" id="vk-filter-organiser" data-filter="organiser">
+				<option value=""><?php esc_html_e( 'All organisers', 'vandrekalender-events' ); ?></option>
+				<?php foreach ( $vk_organisers as $vk_organiser ) : ?>
+					<option value="<?php echo esc_attr( $vk_organiser->slug ); ?>"><?php echo esc_html( $vk_organiser->name ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+	<?php endif; ?>
 
 	<div class="vk-filters__field">
 		<span class="vk-filters__label"><?php esc_html_e( 'Length', 'vandrekalender-events' ); ?></span>
