@@ -71,3 +71,5 @@ Variant B of the design: under the title, a line with the badge and the organise
 
 - Step 1: merged in [#92](https://github.com/petyaferreira/vandrekalender-wp/pull/92) (19 October 2026), with the editor field in [#93](https://github.com/petyaferreira/vandrekalender-wp/pull/93). Before it, the user role was renamed to `event_author` ([#90](https://github.com/petyaferreira/vandrekalender-wp/issues/90)), so it is not confused with `event_organiser`.
 - Step 2: merged in [#94](https://github.com/petyaferreira/vandrekalender-wp/pull/94) (19 October 2026), closing #33.
+- Step 3: merged in [#95](https://github.com/petyaferreira/vandrekalender-wp/pull/95) (20 October 2026). The rewrite slug moved from `arrangor` to `arrangoerer` in [#98](https://github.com/petyaferreira/vandrekalender-wp/pull/98) (20 October 2026). Backfill run on staging and production.
+- Step 4: in review in [#108](https://github.com/petyaferreira/vandrekalender-wp/pull/108).
