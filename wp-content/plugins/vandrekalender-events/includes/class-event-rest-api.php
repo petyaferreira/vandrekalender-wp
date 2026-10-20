@@ -409,7 +409,7 @@ class Vandrekalender_Event_Rest_Api {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$filters = [];
 
-		foreach ( [ 'date_from', 'date_to', 'region', 'length', 'is_free' ] as $key ) {
+		foreach ( [ 'date_from', 'date_to', 'region', 'organiser', 'length', 'is_free' ] as $key ) {
 			if ( isset( $_GET[ $key ] ) && '' !== $_GET[ $key ] ) {
 				$filters[ $key ] = sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
 			}
@@ -428,7 +428,7 @@ class Vandrekalender_Event_Rest_Api {
 	private function extract_filters( WP_REST_Request $request ) {
 		$filters = [];
 
-		foreach ( [ 'date_from', 'date_to', 'region', 'length' ] as $key ) {
+		foreach ( [ 'date_from', 'date_to', 'region', 'organiser', 'length' ] as $key ) {
 			if ( $request->get_param( $key ) ) {
 				$filters[ $key ] = $request->get_param( $key );
 			}
@@ -484,6 +484,14 @@ class Vandrekalender_Event_Rest_Api {
 				'taxonomy' => \Vandrekalender\Event::TAX_REGION,
 				'field'    => 'slug',
 				'terms'    => array_map( 'sanitize_title', explode( ',', $filters['region'] ) ),
+			];
+		}
+
+		if ( ! empty( $filters['organiser'] ) ) {
+			$tax_query[] = [
+				'taxonomy' => \Vandrekalender\Event::TAX_ORGANISER,
+				'field'    => 'slug',
+				'terms'    => array_map( 'sanitize_title', explode( ',', $filters['organiser'] ) ),
 			];
 		}
 
@@ -619,6 +627,10 @@ class Vandrekalender_Event_Rest_Api {
 				'sanitize_callback' => 'sanitize_text_field',
 			],
 			'region'    => [
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'organiser' => [
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
 			],

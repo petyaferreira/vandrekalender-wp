@@ -14,7 +14,7 @@ export default function Edit() {
       <p>
         🔍{' '}
         {__(
-          'Event Filters — region, length, date, free. Active on the published page.',
+          'Event Filters — region, organiser, length, date, free. Active on the published page.',
           'vandrekalender-events'
         )}
       </p>

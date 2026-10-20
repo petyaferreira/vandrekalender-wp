@@ -92,11 +92,12 @@ There is deliberately no `front-page.html` — the front page uses `page.html` l
 
 ## Filter Bar
 
-The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk-filters">`. `render.php` builds the region options from the `event_region` taxonomy (only regions that have events); the length options are fixed.
+The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk-filters">`. `render.php` builds the region options from the `event_region` taxonomy (only regions that have events) and the organiser options from the `event_organiser` terms that have at least one upcoming event, sorted by name (the select is left out when there are none); the length options are fixed.
 
 | Control | URL / REST param | Values |
 |---|---|---|
 | Region (select) | `region` | region term slug |
+| Organiser (select) | `organiser` | organiser term slug (the REST API also takes several, comma-separated) |
 | Length (toggle pills, several can be on) | `length` | `kort` (0–10 km), `mellem` (10–25 km), `lang` (25+ km), comma-separated |
 | From date / To date | `date_from`, `date_to` | `YYYY-MM-DD` |
 | Free only (checkbox) | `is_free` | `true` |

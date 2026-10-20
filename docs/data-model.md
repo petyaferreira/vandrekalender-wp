@@ -228,6 +228,7 @@ All filters for the frontend event listing. Each filter maps to either a meta fi
 | `event_date` | Date range picker | Presets: This weekend, This month, Next 3 months. Uses `meta_query` with `type: DATE` |
 | `event_length` | Pills / checkboxes | Short / Medium / Long. Multiple selectable. Taxonomy query |
 | `event_region` | Dropdown | 5 Danish regions. Taxonomy query |
+| `event_organiser` | Dropdown | Organisers with at least one upcoming event. Taxonomy query |
 | `is_free` | Toggle | Show free only / show all. Derived from `event_routes` prices, filtered in PHP (not a meta query) |
 
 ### Deferred to v2
@@ -256,6 +257,7 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 | `date_to` | string (YYYY-MM-DD) | `event_date` meta, `<=` |
 | `length` | string | `event_length` taxonomy slug e.g. `short` |
 | `region` | string | `event_region` taxonomy slug e.g. `midtjylland` |
+| `organiser` | string | `event_organiser` taxonomy slug e.g. `dansk-vandrelaug`, comma-separated for several |
 | `is_free` | boolean | Derived from `event_routes` prices (computed in PHP, not a meta field) |
 | `lang` | string | `da` or `en`. Passed to Polylang via `WP_Query` `lang` arg |
 
@@ -282,7 +284,7 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 
 ### `GET /events/count`
 
-Returns the number of published events matching the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Used by the `[vk_filtered_count]` shortcode.
+Returns the number of published events matching the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Used by the `[vk_filtered_count]` shortcode.
 
 **Response shape:**
 
@@ -294,7 +296,7 @@ Returns the number of published events matching the same filter params as `GET /
 
 ### `GET /events/days`
 
-Returns per-day event counts for the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds) and fetches a single day's full events from `GET /events` only when that day is clicked.
+Returns per-day event counts for the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds) and fetches a single day's full events from `GET /events` only when that day is clicked.
 
 **Response shape** (empty object when no events match):
 

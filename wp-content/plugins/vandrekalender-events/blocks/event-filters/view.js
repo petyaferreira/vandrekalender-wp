@@ -20,6 +20,11 @@ function collect(form) {
     filters.region = region.value;
   }
 
+  const organiser = form.querySelector('[data-filter="organiser"]');
+  if (organiser && organiser.value) {
+    filters.organiser = organiser.value;
+  }
+
   const lengths = Array.from(
     form.querySelectorAll('[data-filter="length"][aria-pressed="true"]')
   ).map(pill => pill.dataset.value);
@@ -74,6 +79,11 @@ function hydrateFromUrl(form) {
   const region = form.querySelector('[data-filter="region"]');
   if (region && params.get('region')) {
     region.value = params.get('region');
+  }
+
+  const organiser = form.querySelector('[data-filter="organiser"]');
+  if (organiser && params.get('organiser')) {
+    organiser.value = params.get('organiser');
   }
 
   const lengths = (params.get('length') || '').split(',').filter(Boolean);

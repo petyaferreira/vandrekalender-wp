@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-19T14:53:06+00:00\n"
+"POT-Creation-Date: 2026-10-20T12:31:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -90,11 +90,11 @@ msgstr[1] ""
 
 #: blocks/event-calendar/render.php:264
 #: blocks/event-cards/render.php:107
-#: blocks/event-info-card/render.php:60
+#: blocks/event-info-card/render.php:71
 #: blocks/event-map/render.php:72
 #: build/blocks/event-calendar/render.php:264
 #: build/blocks/event-cards/render.php:107
-#: build/blocks/event-info-card/render.php:60
+#: build/blocks/event-info-card/render.php:71
 #: build/blocks/event-map/render.php:72
 msgid "Free"
 msgstr ""
@@ -121,203 +121,218 @@ msgstr ""
 msgid "Show more walks"
 msgstr ""
 
-#: blocks/event-filters/render.php:24
-#: build/blocks/event-filters/render.php:24
+#: blocks/event-filters/render.php:48
+#: build/blocks/event-filters/render.php:48
 msgid "Short (0–10 km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:25
-#: build/blocks/event-filters/render.php:25
+#: blocks/event-filters/render.php:49
+#: build/blocks/event-filters/render.php:49
 msgid "Medium (10–25 km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:26
-#: build/blocks/event-filters/render.php:26
+#: blocks/event-filters/render.php:50
+#: build/blocks/event-filters/render.php:50
 msgid "Long (25+ km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:31
-#: build/blocks/event-filters/render.php:31
-#: includes/event/class-event.php:695
+#: blocks/event-filters/render.php:55
+#: build/blocks/event-filters/render.php:55
+#: includes/event/class-event.php:696
 msgid "Region"
 msgstr ""
 
-#: blocks/event-filters/render.php:33
-#: build/blocks/event-filters/render.php:33
+#: blocks/event-filters/render.php:57
+#: build/blocks/event-filters/render.php:57
 msgid "All regions"
 msgstr ""
 
-#: blocks/event-filters/render.php:41
-#: blocks/event-filters/render.php:42
-#: build/blocks/event-filters/render.php:41
-#: build/blocks/event-filters/render.php:42
-#: includes/event/class-event.php:730
+#: blocks/event-filters/render.php:66
+#: blocks/event-info-card/render.php:262
+#: build/blocks/event-filters/render.php:66
+#: build/blocks/event-info-card/render.php:262
+#: includes/event/class-event.php:767
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:949
+msgid "Organiser"
+msgstr ""
+
+#: blocks/event-filters/render.php:68
+#: build/blocks/event-filters/render.php:68
+msgid "All organisers"
+msgstr ""
+
+#: blocks/event-filters/render.php:77
+#: blocks/event-filters/render.php:78
+#: build/blocks/event-filters/render.php:77
+#: build/blocks/event-filters/render.php:78
+#: includes/event/class-event.php:731
 msgid "Length"
 msgstr ""
 
-#: blocks/event-filters/render.php:53
-#: build/blocks/event-filters/render.php:53
+#: blocks/event-filters/render.php:89
+#: build/blocks/event-filters/render.php:89
 msgid "From date"
 msgstr ""
 
-#: blocks/event-filters/render.php:58
-#: build/blocks/event-filters/render.php:58
+#: blocks/event-filters/render.php:94
+#: build/blocks/event-filters/render.php:94
 msgid "To date"
 msgstr ""
 
-#: blocks/event-filters/render.php:66
-#: build/blocks/event-filters/render.php:66
+#: blocks/event-filters/render.php:102
+#: build/blocks/event-filters/render.php:102
 msgid "Free only"
 msgstr ""
 
-#: blocks/event-filters/render.php:71
-#: build/blocks/event-filters/render.php:71
+#: blocks/event-filters/render.php:107
+#: build/blocks/event-filters/render.php:107
 msgid "Reset"
 msgstr ""
 
 #. translators: %s: price in Danish kroner
-#: blocks/event-info-card/render.php:64
-#: build/blocks/event-info-card/render.php:64
+#: blocks/event-info-card/render.php:75
+#: build/blocks/event-info-card/render.php:75
 #, php-format
 msgid "%s kr"
 msgstr ""
 
 #. translators: %s: start time, e.g. 09:00
-#: blocks/event-info-card/render.php:79
-#: build/blocks/event-info-card/render.php:79
+#: blocks/event-info-card/render.php:90
+#: build/blocks/event-info-card/render.php:90
 #, php-format
 msgid "at %s"
 msgstr ""
 
 #. translators: %s: number of hours
-#: blocks/event-info-card/render.php:94
-#: build/blocks/event-info-card/render.php:94
+#: blocks/event-info-card/render.php:105
+#: build/blocks/event-info-card/render.php:105
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/event-info-card/render.php:105
-#: blocks/event-info-card/render.php:217
-#: build/blocks/event-info-card/render.php:105
-#: build/blocks/event-info-card/render.php:217
+#: blocks/event-info-card/render.php:116
+#: blocks/event-info-card/render.php:228
+#: build/blocks/event-info-card/render.php:116
+#: build/blocks/event-info-card/render.php:228
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:795
 msgid "Route"
 msgstr ""
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:111
-#: build/blocks/event-info-card/render.php:111
+#: blocks/event-info-card/render.php:122
+#: build/blocks/event-info-card/render.php:122
 #, php-format
 msgid "%s km"
 msgstr ""
 
-#: blocks/event-info-card/render.php:128
-#: build/blocks/event-info-card/render.php:128
+#: blocks/event-info-card/render.php:139
+#: build/blocks/event-info-card/render.php:139
 msgid "I'm going"
 msgstr ""
 
-#: blocks/event-info-card/render.php:129
-#: build/blocks/event-info-card/render.php:129
+#: blocks/event-info-card/render.php:140
+#: build/blocks/event-info-card/render.php:140
 msgid "Attending"
 msgstr ""
 
-#: blocks/event-info-card/render.php:130
-#: build/blocks/event-info-card/render.php:130
+#: blocks/event-info-card/render.php:141
+#: build/blocks/event-info-card/render.php:141
 msgid "You are signed up — we have emailed you a confirmation."
-msgstr ""
-
-#: blocks/event-info-card/render.php:138
-#: build/blocks/event-info-card/render.php:138
-msgid "Sign-up failed. Please try again."
-msgstr ""
-
-#: blocks/event-info-card/render.php:139
-#: build/blocks/event-info-card/render.php:139
-msgid "Cancellation failed. Please try again."
 msgstr ""
 
 #: blocks/event-info-card/render.php:149
 #: build/blocks/event-info-card/render.php:149
+msgid "Sign-up failed. Please try again."
+msgstr ""
+
+#: blocks/event-info-card/render.php:150
+#: build/blocks/event-info-card/render.php:150
+msgid "Cancellation failed. Please try again."
+msgstr ""
+
+#: blocks/event-info-card/render.php:160
+#: build/blocks/event-info-card/render.php:160
 msgid "You are signed up for this walk."
 msgstr ""
 
-#: blocks/event-info-card/render.php:151
-#: build/blocks/event-info-card/render.php:151
+#: blocks/event-info-card/render.php:162
+#: build/blocks/event-info-card/render.php:162
 msgid "You need an account to sign up. We will bring you straight back here."
 msgstr ""
 
-#: blocks/event-info-card/render.php:173
-#: build/blocks/event-info-card/render.php:173
+#: blocks/event-info-card/render.php:184
+#: build/blocks/event-info-card/render.php:184
 msgid "per participant"
 msgstr ""
 
-#: blocks/event-info-card/render.php:200
-#: build/blocks/event-info-card/render.php:200
+#: blocks/event-info-card/render.php:211
+#: build/blocks/event-info-card/render.php:211
 msgid "Date"
 msgstr ""
 
-#: blocks/event-info-card/render.php:207
-#: build/blocks/event-info-card/render.php:207
+#: blocks/event-info-card/render.php:218
+#: build/blocks/event-info-card/render.php:218
 msgid "Start time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:212
-#: build/blocks/event-info-card/render.php:212
+#: blocks/event-info-card/render.php:223
+#: build/blocks/event-info-card/render.php:223
 msgid "Cutoff time"
 msgstr ""
 
-#: blocks/event-info-card/render.php:225
+#: blocks/event-info-card/render.php:236
 #: blocks/event-route-map/render.php:121
-#: build/blocks/event-info-card/render.php:225
+#: build/blocks/event-info-card/render.php:236
 #: build/blocks/event-route-map/render.php:121
 msgid "Download GPX"
 msgstr ""
 
-#: blocks/event-info-card/render.php:233
-#: build/blocks/event-info-card/render.php:233
+#: blocks/event-info-card/render.php:244
+#: build/blocks/event-info-card/render.php:244
 msgid "Place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:242
-#: build/blocks/event-info-card/render.php:242
+#: blocks/event-info-card/render.php:253
+#: build/blocks/event-info-card/render.php:253
 msgid "Show directions"
 msgstr ""
 
-#: blocks/event-info-card/render.php:252
-#: build/blocks/event-info-card/render.php:252
+#: blocks/event-info-card/render.php:279
+#: build/blocks/event-info-card/render.php:279
 msgid "You are the organiser of this walk"
 msgstr ""
 
-#: blocks/event-info-card/render.php:294
-#: build/blocks/event-info-card/render.php:294
+#: blocks/event-info-card/render.php:321
+#: build/blocks/event-info-card/render.php:321
 msgid "Cancel your sign-up?"
 msgstr ""
 
-#: blocks/event-info-card/render.php:295
-#: build/blocks/event-info-card/render.php:295
+#: blocks/event-info-card/render.php:322
+#: build/blocks/event-info-card/render.php:322
 msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
 msgstr ""
 
-#: blocks/event-info-card/render.php:299
-#: build/blocks/event-info-card/render.php:299
+#: blocks/event-info-card/render.php:326
+#: build/blocks/event-info-card/render.php:326
 msgid "No, keep my place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:307
-#: build/blocks/event-info-card/render.php:307
+#: blocks/event-info-card/render.php:334
+#: build/blocks/event-info-card/render.php:334
 msgid "Yes, cancel"
 msgstr ""
 
-#: blocks/event-info-card/render.php:314
-#: build/blocks/event-info-card/render.php:314
+#: blocks/event-info-card/render.php:341
+#: build/blocks/event-info-card/render.php:341
 msgid "Book your place"
 msgstr ""
 
-#: blocks/event-info-card/render.php:316
-#: build/blocks/event-info-card/render.php:316
+#: blocks/event-info-card/render.php:343
+#: build/blocks/event-info-card/render.php:343
 msgid "Registration is handled by the organiser"
 msgstr ""
 
@@ -578,7 +593,7 @@ msgstr ""
 msgid "Too many address lookups. Wait a few minutes and try again."
 msgstr ""
 
-#: includes/class-event-rest-api.php:545
+#: includes/class-event-rest-api.php:553
 msgid "Event not found."
 msgstr ""
 
@@ -683,7 +698,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:98
+#: includes/event/class-event.php:99
 msgid "Event"
 msgstr ""
 
@@ -908,167 +923,162 @@ msgstr ""
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:97
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:98
+#: includes/event/class-event.php:100
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:100
+#: includes/event/class-event.php:101
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:102
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:102
+#: includes/event/class-event.php:103
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:103
+#: includes/event/class-event.php:104
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:104
+#: includes/event/class-event.php:105
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:105
+#: includes/event/class-event.php:106
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:106
+#: includes/event/class-event.php:107
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:107
+#: includes/event/class-event.php:108
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:108
+#: includes/event/class-event.php:109
 msgid "No events found in trash."
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:606
+#: includes/event/class-event.php:607
 #, php-format
 msgid "%s° N"
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:606
+#: includes/event/class-event.php:607
 #, php-format
 msgid "%s° S"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:611
+#: includes/event/class-event.php:612
 #, php-format
 msgid "%s° E"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:611
+#: includes/event/class-event.php:612
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:616
+#: includes/event/class-event.php:617
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:694
-#: includes/event/class-event.php:702
+#: includes/event/class-event.php:695
+#: includes/event/class-event.php:703
 msgid "Regions"
 msgstr ""
 
-#: includes/event/class-event.php:696
+#: includes/event/class-event.php:697
 msgid "Search Regions"
 msgstr ""
 
-#: includes/event/class-event.php:697
+#: includes/event/class-event.php:698
 msgid "All Regions"
 msgstr ""
 
-#: includes/event/class-event.php:698
+#: includes/event/class-event.php:699
 msgid "Edit Region"
 msgstr ""
 
-#: includes/event/class-event.php:699
+#: includes/event/class-event.php:700
 msgid "Update Region"
 msgstr ""
 
-#: includes/event/class-event.php:700
+#: includes/event/class-event.php:701
 msgid "Add New Region"
 msgstr ""
 
-#: includes/event/class-event.php:701
+#: includes/event/class-event.php:702
 msgid "New Region Name"
 msgstr ""
 
-#: includes/event/class-event.php:729
-#: includes/event/class-event.php:737
+#: includes/event/class-event.php:730
+#: includes/event/class-event.php:738
 msgid "Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:731
+#: includes/event/class-event.php:732
 msgid "Search Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:732
+#: includes/event/class-event.php:733
 msgid "All Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:733
+#: includes/event/class-event.php:734
 msgid "Edit Length"
 msgstr ""
 
-#: includes/event/class-event.php:734
+#: includes/event/class-event.php:735
 msgid "Update Length"
 msgstr ""
 
-#: includes/event/class-event.php:735
+#: includes/event/class-event.php:736
 msgid "Add New Length"
 msgstr ""
 
-#: includes/event/class-event.php:736
+#: includes/event/class-event.php:737
 msgid "New Length Name"
 msgstr ""
 
-#: includes/event/class-event.php:765
-#: includes/event/class-event.php:773
+#: includes/event/class-event.php:766
+#: includes/event/class-event.php:774
 msgid "Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:766
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:949
-msgid "Organiser"
-msgstr ""
-
-#: includes/event/class-event.php:767
+#: includes/event/class-event.php:768
 msgid "Search Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:768
+#: includes/event/class-event.php:769
+#: includes/event/class-event.php:815
 msgid "All Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:769
+#: includes/event/class-event.php:770
 msgid "Edit Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:770
+#: includes/event/class-event.php:771
 msgid "Update Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:771
+#: includes/event/class-event.php:772
 msgid "Add New Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:772
+#: includes/event/class-event.php:773
 msgid "New Organiser Name"
 msgstr ""
 
@@ -1108,7 +1118,7 @@ msgstr ""
 
 #: blocks/event-filters/edit.js:16
 #: build/blocks/event-filters/index.js:1
-msgid "Event Filters — region, length, date, free. Active on the published page."
+msgid "Event Filters — region, organiser, length, date, free. Active on the published page."
 msgstr ""
 
 #: blocks/event-info-card/edit.js:16

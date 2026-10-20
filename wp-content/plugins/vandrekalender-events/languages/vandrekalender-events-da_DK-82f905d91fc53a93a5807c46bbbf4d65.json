@@ -10,8 +10,8 @@
                 "lang": "da_DK",
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
-            "Event Filters \u2014 region, length, date, free. Active on the published page.": [
-                "Begivenhedsfiltre \u2014 region, l\u00e6ngde, dato, gratis. Aktive p\u00e5 den publicerede side."
+            "Event Filters \u2014 region, organiser, length, date, free. Active on the published page.": [
+                "Begivenhedsfiltre \u2014 region, arrang\u00f8r, l\u00e6ngde, dato, gratis. Aktive p\u00e5 den publicerede side."
             ]
         }
     }
