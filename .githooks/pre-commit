@@ -44,6 +44,15 @@ else
             continue
         fi
 
+        # Auto-fixing rewrites the working-tree file and re-stages all of it,
+        # which would commit unstaged hunks too (#64).
+        if ! git diff --quiet -- "$FILE"; then
+            HAS_ERRORS=1
+            echo -e "${RED}✗ $FILE has unstaged changes, so it is not auto-fixed. Fix it, then stage it:${NC}"
+            echo "    ./vendor/bin/phpcbf $FILE && git add $FILE"
+            continue
+        fi
+
         echo -e "${YELLOW}  Auto-fixing: ./vendor/bin/phpcbf $FILE${NC}"
         ./vendor/bin/phpcbf "$FILE" >/dev/null 2>&1
         git add "$FILE"
@@ -85,6 +94,14 @@ else
             continue
         fi
 
+        # Same reason as for PHP above (#64).
+        if ! git diff --quiet -- "$FILE"; then
+            HAS_ERRORS=1
+            echo -e "${RED}✗ $FILE has unstaged changes, so it is not auto-fixed. Fix it, then stage it:${NC}"
+            echo "    npx prettier --write $FILE && git add $FILE"
+            continue
+        fi
+
         echo -e "${YELLOW}  Auto-fixing: npx prettier --write $FILE${NC}"
         ./node_modules/.bin/prettier --write "$FILE" >/dev/null 2>&1
         git add "$FILE"
@@ -95,8 +112,9 @@ fi
 if [ $HAS_ERRORS -eq 1 ]; then
     echo -e "${RED}"
     echo "=================================================="
-    echo "COMMIT REJECTED — PHPCS violations that phpcbf can't"
-    echo "auto-fix remain. Fix them manually, then commit again:"
+    echo "COMMIT REJECTED — see the files marked ✗ above: PHPCS"
+    echo "violations that phpcbf can't fix, or files with unstaged"
+    echo "changes that were not auto-fixed. Fix them, then commit again:"
     echo "  ./vendor/bin/phpcs <file>  — see remaining violations"
     echo "=================================================="
     echo -e "${NC}"
