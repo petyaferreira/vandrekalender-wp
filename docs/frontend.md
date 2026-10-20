@@ -2,7 +2,7 @@
 
 > Source of truth for blocks, templates, filters, and the calendar UI.
 
-**Status: stub — to be filled in ([#44](https://github.com/petyaferreira/vandrekalender-wp/issues/44)).** Design references: [design/](design/index.md).
+Design references: [design/](design/index.md).
 
 ---
 
@@ -29,7 +29,7 @@ If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JS
 
 ## Blocks
 
-<!-- List of Gutenberg blocks, what each does, source location go here -->
+Block sources live in `wp-content/plugins/vandrekalender-events/blocks/`. Besides the blocks below there are generic layout blocks (`link-box`, `slider`, `slider-slide`, `tabs`, `tab`) and **Event Filters**, described under [Filter Bar](#filter-bar).
 
 **Event Cards** (`blocks/event-cards/`) — the filterable card grid. Fully server-rendered for SEO using the Interactivity API: `render.php` queries and renders all cards (cumulative pagination via the `side` URL param, 50 per page, reusing `Vandrekalender_Event_Rest_Api::build_query_args()`), and `view.js` is a `viewScriptModule` store that re-renders by navigating with `@wordpress/interactivity-router`, which swaps the block's `data-wp-router-region`. Reacts to `vk:filters-change` from the Event Filters block (listener attached in `callbacks.init` — the directive parser rejects the colon in the event name, so `data-wp-on-document--` can't be used). Requires the `--experimental-modules` flag on `wp-scripts build`/`start`, already set in `package.json`. New interactive blocks should follow this pattern (see paychex-wp for more examples). A card's place text is `event_place_name, event_municipality`, or the `Event::coordinates_label()` GPS text when both are empty.
 
@@ -92,19 +92,30 @@ There is deliberately no `front-page.html` — the front page uses `page.html` l
 
 ## Filter Bar
 
-<!-- Filter fields, how they map to REST API params, URL state go here -->
+The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk-filters">`. `render.php` builds the region options from the `event_region` taxonomy (only regions that have events); the length options are fixed.
+
+| Control | URL / REST param | Values |
+|---|---|---|
+| Region (select) | `region` | region term slug |
+| Length (toggle pills, several can be on) | `length` | `kort` (0–10 km), `mellem` (10–25 km), `lang` (25+ km), comma-separated |
+| From date / To date | `date_from`, `date_to` | `YYYY-MM-DD` |
+| Free only (checkbox) | `is_free` | `true` |
+
+The URL is the single source of truth. `view.js` (a plain `viewScript`) reads the controls on every change, writes them to the query string with `history.replaceState`, and dispatches a bubbling `vk:filters-change` event on `document`. On load it fills the controls from the URL, so reloads and shared links keep their state. "Reset" clears everything. Event Cards, Event Calendar, Event Map and the `[vk_filtered_count]` shortcode listen for `vk:filters-change`; the server side reads the same params with `Vandrekalender_Event_Rest_Api::filters_from_query()`.
+
+With no date params the query is floored at today (upcoming events only); an explicit past range still works. On a region or length archive page, the Event Cards block pins that term regardless of the URL.
 
 ---
 
 ## Event Card
 
-<!-- What's shown on the card: title, date, distance, difficulty badge, location go here -->
+One `<li class="vk-card">` per event, rendered by the Event Cards block, the whole card being a link to the event. It shows, top to bottom: the featured image (large size, as a background), the date (site date format), the title, the place (`event_place_name, event_municipality`, or the GPS text when both are empty), and a meta row with the distances of all routes (sorted, e.g. "10, 21 km"), the price and the region. The price reads "Free" when no route has a price or the cheapest is 0, otherwise "from N kr" with the cheapest route's price. There is no difficulty badge. Cards are sorted by event date ascending, 50 per page, with a "Show more walks" button that loads the next 50 (see Event Cards above).
 
 ---
 
 ## Single Event Page
 
-<!-- Layout, map, routes tab switcher go here -->
+`single-event.html` is the header part, then `<main>` with the title (wide), and two columns: a 66% column with the excerpt, featured image, post content and the **Event Route Map**; a 34% column with the **Event Info Card**. The info card's route tabs switch the price and times and tell the route map which track to show (`vk:route-change`); both are described under Blocks above.
 
 **Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
 
