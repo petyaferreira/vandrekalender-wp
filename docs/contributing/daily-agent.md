@@ -20,7 +20,11 @@ One issue per run, even when it finished early. In the cloud there is no Docker 
 Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`):
 
 ```bash
-COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist
+export COMPOSER_ALLOW_SUPERUSER=1
+composer config --global 'preferred-install.wpackagist-plugin/*' dist
+composer config --global 'preferred-install.wpackagist-theme/*' dist
+composer config --global 'preferred-install.*' source
+composer install --no-interaction
 npm ci
 (cd wp-content/themes/vandrekalender-theme && (npm ci || npm install))
 (cd wp-content/plugins/vandrekalender-events && (npm ci || npm install))
@@ -28,7 +32,9 @@ npm ci
 
 The sandbox runs as root, and Composer then turns its plugins off. This repo needs two: one registers the WordPress standard with PHPCS (without it the `phpcs` check fails), the other installs the WordPress plugins into `wp-content/`. `COMPOSER_ALLOW_SUPERUSER=1` turns them back on; the sandbox is discarded after each run.
 
-Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreira/vandrekalender-wp/issues/81)): PHP 8.3, Composer 2.8, Node 22, and `gh` can reach the repo with push rights. `gh auth status` reports the token as invalid there although API calls work; trust the API calls, not that line.
+The sandbox's network proxy blocks `api.github.com` for every repo but this one, so Composer cannot download GitHub packages (PHPCS, PHPUnit and most others) as zips. The `preferred-install` lines make it clone them with `git` instead, which works. WordPress plugins and themes stay zips from `downloads.wordpress.org`: their fallback is `svn`, which the sandbox does not have. Do not add `--prefer-dist`, it overrides these lines. The install takes about 6½ minutes. The global config only lives in the sandbox; `composer.json`, CI and local installs are unchanged. The environment's network access must allow `wpackagist.org` and `downloads.wordpress.org` (claude.ai/code → environment settings).
+
+Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreira/vandrekalender-wp/issues/81)): PHP 8.3, Composer 2.8, Node 22, and `gh` can reach the repo with push rights. `gh auth status` reports the token as invalid there although API calls work; trust the API calls, not that line. The install steps above were checked by probe runs on 20 October 2026: `composer install` exits 0 and `phpcs` lists the WordPress standard.
 
 ## For Petya
 
