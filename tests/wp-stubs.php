@@ -128,16 +128,6 @@ function sanitize_textarea_field( string $text ): string {
  * @return string
  */
 function esc_url_raw( string $url, ?array $protocols = null ): string {
-	$scheme = strtolower( (string) wp_parse_url_scheme( $url ) );
+	$scheme = preg_match( '/^([a-z][a-z0-9+.-]*):/i', $url, $m ) ? strtolower( $m[1] ) : '';
 	return in_array( $scheme, $protocols ?? [ 'http', 'https' ], true ) ? $url : '';
-}
-
-/**
- * The scheme of a URL, '' when there is none.
- *
- * @param string $url URL.
- * @return string
- */
-function wp_parse_url_scheme( string $url ): string {
-	return preg_match( '/^([a-z][a-z0-9+.-]*):/i', $url, $m ) ? $m[1] : '';
 }
