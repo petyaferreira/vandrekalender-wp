@@ -6,7 +6,7 @@ Open only the page the task needs.
 |---|---|
 | [tasks-and-issues.md](tasks-and-issues.md) | Starting work, picking the next task from the board, or finding a problem outside the current task |
 | [pull-requests.md](pull-requests.md) | Before opening a PR, during the review loop, or working on a step of a planned feature |
-| [tests.md](tests.md) | Changing code that has tests (a scraper), adding a test, or a test failed in `./validate.sh` |
+| [tests.md](tests.md) | Changing PHP code (it may need a test), adding a test, or a test failed in `./validate.sh` |
 | [code-standards.md](code-standards.md) | `./validate.sh` failed, or you need PHPCS / Prettier / the pre-commit hook |
 | [local-dev.md](local-dev.md) | Setting up or running the Docker stack, building assets, WP-CLI, installing a plugin, local email |
 | [daily-agent.md](daily-agent.md) | You are the daily agent, or you change what it does |

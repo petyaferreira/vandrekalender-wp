@@ -50,6 +50,7 @@ else
             HAS_ERRORS=1
             echo -e "${RED}✗ $FILE has unstaged changes, so it is not auto-fixed. Fix it, then stage it:${NC}"
             echo "    ./vendor/bin/phpcbf $FILE && git add $FILE"
+            echo "  (git add stages all of the file; to keep some changes out, stage the hunks with git add -p instead)"
             continue
         fi
 
@@ -99,6 +100,7 @@ else
             HAS_ERRORS=1
             echo -e "${RED}✗ $FILE has unstaged changes, so it is not auto-fixed. Fix it, then stage it:${NC}"
             echo "    npx prettier --write $FILE && git add $FILE"
+            echo "  (git add stages all of the file; to keep some changes out, stage the hunks with git add -p instead)"
             continue
         fi
 

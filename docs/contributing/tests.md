@@ -1,6 +1,6 @@
 # Tests
 
-Open this when you change code that has tests, add a test, or `./validate.sh` fails on `tests`.
+Open this when you change PHP code (it may need a test), add a test, or `./validate.sh` fails on `tests`.
 
 ```bash
 ./vendor/bin/phpunit                          # all tests, about a second
@@ -26,6 +26,14 @@ PHPUnit, without WordPress, a database, Docker or the network:
 
 Code that needs a real database (`upsert_event()`, unpublishing, GPX sideloading) is not covered. Why there is no WordPress test suite, and when to add one: [decision 0005](../decisions/0005-unit-tests-without-wordpress.md).
 
+## When a PR needs a test
+
+A PR that changes PHP logic which can run on the stand-ins (input in, value out: parsing, mappings, building query args) adds or extends a test for it in the same PR. Write the test first or alongside, and break the code once on purpose to see it go red.
+
+Not covered yet, so no test is required: code that needs a database (see above), templates (`render.php`) and front-end JS. The PR description says how those were tested instead ([pull-requests.md](pull-requests.md#before-opening-a-pr)).
+
+Moving the PR to a higher [risk category](pull-requests.md#risk-categories) because it touches `tests/` is not a reason to skip the test: the category only decides who merges. If the test really cannot be written now, file an issue ([tasks-and-issues.md](tasks-and-issues.md)) instead of only mentioning it in the PR.
+
 ## Fixtures
 
 Fixtures are saved copies of real responses from the source, kept as fetched (Prettier skips `tests/fixtures/`). The test file says when they were saved.
@@ -39,5 +47,7 @@ When a source changes its markup, the scraper is fixed against the new markup, s
 Never change an expected value just to make a failing test pass. A failing test means either the code broke (fix the code) or the source changed (steps above).
 
 ## Adding a test
+
+Tests for code outside the scrapers go in a folder named after the area, e.g. `tests/Event/OrganiserTermTest.php`; load the class under test in `tests/bootstrap.php`.
 
 One test file per scraper in `tests/Scrapers/`, following `DvlScraperTest.php`, with its fixture-reading subclass in `tests/fakes/`. Pick pages that cover what is likely to break: for DVL, one tour in summer time and one in winter time, because the date comes from a UTC time converted to Danish time. Then break the code on purpose once (for DVL: remove the `setTimezone()` call) and check that the test goes red.
