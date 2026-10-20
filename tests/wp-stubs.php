@@ -73,3 +73,36 @@ function wp_trim_words( string $text, int $num_words = 55, string $more = '…' 
 	}
 	return implode( ' ', array_slice( $words, 0, $num_words ) ) . $more;
 }
+
+/**
+ * Current time in the site timezone, for the date formats the code passes.
+ *
+ * @param string $type PHP date format, e.g. 'Y-m-d'.
+ * @return string
+ */
+function current_time( string $type ): string {
+	return ( new DateTimeImmutable( 'now', wp_timezone() ) )->format( $type );
+}
+
+/**
+ * Sanitize a plain-text value: strip tags, collapse whitespace, trim.
+ *
+ * @param string $text Text.
+ * @return string
+ */
+function sanitize_text_field( string $text ): string {
+	return wp_strip_all_tags( $text, true );
+}
+
+/**
+ * Turn text into a slug: lowercase, spaces to hyphens, drop anything else
+ * (enough for the ASCII slugs the tests use; WordPress also removes accents).
+ *
+ * @param string $title Text.
+ * @return string
+ */
+function sanitize_title( string $title ): string {
+	$slug = strtolower( wp_strip_all_tags( $title ) );
+	$slug = (string) preg_replace( '/[\s_]+/', '-', $slug );
+	return trim( (string) preg_replace( '/[^a-z0-9-]/', '', $slug ), '-' );
+}

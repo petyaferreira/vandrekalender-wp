@@ -1072,8 +1072,8 @@ msgid "Event Cards — events load as a card grid on the published page."
 msgstr "Begivenhedskort — begivenheder indlæses som et kortgitter på den publicerede side."
 
 #: blocks/event-filters/edit.js:16 build/blocks/event-filters/index.js:1
-msgid "Event Filters — region, length, date, free. Active on the published page."
-msgstr "Begivenhedsfiltre — region, længde, dato, gratis. Aktive på den publicerede side."
+msgid "Event Filters — region, organiser, length, date, free. Active on the published page."
+msgstr "Begivenhedsfiltre — region, arrangør, længde, dato, gratis. Aktive på den publicerede side."
 
 #: blocks/event-info-card/edit.js:16 build/blocks/event-info-card/index.js:1
 msgid "Event Info Card — the price, date, place, and a per-route start/cutoff time switcher render on the published event page."
