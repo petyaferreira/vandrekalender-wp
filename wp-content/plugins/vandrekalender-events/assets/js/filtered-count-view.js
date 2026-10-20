@@ -21,12 +21,14 @@ const numberFmt = new Intl.NumberFormat('da-DK');
 function readFilters() {
   const params = new URLSearchParams(window.location.search);
   const filters = {};
-  ['region', 'length', 'is_free', 'date_from', 'date_to'].forEach(key => {
-    const value = params.get(key);
-    if (value) {
-      filters[key] = value;
+  ['region', 'organiser', 'length', 'is_free', 'date_from', 'date_to'].forEach(
+    key => {
+      const value = params.get(key);
+      if (value) {
+        filters[key] = value;
+      }
     }
-  });
+  );
   return filters;
 }
 
