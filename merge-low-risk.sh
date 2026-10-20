@@ -27,12 +27,14 @@ refuse() {
     exit 1
 }
 
-pr=$(gh pr view "$PR" --json state,isDraft,baseRefName,headRefOid \
-    --jq '[.state, (.isDraft | tostring), .baseRefName, .headRefOid] | join(" ")') ||
+# REST only (gh api), never `gh pr ...`: those are GraphQL, which the daily
+# agent's cloud sandbox blocks (docs/contributing/daily-agent.md).
+pr=$(gh api "repos/{owner}/{repo}/pulls/$PR" \
+    --jq '[.state, (.draft | tostring), .base.ref, .head.sha] | join(" ")') ||
     refuse "could not read the PR"
 read -r state draft base sha <<<"$pr"
 
-[ "$state" = OPEN ] || refuse "it is $state, not open"
+[ "$state" = open ] || refuse "it is $state, not open"
 [ "$draft" = false ] || refuse "it is a draft"
 [ "$base" = main ] || refuse "it targets $base, not main"
 
@@ -62,13 +64,15 @@ verdict=$(gh api --paginate "repos/{owner}/{repo}/issues/$PR/comments" \
 [ "$verdict" = "Verdict: no findings" ] ||
     refuse "the review of ${sha:0:7} does not end with 'Verdict: no findings' (found: '${verdict:-none}')"
 
-# --match-head-commit: if anything was pushed after these checks, GitHub refuses.
-gh pr merge "$PR" --merge --match-head-commit "$sha" || refuse "GitHub refused the merge"
+# sha: if anything was pushed after these checks, GitHub refuses.
+gh api -X PUT "repos/{owner}/{repo}/pulls/$PR/merge" -f merge_method=merge -f sha="$sha" >/dev/null ||
+    refuse "GitHub refused the merge"
 
 # So Petya can see what was merged without her:
 #   gh pr list --state merged --label auto-merged
-gh label create auto-merged --color C2D9B0 --description "Low-risk PR merged by an agent (merge-low-risk.sh)" 2>/dev/null
-gh pr edit "$PR" --add-label auto-merged >/dev/null ||
+gh api "repos/{owner}/{repo}/labels" -f name=auto-merged -f color=C2D9B0 \
+    -f description="Low-risk PR merged by an agent (merge-low-risk.sh)" >/dev/null 2>&1
+gh api "repos/{owner}/{repo}/issues/$PR/labels" -f "labels[]=auto-merged" >/dev/null ||
     echo -e "${RED}Merged, but could not add the auto-merged label to #$PR: add it by hand${NC}" >&2
 
 echo -e "${GREEN}Merged #$PR (low risk, Validate and review green on ${sha:0:7})${NC}"
