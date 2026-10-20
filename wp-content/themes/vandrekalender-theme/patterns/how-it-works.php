@@ -10,7 +10,7 @@
 
 ?>
 
-<!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+<!-- wp:group {"metadata":{"categories":["featured"],"patternName":"vandrekalender-theme/how-it-works","name":"How It Works"},"align":"wide","layout":{"type":"constrained"}} -->
 <div class="wp-block-group alignwide"><!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group alignwide"><!-- wp:paragraph {"className":"is-style-eyebrow","style":{"elements":{"link":{"color":{"text":"var:preset|color|forest"}}},"typography":{"textAlign":"center"}},"textColor":"forest"} -->
 <p class="has-text-align-center is-style-eyebrow has-forest-color has-text-color has-link-color">kom godt i gang</p>
@@ -29,9 +29,9 @@
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading">Find</h3>
-<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p><strong>Browse</strong></p>
+<!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
 <p>Brug filtrene til at finde ture nær dig — efter region, dato, distance og sværhedsgrad.</p>
@@ -45,9 +45,9 @@
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading">Deltag</h3>
-<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p><strong>Deltag</strong></p>
+<!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
 <p>Se detaljer, ruter og mødested — og mød op på startstedet på dagen.</p>
@@ -61,9 +61,9 @@
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading">Opret</h3>
-<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p><strong>Opret</strong></p>
+<!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
 <p>Arrangér din egen tur, tilføj ruter og distancer, og invitér andre med.</p>
@@ -71,4 +71,3 @@
 <!-- /wp:column --></div>
 <!-- /wp:columns --></div>
 <!-- /wp:group -->
-
