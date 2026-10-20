@@ -85,6 +85,8 @@ Accessibility notes on the existing colors:
 
 ## 4. Data model
 
+> **Changed in the build:** about text, facts and FAQ are not admin fields but one synced pattern per organiser, edited in the block editor ([decision 0008](../../decisions/0008-organiser-content-in-patterns.md)). The other fields below are term meta, see [data-model.md](../../data-model.md).
+
 Stored per organiser (editable in WP admin):
 
 * name, slug

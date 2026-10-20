@@ -62,7 +62,7 @@ class Vandrekalender_Organiser_Fields {
 					'type'              => $type,
 					'single'            => true,
 					'show_in_rest'      => true,
-					'sanitize_callback' => fn( $value ) => self::sanitize( [ $key => $value ] )[ $key ],
+					'sanitize_callback' => fn( $value ) => self::sanitize_one( $key, $value ),
 					'auth_callback'     => fn( $allowed, $meta_key, $term_id ) => current_user_can( 'edit_term', $term_id ),
 				]
 			);
@@ -93,6 +93,20 @@ class Vandrekalender_Organiser_Fields {
 			self::META_SOURCE_CHECKED    => $date,
 			self::META_PATTERN_ID        => max( 0, (int) ( $raw[ self::META_PATTERN_ID ] ?? 0 ) ),
 		];
+	}
+
+	/**
+	 * Clean one value, including the pattern check, for REST and
+	 * update_term_meta() writes.
+	 *
+	 * @param string $key   Meta key.
+	 * @param mixed  $value Raw value.
+	 * @return mixed Clean value.
+	 */
+	private static function sanitize_one( string $key, $value ) {
+		$clean = self::sanitize( [ $key => $value ] )[ $key ];
+
+		return self::META_PATTERN_ID === $key ? self::valid_pattern_id( $clean ) : $clean;
 	}
 
 	/**
