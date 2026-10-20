@@ -784,7 +784,7 @@ class Event {
 					'assign_terms' => 'manage_categories',
 				],
 				'rewrite'           => [
-					'slug'       => 'arrangor',
+					'slug'       => 'arrangoerer',
 					'with_front' => false,
 				],
 			]

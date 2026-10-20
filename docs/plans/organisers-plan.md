@@ -4,7 +4,7 @@ Status: in progress (steps 1–2 done, step 3 in review). Issue: [#32](https://g
 
 ## Goal
 
-An organiser becomes something events share, not only a text field. Visitors see who runs a walk, can filter the calendar by organiser and open an organiser page with all its walks (`/arrangor/<slug>`). Petya can filter the admin Events list by organiser.
+An organiser becomes something events share, not only a text field. Visitors see who runs a walk, can filter the calendar by organiser and open an organiser page with all its walks (`/arrangoerer/<slug>/`), or the overview of all organisers (`/arrangoerer/`). Petya can filter the admin Events list by organiser.
 
 Out of scope: members of an organisation, shared editing, "Post as" and claiming scraped events ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)); the real organiser of Sportstiming events ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)).
 
@@ -16,11 +16,13 @@ Region and length are the model to copy: taxonomies registered in `includes/even
 
 ## Decisions
 
-- **Taxonomy `event_organiser`**, like `event_region` and `event_length` (and the `event_organiser_*` meta). Public, `show_in_rest`, `show_admin_column`, rewrite slug `arrangor`, not hierarchical. Only admins assign terms (`assign_terms` → `manage_categories`); event organiser users cannot until #86.
+- **Taxonomy `event_organiser`**, like `event_region` and `event_length` (and the `event_organiser_*` meta). Public, `show_in_rest`, `show_admin_column`, rewrite slug `arrangoerer` (Danish "arrangører" in ASCII; it was `arrangor` for its first day, with no redirect: hardly visited), not hierarchical. Only admins assign terms (`assign_terms` → `manage_categories`); event organiser users cannot until #86.
 - **One term per organisation.** All DVL events get the term **Dansk Vandrelaug**, whatever the chapter. Mammutmarch and Opdag Verden get their own term. Sportstiming events get no term until #88.
-- **`event_organiser_name` stays** as the display name. On the event page a DVL walk still says "DVL Herning Ikast"; the link goes to the Dansk Vandrelaug page.
+- **Visitors see the organisation:** the info card and event cards show the term name ("Dansk Vandrelaug") with a round badge, linked to its page, as in the design. The badge shows the organiser's initials until there is a logo. `event_organiser_name` ("DVL Herning Ikast") stays for events without a term, and in the admin.
 - **Manual and Facebook events** get a term only when Petya sets one in the editor. Without a term, the name shows as plain text, no link.
 - **Scraper runs own the term** of scraped, unclaimed events, like their other fields.
+- **Design:** `docs/design/organiser-page/` (Claude Design, 19 October 2026: mobile, desktop, cards, and a build spec). Where the spec differs from this plan, this plan wins: a taxonomy, not a post type; our own JSON-LD ([decision 0004](../decisions/0004-own-event-json-ld.md)), not Rank Math's; `/arrangoerer/` as in the spec.
+- **No hard-coded numbers:** every count on the organiser pages (upcoming walks, regions, km range, free walks, next walk) is computed from the events at render time, in blocks.
 
 ## Step 1: taxonomy, scrapers and backfill
 
@@ -40,7 +42,7 @@ After merge: Petya runs the backfill on staging, then production (`--dry-run` fi
 
 ## Step 3: event page info card
 
-In `blocks/event-info-card/render.php`, an "Arrangør" row next to date and place: `event_organiser_name`, linked to the term page when the event has a term, plain text otherwise. Falls back to the term name if the meta is empty.
+In `blocks/event-info-card/render.php`, an "Arrangør" row after Place: with a term, its badge and name linked to the organiser page ("Dansk Vandrelaug ›"); without one, `event_organiser_name` as plain text; neither, no row.
 
 ## Step 4: front-page filter
 
@@ -49,13 +51,21 @@ In `blocks/event-info-card/render.php`, an "Arrangør" row next to date and plac
 3. Cards, calendar and map pass the filter on like `region` (they share `filters_from_query()`).
 4. `frontend.md`: the filter bar section.
 
-## Step 5: organiser page
+## Step 5: organiser pages
 
-A `taxonomy-event_organiser.html` template in the theme, from Petya's Claude Design mock-up: name, description (term description), website link (new term meta `organiser_url`, editable on the term screen), upcoming walks as cards. Check the term pages are in the sitemap and have sensible `<title>` and meta description. `sitemap.md`: `/arrangor/<slug>` built, plus the `/arrangor` archive if the mock-up has one.
+Built from the design, one PR each:
+
+- **5a. Organiser fields.** Term meta on the Arrangører screen: short description, about text, website, official badge, facts (label/value rows), FAQ (question/answer rows), source URL and date, logo (later). Initials derived from the name.
+- **5b. Organiser page template.** `taxonomy-event_organiser.html`: breadcrumb, hero (badge, name, short description, website button), upcoming walks (the existing cards and filters), about text with the generated summary sentence, facts, FAQ (`<details>`), past walks. Zero state when there are no upcoming walks.
+- **5c. Organiser stats block.** "Arrangøren i tal": upcoming walks, regions, km range, free walks, next walk, plus "Ture i hele landet" (regions with counts) and "Andre arrangører". All computed live.
+- **5d. Overview page `/arrangoerer/`.** An organisers overview block: every organiser with badge, upcoming walks and regions. A page at `/arrangoerer/` holds it; the breadcrumb and "Se alle arrangører" link there.
+- **5e. SEO.** Title and meta description templates from the spec (section 5), through Rank Math's filters; Organization and ItemList JSON-LD in our own schema class; noindex only with no about text and no walks. Together with the event-page templates in [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
+
+Content (texts, FAQ, facts per organiser) comes from Petya; the spec has drafts with `[FYLD UD]` gaps, none of which may go live.
 
 ## Step 6: organiser on the event cards
 
-The organiser name on each card in `blocks/event-cards/render.php`, where the mock-up puts it. Decided with the mock-up; until then this step is open.
+Variant B of the design: under the title, a line with the badge and the organiser name linking to its page. The whole card stays a link to the walk (stretched link), with the organiser link above it, so there is no link inside a link. Touch target at least 32 px. The front page's "Officielle arrangører" strip links to the organiser pages.
 
 ## Status
 
