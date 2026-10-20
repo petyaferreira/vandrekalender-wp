@@ -34,7 +34,7 @@ wp-content/plugins/vandrekalender-events/
 │   ├── class-event-*.php       ← REST API, join flow, attendees, schema, sitemap, past events
 │   ├── class-scraper-*.php     ← scraper base (upsert), scheduler, log, alerts, admin
 │   ├── scrapers/               ← one class per source
-│   └── …                       ← geocoder, municipalities, roles, GPX uploads, Facebook importer
+│   └── …                       ← organiser fields, geocoder, municipalities, roles, GPX uploads, Facebook importer
 ├── blocks/                     ← Gutenberg blocks → build/blocks
 ├── resources/                  ← editor scripts (event meta fields) → build/resources
 └── data/                       ← static data (municipalities.json)
@@ -48,7 +48,8 @@ tests/                          ← PHPUnit without WordPress (docs/contributing
 ├── wp-stubs.php                ← stand-ins for the WordPress functions the tests reach
 ├── fakes/                      ← fake geocoder, scrapers that read fixtures
 ├── fixtures/                   ← saved copies of source sites
-└── Scrapers/                   ← one test per scraper (DVL so far)
+├── Scrapers/                   ← one test per scraper (DVL so far)
+└── Event/, Rest/               ← organiser terms and fields, REST query args
 
 .github/workflows/
 ├── ci.yml                      ← Validate on every push/PR; staging deploy on main after Validate

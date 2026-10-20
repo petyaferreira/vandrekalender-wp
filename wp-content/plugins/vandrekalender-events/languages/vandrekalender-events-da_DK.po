@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-20T12:15:22+00:00\n"
+"POT-Creation-Date: 2026-10-20T16:25:08+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -675,6 +675,7 @@ msgid "Event date"
 msgstr "Dato for begivenhed"
 
 #: includes/class-facebook-importer.php:649
+#: includes/class-organiser-fields.php:174
 msgid "Source"
 msgstr "Kilde"
 
@@ -757,6 +758,56 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 #: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
+
+#: includes/class-organiser-fields.php:154
+msgid "Short description"
+msgstr "Kort beskrivelse"
+
+#: includes/class-organiser-fields.php:157
+msgid "One or two sentences, shown at the top of the organiser page."
+msgstr "En eller to sætninger, der vises øverst på arrangørens side."
+
+#: includes/class-organiser-fields.php:161
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:966
+msgid "Website"
+msgstr "Hjemmeside"
+
+#: includes/class-organiser-fields.php:165
+msgid "Official organiser"
+msgstr "Officiel arrangør"
+
+#: includes/class-organiser-fields.php:169
+msgid "Show the \"Official organiser\" badge"
+msgstr "Vis mærket \"Officiel arrangør\""
+
+#: includes/class-organiser-fields.php:178
+msgid "Checked on"
+msgstr "Tjekket den"
+
+#: includes/class-organiser-fields.php:181
+msgid "Where the facts on the page come from, and when they were checked."
+msgstr "Hvor fakta på siden kommer fra, og hvornår de blev tjekket."
+
+#: includes/class-organiser-fields.php:185
+msgid "Page content"
+msgstr "Sideindhold"
+
+#: includes/class-organiser-fields.php:188
+msgid "— None —"
+msgstr "— Ingen —"
+
+#: includes/class-organiser-fields.php:194
+msgid "The pattern with the about text, facts and FAQ (Details blocks) for this organiser."
+msgstr "Mønsteret med om-teksten, fakta og FAQ (Detaljer-blokke) for denne arrangør."
+
+#: includes/class-organiser-fields.php:196
+msgid "Edit this pattern"
+msgstr "Rediger dette mønster"
+
+#: includes/class-organiser-fields.php:198
+msgid "Create a pattern"
+msgstr "Opret et mønster"
 
 #: includes/class-roles.php:192
 msgid "Event Author"
@@ -1359,11 +1410,6 @@ msgstr "Navn"
 #: resources/event-meta-fields/index.js:960
 msgid "Organiser or club name"
 msgstr "Arrangør- eller klubnavn"
-
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:966
-msgid "Website"
-msgstr "Hjemmeside"
 
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:977

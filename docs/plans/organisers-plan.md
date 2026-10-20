@@ -1,6 +1,6 @@
 # Organisers: taxonomy, organiser pages and filters
 
-Status: in progress (steps 1–3 done, step 4 in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
+Status: in progress (steps 1–4 done, step 5a in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
 
 ## Goal
 
@@ -21,7 +21,7 @@ Region and length are the model to copy: taxonomies registered in `includes/even
 - **Visitors see the organisation:** the info card and event cards show the term name ("Dansk Vandrelaug") with a round badge, linked to its page, as in the design. The badge shows the organiser's initials until there is a logo. `event_organiser_name` ("DVL Herning Ikast") stays for events without a term, and in the admin.
 - **Manual and Facebook events** get a term only when Petya sets one in the editor. Without a term, the name shows as plain text, no link.
 - **Scraper runs own the term** of scraped, unclaimed events, like their other fields.
-- **Design:** `docs/design/organiser-page/` (Claude Design, 19 October 2026: mobile, desktop, cards, and a build spec). Where the spec differs from this plan, this plan wins: a taxonomy, not a post type; our own JSON-LD ([decision 0004](../decisions/0004-own-event-json-ld.md)), not Rank Math's; `/arrangoerer/` as in the spec.
+- **Design:** `docs/design/organiser-page/` (Claude Design, 19 October 2026: mobile, desktop, cards, and a build spec). Where the spec differs from this plan, this plan wins: a taxonomy, not a post type; our own JSON-LD ([decision 0004](../decisions/0004-own-event-json-ld.md)), not Rank Math's; `/arrangoerer/` as in the spec; about text, facts and FAQ in a pattern per organiser, not the spec's term fields ([decision 0008](../decisions/0008-organiser-content-in-patterns.md)).
 - **No hard-coded numbers:** every count on the organiser pages (upcoming walks, regions, km range, free walks, next walk) is computed from the events at render time, in blocks.
 
 ## Step 1: taxonomy, scrapers and backfill
@@ -55,13 +55,13 @@ In `blocks/event-info-card/render.php`, an "Arrangør" row after Place: with a t
 
 Built from the design, one PR each:
 
-- **5a. Organiser fields.** Term meta on the Arrangører screen: short description, about text, website, official badge, facts (label/value rows), FAQ (question/answer rows), source URL and date, logo (later). Initials derived from the name.
-- **5b. Organiser page template.** `taxonomy-event_organiser.html`: breadcrumb, hero (badge, name, short description, website button), upcoming walks (the existing cards and filters), about text with the generated summary sentence, facts, FAQ (`<details>`), past walks. Zero state when there are no upcoming walks.
+- **5a. Organiser fields.** Term meta on the Arrangører edit screen: short description, website, official badge, source URL and date, and the organiser's content pattern; logo later. Initials derived from the name. The about text, facts and FAQ are one synced pattern per organiser, edited in the block editor (FAQ as Details blocks), so each organiser has its own facts rows: [decision 0008](../decisions/0008-organiser-content-in-patterns.md).
+- **5b. Organiser page template.** `taxonomy-event_organiser.html`: breadcrumb, hero (badge, name, short description, website button), upcoming walks (the existing cards and filters), the organiser's pattern (about text, facts, FAQ) followed by the generated summary sentence and the source line, past walks. Zero state when there are no upcoming walks.
 - **5c. Organiser stats block.** "Arrangøren i tal": upcoming walks, regions, km range, free walks, next walk, plus "Ture i hele landet" (regions with counts) and "Andre arrangører". All computed live.
 - **5d. Overview page `/arrangoerer/`.** An organisers overview block: every organiser with badge, upcoming walks and regions. A page at `/arrangoerer/` holds it; the breadcrumb and "Se alle arrangører" link there.
 - **5e. SEO.** Title and meta description templates from the spec (section 5), through Rank Math's filters; Organization and ItemList JSON-LD in our own schema class; noindex only with no about text and no walks. Together with the event-page templates in [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
 
-Content (texts, FAQ, facts per organiser) comes from Petya; the spec has drafts with `[FYLD UD]` gaps, none of which may go live.
+Content (the patterns' texts, FAQ and facts per organiser) comes from Petya; the spec has drafts with `[FYLD UD]` gaps, none of which may go live.
 
 ## Step 6: organiser on the event cards
 
@@ -72,4 +72,4 @@ Variant B of the design: under the title, a line with the badge and the organise
 - Step 1: merged in [#92](https://github.com/petyaferreira/vandrekalender-wp/pull/92) (19 October 2026), with the editor field in [#93](https://github.com/petyaferreira/vandrekalender-wp/pull/93). Before it, the user role was renamed to `event_author` ([#90](https://github.com/petyaferreira/vandrekalender-wp/issues/90)), so it is not confused with `event_organiser`.
 - Step 2: merged in [#94](https://github.com/petyaferreira/vandrekalender-wp/pull/94) (19 October 2026), closing #33.
 - Step 3: merged in [#95](https://github.com/petyaferreira/vandrekalender-wp/pull/95) (20 October 2026). The rewrite slug moved from `arrangor` to `arrangoerer` in [#98](https://github.com/petyaferreira/vandrekalender-wp/pull/98) (20 October 2026). Backfill run on staging and production.
-- Step 4: in review in [#108](https://github.com/petyaferreira/vandrekalender-wp/pull/108).
+- Step 4: merged in [#108](https://github.com/petyaferreira/vandrekalender-wp/pull/108) (20 October 2026).

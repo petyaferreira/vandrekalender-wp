@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-20T12:31:08+00:00\n"
+"POT-Creation-Date: 2026-10-20T16:25:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -711,6 +711,7 @@ msgid "Event date"
 msgstr ""
 
 #: includes/class-facebook-importer.php:649
+#: includes/class-organiser-fields.php:174
 msgid "Source"
 msgstr ""
 
@@ -793,6 +794,56 @@ msgstr ""
 
 #: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
+msgstr ""
+
+#: includes/class-organiser-fields.php:154
+msgid "Short description"
+msgstr ""
+
+#: includes/class-organiser-fields.php:157
+msgid "One or two sentences, shown at the top of the organiser page."
+msgstr ""
+
+#: includes/class-organiser-fields.php:161
+#: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:966
+msgid "Website"
+msgstr ""
+
+#: includes/class-organiser-fields.php:165
+msgid "Official organiser"
+msgstr ""
+
+#: includes/class-organiser-fields.php:169
+msgid "Show the \"Official organiser\" badge"
+msgstr ""
+
+#: includes/class-organiser-fields.php:178
+msgid "Checked on"
+msgstr ""
+
+#: includes/class-organiser-fields.php:181
+msgid "Where the facts on the page come from, and when they were checked."
+msgstr ""
+
+#: includes/class-organiser-fields.php:185
+msgid "Page content"
+msgstr ""
+
+#: includes/class-organiser-fields.php:188
+msgid "— None —"
+msgstr ""
+
+#: includes/class-organiser-fields.php:194
+msgid "The pattern with the about text, facts and FAQ (Details blocks) for this organiser."
+msgstr ""
+
+#: includes/class-organiser-fields.php:196
+msgid "Edit this pattern"
+msgstr ""
+
+#: includes/class-organiser-fields.php:198
+msgid "Create a pattern"
 msgstr ""
 
 #: includes/class-roles.php:192
@@ -1426,11 +1477,6 @@ msgstr ""
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:960
 msgid "Organiser or club name"
-msgstr ""
-
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:966
-msgid "Website"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
