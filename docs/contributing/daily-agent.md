@@ -6,7 +6,7 @@ A Claude Code scheduled cloud agent runs every day at 22:00 (Europe/Copenhagen).
 
 ## One run
 
-1. **Pick one issue.** Only an open issue with the `agent-ready` label, without `needs-decision`, and without an open PR for it (`gh pr list --state open --search "<number> in:body"`). Take the top one in **Next**, as in [tasks-and-issues.md](tasks-and-issues.md) (`gh project item-list 1 --owner petyaferreira --format json`, board order); if none is in Next, the top one in Backlog; if the board cannot be read, the lowest issue number. Only Petya adds `agent-ready`; never add it yourself.
+1. **Pick one issue.** Only an open issue with the `agent-ready` label, without `needs-decision`, and without an open PR for it. Take the lowest issue number (the oldest), not the board order: the sandbox blocks GitHub's GraphQL API, so `gh project`, `gh issue list` and `gh pr list` fail there. Use the REST API instead: `gh api 'repos/petyaferreira/vandrekalender-wp/issues?labels=agent-ready&state=open&sort=created&direction=asc'` (skip entries with `pull_request`, they are PRs) and `gh api 'repos/petyaferreira/vandrekalender-wp/pulls?state=open'` to check for an open PR mentioning the issue. Only Petya adds `agent-ready`; never add it yourself.
 2. **Nothing to pick: stop.** Do not look for other work.
 3. **Read the issue** (`gh issue view <n>`). If it is unclear, or bigger than one small PR, comment on the issue with the question or a proposed split, remove `agent-ready`, and stop.
 4. **Do the work** as in [tasks-and-issues.md](tasks-and-issues.md) and [pull-requests.md](pull-requests.md): branch from `main`, only what the issue asks, `./validate.sh`, a PR that says `Closes #<n>`.
