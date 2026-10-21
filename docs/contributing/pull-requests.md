@@ -9,6 +9,7 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)), goes
 - Frontend changes are verified with a screenshot of each state plus a computed-style probe of a known-good element (`getComputedStyle`, `getBoundingClientRect()`), never with element counts alone. While fixing the event map (July 2026), tile and marker counts looked healthy through four wrong fixes while the map was visibly broken.
 - Changed PHP logic comes with a unit test in the same PR: [tests.md → When a PR needs a test](tests.md#when-a-pr-needs-a-test).
 - Update the docs the change affects (for a planned feature, the docs the plan names, for example `docs/data-model.md`).
+- When the change replaces or removes something, `git grep` its old names and fix every hit ([cleanup.md](../principles/cleanup.md)).
 - If the change chose one approach over a real alternative that someone could propose again (a tool, a library, a way of testing or deploying), add a decision record in the same PR ([decisions/](../decisions/index.md)) and name it in the PR description. Do not wait to be asked: in #68 the choice of plain PHPUnit over the WordPress test suite was only recorded (0005) after Petya asked.
 
 ## Review loop
