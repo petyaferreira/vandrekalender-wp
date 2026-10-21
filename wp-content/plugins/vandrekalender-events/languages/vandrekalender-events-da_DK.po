@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-20T12:15:22+00:00\n"
+"POT-Creation-Date: 2026-10-21T09:08:20+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -140,7 +140,9 @@ msgstr "Alle regioner"
 #: build/blocks/event-info-card/render.php:262
 #: includes/event/class-event.php:767
 #: build/resources/event-meta-fields/index.js:1
+#: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
+#: resources/organiser-fields/index.js:30
 msgid "Organiser"
 msgstr "Arrangør"
 
@@ -758,7 +760,7 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
-#: includes/class-roles.php:192
+#: includes/class-roles.php:210
 msgid "Event Author"
 msgstr "Turopretter"
 
@@ -1038,6 +1040,57 @@ msgstr "Tilføj ny arrangør"
 #: includes/event/class-event.php:773
 msgid "New Organiser Name"
 msgstr "Ny arrangørs navn"
+
+#: includes/organiser/class-organiser.php:79
+#: includes/organiser/class-organiser.php:81
+msgid "Organiser pages"
+msgstr "Arrangørsider"
+
+#: includes/organiser/class-organiser.php:80
+msgid "Organiser page"
+msgstr "Arrangørside"
+
+#: includes/organiser/class-organiser.php:82
+msgid "Add New Organiser page"
+msgstr "Tilføj ny arrangørside"
+
+#: includes/organiser/class-organiser.php:83
+msgid "Edit Organiser page"
+msgstr "Redigér arrangørside"
+
+#: includes/organiser/class-organiser.php:84
+msgid "View Organiser page"
+msgstr "Vis arrangørside"
+
+#: includes/organiser/class-organiser.php:85
+msgid "View Organiser pages"
+msgstr "Vis arrangørsider"
+
+#: includes/organiser/class-organiser.php:86
+msgid "All Organiser pages"
+msgstr "Alle arrangørsider"
+
+#: includes/organiser/class-organiser.php:87
+msgid "Search Organiser pages"
+msgstr "Søg i arrangørsider"
+
+#: includes/organiser/class-organiser.php:88
+msgid "No organiser pages found."
+msgstr "Ingen arrangørsider fundet."
+
+#: includes/organiser/class-organiser.php:89
+msgid "No organiser pages found in trash."
+msgstr "Ingen arrangørsider fundet i papirkurven."
+
+#: includes/organiser/class-organiser.php:173
+msgid "This organiser does not exist."
+msgstr "Denne arrangør findes ikke."
+
+#. translators: %s: title of the organiser page that already has the organiser
+#: includes/organiser/class-organiser.php:184
+#, php-format
+msgid "This organiser already has a page: \"%s\"."
+msgstr "Denne arrangør har allerede en side: \"%s\"."
 
 #. translators: %s: trip title.
 #: includes/scrapers/class-scraper-opdagverden.php:152
@@ -1341,7 +1394,9 @@ msgid "Add route"
 msgstr "Tilføj rute"
 
 #: build/resources/event-meta-fields/index.js:1
+#: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:924
+#: resources/organiser-fields/index.js:35
 msgid "Organisation"
 msgstr "Organisation"
 
@@ -1385,6 +1440,21 @@ msgstr "Ny her?"
 #: resources/event-meta-fields/index.js:1062
 msgid "Watch the how-to video"
 msgstr "Se hvordan-videoen"
+
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:42
+msgid "The page shows this organisation’s walks. One page per organisation."
+msgstr "Siden viser denne organisations ture. Én side pr. organisation."
+
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:51
+msgid "Official organiser"
+msgstr "Officiel arrangør"
+
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:54
+msgid "Shows the “Officiel arrangør” badge on the page."
+msgstr "Viser mærket “Officiel arrangør” på siden."
 
 #: blocks/event-calendar/block.json build/blocks/event-calendar/block.json
 msgctxt "block title"

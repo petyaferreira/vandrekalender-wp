@@ -43,6 +43,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sports
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-dvl.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagverden.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser.php';
 
 new Vandrekalender_Roles();
 new Vandrekalender_Gpx_Uploads();
@@ -62,6 +63,7 @@ new Vandrekalender_Facebook_Importer();
  * Initialize classes.
  */
 \Vandrekalender\Event::instance();
+\Vandrekalender\Organiser::instance();
 
 /**
  * Inline upcoming-events counter for use inside paragraph text, where a block

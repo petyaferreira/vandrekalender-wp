@@ -50,7 +50,7 @@ The organizer is promoted from a free-text field to a real entity, implemented a
 
 - Each organization (DVL, Mammutmarch, …) is one taxonomy term.
 - Each event is attached to exactly one organizer term.
-- Taxonomy term archive pages provide the public `/arrangoerer/[slug]` profile pages for free.
+- The public `/arrangoerer/[slug]` page is not the term archive but a post of the `organiser` post type linked to the term ([decision 0008](decisions/0008-organiser-pages-as-post-type.md)). That post is what an organisation's members get to edit; today only administrators can.
 - Term meta `email_domain` stores the organization's email domain (e.g. `dvl.dk`).
 - The scraper seeds organizer terms automatically: when importing from `dvl.dk`, it creates/finds the DVL term and saves the domain extracted from `event_source_url`.
 
