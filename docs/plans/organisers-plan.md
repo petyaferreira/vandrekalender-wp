@@ -85,4 +85,4 @@ Variant B of the design: under the title, a line with the badge and the organise
 - Step 3: merged in [#95](https://github.com/petyaferreira/vandrekalender-wp/pull/95) (20 October 2026). The rewrite slug moved from `arrangor` to `arrangoerer` in [#98](https://github.com/petyaferreira/vandrekalender-wp/pull/98) (20 October 2026). Backfill run on staging and production.
 - Step 4: merged in [#108](https://github.com/petyaferreira/vandrekalender-wp/pull/108) (20 October 2026).
 - Step 5: replanned in [#113](https://github.com/petyaferreira/vandrekalender-wp/pull/113) (21 October 2026, docs only): the page became a post type after trying term meta with a synced pattern and theme pattern files (see decision 0008).
-  - 5a: post type, term link and redirect in this branch (`feature/organisers-5a-post-type`). Admin labels are "Arrangørsider"/"Arrangørside", so the menu is not confused with the taxonomy's "Arrangører".
+  - 5a: post type, term link and redirect in [#122](https://github.com/petyaferreira/vandrekalender-wp/pull/122). Admin labels are "Arrangørsider"/"Arrangørside", so the menu is not confused with the taxonomy's "Arrangører".
