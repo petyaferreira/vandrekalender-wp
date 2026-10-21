@@ -177,8 +177,8 @@ class Vandrekalender_Geocoder {
 	 *
 	 * Four digits are not always a Danish postcode: Norwegian, Swiss and
 	 * Austrian ones look the same ("Karl Johans gate 1, 0154 Oslo"), and so
-	 * can a house number ("Industrivej 1050, Roskilde"). So when the address
-	 * names a town, it must be the postcode's.
+	 * can a house number ("Industrivej 1050, Roskilde", "Industrivej 1050").
+	 * So the address must name the postcode's town after a comma.
 	 *
 	 * @param array{postcode: string, town: string} $locality  From locality(), with a postcode.
 	 * @param string                                $address   The address that was not found, for the Scraper Log.
@@ -199,23 +199,7 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
-		$area = $data['DAGI_Postnummerinddeling']['nodes'][0] ?? [];
-		$name = (string) ( $area['navn'] ?? '' );
-		if ( '' !== $name && '' !== $locality['town'] && ! self::same_town( $locality['town'], $name ) ) {
-			self::record_issue(
-				sprintf(
-					/* translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address. */
-					__( 'Address "%1$s" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin.', 'vandrekalender-events' ),
-					$address,
-					$postcode,
-					$name,
-					$locality['town']
-				)
-			);
-			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
-			return null;
-		}
-
+		$area   = $data['DAGI_Postnummerinddeling']['nodes'][0] ?? [];
 		$centre = Vandrekalender_Wkt::area_centre( (string) ( $area['geometri']['wkt'] ?? '' ) );
 		if ( null === $centre ) {
 			self::record_issue(
@@ -225,6 +209,29 @@ class Vandrekalender_Geocoder {
 					$address,
 					$postcode
 				)
+			);
+			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
+			return null;
+		}
+
+		$name = (string) ( $area['navn'] ?? '' );
+		if ( ! self::same_town( $locality['town'], $name ) ) {
+			self::record_issue(
+				'' === $locality['town']
+					? sprintf(
+						/* translators: 1: address, 2: four-digit postcode. */
+						__( 'Address "%1$s" was not found and names no town to check postcode %2$s against, so the event gets no pin.', 'vandrekalender-events' ),
+						$address,
+						$postcode
+					)
+					: sprintf(
+						/* translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address. */
+						__( 'Address "%1$s" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin.', 'vandrekalender-events' ),
+						$address,
+						$postcode,
+						$name,
+						$locality['town']
+					)
 			);
 			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
 			return null;
@@ -267,6 +274,9 @@ class Vandrekalender_Geocoder {
 	private static function same_town( string $town, string $name ): bool {
 		$town = mb_strtolower( trim( $town ) );
 		$name = mb_strtolower( trim( $name ) );
+		if ( '' === $town ) {
+			return false;
+		}
 
 		return $town === $name || str_starts_with( $name, $town . ' ' ) || str_starts_with( $town, $name . ' ' );
 	}
