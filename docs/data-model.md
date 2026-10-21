@@ -194,7 +194,7 @@ An organiser's public page, one per `event_organiser` term ([decision 0008](deci
 
 | Meta key | Type | Notes |
 |---|---|---|
-| `organiser_term` | int | The `event_organiser` term the page is about. Set in the editor's Organiser panel. One page per term: saving a second post with the same term (any status but trash) fails with `vandrekalender_organiser_term_taken` (409), an unknown term with `vandrekalender_organiser_term_invalid` (400). Admins only |
+| `organiser_term` | int | The `event_organiser` term the page is about. Set in the editor's Organiser panel. One page per term: saving a second post with the same term (any status but trash) fails with `vandrekalender_organiser_term_taken` (409), an unknown term with `vandrekalender_organiser_term_invalid` (400). The check runs only on REST saves (the block editor), not on WP-CLI or `wp_insert_post()`, not when a trashed page is restored, and not atomically: two saves at the same moment can both pass. Enough while only admins edit; revisit in [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86). Admins only |
 | `organiser_official` | bool | Shows the "Officiel arrangør" badge. Admins only |
 
 **Links.** `get_term_link()` on an `event_organiser` term returns the published page linked to it, else `/?organiser=<term-slug>`. A request for `/arrangoerer/<slug>/` with no published page, where `<slug>` is a term slug, redirects (302, since a page may be published there later) to `/?organiser=<slug>`, so the term archive URLs from before the post type keep working.

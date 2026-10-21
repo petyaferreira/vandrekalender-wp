@@ -115,7 +115,7 @@ A user belongs to **at most one organization**. The `organizer_id` user meta is 
 
 An organization member is not forced to post everything under the organization's name. The block editor's **Organiser panel** gets a "Post as" toggle (stored as a meta field):
 
-- **Organization (default):** the event is attached to the user's organizer term. It appears in the shared list and on the organization's public `/arrangoerer/` page.
+- **Organization (default):** the event is attached to the user's organizer term. It appears in the shared list and on the organization's public page, `/arrangoerer/<slug>/` (not the `/arrangoerer/` overview).
 - **Private:** no organizer term is attached. The event behaves like a solo organizer's event: visible only to its author in wp-admin, displayed publicly under the person's own name.
 
 **Author-only rule:** the toggle is visible and editable only by the event's `post_author`. Without this rule, a colleague could flip someone's private walk into an organization event from the shared list.
