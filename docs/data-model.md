@@ -141,6 +141,10 @@ When a user searches "Valby", it is geocoded to coordinates, then a custom SQL h
 
 One term per organisation (Dansk Vandrelaug, Mammutmarch, Opdag Verden). Built in [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32); see the Taxonomies section below.
 
+### `organiser` post type (the organiser's page)
+
+See [Custom Post Type: `organiser`](#custom-post-type-organiser).
+
 ### Post Meta
 
 | Field | Type | Required | Notes |
@@ -179,11 +183,29 @@ All scraping fields are admin only — never visible to event creators or the pu
 
 ---
 
+## Custom Post Type: `organiser`
+
+An organiser's public page, one per `event_organiser` term ([decision 0008](decisions/0008-organiser-pages-as-post-type.md)). Registered in `includes/organiser/class-organiser.php`.
+
+- **URL:** `/arrangoerer/<post-slug>/`; the post type archive `/arrangoerer/` is the overview. Not translated: Danish only.
+- **supports:** `title`, `editor`, `thumbnail` (the logo), `excerpt`, `revisions`, `custom-fields`
+- **show_in_rest:** `true`. `query_var` is `false`, so `?organiser=<slug>` stays the front page's filter and is not read as a request for an organiser post.
+- **Capabilities:** own set (`edit_organisers`, `publish_organisers`, …), granted to administrators only in `Vandrekalender_Roles`. Organisations editing their own page: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
+
+| Meta key | Type | Notes |
+|---|---|---|
+| `organiser_term` | int | The `event_organiser` term the page is about. Set in the editor's Organiser panel. One page per term: saving a second post with the same term (any status but trash) fails with `vandrekalender_organiser_term_taken` (409), an unknown term with `vandrekalender_organiser_term_invalid` (400). The check runs only on REST saves (the block editor), not on WP-CLI or `wp_insert_post()`, not when a trashed page is restored, and not atomically: two saves at the same moment can both pass. Enough while only admins edit; revisit in [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86). Admins only |
+| `organiser_official` | bool | Shows the "Officiel arrangør" badge. Admins only |
+
+**Links.** `get_term_link()` on an `event_organiser` term returns the published page linked to it, else `/?organiser=<term-slug>`. A request for `/arrangoerer/<slug>/` with no published page, where `<slug>` is a term slug, redirects (302, since a page may be published there later) to `/?organiser=<slug>`, so the term archive URLs from before the post type keep working.
+
+---
+
 ## Taxonomies
 
 ### `event_organiser`
 
-One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewrite slug `arrangoerer`, so a term's archive is `/arrangoerer/<term-slug>/`. Shown as a column and a dropdown filter on the admin Events list.
+One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. No archive of its own (no rewrite, not publicly queryable): a term's link is its organiser page when one is published, else the front page filtered by it (`/?organiser=<term-slug>`); see [Organiser pages](#custom-post-type-organiser). Shown as a column and a dropdown filter on the admin Events list (the `event_organiser=<slug>` query var still works in wp-admin; front-end code queries with `tax_query`).
 
 - **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
 - **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the **Organisation** field of the editor's Organiser panel (the default taxonomy panel is hidden). Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
