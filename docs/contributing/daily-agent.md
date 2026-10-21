@@ -16,8 +16,8 @@ A Claude Code scheduled cloud agent runs every day at 22:00 (Europe/Copenhagen).
    R=repos/petyaferreira/vandrekalender-wp
    SHA=$(gh api $R/pulls/<PR> --jq .head.sha)
    gh api $R/commits/$SHA/check-runs --jq '.check_runs[] | "\(.name) \(.status) \(.conclusion)"'
-   gh api $R/issues/<PR>/comments --jq '.[] | select(.user.login == "claude[bot]") | .body'
-   gh api $R/pulls/<PR>/comments --jq '.[] | "\(.path):\(.line) \(.body)"'
+   gh api --paginate $R/issues/<PR>/comments --jq '.[] | select(.user.login == "claude[bot]") | .body'
+   gh api --paginate $R/pulls/<PR>/comments --jq '.[] | "\(.path):\(.line) \(.body)"'
    ```
 
    Run the check-runs call every minute until `Validate` and `claude-review` are `completed`, then read the last review summary and the inline comments. The review is done only when the summary ends with `Verdict: no findings`. The `claude-review` check passes whatever the verdict says: #115 stopped at a green check with `Verdict: changes requested`. Otherwise fix what is right, push, and check again. After two rounds without `no findings`, comment on the PR what is blocking and stop. Every run ends with a merge or a PR comment that says why not.
