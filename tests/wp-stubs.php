@@ -106,3 +106,13 @@ function sanitize_title( string $title ): string {
 	$slug = (string) preg_replace( '/[\s_]+/', '-', $slug );
 	return trim( (string) preg_replace( '/[^a-z0-9-]/', '', $slug ), '-' );
 }
+
+/**
+ * Post query on an empty database: no posts match.
+ *
+ * @param array $args Query arguments.
+ * @return array
+ */
+function get_posts( array $args = [] ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- same signature as WordPress.
+	return [];
+}

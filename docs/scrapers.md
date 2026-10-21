@@ -216,7 +216,7 @@ If a source ever legitimately lists no events for a while (between seasons), exp
 5. If the source links GPX files, set `gpx_source_url` on the matching route in `event_routes`. Never set `gpx_id` or `gpx_name`; the base class does (see [GPX files](#gpx-files-route-maps)).
 6. If the source is one organisation (not a platform listing many), add its `SOURCE_NAME` to `Event::ORGANISER_SOURCES`, so its events get that `event_organiser` term.
 7. Register the scraper in the `$scrapers` list in `Vandrekalender_Scraper_Scheduler::execute()` (`class-scraper-scheduler.php`).
-8. Add a test on saved copies of the source, like `tests/Scrapers/DvlScraperTest.php` ([tests.md](contributing/tests.md)). DVL is the only scraper with tests so far.
+8. Add a test on saved copies of the source, like `tests/Scrapers/DvlScraperTest.php` ([tests.md](contributing/tests.md)). DVL and Mammut have tests so far.
 
 ### Deduplication
 
