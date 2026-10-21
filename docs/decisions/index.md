@@ -11,7 +11,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0005](0005-unit-tests-without-wordpress.md) | Tests run with plain PHPUnit and stand-ins, not the WordPress test suite | 19 Oct 2026 |
 | [0006](0006-agents-merge-low-risk-prs.md) | Agents merge low-risk PRs, only through `./merge-low-risk.sh` | 19 Oct 2026 |
 | [0007](0007-daily-scheduled-agent.md) | A scheduled agent works one `agent-ready` issue a day, within the Pro subscription | 19 Oct 2026 |
-| [0008](0008-organiser-content-in-patterns.md) | An organiser's own content lives in theme pattern files, not in the database | 21 Oct 2026 |
+| [0008](0008-organiser-pages-as-post-type.md) | Organiser pages are a post type, linked to the organiser taxonomy | 21 Oct 2026 |
 
 ## Format
 

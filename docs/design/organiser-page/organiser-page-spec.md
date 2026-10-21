@@ -85,7 +85,7 @@ Accessibility notes on the existing colors:
 
 ## 4. Data model
 
-> **Changed in the build:** none of the fields below are admin fields. Short description, website, badge, about text, facts, source and FAQ are written in the theme's pattern files per organiser (`patterns/organiser-<slug>-hero.php`, `-about.php`, `-faq.php`), so they are in git and the same on every environment ([decision 0008](../../decisions/0008-organiser-content-in-patterns.md)).
+> **Changed in the build:** an organiser's page is a post (post type `organiser`) linked to its `event_organiser` term, edited in the block editor from locked section patterns, not the admin fields below. The facts, source line and generated summary are dropped. See [the plan's step 5](../../plans/organisers-plan.md#step-5-organiser-pages) and [decision 0008](../../decisions/0008-organiser-pages-as-post-type.md).
 
 Stored per organiser (editable in WP admin):
 

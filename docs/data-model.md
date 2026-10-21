@@ -187,7 +187,6 @@ One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewr
 
 - **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
 - **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the **Organisation** field of the editor's Organiser panel (the default taxonomy panel is hidden). Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
-- **Page texts:** no term meta. The organiser page's own texts (short description, website, badge, about, facts, source, FAQ) are theme pattern files per organiser, rendered by the Organiser Content block ([frontend.md](frontend.md), [decision 0008](decisions/0008-organiser-content-in-patterns.md)). Initials for the badge come from the name (`Event::organiser_initials()`).
 
 ### `event_region`
 
