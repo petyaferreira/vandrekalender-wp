@@ -31,5 +31,6 @@ class OrganiserPatternSlugTest extends TestCase {
 		$this->assertSame( '', Event::organiser_pattern_slug( 'mammutmarch', '../hero' ) );
 		$this->assertSame( '', Event::organiser_pattern_slug( 'core/x', 'about' ) );
 		$this->assertSame( '', Event::organiser_pattern_slug( 'Mammutmarch', 'about' ) );
+		$this->assertSame( '', Event::organiser_pattern_slug( 'mammutmarch', "about\n" ) );
 	}
 }

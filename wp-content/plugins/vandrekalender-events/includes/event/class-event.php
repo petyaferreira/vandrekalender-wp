@@ -863,7 +863,7 @@ class Event {
 	 * @return string
 	 */
 	public static function organiser_pattern_slug( string $term_slug, string $part ): string {
-		if ( ! preg_match( '/^[a-z0-9-]+$/', $term_slug ) || ! preg_match( '/^[a-z0-9-]+$/', $part ) ) {
+		if ( ! preg_match( '/^[a-z0-9-]+\z/', $term_slug ) || ! preg_match( '/^[a-z0-9-]+\z/', $part ) ) {
 			return '';
 		}
 
