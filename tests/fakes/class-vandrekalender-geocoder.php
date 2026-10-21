@@ -33,6 +33,14 @@ class Vandrekalender_Geocoder {
 	public static array $addresses = [];
 
 	/**
+	 * Municipality to answer for a point ("lat,lng"), where a test needs a
+	 * real one; any other point gets TEST_MUNICIPALITY.
+	 *
+	 * @var array<string, string>
+	 */
+	public static array $municipalities = [];
+
+	/**
 	 * Record the address and return the fixed coordinates and municipality.
 	 *
 	 * @param string $address Free-text address.
@@ -48,7 +56,7 @@ class Vandrekalender_Geocoder {
 	}
 
 	/**
-	 * Record the lookup and return the fixed municipality.
+	 * Record the lookup and return the point's municipality.
 	 *
 	 * @param float $lat Latitude.
 	 * @param float $lng Longitude.
@@ -56,6 +64,6 @@ class Vandrekalender_Geocoder {
 	 */
 	public function municipality_from_coords( float $lat, float $lng ): string {
 		self::$lookups[] = [ $lat, $lng ];
-		return self::TEST_MUNICIPALITY;
+		return self::$municipalities[ $lat . ',' . $lng ] ?? self::TEST_MUNICIPALITY;
 	}
 }
