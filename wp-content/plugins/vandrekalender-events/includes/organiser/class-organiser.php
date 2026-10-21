@@ -60,6 +60,13 @@ class Organiser {
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_filter( 'rest_pre_insert_' . self::CUSTOMPOSTTYPE, [ $this, 'reject_taken_term' ], 10, 2 );
 		add_filter( 'term_link', [ $this, 'filter_term_link' ], 10, 3 );
+		// The REST API writes meta after the post, so a changed term clears
+		// the lookup too, not only the post save.
+		add_action( 'save_post_' . self::CUSTOMPOSTTYPE, [ $this, 'forget_published_posts' ] );
+		add_action( 'deleted_post', [ $this, 'forget_published_posts' ] );
+		add_action( 'added_post_meta', [ $this, 'forget_published_posts_on_term_change' ], 10, 3 );
+		add_action( 'updated_post_meta', [ $this, 'forget_published_posts_on_term_change' ], 10, 3 );
+		add_action( 'deleted_post_meta', [ $this, 'forget_published_posts_on_term_change' ], 10, 3 );
 		add_action( 'template_redirect', [ $this, 'maybe_redirect_to_calendar' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
 	}
@@ -247,6 +254,31 @@ class Organiser {
 			$this->published_posts = array_flip( array_filter( $this->linked_terms( 'publish' ) ) );
 		}
 		return $this->published_posts[ $term_id ] ?? 0;
+	}
+
+	/**
+	 * Drop the lookup of published_post_for_term(), so a term link built
+	 * later in the same request sees a page published, unpublished or
+	 * relinked in it.
+	 *
+	 * @return void
+	 */
+	public function forget_published_posts(): void {
+		$this->published_posts = null;
+	}
+
+	/**
+	 * Drop the lookup when an organiser post's term changes.
+	 *
+	 * @param int|int[] $_meta_id  Meta ID(s).
+	 * @param int       $_post_id  Post ID.
+	 * @param string    $meta_key  Meta key.
+	 * @return void
+	 */
+	public function forget_published_posts_on_term_change( $_meta_id, $_post_id, $meta_key ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed -- required by action signature.
+		if ( self::META_TERM === $meta_key ) {
+			$this->forget_published_posts();
+		}
 	}
 
 	/**
