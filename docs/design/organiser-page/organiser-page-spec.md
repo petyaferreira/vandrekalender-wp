@@ -80,7 +80,7 @@ Accessibility notes on the existing colors:
 * Pattern: /arrangoerer/{slug}/ for example /arrangoerer/dansk-vandrelaug/
 * Index page: /arrangoerer/ lists all organisers (also the target of "Se alle arrangører")
 * Slugs are ASCII (oe, ae, aa for æ, ø, å) and never change once published. If one changes, 301 from the old URL.
-* Suggested WordPress setup: custom post type "arrangoer" with archive at /arrangoerer/. Walks reference the organiser by post ID, not by name string.
+* Suggested WordPress setup: custom post type "arrangoer" with archive at /arrangoerer/. Walks reference the organiser by post ID, not by name string. (Built: post type `organiser` for the page, but walks reference the `event_organiser` term, and the post links to the term; see the note under section 4.)
 * Past walks keep their own URLs and stay indexable.
 
 ## 4. Data model
