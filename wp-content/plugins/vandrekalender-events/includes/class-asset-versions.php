@@ -53,12 +53,12 @@ class Vandrekalender_Asset_Versions {
 			return null;
 		}
 
-		$relative = (string) strtok( substr( $src, strlen( $base_url ) ), '?#' );
+		$relative = rawurldecode( (string) strtok( substr( $src, strlen( $base_url ) ), '?#' ) );
 		if ( '' === $relative || str_contains( $relative, '..' ) ) {
 			return null;
 		}
 
-		$path = $base_dir . rawurldecode( $relative );
+		$path = $base_dir . $relative;
 
 		return is_file( $path ) ? $path : null;
 	}

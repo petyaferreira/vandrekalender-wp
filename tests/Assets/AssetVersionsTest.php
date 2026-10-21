@@ -48,6 +48,7 @@ class AssetVersionsTest extends TestCase {
 	public function test_missing_or_outside_file_gives_null(): void {
 		$this->assertNull( Vandrekalender_Asset_Versions::path_of( self::URL . 'assets/js/missing.js?ver=1.0.0', self::URL, self::DIR ) );
 		$this->assertNull( Vandrekalender_Asset_Versions::path_of( self::URL . '../../../wp-config.php', self::URL, self::DIR ) );
+		$this->assertNull( Vandrekalender_Asset_Versions::path_of( self::URL . '%2e%2e/vandrekalender-events/vandrekalender-events.php', self::URL, self::DIR ), 'encoded ..' );
 		$this->assertNull( Vandrekalender_Asset_Versions::path_of( self::URL, self::URL, self::DIR ) );
 	}
 }
