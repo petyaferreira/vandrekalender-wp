@@ -376,8 +376,9 @@ KDS token may stay browser-side is an open decision, see
 The server-side reverse lookup (municipality and nearest address from
 coordinates, used for DVL events and pasted coordinates in the editor) and the
 geocoder's postcode fallback (the centre of a postcode area, when a scraped
-street is not in the register) call Datafordeler's GraphQL API. The plugin reads the key **only** from the constant
-`VANDREKALENDER_DATAFORDELER_API_KEY`; there is no fallback in the code.
+street is not in the register) call Datafordeler's GraphQL API. The plugin
+reads the key **only** from the constant `VANDREKALENDER_DATAFORDELER_API_KEY`;
+there is no fallback in the code.
 
 ```php
 define( 'VANDREKALENDER_DATAFORDELER_API_KEY', '…' );

@@ -21,9 +21,9 @@ defined( 'ABSPATH' ) || exit;
  * house on the same street and postcode. A street the register does not know
  * at all ("Kræmmerstien 1, 2740 Skovlunde") gets the centre of its postcode
  * area from Datafordeler's DAGI register, marked approximate. Results are
- * cached as transients so
- * repeat scrapes do not re-hit the API. Failed requests are never cached, so
- * an outage does not hide addresses until the cache expires.
+ * cached as transients so repeat scrapes do not re-hit the API. Failed
+ * requests are never cached, so an outage does not hide addresses until the
+ * cache expires.
  *
  * Adressevælger has no reverse geocoding, so reverse() and
  * municipality_from_coords() ask Datafordeler's DAR register (GraphQL, API
