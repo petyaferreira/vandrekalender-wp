@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-21T10:17:28+00:00\n"
+"POT-Creation-Date: 2026-10-21T10:22:07+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -694,72 +694,78 @@ msgstr "Adresseopslaget returnerede ingen koordinater."
 msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
 msgstr "Kommunekoden \"%s\" findes ikke i data/municipalities.json, så begivenheden får ingen region. Tilføj den til filen."
 
+#. translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address.
+#: includes/class-geocoder.php:208
+#, php-format
+msgid "Address \"%1$s\" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin."
+msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s er %3$s, ikke %4$s, så begivenheden får ingen nål."
+
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:201
+#: includes/class-geocoder.php:224
 #, php-format
 msgid "Address \"%1$s\" was not found, and postcode %2$s has no area, so the event gets no pin."
 msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s har intet område, så begivenheden får ingen nål."
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:222
+#: includes/class-geocoder.php:245
 #, php-format
 msgid "Street not found for \"%1$s\", so the pin is placed in the middle of postcode %2$s."
 msgstr "Vejen i \"%1$s\" blev ikke fundet, så nålen sættes midt i postnummer %2$s."
 
-#: includes/class-geocoder.php:257 includes/class-geocoder.php:744
+#: includes/class-geocoder.php:295 includes/class-geocoder.php:782
 msgid "Address search returned an unexpected response."
 msgstr "Adressesøgningen returnerede et uventet svar."
 
-#: includes/class-geocoder.php:612
+#: includes/class-geocoder.php:650
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr "Datafordeler er ikke sat op (VANDREKALENDER_DATAFORDELER_API_KEY mangler), så der kunne ikke findes kommune eller adresse ud fra koordinater."
 
-#: includes/class-geocoder.php:616
+#: includes/class-geocoder.php:654
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr "Et opslag i Datafordeler blev sprunget over, fordi Datafordeler fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:638
+#: includes/class-geocoder.php:676
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr "Kaldet til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:651
+#: includes/class-geocoder.php:689
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr "Datafordeler afviste API-nøglen (udløbet, forkert eller oprettet for under 15 minutter siden). Se docs/deployment.md → Datafordeler API key."
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:659
+#: includes/class-geocoder.php:697
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr "Datafordeler returnerede HTTP %d."
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:672
+#: includes/class-geocoder.php:710
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr "Forespørgslen til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:673
+#: includes/class-geocoder.php:711
 msgid "unexpected response"
 msgstr "uventet svar"
 
-#: includes/class-geocoder.php:694
+#: includes/class-geocoder.php:732
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr "Adressesøgning er ikke sat op (VANDREKALENDER_ADRESSEVAELGER_TOKEN mangler), så ingen adresser blev geokodet."
 
-#: includes/class-geocoder.php:699
+#: includes/class-geocoder.php:737
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr "Et adresseopslag blev sprunget over, fordi adressesøgningen fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:719
+#: includes/class-geocoder.php:757
 #, php-format
 msgid "Address search request failed: %s"
 msgstr "Adressesøgningen fejlede: %s"
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:732
+#: includes/class-geocoder.php:770
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr "Adressesøgningen returnerede HTTP %d."

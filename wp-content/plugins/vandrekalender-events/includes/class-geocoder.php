@@ -125,7 +125,7 @@ class Vandrekalender_Geocoder {
 		// centre of its area still puts the walk on the map and in the right
 		// municipality. Without one, a guess could be anywhere.
 		if ( null === $hit && '' !== $locality['postcode'] ) {
-			return $this->postcode_centre( $locality['postcode'], $address, $cache_key );
+			return $this->postcode_centre( $locality, $address, $cache_key );
 		}
 
 		if ( null === $hit ) {
@@ -171,20 +171,26 @@ class Vandrekalender_Geocoder {
 	/**
 	 * The centre of a postcode area, as an approximate geocoding result.
 	 *
-	 * DAGI (Datafordeler) has the area's outline; its centre is converted
-	 * like a house number's point, and the municipality is the nearest
-	 * address's (reverse()).
+	 * DAGI (Datafordeler) has the area's name and outline; its centre is
+	 * converted like a house number's point, and the municipality is the
+	 * nearest address's (reverse()).
 	 *
-	 * @param string $postcode  Four-digit postcode from the address.
-	 * @param string $address   The address that was not found, for the Scraper Log.
-	 * @param string $cache_key Transient key of the address.
+	 * Four digits are not always a Danish postcode: Norwegian, Swiss and
+	 * Austrian ones look the same ("Karl Johans gate 1, 0154 Oslo"), and so
+	 * can a house number ("Industrivej 1050, Roskilde"). So when the address
+	 * names a town, it must be the postcode's.
+	 *
+	 * @param array{postcode: string, town: string} $locality  From locality(), with a postcode.
+	 * @param string                                $address   The address that was not found, for the Scraper Log.
+	 * @param string                                $cache_key Transient key of the address.
 	 * @return array|null Same shape as geocode(), approximate, or null.
 	 */
-	private function postcode_centre( string $postcode, string $address, string $cache_key ): ?array {
-		$data = $this->request_datafordeler(
+	private function postcode_centre( array $locality, string $address, string $cache_key ): ?array {
+		$postcode = $locality['postcode'];
+		$data     = $this->request_datafordeler(
 			'DAGI/v2',
 			sprintf(
-				'{ DAGI_Postnummerinddeling(first: 1, virkningstid: "%1$s", registreringstid: "%1$s", where: { postnummer: { eq: "%2$s" } }) { nodes { geometri { wkt } } } }',
+				'{ DAGI_Postnummerinddeling(first: 1, virkningstid: "%1$s", registreringstid: "%1$s", where: { postnummer: { eq: "%2$s" } }) { nodes { navn geometri { wkt } } } }',
 				gmdate( 'Y-m-d\TH:i:s\Z' ),
 				$postcode
 			)
@@ -193,7 +199,24 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
-		$centre = Vandrekalender_Wkt::area_centre( (string) ( $data['DAGI_Postnummerinddeling']['nodes'][0]['geometri']['wkt'] ?? '' ) );
+		$area = $data['DAGI_Postnummerinddeling']['nodes'][0] ?? [];
+		$name = (string) ( $area['navn'] ?? '' );
+		if ( '' !== $name && '' !== $locality['town'] && ! self::same_town( $locality['town'], $name ) ) {
+			self::record_issue(
+				sprintf(
+					/* translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address. */
+					__( 'Address "%1$s" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin.', 'vandrekalender-events' ),
+					$address,
+					$postcode,
+					$name,
+					$locality['town']
+				)
+			);
+			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
+			return null;
+		}
+
+		$centre = Vandrekalender_Wkt::area_centre( (string) ( $area['geometri']['wkt'] ?? '' ) );
 		if ( null === $centre ) {
 			self::record_issue(
 				sprintf(
@@ -231,6 +254,21 @@ class Vandrekalender_Geocoder {
 			set_transient( $cache_key, $result, self::CACHE_TTL );
 		}
 		return $result;
+	}
+
+	/**
+	 * Whether a town in an address is a postcode's town, e.g. "København"
+	 * and "København V", ignoring case.
+	 *
+	 * @param string $town Town from the address.
+	 * @param string $name The postcode's town name.
+	 * @return bool
+	 */
+	private static function same_town( string $town, string $name ): bool {
+		$town = mb_strtolower( trim( $town ) );
+		$name = mb_strtolower( trim( $name ) );
+
+		return $town === $name || str_starts_with( $name, $town . ' ' ) || str_starts_with( $town, $name . ' ' );
 	}
 
 	/**
