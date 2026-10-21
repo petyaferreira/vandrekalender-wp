@@ -1,6 +1,6 @@
 # Vandrekalender
 
-Walking events calendar for Denmark — [vandrekalender.dk](https://vandrekalender.dk)
+Walking events calendar for Denmark — [allevandreture.dk](https://allevandreture.dk)
 
 ## Quick Start
 
@@ -82,7 +82,7 @@ composer run phpcbf    # auto-fix PHP
 Then run a URL search-replace so WordPress uses your local URL instead of the live site:
 
 ```bash
-./wp.sh search-replace 'https://vandrekalender.dk' 'http://localhost:8080' --skip-columns=guid
+./wp.sh search-replace 'https://allevandreture.dk' 'http://localhost:8080' --skip-columns=guid
 ```
 
 Replace `8080` with your actual `WORDPRESS_PORT` from `.env` if you changed it. The `--skip-columns=guid` flag preserves post GUIDs, which should keep pointing to the origin URL.

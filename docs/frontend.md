@@ -118,6 +118,6 @@ One `<li class="vk-card">` per event, rendered by the Event Cards block, the who
 
 `single-event.html` is the header part, then `<main>` with the title (wide), and two columns: a 66% column with the excerpt, featured image, post content and the **Event Route Map**; a 34% column with the **Event Info Card**. The info card's route tabs switch the price and times and tell the route map which track to show (`vk:route-change`); both are described under Blocks above.
 
-**Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
+**Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on allevandreture.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
 
 > `single-event.html` also exists as a **user customisation in the database** (`wp_template` post `single-event`). Editing the theme file alone changes nothing on a site that has one — the DB copy wins. Add new blocks in the Site Editor, or update both.
