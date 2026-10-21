@@ -22,7 +22,7 @@ PHPUnit, without WordPress, a database, Docker or the network:
 - `tests/bootstrap.php` loads the plugin files under test directly.
 - `tests/wp-stubs.php` has small stand-ins for the WordPress functions that code calls (`wp_timezone()` is `Europe/Copenhagen`). A test that reaches an unstubbed function fails with "Call to undefined function": add a stand-in that does what WordPress does for that input, nothing more.
 - `tests/fakes/` replaces classes: a `Vandrekalender_Geocoder` that returns a fixed municipality without calling Datafordeler, and per scraper a subclass whose `remote_get()` returns files from `tests/fixtures/<source>/` instead of fetching.
-- Test code follows the same PHPCS rules as the plugin (`phpcs.xml` includes `tests/`). The few exceptions are `phpcs:ignore` comments in the file with the reason, for example test files named like their class (`DvlScraperTest.php`) as PHPUnit requires. Not `exclude-pattern` in `phpcs.xml`: the pre-commit hook checks a copy in a temporary folder, where path patterns do not match.
+- Test code follows the same PHPCS rules as the plugin (`phpcs.xml` includes `tests/`). The few exceptions are `phpcs:ignore` comments in the file with the reason, for example `file_get_contents()` on a local fixture in `tests/fakes/`. A rule that should skip all test code can instead get an `<exclude-pattern>tests/*</exclude-pattern>` in `phpcs.xml`: the pre-commit hook checks staged files under their real path, so the pattern applies there as in `./validate.sh`.
 
 Code that needs a real database (`upsert_event()`, unpublishing, GPX sideloading) is not covered. Why there is no WordPress test suite, and when to add one: [decision 0005](../decisions/0005-unit-tests-without-wordpress.md).
 
