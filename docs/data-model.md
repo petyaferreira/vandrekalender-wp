@@ -187,19 +187,7 @@ One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewr
 
 - **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
 - **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the **Organisation** field of the editor's Organiser panel (the default taxonomy panel is hidden). Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
-
-**Term meta** (`Vandrekalender_Organiser_Fields`, for the organiser page). Edited on the term's edit screen (Events → Organisers → edit), not on the "Add New Organiser" form. Readable in REST (`/wp/v2/event_organiser`, `meta`), writable only by users who can edit the term. `Vandrekalender_Organiser_Fields::get( $term_id )` returns all of them with empty defaults.
-
-| Key | Type | Description |
-|---|---|---|
-| `organiser_short_description` | string | One or two sentences of plain text for the page's hero (line breaks kept) |
-| `organiser_website_url` | string (url) | The organiser's own website, http(s) only |
-| `organiser_is_official` | boolean | Shows the "Official organiser" badge |
-| `organiser_source_url` | string (url) | Where the facts on the page were checked, http(s) only |
-| `organiser_source_checked` | string | Date the source was checked, `YYYY-MM-DD` |
-| `organiser_pattern_id` | integer | The synced pattern (`wp_block`) with the page's about text, facts and FAQ; `get()` returns 0 when it is no longer a published pattern |
-
-The prose is in the pattern, not in term meta, so each organiser can have its own facts rows and blocks: [decision 0008](decisions/0008-organiser-content-in-patterns.md). Initials for the badge come from the name (`Event::organiser_initials()`); a logo field comes later.
+- **Page texts:** no term meta. The organiser page's own texts (short description, website, badge, about, facts, source, FAQ) are theme pattern files per organiser, rendered by the Organiser Content block ([frontend.md](frontend.md), [decision 0008](decisions/0008-organiser-content-in-patterns.md)). Initials for the badge come from the name (`Event::organiser_initials()`).
 
 ### `event_region`
 

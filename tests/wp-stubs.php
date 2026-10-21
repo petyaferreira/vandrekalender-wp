@@ -106,28 +106,3 @@ function sanitize_title( string $title ): string {
 	$slug = (string) preg_replace( '/[\s_]+/', '-', $slug );
 	return trim( (string) preg_replace( '/[^a-z0-9-]/', '', $slug ), '-' );
 }
-
-/**
- * Sanitize multi-line text: like sanitize_text_field(), but keeps line
- * breaks.
- *
- * @param string $text Text.
- * @return string
- */
-function sanitize_textarea_field( string $text ): string {
-	$lines = array_map( fn( $line ) => trim( (string) preg_replace( '/[\t ]+/', ' ', $line ) ), explode( "\n", wp_strip_all_tags( $text ) ) );
-	return trim( implode( "\n", $lines ) );
-}
-
-/**
- * Clean a URL for storage: '' unless its scheme is one of $protocols
- * (enough for the http(s) URLs the tests use).
- *
- * @param string     $url       URL.
- * @param array|null $protocols Allowed schemes.
- * @return string
- */
-function esc_url_raw( string $url, ?array $protocols = null ): string {
-	$scheme = preg_match( '/^([a-z][a-z0-9+.-]*):/i', $url, $m ) ? strtolower( $m[1] ) : '';
-	return in_array( $scheme, $protocols ?? [ 'http', 'https' ], true ) ? $url : '';
-}

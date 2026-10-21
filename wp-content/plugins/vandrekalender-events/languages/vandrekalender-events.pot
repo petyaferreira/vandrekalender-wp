@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-20T16:25:08+00:00\n"
+"POT-Creation-Date: 2026-10-21T07:20:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -711,7 +711,6 @@ msgid "Event date"
 msgstr ""
 
 #: includes/class-facebook-importer.php:649
-#: includes/class-organiser-fields.php:174
 msgid "Source"
 msgstr ""
 
@@ -794,56 +793,6 @@ msgstr ""
 
 #: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
-msgstr ""
-
-#: includes/class-organiser-fields.php:154
-msgid "Short description"
-msgstr ""
-
-#: includes/class-organiser-fields.php:157
-msgid "One or two sentences, shown at the top of the organiser page."
-msgstr ""
-
-#: includes/class-organiser-fields.php:161
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:966
-msgid "Website"
-msgstr ""
-
-#: includes/class-organiser-fields.php:165
-msgid "Official organiser"
-msgstr ""
-
-#: includes/class-organiser-fields.php:169
-msgid "Show the \"Official organiser\" badge"
-msgstr ""
-
-#: includes/class-organiser-fields.php:178
-msgid "Checked on"
-msgstr ""
-
-#: includes/class-organiser-fields.php:181
-msgid "Where the facts on the page come from, and when they were checked."
-msgstr ""
-
-#: includes/class-organiser-fields.php:185
-msgid "Page content"
-msgstr ""
-
-#: includes/class-organiser-fields.php:188
-msgid "— None —"
-msgstr ""
-
-#: includes/class-organiser-fields.php:194
-msgid "The pattern with the about text, facts and FAQ (Details blocks) for this organiser."
-msgstr ""
-
-#: includes/class-organiser-fields.php:196
-msgid "Edit this pattern"
-msgstr ""
-
-#: includes/class-organiser-fields.php:198
-msgid "Create a pattern"
 msgstr ""
 
 #: includes/class-roles.php:192
@@ -1207,6 +1156,38 @@ msgstr ""
 msgid "Hover background"
 msgstr ""
 
+#: blocks/organiser-content/edit.js:15
+#: build/blocks/organiser-content/index.js:1
+msgid "Settings"
+msgstr ""
+
+#: blocks/organiser-content/edit.js:19
+#: build/blocks/organiser-content/index.js:1
+msgid "Part"
+msgstr ""
+
+#: blocks/organiser-content/edit.js:22
+#: build/blocks/organiser-content/index.js:1
+msgid "Hero"
+msgstr ""
+
+#: blocks/organiser-content/edit.js:23
+#: build/blocks/organiser-content/index.js:1
+msgid "About"
+msgstr ""
+
+#: blocks/organiser-content/edit.js:24
+#: build/blocks/organiser-content/index.js:1
+msgid "FAQ"
+msgstr ""
+
+#. translators: %1$s: page part: hero, about or faq.
+#: blocks/organiser-content/edit.js:34
+#: build/blocks/organiser-content/index.js:2
+#, js-format
+msgid "Organiser Content — on an organiser page, its theme file patterns/organiser-<slug>-%1$s.php renders here."
+msgstr ""
+
 #: blocks/slider/edit.js:42
 #: build/blocks/slider/index.js:1
 msgid "Slider settings"
@@ -1480,6 +1461,11 @@ msgid "Organiser or club name"
 msgstr ""
 
 #: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:966
+msgid "Website"
+msgstr ""
+
+#: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:977
 msgid "Contact email (admin only)"
 msgstr ""
@@ -1582,6 +1568,18 @@ msgstr ""
 #: build/blocks/link-box/block.json
 msgctxt "block description"
 msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
+msgstr ""
+
+#: blocks/organiser-content/block.json
+#: build/blocks/organiser-content/block.json
+msgctxt "block title"
+msgid "Organiser Content"
+msgstr ""
+
+#: blocks/organiser-content/block.json
+#: build/blocks/organiser-content/block.json
+msgctxt "block description"
+msgid "On an organiser page, one part of that organiser's own content (hero, about or FAQ), from the theme's pattern file patterns/organiser-<slug>-<part>.php."
 msgstr ""
 
 #: blocks/slider-slide/block.json

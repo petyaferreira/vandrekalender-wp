@@ -1,22 +1,27 @@
-# 0008: An organiser's about text, facts and FAQ live in a synced pattern, not in term fields
+# 0008: An organiser's own content lives in theme pattern files, not in the database
 
-Decided 20 October 2026 with Petya ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)).
+Decided 21 October 2026 with Petya ([#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32)).
 
 ## Decision
 
-An organiser (an `event_organiser` term) keeps only short values as term meta: short description, website, official badge, source URL and date, and which pattern holds its page content (`Vandrekalender_Organiser_Fields`). The prose on its page is one synced pattern (`wp_block`) per organiser, edited in the block editor: the "Om …" text, a facts table or list, and the FAQ as Details blocks. The organiser page template (plan step 5b) renders the chosen pattern between the walks and the computed numbers.
+One shared template, `taxonomy-event_organiser.html`, holds the organiser page's layout. What differs per organiser (the hero text, website button and official badge; the "Om …" text with its facts and source line; the FAQ) is in pattern files in the theme, one per part: `patterns/organiser-<term slug>-<part>.php`, with the parts `hero`, `about` and `faq`. The **Organiser Content** block (`vandrekalender/organiser-content`, attribute `part`) renders the current organiser's file for its part; without a file it renders nothing. The FAQ uses Details blocks. Everything computed from the walks (counts, regions, km range, next walk, summary sentence) stays in blocks.
+
+Organisers have no term meta. A first version (PR [#113](https://github.com/petyaferreira/vandrekalender-wp/pull/113), never merged) stored the short fields as term meta and the prose in a synced pattern (`wp_block`) chosen by ID.
 
 ## Why
 
-- **Organisers differ.** DVL has departments and a membership, Mammutmarch has distances and cities. In a pattern, each organiser gets the rows and blocks it needs. Term fields would need a facts repeater with free labels, built and validated by hand.
-- **No repeater to build or install.** WordPress has no repeater field for terms, ACF's repeater is Pro only, and a fields plugin would be a new dependency for seven organisers. The block editor already has paragraphs, links, tables and the Details block (native `<details>`/`<summary>`, as the design spec asks).
+- **The same on every environment.** Term meta and synced patterns are database content: they would be typed in again on local, staging and production, and a pattern's post ID differs per environment. Pattern files are in git, reviewed in PRs and deployed with the theme.
+- **Organisers differ.** DVL has departments and a membership, Mammutmarch has distances and cities. In a pattern, each organiser gets the rows and blocks it needs, without a facts repeater with free labels.
+- **One layout.** The page design is one template; a template per organiser would copy the shared parts into each file and still need a general one for organisers without a file.
+- **A new organiser gets a working page.** A scraper can add a term; its page shows the name, walks and numbers, and the parts stay empty until someone writes the files.
 - **No structured FAQ needed:** the spec says not to add FAQPage markup (section 7), so the questions do not have to be data.
-- **One layout:** the template stays shared, so changing the page design is one edit, not one per organiser (unlike a template per term).
+
+Cost: changing an organiser's text is a PR, not an admin edit. Draft in the block editor, copy the markup from the Code editor into the file, delete the draft.
 
 ## Do not propose
 
-Facts or FAQ repeaters as term meta, a fields plugin for them, or one block template per organiser, unless the page needs the facts as data (see below).
+Term meta or a fields plugin for the organiser's texts, synced patterns chosen per organiser, or one template per organiser, unless one of the conditions below holds.
 
 ## Revisit when
 
-The facts or FAQ are needed as data: FAQPage markup becomes worth it again, the facts feed filters or JSON-LD (e.g. the address in Organization), or organisations edit their own pages ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)) and must not get the full block editor.
+The facts or FAQ are needed as data (FAQPage markup, filters, or JSON-LD such as the address in Organization), or organisations edit their own pages ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)): then the content has to live in the database.

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-20T16:25:08+00:00\n"
+"POT-Creation-Date: 2026-10-21T07:20:24+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -675,7 +675,6 @@ msgid "Event date"
 msgstr "Dato for begivenhed"
 
 #: includes/class-facebook-importer.php:649
-#: includes/class-organiser-fields.php:174
 msgid "Source"
 msgstr "Kilde"
 
@@ -758,56 +757,6 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 #: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
-
-#: includes/class-organiser-fields.php:154
-msgid "Short description"
-msgstr "Kort beskrivelse"
-
-#: includes/class-organiser-fields.php:157
-msgid "One or two sentences, shown at the top of the organiser page."
-msgstr "En eller to sætninger, der vises øverst på arrangørens side."
-
-#: includes/class-organiser-fields.php:161
-#: build/resources/event-meta-fields/index.js:1
-#: resources/event-meta-fields/index.js:966
-msgid "Website"
-msgstr "Hjemmeside"
-
-#: includes/class-organiser-fields.php:165
-msgid "Official organiser"
-msgstr "Officiel arrangør"
-
-#: includes/class-organiser-fields.php:169
-msgid "Show the \"Official organiser\" badge"
-msgstr "Vis mærket \"Officiel arrangør\""
-
-#: includes/class-organiser-fields.php:178
-msgid "Checked on"
-msgstr "Tjekket den"
-
-#: includes/class-organiser-fields.php:181
-msgid "Where the facts on the page come from, and when they were checked."
-msgstr "Hvor fakta på siden kommer fra, og hvornår de blev tjekket."
-
-#: includes/class-organiser-fields.php:185
-msgid "Page content"
-msgstr "Sideindhold"
-
-#: includes/class-organiser-fields.php:188
-msgid "— None —"
-msgstr "— Ingen —"
-
-#: includes/class-organiser-fields.php:194
-msgid "The pattern with the about text, facts and FAQ (Details blocks) for this organiser."
-msgstr "Mønsteret med om-teksten, fakta og FAQ (Detaljer-blokke) for denne arrangør."
-
-#: includes/class-organiser-fields.php:196
-msgid "Edit this pattern"
-msgstr "Rediger dette mønster"
-
-#: includes/class-organiser-fields.php:198
-msgid "Create a pattern"
-msgstr "Opret et mønster"
 
 #: includes/class-roles.php:192
 msgid "Event Author"
@@ -1154,6 +1103,37 @@ msgstr "Hover-tekst"
 msgid "Hover background"
 msgstr "Hover-baggrund"
 
+#: blocks/organiser-content/edit.js:15
+#: build/blocks/organiser-content/index.js:1
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: blocks/organiser-content/edit.js:19
+#: build/blocks/organiser-content/index.js:1
+msgid "Part"
+msgstr "Del"
+
+#: blocks/organiser-content/edit.js:22
+#: build/blocks/organiser-content/index.js:1
+msgid "Hero"
+msgstr "Topsektion"
+
+#: blocks/organiser-content/edit.js:23
+#: build/blocks/organiser-content/index.js:1
+msgid "About"
+msgstr "Om"
+
+#: blocks/organiser-content/edit.js:24
+#: build/blocks/organiser-content/index.js:1
+msgid "FAQ"
+msgstr "Ofte stillede spørgsmål"
+
+#. translators: %1$s: page part: hero, about or faq.
+#: blocks/organiser-content/edit.js:34
+#: build/blocks/organiser-content/index.js:2
+msgid "Organiser Content — on an organiser page, its theme file patterns/organiser-<slug>-%1$s.php renders here."
+msgstr "Arrangørindhold — på en arrangørside vises temaets fil patterns/organiser-<slug>-%1$s.php her."
+
 #: blocks/slider/edit.js:42 build/blocks/slider/index.js:1
 msgid "Slider settings"
 msgstr "Slider-indstillinger"
@@ -1412,6 +1392,11 @@ msgid "Organiser or club name"
 msgstr "Arrangør- eller klubnavn"
 
 #: build/resources/event-meta-fields/index.js:1
+#: resources/event-meta-fields/index.js:966
+msgid "Website"
+msgstr "Hjemmeside"
+
+#: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:977
 msgid "Contact email (admin only)"
 msgstr "Kontakt-e-mail (kun admin)"
@@ -1501,6 +1486,18 @@ msgstr "Linkboks"
 msgctxt "block description"
 msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
 msgstr "En container, der gør hele sit indhold til ét link. Placér ikke andre links eller knapper i den."
+
+#: blocks/organiser-content/block.json
+#: build/blocks/organiser-content/block.json
+msgctxt "block title"
+msgid "Organiser Content"
+msgstr "Arrangørindhold"
+
+#: blocks/organiser-content/block.json
+#: build/blocks/organiser-content/block.json
+msgctxt "block description"
+msgid "On an organiser page, one part of that organiser's own content (hero, about or FAQ), from the theme's pattern file patterns/organiser-<slug>-<part>.php."
+msgstr "På en arrangørside: én del af arrangørens eget indhold (topsektion, om eller ofte stillede spørgsmål) fra temaets mønsterfil patterns/organiser-<slug>-<del>.php."
 
 #: blocks/slider-slide/block.json build/blocks/slider-slide/block.json
 msgctxt "block title"

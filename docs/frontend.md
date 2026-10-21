@@ -57,6 +57,24 @@ The card normally returns early when the event has no routes; a joinable event s
 
 The confirmation is a native `<dialog>` driven from `callbacks.toggleDialog`, which calls `showModal()`/`close()` in a `data-wp-watch` on `context.confirming`. `showModal()` is the only way to get the backdrop, focus trap and Escape handling, and it cannot be expressed as an attribute binding — the bare `open` attribute renders a non-modal box. The top layer also means the card's `position: sticky` cannot clip it.
 
+**Organiser Content** (`blocks/organiser-content/`) — on an organiser page (`is_tax( 'event_organiser' )`), renders one part of that organiser's own content from the theme pattern file `patterns/organiser-<term slug>-<part>.php` (slug from `Event::organiser_pattern_slug()`). The `part` attribute is `hero`, `about` or `faq`; the shared template places one block per part. Renders nothing elsewhere or when the file does not exist, so a new organiser's page works before anyone writes its texts. Why files and not term meta: [decision 0008](decisions/0008-organiser-content-in-patterns.md).
+
+To write one: draft the content in the block editor (a draft page or pattern), copy the markup from the Code editor into the file, delete the draft. Headers as in the other theme patterns, plus `Inserter: no`, so the organiser files stay out of the editor's pattern list:
+
+```php
+<?php
+/**
+ * Title: Arrangør: Dansk Vandrelaug, om
+ * Slug: vandrekalender-theme/organiser-dansk-vandrelaug-about
+ * Inserter: no
+ *
+ * @package vandrekalender-theme
+ */
+
+?>
+<!-- block markup -->
+```
+
 **Event Route Map** (`blocks/event-route-map/`) — draws the GPX track(s) attached to a single event's routes (a different block from Event Map, which is the Denmark-wide event calendar). `render.php` returns nothing when no route has a `gpx_id`, so it never leaves an empty gap; otherwise it embeds each GPX-bearing route (`id`, `distance_km`, `gpx_url`, sorted like Event Info Card's tabs) as JSON in a `data-vk-routes` attribute, plus the info card's default-active route's id in `data-vk-initial-route-id` (the first route in that same sorted order, whether or not it has a file — see `$vk_first_route` in Event Info Card's `render.php`), and enqueues Leaflet's CSS server-side (same "never inject from JS" rule as Event Map, followed here for consistency even though this block does not use the router). `view.js` is a **plain `viewScript`**, not the Interactivity API — the single event page is not a router region, so there is no `<head>`-morphing hazard or shared state to coordinate.
 
 It lazy-loads Leaflet and the `leaflet-gpx` plugin from cdnjs, draws one `L.GPX` layer per route with a distinct colour and plain dot start/end markers (leaflet-gpx's own defaults point at GitHub-hosted images). Only the *selected* route's track is ever shown on the map — not dimmed alongside the rest — matching how every other tab-driven value in the info card (price, start/cutoff time) fully replaces on switch rather than leaving the previous one lingering:

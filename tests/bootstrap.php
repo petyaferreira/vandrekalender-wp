@@ -23,7 +23,6 @@ define( 'VANDREKALENDER_TEST_INCLUDES', __DIR__ . '/../wp-content/plugins/vandre
 require VANDREKALENDER_TEST_INCLUDES . '/event/class-event.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
-require VANDREKALENDER_TEST_INCLUDES . '/class-organiser-fields.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-dvl.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-mammut.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-opdagverden.php';

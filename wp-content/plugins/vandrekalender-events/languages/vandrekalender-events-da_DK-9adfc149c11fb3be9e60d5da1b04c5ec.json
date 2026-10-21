@@ -1,0 +1,23 @@
+{
+    "translation-revision-date": "2026-10-08 15:00+0200",
+    "generator": "WP-CLI/2.12.0",
+    "source": "build/blocks/organiser-content/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "da_DK",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Settings": ["Indstillinger"],
+            "Part": ["Del"],
+            "Hero": ["Topsektion"],
+            "About": ["Om"],
+            "FAQ": ["Ofte stillede sp\u00f8rgsm\u00e5l"],
+            "Organiser Content \u2014 on an organiser page, its theme file patterns/organiser-<slug>-%1$s.php renders here.": [
+                "Arrang\u00f8rindhold \u2014 p\u00e5 en arrang\u00f8rside vises temaets fil patterns/organiser-<slug>-%1$s.php her."
+            ]
+        }
+    }
+}

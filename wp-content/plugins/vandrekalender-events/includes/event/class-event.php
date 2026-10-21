@@ -852,6 +852,25 @@ class Event {
 	}
 
 	/**
+	 * The theme pattern with one part of an organiser's page:
+	 * ( 'dansk-vandrelaug', 'about' ) → 'vandrekalender-theme/organiser-dansk-vandrelaug-about',
+	 * from patterns/organiser-dansk-vandrelaug-about.php. '' when either
+	 * argument is not a plain slug. Why the content is in pattern files:
+	 * docs/decisions/0008-organiser-content-in-patterns.md.
+	 *
+	 * @param string $term_slug event_organiser term slug.
+	 * @param string $part      Page part: hero, about or faq.
+	 * @return string
+	 */
+	public static function organiser_pattern_slug( string $term_slug, string $part ): string {
+		if ( ! preg_match( '/^[a-z0-9-]+$/', $term_slug ) || ! preg_match( '/^[a-z0-9-]+$/', $part ) ) {
+			return '';
+		}
+
+		return 'vandrekalender-theme/organiser-' . $term_slug . '-' . $part;
+	}
+
+	/**
 	 * Register Gutenberg blocks from the build directory.
 	 *
 	 * @return void

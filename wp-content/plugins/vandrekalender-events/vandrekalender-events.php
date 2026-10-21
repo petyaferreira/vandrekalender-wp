@@ -30,7 +30,6 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-past-events.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-municipalities.php';
-require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-organiser-fields.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-utm-converter.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
@@ -58,7 +57,6 @@ new Vandrekalender_Legacy_Event_Urls();
 new Vandrekalender_Scraper_Scheduler();
 new Vandrekalender_Scraper_Admin();
 new Vandrekalender_Facebook_Importer();
-new Vandrekalender_Organiser_Fields();
 
 /**
  * Initialize classes.

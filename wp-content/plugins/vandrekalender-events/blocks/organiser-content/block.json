@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/organiser-content",
+    "title": "Organiser Content",
+    "category": "widgets",
+    "description": "On an organiser page, one part of that organiser's own content (hero, about or FAQ), from the theme's pattern file patterns/organiser-<slug>-<part>.php.",
+    "textdomain": "vandrekalender-events",
+    "attributes": {
+        "part": {
+            "type": "string",
+            "enum": ["hero", "about", "faq"],
+            "default": "about"
+        }
+    },
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    }
+}
