@@ -49,7 +49,7 @@ tests/                          ← PHPUnit without WordPress (docs/contributing
 ├── wp-stubs.php                ← stand-ins for the WordPress functions the tests reach
 ├── fakes/                      ← fake geocoder, scrapers that read fixtures
 ├── fixtures/                   ← saved copies of source sites
-└── Scrapers/                   ← one test per scraper (DVL so far)
+└── Scrapers/                   ← one test per scraper (DVL and Mammut so far)
 
 .github/workflows/
 ├── ci.yml                      ← Validate on every push/PR; staging deploy on main after Validate
