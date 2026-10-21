@@ -1,4 +1,4 @@
-<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
+<?php
 /**
  * Initials on an organiser's badge, until it has a logo.
  *
