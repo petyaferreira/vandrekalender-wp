@@ -33,10 +33,17 @@ class Vandrekalender_Geocoder {
 	public static array $addresses = [];
 
 	/**
+	 * Whether geocode() answers as if only the postcode area was found.
+	 *
+	 * @var bool
+	 */
+	public static bool $approximate = false;
+
+	/**
 	 * Record the address and return the fixed coordinates and municipality.
 	 *
 	 * @param string $address Free-text address.
-	 * @return array{lat: float, lng: float, municipality: string}
+	 * @return array{lat: float, lng: float, municipality: string, approximate: bool}
 	 */
 	public function geocode( string $address ): array {
 		self::$addresses[] = $address;
@@ -44,6 +51,7 @@ class Vandrekalender_Geocoder {
 			'lat'          => self::TEST_LAT,
 			'lng'          => self::TEST_LNG,
 			'municipality' => self::TEST_MUNICIPALITY,
+			'approximate'  => self::$approximate,
 		];
 	}
 

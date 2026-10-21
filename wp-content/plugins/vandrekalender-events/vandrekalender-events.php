@@ -31,6 +31,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-municipalities.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-utm-converter.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-wkt.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
@@ -278,10 +279,11 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					continue;
 				}
 
-				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)', $verb, $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'] ) );
+				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)%s', $verb, $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'], $geo['approximate'] ? ', approximate' : '' ) );
 				if ( ! $dry_run ) {
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LAT, $geo['lat'] );
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LNG, $geo['lng'] );
+					update_post_meta( $post_id, \Vandrekalender\Event::META_LOCATION_APPROXIMATE, $geo['approximate'] );
 					// '' would clear a municipality the post already has.
 					if ( '' !== $geo['municipality'] ) {
 						update_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, $geo['municipality'] );

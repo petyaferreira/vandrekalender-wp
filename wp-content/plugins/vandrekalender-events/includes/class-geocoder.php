@@ -18,7 +18,10 @@ defined( 'ABSPATH' ) || exit;
  * pick_hit()) — a hit in the wrong town is rejected rather than pinned
  * hundreds of kilometres away. A house number that does not exist ("Marselisborg
  * Havnevej 1", the street only has even numbers) falls back to the nearest
- * house on the same street and postcode. Results are cached as transients so
+ * house on the same street and postcode. A street the register does not know
+ * at all ("Kræmmerstien 1, 2740 Skovlunde") gets the centre of its postcode
+ * area from Datafordeler's DAGI register, marked approximate. Results are
+ * cached as transients so
  * repeat scrapes do not re-hit the API. Failed requests are never cached, so
  * an outage does not hide addresses until the cache expires.
  *
@@ -76,7 +79,9 @@ class Vandrekalender_Geocoder {
 	 * Geocode a Danish address string.
 	 *
 	 * @param string $address Free-text address, e.g. "Marselisborg Havnevej 1, 8000 Aarhus".
-	 * @return array|null Array of { lat: float, lng: float, municipality: string }, or null on failure.
+	 * @return array|null Array of { lat: float, lng: float, municipality: string,
+	 *                    approximate: bool (only the postcode area was found) },
+	 *                    or null on failure.
 	 */
 	public function geocode( string $address ): ?array {
 		$address = trim( $address );
@@ -87,7 +92,8 @@ class Vandrekalender_Geocoder {
 		$cache_key = self::CACHE_PREFIX . md5( $address );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
-			return is_array( $cached ) ? $cached : null;
+			// Entries cached before the postcode fallback have no flag.
+			return is_array( $cached ) ? $cached + [ 'approximate' => false ] : null;
 		}
 
 		$locality = self::locality( $address );
@@ -113,6 +119,13 @@ class Vandrekalender_Geocoder {
 				}
 				$hit = self::pick_hit( $hits, $locality );
 			}
+		}
+
+		// The street is not in the register at all: with a postcode, the
+		// centre of its area still puts the walk on the map and in the right
+		// municipality. Without one, a guess could be anywhere.
+		if ( null === $hit && '' !== $locality['postcode'] ) {
+			return $this->postcode_centre( $locality['postcode'], $address, $cache_key );
 		}
 
 		if ( null === $hit ) {
@@ -148,9 +161,75 @@ class Vandrekalender_Geocoder {
 			'lat'          => $coords['lat'],
 			'lng'          => $coords['lng'],
 			'municipality' => $municipality,
+			'approximate'  => false,
 		];
 
 		set_transient( $cache_key, $result, self::CACHE_TTL );
+		return $result;
+	}
+
+	/**
+	 * The centre of a postcode area, as an approximate geocoding result.
+	 *
+	 * DAGI (Datafordeler) has the area's outline; its centre is converted
+	 * like a house number's point, and the municipality is the nearest
+	 * address's (reverse()).
+	 *
+	 * @param string $postcode  Four-digit postcode from the address.
+	 * @param string $address   The address that was not found, for the Scraper Log.
+	 * @param string $cache_key Transient key of the address.
+	 * @return array|null Same shape as geocode(), approximate, or null.
+	 */
+	private function postcode_centre( string $postcode, string $address, string $cache_key ): ?array {
+		$data = $this->request_datafordeler(
+			'DAGI/v2',
+			sprintf(
+				'{ DAGI_Postnummerinddeling(first: 1, virkningstid: "%1$s", registreringstid: "%1$s", where: { postnummer: { eq: "%2$s" } }) { nodes { geometri { wkt } } } }',
+				gmdate( 'Y-m-d\TH:i:s\Z' ),
+				$postcode
+			)
+		);
+		if ( null === $data ) {
+			return null;
+		}
+
+		$centre = Vandrekalender_Wkt::area_centre( (string) ( $data['DAGI_Postnummerinddeling']['nodes'][0]['geometri']['wkt'] ?? '' ) );
+		if ( null === $centre ) {
+			self::record_issue(
+				sprintf(
+					/* translators: 1: address, 2: four-digit postcode. */
+					__( 'Address "%1$s" was not found, and postcode %2$s has no area, so the event gets no pin.', 'vandrekalender-events' ),
+					$address,
+					$postcode
+				)
+			);
+			set_transient( $cache_key, 'none', self::NO_MATCH_TTL );
+			return null;
+		}
+
+		$coords  = Vandrekalender_Utm_Converter::to_lat_lng( $centre['x'], $centre['y'] );
+		$nearest = $this->reverse( $coords['lat'], $coords['lng'] );
+		$result  = [
+			'lat'          => $coords['lat'],
+			'lng'          => $coords['lng'],
+			'municipality' => null !== $nearest ? $nearest['municipality'] : '',
+			'approximate'  => true,
+		];
+
+		self::record_issue(
+			sprintf(
+				/* translators: 1: address, 2: four-digit postcode. */
+				__( 'Street not found for "%1$s", so the pin is placed in the middle of postcode %2$s.', 'vandrekalender-events' ),
+				$address,
+				$postcode
+			)
+		);
+
+		// Without a municipality (Datafordeler failed) the event would get no
+		// region; try again next run instead of caching that for a month.
+		if ( '' !== $result['municipality'] ) {
+			set_transient( $cache_key, $result, self::CACHE_TTL );
+		}
 		return $result;
 	}
 
