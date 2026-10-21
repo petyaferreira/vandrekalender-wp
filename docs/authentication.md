@@ -261,4 +261,4 @@ When a scraped event is claimed (domain-matched token email, per DataModel v3), 
 
 ---
 
-*vandrekalender.dk — Authentication & Organization Architecture v1.1*
+*allevandreture.dk — Authentication & Organization Architecture v1.1*

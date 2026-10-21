@@ -267,10 +267,10 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 {
   "id": 42,
   "title": "Mammutmarch",
-  "permalink": "https://vandrekalender.dk/begivenhed/mammutmarch",
+  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
   "date": "2026-06-20",
   "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://vandrekalender.dk/wp-content/uploads/mammutmarch.jpg",
+  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
   "place_name": "Gribskov Naturpark",
   "lat": 56.051,
   "lng": 12.301,
@@ -322,11 +322,11 @@ Returns full detail for a single event. Used by the event detail page.
 {
   "id": 42,
   "title": "Mammutmarch",
-  "permalink": "https://vandrekalender.dk/begivenhed/mammutmarch",
+  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
   "date": "2026-06-20",
   "content": "<p>Full description...</p>",
   "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://vandrekalender.dk/wp-content/uploads/mammutmarch.jpg",
+  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
   "place_name": "Gribskov Naturpark",
   "address": "Esrum Møllegård, Esrum Klostervej 14, 3230 Græsted",
   "lat": 56.051,
@@ -336,7 +336,7 @@ Returns full detail for a single event. Used by the event detail page.
   "region": "hovedstaden",
   "routes": [
     { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0, "gpx_id": "", "gpx_url": "" },
-    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://vandrekalender.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
+    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://allevandreture.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
   ],
   "organiser_name": "Mammutmarch",
   "organiser_url": "https://mammutmarch.dk",

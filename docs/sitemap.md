@@ -135,4 +135,4 @@ All three tabs update simultaneously when filters change.
 
 ---
 
-*vandrekalender.dk — Sitemap v1.0*
+*allevandreture.dk — Sitemap v1.0*
