@@ -7,13 +7,15 @@ NC='\033[0m'
 
 echo -e "${YELLOW}Setting up Git hooks...${NC}"
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_ROOT"
-
-if [ ! -d ".git" ]; then
+if ! PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
     echo -e "${RED}Error: Not in a Git repository${NC}"
     exit 1
 fi
+cd "$PROJECT_ROOT"
+
+# Hooks live in the git dir every worktree shares (`.git` of the main
+# checkout). In a worktree `.git` is a file pointing there, not a folder.
+HOOKS_DIR="$(git rev-parse --git-common-dir)/hooks"
 
 if [ ! -f "./vendor/bin/phpcs" ]; then
     echo -e "${YELLOW}Installing Composer dependencies...${NC}"
@@ -24,11 +26,11 @@ if [ ! -f "./vendor/bin/phpcs" ]; then
     fi
 fi
 
-mkdir -p .git/hooks
+mkdir -p "$HOOKS_DIR"
 
 if [ -f ".githooks/pre-commit" ]; then
-    cp .githooks/pre-commit .git/hooks/pre-commit
-    chmod +x .git/hooks/pre-commit
+    cp .githooks/pre-commit "$HOOKS_DIR/pre-commit"
+    chmod +x "$HOOKS_DIR/pre-commit"
     echo -e "${GREEN}✓ Pre-commit hook installed${NC}"
 else
     echo -e "${RED}Error: .githooks/pre-commit not found${NC}"
