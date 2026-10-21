@@ -19,6 +19,8 @@ One rule: **code that needs compiling goes through the build; static files ship 
 
 If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JSX, move it into `resources/` and wire it into `build:resources`.
 
+**Cache busting is automatic.** Every script and style URL of the plugin gets the file's modification time as its `ver` (`Vandrekalender_Asset_Versions`, on `script_loader_src` and `style_loader_src`), whatever version it was registered with, so a deploy that changes a file also changes its URL. A new file needs nothing special. CDN and other plugins' URLs are left alone, and script modules (`viewScriptModule`) already get a content hash from the build.
+
 ---
 
 ## Accessibility conventions
