@@ -1,10 +1,10 @@
-# 0009: Our own scripts and styles are versioned by the build, not by file time
+# 0009: The plugin's own scripts and styles are versioned by the build, not by file time
 
 Decided 22 October 2026 with Petya ([#118](https://github.com/petyaferreira/vandrekalender-wp/issues/118), PR [#131](https://github.com/petyaferreira/vandrekalender-wp/pull/131)).
 
 ## Decision
 
-Every script and style of our own goes through the build (`blocks/` → `build/blocks/`, `resources/` → `build/resources/`) and is registered with the content hash in its `index.asset.php`. A third-party library in `assets/vendor/` is registered with its own version number (Swiper `'12.0.3'`), changed when the library is upgraded. Nothing is versioned by `filemtime()`, and there is no hook that rewrites `ver`.
+Every script and style of the plugin's own goes through the build (`blocks/` → `build/blocks/`, `resources/` → `build/resources/`) and is registered with the content hash in its `index.asset.php`. A third-party library in `assets/vendor/` is registered with its own version number (Swiper `'12.0.3'`), changed when the library is upgraded. No plugin script or style is versioned by `filemtime()`, and there is no hook that rewrites `ver`. The theme is not covered: it versions its built `screen.css` and `screen.js` by `filemtime()` in `functions.php`, which works because they are rebuilt on every deploy.
 
 ## Why
 
