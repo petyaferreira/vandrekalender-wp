@@ -224,3 +224,59 @@ body {
 .site-brand-footer svg {
   width: 120px;
 }
+
+// Organiser page (single-organiser.html and the organiser-* patterns, design
+// in docs/design/organiser-page/). Sections are spaced like the design's
+// "extra-large" gap.
+.vk-organiser-page .wp-block-post-content > * + * {
+  margin-block-start: var(--wp--preset--spacing--extra-large);
+}
+
+// Hero: logo, text and the website button in one row from 600px; below that
+// they stack, as in the mobile design.
+.vk-organiser-hero {
+  gap: var(--wp--preset--spacing--medium) var(--wp--preset--spacing--large);
+
+  .vk-organiser-hero__text {
+    flex: 1 1 420px;
+    min-width: 0;
+    gap: var(--wp--preset--spacing--regular);
+
+    > * {
+      margin: 0;
+    }
+  }
+
+  .wp-block-post-excerpt__excerpt {
+    max-width: 800px;
+    margin: 0;
+  }
+
+  @media (max-width: 599.98px) {
+    flex-direction: column;
+    align-items: flex-start !important; // Beats the layout's inline center.
+
+    // In a column the 420px basis above would be a height.
+    .vk-organiser-hero__text {
+      flex: none;
+    }
+  }
+}
+
+// FAQ questions read as list rows, not h3 headings: body size, with a
+// divider between them as in the design.
+.vk-organiser-page .wp-block-accordion-item {
+  border-block-end: 1px solid var(--wp--preset--color--meadow);
+}
+
+.vk-organiser-page .wp-block-accordion-heading {
+  margin: 0;
+  font-family: var(--wp--preset--font-family--inter);
+  font-size: var(--wp--preset--font-size--regular);
+  font-weight: 600;
+}
+
+.vk-organiser-page .wp-block-accordion-heading__toggle {
+  min-height: 44px;
+  padding-block: var(--wp--preset--spacing--regular);
+}

@@ -138,15 +138,19 @@ add_action(
 add_shortcode(
 	'vk_filtered_count',
 	function () {
-		$count = Vandrekalender_Event_Rest_Api::count_events(
-			Vandrekalender_Event_Rest_Api::filters_from_query()
+		// Same pinned filters as the cards (an organiser page counts only its
+		// organiser's walks); the script merges them over the URL's.
+		$presets = Vandrekalender_Event_Rest_Api::page_presets();
+		$count   = Vandrekalender_Event_Rest_Api::count_events(
+			array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $presets )
 		);
 
 		wp_enqueue_script( 'vandrekalender-filtered-count' );
 
 		return sprintf(
-			'<span class="vk-filtered-count" role="status" data-rest-url="%s">%s</span>',
+			'<span class="vk-filtered-count" role="status" data-rest-url="%s" data-presets="%s">%s</span>',
 			esc_attr( esc_url_raw( rest_url( 'vandrekalender/v1/events/count' ) ) ),
+			esc_attr( (string) wp_json_encode( (object) $presets ) ),
 			esc_html( number_format_i18n( $count ) )
 		);
 	}

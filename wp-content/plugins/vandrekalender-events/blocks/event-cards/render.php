@@ -17,17 +17,10 @@ $vk_per_page = 50;
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only pagination param.
 $vk_page = isset( $_GET['side'] ) ? max( 1, (int) $_GET['side'] ) : 1;
 
-// On a taxonomy archive, pin the queried term so the cards only show that
-// region/length regardless of URL query params.
-$vk_presets = [];
-foreach ( [
-	'region' => \Vandrekalender\Event::TAX_REGION,
-	'length' => \Vandrekalender\Event::TAX_LENGTH,
-] as $vk_filter_key => $vk_taxonomy ) {
-	if ( is_tax( $vk_taxonomy ) ) {
-		$vk_presets[ $vk_filter_key ] = get_queried_object()->slug;
-	}
-}
+// Pin what the page itself filters by (the term on a region or length
+// archive, the organiser on its page), so the cards only show that
+// regardless of URL query params.
+$vk_presets = Vandrekalender_Event_Rest_Api::page_presets();
 
 $vk_filters = array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $vk_presets );
 
@@ -72,7 +65,17 @@ $vk_wrapper_attributes = [
 		data-wp-router-region="vk-event-cards"
 	>
 		<?php if ( empty( $vk_shown_ids ) ) : ?>
-			<p class="vk-cards__empty"><?php esc_html_e( 'No walks match your filters.', 'vandrekalender-events' ); ?></p>
+			<p class="vk-cards__empty">
+				<?php
+				// Without filters from the visitor, nothing is upcoming at all
+				// (an organiser page between seasons), not a filter too narrow.
+				echo esc_html(
+					Vandrekalender_Event_Rest_Api::filters_from_query()
+						? __( 'No walks match your filters.', 'vandrekalender-events' )
+						: __( 'There are no upcoming walks right now.', 'vandrekalender-events' )
+				);
+				?>
+			</p>
 		<?php else : ?>
 			<ul class="vk-cards__list">
 				<?php

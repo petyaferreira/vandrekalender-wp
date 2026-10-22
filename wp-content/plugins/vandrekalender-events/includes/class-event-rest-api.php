@@ -11,6 +11,10 @@ class Vandrekalender_Event_Rest_Api {
 
 	const NAMESPACE = 'vandrekalender/v1';
 
+	// Organiser filter value that matches no walk: sanitize_title() makes it
+	// '', and a tax_query for no terms finds nothing. See presets_for().
+	const NO_ORGANISER = '-';
+
 	// Reverse lookups allowed per user per window (see reverse_geocode()).
 	const REVERSE_RATE_LIMIT  = 60;
 	const REVERSE_RATE_WINDOW = 10 * MINUTE_IN_SECONDS;
@@ -417,6 +421,61 @@ class Vandrekalender_Event_Rest_Api {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		return $filters;
+	}
+
+	/**
+	 * Filters the page itself pins, whatever the URL says: the term on a
+	 * region or length archive, the linked organiser on an organiser page.
+	 * The cards, calendar, map and count blocks merge them over
+	 * filters_from_query().
+	 *
+	 * @return array Filter values keyed by REST param name.
+	 */
+	public static function page_presets() {
+		$taxonomy  = '';
+		$term_slug = '';
+		if ( is_tax( [ \Vandrekalender\Event::TAX_REGION, \Vandrekalender\Event::TAX_LENGTH ] ) ) {
+			$taxonomy  = get_queried_object()->taxonomy;
+			$term_slug = get_queried_object()->slug;
+		}
+
+		$organiser_slug = null;
+		if ( is_singular( \Vandrekalender\Organiser::CUSTOMPOSTTYPE ) ) {
+			$term           = \Vandrekalender\Organiser::term_for_post( get_queried_object_id() );
+			$organiser_slug = $term ? $term->slug : '';
+		}
+
+		return self::presets_for( $taxonomy, $term_slug, $organiser_slug );
+	}
+
+	/**
+	 * The pinned filters for a page (see page_presets()).
+	 *
+	 * @param string      $taxonomy       Taxonomy of the archive shown, '' when none.
+	 * @param string      $term_slug      Its term's slug.
+	 * @param string|null $organiser_slug On an organiser page, its organiser's
+	 *                                    term slug ('' when it has none yet);
+	 *                                    null on any other page.
+	 * @return array Filter values keyed by REST param name.
+	 */
+	public static function presets_for( string $taxonomy, string $term_slug, ?string $organiser_slug ) {
+		$keys    = [
+			\Vandrekalender\Event::TAX_REGION => 'region',
+			\Vandrekalender\Event::TAX_LENGTH => 'length',
+		];
+		$presets = [];
+
+		if ( isset( $keys[ $taxonomy ] ) && '' !== $term_slug ) {
+			$presets[ $keys[ $taxonomy ] ] = $term_slug;
+		}
+
+		// A page without an organiser (a draft not linked yet) must not show
+		// every walk as if they were its own: pin a slug no term can have.
+		if ( null !== $organiser_slug ) {
+			$presets['organiser'] = '' !== $organiser_slug ? $organiser_slug : self::NO_ORGANISER;
+		}
+
+		return $presets;
 	}
 
 	/**
