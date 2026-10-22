@@ -20,6 +20,7 @@ require __DIR__ . '/fakes/class-vandrekalender-geocoder.php';
 
 define( 'VANDREKALENDER_TEST_INCLUDES', __DIR__ . '/../wp-content/plugins/vandrekalender-events/includes' );
 
+require VANDREKALENDER_TEST_INCLUDES . '/class-asset-versions.php';
 require VANDREKALENDER_TEST_INCLUDES . '/event/class-event.php';
 require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
