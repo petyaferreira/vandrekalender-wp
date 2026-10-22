@@ -86,16 +86,25 @@ add_shortcode(
 
 /**
  * Register (but don't enqueue) the filtered-count frontend script, so the
- * shortcode below can enqueue it only on pages that actually use it.
+ * shortcode below can enqueue it only on pages that actually use it. Its
+ * version is the build's content hash, so a changed file gets a new URL.
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
+		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/resources/filtered-count/index.asset.php';
+
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+
+		$asset = require $asset_file;
+
 		wp_register_script(
 			'vandrekalender-filtered-count',
-			VANDREKALENDER_EVENTS_URL . 'assets/js/filtered-count-view.js',
-			[],
-			VANDREKALENDER_EVENTS_VERSION,
+			VANDREKALENDER_EVENTS_URL . 'build/resources/filtered-count/index.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 	}
@@ -103,34 +112,24 @@ add_action(
 
 /**
  * Register Swiper styles and scripts. This is currently used by slider block.
+ * The version is Swiper's own; change it when the files in
+ * assets/vendor/swiper/ are upgraded.
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		$css_rel = 'assets/vendor/swiper/swiper-bundle.min.css';
-		$js_rel  = 'assets/vendor/swiper/swiper-bundle.min.js';
-
-		$css_path = VANDREKALENDER_EVENTS_DIR . $css_rel;
-		$js_path  = VANDREKALENDER_EVENTS_DIR . $js_rel;
-
-		$css_url = VANDREKALENDER_EVENTS_URL . $css_rel;
-		$js_url  = VANDREKALENDER_EVENTS_URL . $js_rel;
-
-		$css_ver = file_exists( $css_path ) ? filemtime( $css_path ) : null;
-		$js_ver  = file_exists( $js_path ) ? filemtime( $js_path ) : null;
-
 		wp_register_style(
 			'swiper',
-			$css_url,
+			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.css',
 			[],
-			$css_ver
+			'12.0.3'
 		);
 
 		wp_register_script(
 			'swiper',
-			$js_url,
+			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.js',
 			[],
-			$js_ver,
+			'12.0.3',
 			true
 		);
 	}
