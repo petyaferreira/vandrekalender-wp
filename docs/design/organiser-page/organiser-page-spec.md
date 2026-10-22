@@ -17,8 +17,7 @@ Colors (hex in the design file, then the theme slug):
 * #2D5F3F forest: header and footer background, primary buttons, region chips, badge text, outline button border and text, labels above filters
 * #C2D9B0 meadow: all borders and dividers, "Officiel arrangør" badge background, km chip background, image placeholder
 * #FAF5EC cream: filter box, stat tiles, facts box, price chip background, logo circle background
-* #D97535 amber: walk dates on cards
-* #7A5230 bark: text in the price chip ("Gratis", "50 kr")
+* #7A5230 bark: walk dates on cards (amber failed contrast on white, #96), text in the price chip ("Gratis", "50 kr")
 * #7A7268 pebble: secondary text on white (breadcrumb, place, counts, "Kilde")
 * #1D1A14 charcoal: body text, headings, text on cream backgrounds
 * #FFFFFF white: page and card background, text on forest
