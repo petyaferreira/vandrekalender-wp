@@ -181,6 +181,9 @@ class Vandrekalender_Scraper_Mammut extends Vandrekalender_Scraper_Base {
 				$event[ \Vandrekalender\Event::META_LAT ]          = $geo['lat'];
 				$event[ \Vandrekalender\Event::META_LNG ]          = $geo['lng'];
 				$event[ \Vandrekalender\Event::META_MUNICIPALITY ] = $geo['municipality'];
+				// Set either way, so an exact result clears an earlier
+				// postcode-area pin.
+				$event[ \Vandrekalender\Event::META_LOCATION_APPROXIMATE ] = $geo['approximate'];
 			}
 		}
 
