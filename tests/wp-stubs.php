@@ -4,8 +4,8 @@
  *
  * Each one does what WordPress does for the inputs the tests use, nothing
  * more. Keep them small: a stand-in that grows its own logic is a second
- * implementation to keep in step with WordPress. The fake geocoder is in
- * fakes/class-vandrekalender-geocoder.php.
+ * implementation to keep in step with WordPress. WP_Error is in
+ * class-wp-error.php, the fake geocoder in fakes/class-vandrekalender-geocoder.php.
  *
  * @package Vandrekalender
  */
@@ -115,4 +115,81 @@ function sanitize_title( string $title ): string {
  */
 function get_posts( array $args = [] ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- same signature as WordPress.
 	return [];
+}
+
+define( 'MONTH_IN_SECONDS', 30 * 24 * 60 * 60 );
+
+/**
+ * Transient on an empty cache: never set.
+ *
+ * @param string $transient Name.
+ * @return false
+ */
+function get_transient( string $transient ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- same signature as WordPress.
+	return false;
+}
+
+/**
+ * Store a transient: accepted and forgotten, so every test starts uncached.
+ *
+ * @param string $transient  Name.
+ * @param mixed  $value      Value.
+ * @param int    $expiration Seconds.
+ * @return bool
+ */
+function set_transient( string $transient, $value, int $expiration = 0 ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as WordPress.
+	return true;
+}
+
+/**
+ * JSON encode (WordPress adds a sanity check on top of json_encode()).
+ *
+ * @param mixed $value Value.
+ * @return string|false
+ */
+function wp_json_encode( $value ) {
+	return json_encode( $value ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- this is the stand-in.
+}
+
+/**
+ * Whether a value is an error result.
+ *
+ * @param mixed $thing Value.
+ * @return bool
+ */
+function is_wp_error( $thing ): bool {
+	return $thing instanceof WP_Error;
+}
+
+/**
+ * Response headers per URL for wp_remote_head(), set by the test fakes from
+ * saved headers. A URL not listed fails, as without a network.
+ *
+ * @var array<string, array<string, string>>
+ */
+$GLOBALS['vandrekalender_test_head_responses'] = [];
+
+/**
+ * HEAD request: the saved headers for the URL, or an error.
+ *
+ * @param string $url  URL.
+ * @param array  $args Request arguments.
+ * @return array|WP_Error
+ */
+function wp_remote_head( string $url, array $args = [] ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as WordPress.
+	if ( ! isset( $GLOBALS['vandrekalender_test_head_responses'][ $url ] ) ) {
+		return new WP_Error();
+	}
+	return [ 'headers' => $GLOBALS['vandrekalender_test_head_responses'][ $url ] ];
+}
+
+/**
+ * One header of a response, by lowercase name ('' when missing).
+ *
+ * @param array|WP_Error $response Response.
+ * @param string         $header   Header name.
+ * @return string
+ */
+function wp_remote_retrieve_header( $response, string $header ): string {
+	return is_array( $response ) ? (string) ( $response['headers'][ strtolower( $header ) ] ?? '' ) : '';
 }

@@ -63,7 +63,7 @@ class Test_Scraper_Mammut extends Vandrekalender_Scraper_Mammut {
 	 */
 	public function parse_list( string $json ): array {
 		$data = json_decode( $json, true );
-		return $this->parse( (string) json_encode( $data['data']['events'] ?? null ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- wp_json_encode() is not stubbed; fetch() only wraps json_encode().
+		return $this->parse( (string) wp_json_encode( $data['data']['events'] ?? null ) );
 	}
 
 	/**
