@@ -17,7 +17,6 @@ define( 'VANDREKALENDER_EVENTS_VERSION', '1.0.0' );
 define( 'VANDREKALENDER_EVENTS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
-require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-asset-versions.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-roles.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-gpx-uploads.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-author-dashboard.php';
@@ -47,7 +46,6 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagv
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser.php';
 
-new Vandrekalender_Asset_Versions();
 new Vandrekalender_Roles();
 new Vandrekalender_Gpx_Uploads();
 new Vandrekalender_Author_Dashboard();
@@ -88,8 +86,7 @@ add_shortcode(
 
 /**
  * Register (but don't enqueue) the filtered-count frontend script, so the
- * shortcode below can enqueue it only on pages that actually use it. Its
- * `ver` becomes the file time (Vandrekalender_Asset_Versions).
+ * shortcode below can enqueue it only on pages that actually use it.
  */
 add_action(
 	'wp_enqueue_scripts',
@@ -106,23 +103,34 @@ add_action(
 
 /**
  * Register Swiper styles and scripts. This is currently used by slider block.
- * Their `ver` becomes the file time (Vandrekalender_Asset_Versions).
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
+		$css_rel = 'assets/vendor/swiper/swiper-bundle.min.css';
+		$js_rel  = 'assets/vendor/swiper/swiper-bundle.min.js';
+
+		$css_path = VANDREKALENDER_EVENTS_DIR . $css_rel;
+		$js_path  = VANDREKALENDER_EVENTS_DIR . $js_rel;
+
+		$css_url = VANDREKALENDER_EVENTS_URL . $css_rel;
+		$js_url  = VANDREKALENDER_EVENTS_URL . $js_rel;
+
+		$css_ver = file_exists( $css_path ) ? filemtime( $css_path ) : null;
+		$js_ver  = file_exists( $js_path ) ? filemtime( $js_path ) : null;
+
 		wp_register_style(
 			'swiper',
-			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.css',
+			$css_url,
 			[],
-			VANDREKALENDER_EVENTS_VERSION
+			$css_ver
 		);
 
 		wp_register_script(
 			'swiper',
-			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.js',
+			$js_url,
 			[],
-			VANDREKALENDER_EVENTS_VERSION,
+			$js_ver,
 			true
 		);
 	}
