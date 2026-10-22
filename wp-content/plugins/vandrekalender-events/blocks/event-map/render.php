@@ -6,7 +6,7 @@
  * partially follows the server-render pattern: the wrapper is an Interactivity
  * API island whose context carries the map config *and* the initial pin
  * payload, so first paint needs no REST request. The view module lazy-loads
- * Leaflet from a CDN, drops the embedded pins, and only calls the
+ * Leaflet from its npm bundle, drops the embedded pins, and only calls the
  * /events/locations endpoint again when the filters change.
  *
  * @package Vandrekalender
@@ -14,29 +14,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Leaflet CSS is enqueued server-side, NOT injected from view.js: the
-// interactivity router manages the <head> across client-side navigations,
-// and JS-injected <link> tags come out of that morphing present but no
-// longer applied — the map's tiles and controls silently lose all layout.
-// Enqueued styles are part of every server render, so the router keeps them.
-wp_enqueue_style(
-	'vandrekalender-leaflet',
-	'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
-	[],
-	'1.9.4'
-);
-wp_enqueue_style(
-	'vandrekalender-leaflet-cluster',
-	'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css',
-	[],
-	'1.5.3'
-);
-wp_enqueue_style(
-	'vandrekalender-leaflet-cluster-default',
-	'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css',
-	[],
-	'1.5.3'
-);
+// Leaflet's CSS is bundled into this block's stylesheet (style.scss), NOT
+// injected from view.js: the interactivity router manages the <head> across
+// client-side navigations, and JS-injected <link> tags come out of that
+// morphing present but no longer applied. The block stylesheet is part of
+// every server render, so the router keeps it.
 
 // On a taxonomy archive, pin the queried term so the map only shows that
 // region/length regardless of URL query params. The presets ride along in the

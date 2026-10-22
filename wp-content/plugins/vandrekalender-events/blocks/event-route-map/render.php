@@ -42,17 +42,8 @@ if ( empty( $vk_gpx_routes ) ) {
 	return;
 }
 
-// Leaflet CSS is enqueued server-side, NOT injected from JS — see
-// docs/frontend.md: on a page using the interactivity router, a JS-injected
-// <link> tag comes out of <head> morphing present in the DOM but no longer
-// applied. This block does not use the router, but the rule is followed
-// here too for consistency with the rest of the codebase.
-wp_enqueue_style(
-	'vandrekalender-leaflet',
-	'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
-	[],
-	'1.9.4'
-);
+// Leaflet's CSS is bundled into this block's stylesheet (style.scss), not
+// injected from JS — see docs/frontend.md.
 
 /**
  * Format a route's distance as "N km", trimming trailing zeroes.

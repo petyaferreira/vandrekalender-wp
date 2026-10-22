@@ -4,7 +4,7 @@
  * Leaflet needs the client, so unlike the Event Cards block this one only
  * partially server-renders: render.php embeds the map config and the initial
  * pin payload in the block context, and this module lazy-loads Leaflet (and
- * the marker-cluster plugin) from a CDN and drops the embedded pins — no REST
+ * the marker-cluster plugin) from its npm bundle and drops the embedded pins — no REST
  * request on first paint. A filter change refetches pins from the
  * /events/locations endpoint. The map re-measures itself when it becomes
  * visible (e.g. inside a hidden tab).
@@ -16,18 +16,12 @@
 
 import { store, getContext, getElement } from '@wordpress/interactivity';
 
-const LEAFLET_VERSION = '1.9.4';
-const CLUSTER_VERSION = '1.5.3';
-const CDN = 'https://cdnjs.cloudflare.com/ajax/libs';
-
-// Only the scripts load lazily from here. The stylesheets are enqueued
-// server-side in render.php: the interactivity router manages the <head>
-// across client-side navigations, and JS-injected <link> tags come out of
-// that morphing present but no longer applied.
-const ASSETS = {
-  leafletJs: `${CDN}/leaflet/${LEAFLET_VERSION}/leaflet.min.js`,
-  clusterJs: `${CDN}/leaflet.markercluster/${CLUSTER_VERSION}/leaflet.markercluster.min.js`,
-};
+// Leaflet and the cluster plugin are npm dependencies, imported lazily so
+// pages without a map do not load them (webpack splits them into a chunk).
+// The stylesheets are bundled into the block's style.scss and enqueued by
+// WordPress: the interactivity router manages the <head> across client-side
+// navigations, and JS-injected <link> tags come out of that morphing present
+// but no longer applied.
 
 // Leaflet instances per block wrapper, so actions (resetView) can reach the
 // map created in callbacks.init. Leaflet objects are not serialisable, so
@@ -35,47 +29,21 @@ const ASSETS = {
 const instances = new WeakMap();
 
 /**
- * Load a script once, resolving when ready.
- *
- * @param {string} src Script URL.
- * @return {Promise} Resolves on load, rejects on error.
- */
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) {
-      if (existing.dataset.loaded) {
-        resolve();
-      } else {
-        existing.addEventListener('load', () => resolve());
-        existing.addEventListener('error', reject);
-      }
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.addEventListener('load', () => {
-      script.dataset.loaded = '1';
-      resolve();
-    });
-    script.addEventListener('error', reject);
-    document.head.appendChild(script);
-  });
-}
-
-/**
  * Ensure Leaflet (and, best effort, the cluster plugin) are available.
+ *
+ * The cluster plugin reads the global `L` while it loads, so the global is
+ * set before it is imported.
  *
  * @return {Promise} Resolves once Leaflet is ready.
  */
 async function ensureLeaflet() {
   if (!window.L) {
-    await loadScript(ASSETS.leafletJs);
+    const leaflet = await import('leaflet');
+    window.L = leaflet.default || leaflet;
   }
-  if (window.L && !window.L.markerClusterGroup) {
+  if (!window.L.markerClusterGroup) {
     try {
-      await loadScript(ASSETS.clusterJs);
+      await import('leaflet.markercluster');
     } catch (e) {
       // Clustering is optional; fall back to a plain layer group.
     }

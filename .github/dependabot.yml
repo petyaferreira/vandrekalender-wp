@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /wp-content/plugins/vandrekalender-events
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /wp-content/themes/vandrekalender-theme
+    schedule:
+      interval: weekly

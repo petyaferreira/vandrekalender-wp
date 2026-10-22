@@ -68,8 +68,8 @@ In `includes/class-event-rest-api.php`, wherever routes are put into a response 
 
 New block in `blocks/event-route-map/`, modelled on `blocks/event-map/` but much simpler (no filters, no clustering, no router interaction because the single event page is not a router region).
 
-- `render.php`: returns nothing if no route on the current event has a `gpx_id`. Otherwise enqueues Leaflet CSS from cdnjs server side (same rule as the Event Map block, see `docs/frontend.md`: CSS is never injected from JS) and outputs a wrapper with a `data-vk-routes` attribute holding JSON `[{ id, distance_km, gpx_url, gpx_name }]` for routes that have a file, plus a map div with a fixed height.
-- `view.js` (plain `viewScript` is fine here): lazy loads Leaflet 1.9.4 and the `leaflet-gpx` plugin from cdnjs, creates the map, adds one `L.GPX` layer per route with `async: true`, fits bounds to all layers, and adds start and finish markers (leaflet-gpx does this by default, set `marker_options` to plain icons or disable the default images which point to a GitHub URL). Distinct colour per route.
+- `render.php`: returns nothing if no route on the current event has a `gpx_id`. Otherwise ships Leaflet CSS in the block stylesheet (same rule as the Event Map block, see `docs/frontend.md`: CSS is never injected from JS) and outputs a wrapper with a `data-vk-routes` attribute holding JSON `[{ id, distance_km, gpx_url, gpx_name }]` for routes that have a file, plus a map div with a fixed height.
+- `view.js` (plain `viewScript` is fine here): lazy loads Leaflet 1.9.4 and the `leaflet-gpx` plugin (npm, dynamic `import()`), creates the map, adds one `L.GPX` layer per route with `async: true`, fits bounds to all layers, and adds start and finish markers (leaflet-gpx does this by default, set `marker_options` to plain icons or disable the default images which point to a GitHub URL). Distinct colour per route.
 - Listens for a `vk:route-change` custom event (see 3c) with `detail.id` and highlights that route (others dimmed), refits bounds to it.
 - Below the map: a download link per route, `<a href="{gpx_url}" download>Download GPX ({distance} km)</a>`.
 - `block.json`: `supports.html false`, no attributes needed, `usesContext` not needed (uses `get_the_ID()` in render).
@@ -121,7 +121,7 @@ Moved to [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31), be
 - GPX stays a file; we do not store the geometry in post meta. Tracks can have thousands of points and the map only needs them in the browser.
 - One code path on the frontend: everything is an attachment ID, whether uploaded or scraped. Scrapers download the file instead of linking to the source, so the map does not break when the source site changes or blocks hotlinking.
 - Fields live inside the existing route objects, not as new meta keys, because a GPX belongs to a distance, not to the event.
-- Leaflet and leaflet-gpx from cdnjs, consistent with the Event Map block and the CSP already allowing cdnjs. Pinned versions, never "latest". To be replaced by bundling through npm (decided 8 October 2026), see [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31) for why.
+- Leaflet and leaflet-gpx were first loaded from cdnjs with pinned versions. Replaced by bundling through npm (decided 8 October 2026, done in [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31)): exact versions in `package.json`, no third-party request, Dependabot signals updates.
 - Map in the main column, GPX download public, no route icon on cards yet (see Decisions made below).
 
 ## Decisions made (29 September 2026)
