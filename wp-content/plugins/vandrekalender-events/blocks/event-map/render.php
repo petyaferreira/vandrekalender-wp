@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Leaflet's CSS is bundled into this block's stylesheet (style.scss), NOT
+// Leaflet's CSS is bundled into this block's stylesheet (leaflet/style.css, imported in index.js), NOT
 // injected from view.js: the interactivity router manages the <head> across
 // client-side navigations, and JS-injected <link> tags come out of that
 // morphing present but no longer applied. The block stylesheet is part of

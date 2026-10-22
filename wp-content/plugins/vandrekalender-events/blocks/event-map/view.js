@@ -18,7 +18,7 @@ import { store, getContext, getElement } from '@wordpress/interactivity';
 
 // Leaflet and the cluster plugin are npm dependencies, imported lazily so
 // pages without a map do not load them (webpack splits them into a chunk).
-// The stylesheets are bundled into the block's style.scss and enqueued by
+// The stylesheets are bundled into the block's style-index.css (leaflet/style.css, imported in index.js) and enqueued by
 // WordPress: the interactivity router manages the <head> across client-side
 // navigations, and JS-injected <link> tags come out of that morphing present
 // but no longer applied.
