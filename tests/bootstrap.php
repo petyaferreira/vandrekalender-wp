@@ -22,7 +22,6 @@ require __DIR__ . '/fakes/class-vandrekalender-geocoder.php';
 define( 'VANDREKALENDER_EVENTS_DIR', __DIR__ . '/../wp-content/plugins/vandrekalender-events/' );
 define( 'VANDREKALENDER_TEST_INCLUDES', VANDREKALENDER_EVENTS_DIR . 'includes' );
 
-require VANDREKALENDER_TEST_INCLUDES . '/class-asset-versions.php';
 require VANDREKALENDER_TEST_INCLUDES . '/event/class-event.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-wkt.php';
 require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser.php';

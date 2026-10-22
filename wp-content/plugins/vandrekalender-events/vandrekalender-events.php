@@ -17,7 +17,6 @@ define( 'VANDREKALENDER_EVENTS_VERSION', '1.0.0' );
 define( 'VANDREKALENDER_EVENTS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VANDREKALENDER_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
-require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-asset-versions.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-roles.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-gpx-uploads.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-author-dashboard.php';
@@ -47,7 +46,6 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagv
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser.php';
 
-new Vandrekalender_Asset_Versions();
 new Vandrekalender_Roles();
 new Vandrekalender_Gpx_Uploads();
 new Vandrekalender_Author_Dashboard();
@@ -89,16 +87,25 @@ add_shortcode(
 /**
  * Register (but don't enqueue) the filtered-count frontend script, so the
  * shortcode below can enqueue it only on pages that actually use it. Its
- * `ver` becomes the file time (Vandrekalender_Asset_Versions).
+ * version is the build's content hash, so a changed file gets a new URL.
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
+		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/resources/filtered-count/index.asset.php';
+
+		if ( ! file_exists( $asset_file ) ) {
+			error_log( 'Vandrekalender: build/resources/filtered-count/ is missing, so [vk_filtered_count] does not update when filters change. Run npm run build in the plugin.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
+			return;
+		}
+
+		$asset = require $asset_file;
+
 		wp_register_script(
 			'vandrekalender-filtered-count',
-			VANDREKALENDER_EVENTS_URL . 'assets/js/filtered-count-view.js',
-			[],
-			VANDREKALENDER_EVENTS_VERSION,
+			VANDREKALENDER_EVENTS_URL . 'build/resources/filtered-count/index.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 	}
@@ -106,7 +113,8 @@ add_action(
 
 /**
  * Register Swiper styles and scripts. This is currently used by slider block.
- * Their `ver` becomes the file time (Vandrekalender_Asset_Versions).
+ * The version is Swiper's own; change it when the files in
+ * assets/vendor/swiper/ are upgraded.
  */
 add_action(
 	'wp_enqueue_scripts',
@@ -115,14 +123,14 @@ add_action(
 			'swiper',
 			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.css',
 			[],
-			VANDREKALENDER_EVENTS_VERSION
+			'12.0.3'
 		);
 
 		wp_register_script(
 			'swiper',
 			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.js',
 			[],
-			VANDREKALENDER_EVENTS_VERSION,
+			'12.0.3',
 			true
 		);
 	}

@@ -8,18 +8,16 @@ Design references: [design/](design/index.md).
 
 ## Where frontend code lives (plugin)
 
-One rule: **code that needs compiling goes through the build; static files ship as-is.**
+One rule: **our own JS and CSS goes through the build.** Its version is then the build's content hash (`index.asset.php`), so a changed file gets a new URL after a deploy and browsers don't keep a cached old copy.
 
 | Folder | What | Build? |
 |---|---|---|
 | `blocks/` | Gutenberg block sources (block.json, edit.js, view.js, style.scss) | Yes → `build/blocks/`, registered from there |
-| `resources/` | Non-block editor scripts that import `@wordpress/*` packages (e.g. event-meta-fields sidebar) | Yes → `build/resources/` |
-| `assets/` | Plain dependency-free JS/CSS served directly (e.g. `assets/js/filtered-count-view.js`) | No — enqueued as-is, committed to git |
+| `resources/` | Non-block scripts: the editor sidebars (event-meta-fields, organiser-fields) and the `[vk_filtered_count]` frontend script (filtered-count). Each one is an entry in `build:resources` and `start:resources` in `package.json` | Yes → `build/resources/`, registered from there with the version in its `index.asset.php` |
+| `assets/` | Third-party libraries (`assets/vendor/swiper/`) and media (`assets/video/`), served as-is | No. A library is registered with its own version number (Swiper `'12.0.3'`); change it when the library is upgraded |
 | `build/` | Compiled output. Gitignored — CI builds it on deploy. Never edit by hand | — |
 
-If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JSX, move it into `resources/` and wire it into `build:resources`.
-
-**Cache busting is automatic.** Every script and style URL of the plugin gets the file's modification time as its `ver` (`Vandrekalender_Asset_Versions`, on `script_loader_src` and `style_loader_src`), whatever version it was registered with, so a deploy that changes a file also changes its URL. A new file needs nothing special. CDN and other plugins' URLs are left alone, and script modules (`viewScriptModule`) already get a content hash from the build.
+A new script of our own goes in `blocks/` or `resources/`, never in `assets/` ([decision 0009](decisions/0009-assets-versioned-by-build.md)).
 
 ---
 
@@ -74,7 +72,7 @@ A download link per route sits below the map.
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
 - `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.
-- `[vk_filtered_count]` — number of events matching the active filters, plus what the page pins (see [Filter Bar](#filter-bar)). Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `assets/js/filtered-count-view.js`). The pinned filters reach the script in `data-presets`.
+- `[vk_filtered_count]` — number of events matching the active filters, plus what the page pins (see [Filter Bar](#filter-bar)). Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `build/resources/filtered-count/index.js`, built from `resources/filtered-count/index.js`). The pinned filters reach the script in `data-presets`.
 
 ---
 
