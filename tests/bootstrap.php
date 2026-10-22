@@ -24,6 +24,7 @@ define( 'VANDREKALENDER_TEST_INCLUDES', VANDREKALENDER_EVENTS_DIR . 'includes' )
 
 require VANDREKALENDER_TEST_INCLUDES . '/class-asset-versions.php';
 require VANDREKALENDER_TEST_INCLUDES . '/event/class-event.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-wkt.php';
 require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-municipalities.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';

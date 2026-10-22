@@ -44,7 +44,8 @@ class MammutScraperTest extends TestCase {
 	 * Parse the saved list with a fresh scraper.
 	 */
 	protected function setUp(): void {
-		Vandrekalender_Geocoder::$addresses = [];
+		Vandrekalender_Geocoder::$addresses   = [];
+		Vandrekalender_Geocoder::$approximate = false;
 
 		$this->scraper = new Test_Scraper_Mammut();
 		$this->events  = array_column(
@@ -52,6 +53,13 @@ class MammutScraperTest extends TestCase {
 			null,
 			Event::META_SOURCE_URL
 		);
+	}
+
+	/**
+	 * Back to exact results for the other tests.
+	 */
+	protected function tearDown(): void {
+		Vandrekalender_Geocoder::$approximate = false;
 	}
 
 	/**
@@ -100,6 +108,7 @@ class MammutScraperTest extends TestCase {
 		$this->assertSame( Vandrekalender_Geocoder::TEST_LAT, $event[ Event::META_LAT ] );
 		$this->assertSame( Vandrekalender_Geocoder::TEST_LNG, $event[ Event::META_LNG ] );
 		$this->assertSame( Vandrekalender_Geocoder::TEST_MUNICIPALITY, $event[ Event::META_MUNICIPALITY ] );
+		$this->assertFalse( $event[ Event::META_LOCATION_APPROXIMATE ], 'an exact result clears an earlier approximate pin' );
 
 		$this->assertStringStartsWith( '<p>Allerede den 20. marts 2027 vender Mammutmarch tilbage til Aarhus!</p><p>Efter en fantastisk debut', $event['post_content'] );
 		$this->assertStringStartsWith( 'Allerede den 20. marts 2027 vender Mammutmarch tilbage til Aarhus! Efter en fantastisk debut', $event['post_excerpt'] );
@@ -108,6 +117,23 @@ class MammutScraperTest extends TestCase {
 		$this->assertSame( 'Mammutmarch', $event[ Event::META_ORGANISER_NAME ] );
 		$this->assertSame( 'https://mammutmarch.dk/', $event[ Event::META_ORGANISER_URL ] );
 		$this->assertStringEndsWith( '-Aarhus-dk-2026-2.png', $event['featured_image_url'] );
+	}
+
+	/**
+	 * When the geocoder only finds the postcode area (#112), the pin is
+	 * marked approximate.
+	 */
+	public function test_postcode_area_pin_is_approximate(): void {
+		Vandrekalender_Geocoder::$approximate = true;
+
+		$events = array_column(
+			( new Test_Scraper_Mammut() )->parse_list( Test_Scraper_Mammut::fixture( 'events.json' ) ),
+			null,
+			Event::META_SOURCE_URL
+		);
+
+		$this->assertSame( Vandrekalender_Geocoder::TEST_LAT, $events[ self::AARHUS ][ Event::META_LAT ] );
+		$this->assertTrue( $events[ self::AARHUS ][ Event::META_LOCATION_APPROXIMATE ] );
 	}
 
 	/**

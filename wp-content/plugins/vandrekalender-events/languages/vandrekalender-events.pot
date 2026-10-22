@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-21T09:08:20+00:00\n"
+"POT-Creation-Date: 2026-10-21T10:26:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -155,7 +155,7 @@ msgstr ""
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
-#: resources/organiser-fields/index.js:30
+#: resources/organiser-fields/index.js:29
 msgid "Organiser"
 msgstr ""
 
@@ -720,71 +720,95 @@ msgstr ""
 msgid "View on Facebook"
 msgstr ""
 
-#: includes/class-geocoder.php:130
+#: includes/class-geocoder.php:143
 msgid "Address lookup returned no coordinates."
 msgstr ""
 
 #. translators: %s: four-digit municipality code, e.g. 0101.
-#: includes/class-geocoder.php:140
+#: includes/class-geocoder.php:153
 #, php-format
 msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
 msgstr ""
 
-#: includes/class-geocoder.php:178
-#: includes/class-geocoder.php:665
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:208
+#, php-format
+msgid "Address \"%1$s\" was not found, and postcode %2$s has no area, so the event gets no pin."
+msgstr ""
+
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:223
+#, php-format
+msgid "Address \"%1$s\" was not found and names no town to check postcode %2$s against, so the event gets no pin."
+msgstr ""
+
+#. translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address.
+#: includes/class-geocoder.php:229
+#, php-format
+msgid "Address \"%1$s\" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin."
+msgstr ""
+
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:252
+#, php-format
+msgid "Street not found for \"%1$s\", so the pin is placed in the middle of postcode %2$s."
+msgstr ""
+
+#: includes/class-geocoder.php:305
+#: includes/class-geocoder.php:792
 msgid "Address search returned an unexpected response."
 msgstr ""
 
-#: includes/class-geocoder.php:533
+#: includes/class-geocoder.php:660
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr ""
 
-#: includes/class-geocoder.php:537
+#: includes/class-geocoder.php:664
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:559
+#: includes/class-geocoder.php:686
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:572
+#: includes/class-geocoder.php:699
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:580
+#: includes/class-geocoder.php:707
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr ""
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:593
+#: includes/class-geocoder.php:720
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:594
+#: includes/class-geocoder.php:721
 msgid "unexpected response"
 msgstr ""
 
-#: includes/class-geocoder.php:615
+#: includes/class-geocoder.php:742
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr ""
 
-#: includes/class-geocoder.php:620
+#: includes/class-geocoder.php:747
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:640
+#: includes/class-geocoder.php:767
 #, php-format
 msgid "Address search request failed: %s"
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:653
+#: includes/class-geocoder.php:780
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr ""
@@ -1084,53 +1108,53 @@ msgstr ""
 msgid "New Organiser Name"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:79
-#: includes/organiser/class-organiser.php:81
+#: includes/organiser/class-organiser.php:86
+#: includes/organiser/class-organiser.php:88
 msgid "Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:80
+#: includes/organiser/class-organiser.php:87
 msgid "Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:82
+#: includes/organiser/class-organiser.php:89
 msgid "Add New Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:83
+#: includes/organiser/class-organiser.php:90
 msgid "Edit Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:84
+#: includes/organiser/class-organiser.php:91
 msgid "View Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:85
+#: includes/organiser/class-organiser.php:92
 msgid "View Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:86
+#: includes/organiser/class-organiser.php:93
 msgid "All Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:87
+#: includes/organiser/class-organiser.php:94
 msgid "Search Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:88
+#: includes/organiser/class-organiser.php:95
 msgid "No organiser pages found."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:89
+#: includes/organiser/class-organiser.php:96
 msgid "No organiser pages found in trash."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:173
+#: includes/organiser/class-organiser.php:180
 msgid "This organiser does not exist."
 msgstr ""
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:184
+#: includes/organiser/class-organiser.php:191
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
 msgstr ""
@@ -1464,7 +1488,7 @@ msgstr ""
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:924
-#: resources/organiser-fields/index.js:35
+#: resources/organiser-fields/index.js:34
 msgid "Organisation"
 msgstr ""
 
@@ -1510,17 +1534,17 @@ msgid "Watch the how-to video"
 msgstr ""
 
 #: build/resources/organiser-fields/index.js:1
-#: resources/organiser-fields/index.js:42
+#: resources/organiser-fields/index.js:41
 msgid "The page shows this organisation’s walks. One page per organisation."
 msgstr ""
 
 #: build/resources/organiser-fields/index.js:1
-#: resources/organiser-fields/index.js:51
+#: resources/organiser-fields/index.js:50
 msgid "Official organiser"
 msgstr ""
 
 #: build/resources/organiser-fields/index.js:1
-#: resources/organiser-fields/index.js:54
+#: resources/organiser-fields/index.js:53
 msgid "Shows the “Officiel arrangør” badge on the page."
 msgstr ""
 
