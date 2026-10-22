@@ -95,6 +95,7 @@ add_action(
 		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/resources/filtered-count/index.asset.php';
 
 		if ( ! file_exists( $asset_file ) ) {
+			error_log( 'Vandrekalender: build/resources/filtered-count/ is missing, so [vk_filtered_count] does not update when filters change. Run npm run build in the plugin.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
 			return;
 		}
 

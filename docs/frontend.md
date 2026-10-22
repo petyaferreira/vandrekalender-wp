@@ -17,7 +17,7 @@ One rule: **our own JS and CSS goes through the build.** Its version is then the
 | `assets/` | Third-party libraries (`assets/vendor/swiper/`) and media (`assets/video/`), served as-is | No. A library is registered with its own version number (Swiper `'12.0.3'`); change it when the library is upgraded |
 | `build/` | Compiled output. Gitignored — CI builds it on deploy. Never edit by hand | — |
 
-A new script of our own goes in `blocks/` or `resources/`, never in `assets/`.
+A new script of our own goes in `blocks/` or `resources/`, never in `assets/` ([decision 0009](decisions/0009-assets-versioned-by-build.md)).
 
 ---
 

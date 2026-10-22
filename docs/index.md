@@ -37,7 +37,7 @@ wp-content/plugins/vandrekalender-events/
 │   ├── scrapers/               ← one class per source
 │   └── …                       ← geocoder, municipalities, roles, GPX uploads, Facebook importer
 ├── blocks/                     ← Gutenberg blocks → build/blocks
-├── resources/                  ← editor scripts (event and organiser page fields) → build/resources
+├── resources/                  ← editor scripts (event and organiser page fields) and the filtered-count script → build/resources
 └── data/                       ← static data (municipalities.json)
 
 wp-content/themes/vandrekalender-theme/
