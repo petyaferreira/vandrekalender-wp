@@ -43,6 +43,7 @@ wp-content/plugins/vandrekalender-events/
 wp-content/themes/vandrekalender-theme/
 ├── theme.json                  ← design tokens
 ├── templates/, parts/          ← FSE page templates, header + footer
+├── patterns/                   ← block patterns, incl. the organiser page sections
 └── resources/                  ← theme JS/SCSS → public/
 
 tests/                          ← PHPUnit without WordPress (docs/contributing/tests.md)

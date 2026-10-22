@@ -1,0 +1,18 @@
+// "Officiel arrangør" pill in the organiser page's hero.
+.vk-organiser-badge {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--wp--preset--color--meadow, #c2d9b0);
+  color: var(--wp--preset--color--forest, #2d5f3f);
+  font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  // Shown faded in the editor when the page is not flagged as official.
+  &--off {
+    opacity: 0.4;
+  }
+}

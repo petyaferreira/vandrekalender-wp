@@ -39,11 +39,16 @@ function readFilters() {
  */
 function initCount(root) {
   const restUrl = root.dataset.restUrl;
+  // Filters the page pins (an organiser page: its organiser), over the URL's.
+  const presets = JSON.parse(root.dataset.presets || '{}');
   let requestId = 0;
 
   async function load() {
     const current = ++requestId;
-    const query = new URLSearchParams(readFilters()).toString();
+    const query = new URLSearchParams({
+      ...readFilters(),
+      ...presets,
+    }).toString();
     const url = query ? `${restUrl}?${query}` : restUrl;
 
     try {
