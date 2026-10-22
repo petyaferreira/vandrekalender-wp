@@ -1,0 +1,18 @@
+{
+    "translation-revision-date": "2026-10-08 15:00+0200",
+    "generator": "WP-CLI\/2.12.0",
+    "source": "build\/blocks\/organiser-stats\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "da_DK",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Organiser stats: upcoming walks, regions and distances, computed from the organiser\u2019s walks.": [
+                "Arrang\u00f8ren i tal: kommende ture, regioner og distancer, beregnet ud fra arrang\u00f8rens ture."
+            ]
+        }
+    }
+}

@@ -22,17 +22,10 @@ $vk_month_param = isset( $_GET['maaned'] ) ? sanitize_text_field( wp_unslash( $_
 $vk_day_param   = isset( $_GET['dag'] ) ? sanitize_text_field( wp_unslash( $_GET['dag'] ) ) : '';
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-// On a taxonomy archive, pin the queried term so the calendar only counts
-// that region/length regardless of URL query params.
-$vk_presets = [];
-foreach ( [
-	'region' => \Vandrekalender\Event::TAX_REGION,
-	'length' => \Vandrekalender\Event::TAX_LENGTH,
-] as $vk_filter_key => $vk_taxonomy ) {
-	if ( is_tax( $vk_taxonomy ) ) {
-		$vk_presets[ $vk_filter_key ] = get_queried_object()->slug;
-	}
-}
+// Pin what the page itself filters by (the term on a region or length
+// archive, the organiser on its page), so the calendar only counts that
+// regardless of URL query params.
+$vk_presets = Vandrekalender_Event_Rest_Api::page_presets();
 
 $vk_filters = array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $vk_presets );
 

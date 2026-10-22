@@ -32,6 +32,16 @@ class Organiser {
 	public const META_TERM     = 'organiser_term';
 	public const META_OFFICIAL = 'organiser_official';
 
+	// The theme's section patterns a new organiser page starts from, top to
+	// bottom (docs/plans/organisers-plan.md, step 5).
+	public const PATTERNS = [
+		'vandrekalender-theme/organiser-hero',
+		'vandrekalender-theme/organiser-stats',
+		'vandrekalender-theme/organiser-walks',
+		'vandrekalender-theme/organiser-about',
+		'vandrekalender-theme/organiser-faq',
+	];
+
 	/**
 	 * Published organiser post ID per event_organiser term ID, loaded once
 	 * per request by published_post_for_term().
@@ -58,7 +68,7 @@ class Organiser {
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
-		add_filter( 'rest_pre_insert_' . self::CUSTOMPOSTTYPE, [ $this, 'reject_taken_term' ], 10, 2 );
+		add_filter( 'rest_pre_insert_' . self::CUSTOMPOSTTYPE, [ $this, 'validate_term' ], 10, 2 );
 		add_filter( 'term_link', [ $this, 'filter_term_link' ], 10, 3 );
 		// The REST API writes meta after the post, so a changed term clears
 		// the lookup too, not only the post save.
@@ -69,6 +79,7 @@ class Organiser {
 		add_action( 'deleted_post_meta', [ $this, 'forget_published_posts_on_term_change' ], 10, 3 );
 		add_action( 'template_redirect', [ $this, 'maybe_redirect_to_calendar' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
+		add_filter( 'block_core_breadcrumbs_items', [ $this, 'filter_breadcrumbs' ] );
 	}
 
 	/**
@@ -94,6 +105,8 @@ class Organiser {
 					'search_items'       => __( 'Search Organiser pages', 'vandrekalender-events' ),
 					'not_found'          => __( 'No organiser pages found.', 'vandrekalender-events' ),
 					'not_found_in_trash' => __( 'No organiser pages found in trash.', 'vandrekalender-events' ),
+					// The overview's title and its breadcrumb item.
+					'archives'           => __( 'Organisers', 'vandrekalender-events' ),
 				],
 				// 'custom-fields' lets the editor save the post meta below.
 				'supports'        => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields' ],
@@ -112,6 +125,14 @@ class Organiser {
 				'query_var'       => false,
 				'menu_icon'       => 'dashicons-groups',
 				'menu_position'   => 6,
+				// A new page starts from the section patterns; each section
+				// locks itself to its content (templateLock "contentOnly").
+				'template'        => array_map(
+					static function ( string $slug ): array {
+						return [ 'core/pattern', [ 'slug' => $slug ] ];
+					},
+					self::PATTERNS
+				),
 			]
 		);
 	}
@@ -154,23 +175,32 @@ class Organiser {
 
 	/**
 	 * Refuse to save an organiser post linked to a term that is not an
-	 * event_organiser term, or that another organiser post already has: one
-	 * page per organiser. The editor shows the error and keeps the post
-	 * unsaved.
+	 * event_organiser term, or that another organiser post already has (one
+	 * page per organiser), and to publish one without a term: the page would
+	 * have no walks. The editor shows the error and keeps the post unsaved.
 	 *
 	 * @param \stdClass        $prepared_post Post about to be saved.
 	 * @param \WP_REST_Request $request       The request.
 	 * @return \stdClass|\WP_Error
 	 */
-	public function reject_taken_term( $prepared_post, \WP_REST_Request $request ) {
-		$meta = $request->get_param( 'meta' );
+	public function validate_term( $prepared_post, \WP_REST_Request $request ) {
+		$post_id = (int) ( $prepared_post->ID ?? 0 );
+		$meta    = $request->get_param( 'meta' );
 
-		if ( ! is_array( $meta ) || ! isset( $meta[ self::META_TERM ] ) ) {
-			return $prepared_post;
-		}
+		// The editor only sends meta that changed, so fall back to the saved value.
+		$term_id = is_array( $meta ) && isset( $meta[ self::META_TERM ] )
+			? (int) $meta[ self::META_TERM ]
+			: ( $post_id ? (int) get_post_meta( $post_id, self::META_TERM, true ) : 0 );
+		$status  = $prepared_post->post_status ?? ( $post_id ? get_post_status( $post_id ) : 'draft' );
 
-		$term_id = (int) $meta[ self::META_TERM ];
 		if ( 0 === $term_id ) {
+			if ( self::needs_term( (string) $status ) ) {
+				return new \WP_Error(
+					'vandrekalender_organiser_term_missing',
+					__( 'Choose the organisation in the Organiser panel before publishing.', 'vandrekalender-events' ),
+					[ 'status' => 400 ]
+				);
+			}
 			return $prepared_post;
 		}
 
@@ -182,7 +212,7 @@ class Organiser {
 			);
 		}
 
-		$owner = self::post_with_term( $term_id, (int) ( $prepared_post->ID ?? 0 ), $this->linked_terms() );
+		$owner = self::post_with_term( $term_id, $post_id, $this->linked_terms() );
 		if ( $owner ) {
 			return new \WP_Error(
 				'vandrekalender_organiser_term_taken',
@@ -196,6 +226,17 @@ class Organiser {
 		}
 
 		return $prepared_post;
+	}
+
+	/**
+	 * Whether a post in this status must have a term: every status a visitor
+	 * can see, or will see without another save.
+	 *
+	 * @param string $status Post status.
+	 * @return bool
+	 */
+	public static function needs_term( string $status ): bool {
+		return in_array( $status, [ 'publish', 'future', 'private' ], true );
 	}
 
 	/**
@@ -299,6 +340,40 @@ class Organiser {
 		$post_id = $this->published_post_for_term( $term->term_id );
 
 		return $post_id ? (string) get_permalink( $post_id ) : self::calendar_url( $term->slug, home_url( '/' ) );
+	}
+
+	/**
+	 * The event_organiser term an organiser post is linked to, null when it
+	 * has none (a draft not linked yet) or the term was deleted.
+	 *
+	 * @param int $post_id Organiser post ID.
+	 * @return \WP_Term|null
+	 */
+	public static function term_for_post( int $post_id ): ?\WP_Term {
+		$term_id = (int) get_post_meta( $post_id, self::META_TERM, true );
+		$term    = $term_id ? get_term( $term_id, Event::TAX_ORGANISER ) : null;
+
+		return $term instanceof \WP_Term ? $term : null;
+	}
+
+	/**
+	 * Breadcrumbs on the organiser pages and the overview: "Kalender /
+	 * Arrangører / Name". The site's home is the calendar, so it is named
+	 * that rather than core's "Home".
+	 *
+	 * @param array<int,array<string,mixed>> $items Breadcrumb items, home first.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function filter_breadcrumbs( array $items ): array {
+		if ( ! is_singular( self::CUSTOMPOSTTYPE ) && ! is_post_type_archive( self::CUSTOMPOSTTYPE ) ) {
+			return $items;
+		}
+
+		if ( isset( $items[0]['url'] ) && untrailingslashit( $items[0]['url'] ) === untrailingslashit( home_url( '/' ) ) ) {
+			$items[0]['label'] = __( 'Calendar', 'vandrekalender-events' );
+		}
+
+		return $items;
 	}
 
 	/**

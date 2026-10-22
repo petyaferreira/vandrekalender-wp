@@ -67,10 +67,12 @@ It lazy-loads Leaflet and the `leaflet-gpx` plugin from cdnjs, draws one `L.GPX`
 
 A download link per route sits below the map.
 
+**Organiser page blocks** (`blocks/organiser-*`, used only in the organiser section patterns, hidden from the inserter). **Organiser Logo** renders the organiser page's featured image in a circle, or `Event::organiser_initials()` of the page title until there is one. **Official Organiser Badge** renders "Officiel arrangør" only when `organiser_official` is set; in the editor it shows faded otherwise. **Organiser Stats** and **Organiser Regions** render nothing yet (a placeholder in the editor): their numbers are step 5c of the [organisers plan](plans/organisers-plan.md), and they exist now so pages written before then already contain them.
+
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
 - `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.
-- `[vk_filtered_count]` — number of events matching the active filters. Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `build/resources/filtered-count/index.js`, built from `resources/filtered-count/index.js`).
+- `[vk_filtered_count]` — number of events matching the active filters, plus what the page pins (see [Filter Bar](#filter-bar)). Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `build/resources/filtered-count/index.js`, built from `resources/filtered-count/index.js`). The pinned filters reach the script in `data-presets`.
 
 ---
 
@@ -84,6 +86,7 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
 | `single-event.html` | Single event view. |
+| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Organiser::filter_breadcrumbs()`) and the post content. The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `index.html`, `taxonomy.html` | Archive fallbacks. |
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
@@ -104,7 +107,25 @@ The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk
 
 The URL is the single source of truth. `view.js` (a plain `viewScript`) reads the controls on every change, writes them to the query string with `history.replaceState`, and dispatches a bubbling `vk:filters-change` event on `document`. On load it fills the controls from the URL, so reloads and shared links keep their state. "Reset" clears everything. Event Cards, Event Calendar, Event Map and the `[vk_filtered_count]` shortcode listen for `vk:filters-change`; the server side reads the same params with `Vandrekalender_Event_Rest_Api::filters_from_query()`.
 
-With no date params the query is floored at today (upcoming events only); an explicit past range still works. On a region or length archive page, the Event Cards block pins that term regardless of the URL.
+With no date params the query is floored at today (upcoming events only); an explicit past range still works. Some pages pin a filter regardless of the URL, through `Vandrekalender_Event_Rest_Api::page_presets()`: a region or length archive its term, an organiser page its organiser. Event Cards, Event Calendar, Event Map and `[vk_filtered_count]` merge those presets over the URL's filters. On an organiser page the organiser select is left out. An organiser page without an organiser (a draft) pins `NO_ORGANISER`, which matches no walk, so it never shows every walk as its own.
+
+With no filters from the visitor and nothing upcoming, Event Cards says "Der er ingen kommende ture lige nu." instead of "no walks match your filters".
+
+---
+
+## Organiser Page
+
+`/arrangoerer/<slug>/`, a post of the `organiser` post type ([data-model.md](data-model.md#custom-post-type-organiser), [decision 0008](decisions/0008-organiser-pages-as-post-type.md)), design in `docs/design/organiser-page/`. A new page starts from five theme patterns (`Organiser::PATTERNS`, the post type's `template`), top to bottom:
+
+| Pattern | Content |
+|---|---|
+| `organiser-hero` | Organiser Logo, Official Organiser Badge, the post title as H1, the excerpt as the short description (write one: without it WordPress cuts one from the page's text), and a "Besøg hjemmeside" button whose link the editor sets |
+| `organiser-stats` | "Arrangøren i tal" and Organiser Stats |
+| `organiser-walks` | "Kommende ture" with `[vk_filtered_count]`, the filter bar, and the list, calendar and map tabs (list first). Anchor `#kommende-ture` |
+| `organiser-about` | Two columns: "Om arrangøren" heading (renamed per organiser), text and an image, then "Ture i hele landet" with Organiser Regions |
+| `organiser-faq` | "Ofte stillede spørgsmål" and a core Accordion, starting with two questions that fit every organiser |
+
+Each pattern's outer group has `templateLock: "contentOnly"`: texts, images, links and FAQ questions can be changed and added, the sections and their order cannot. The patterns are in the theme, the post type's `template` names them from the plugin; it only applies to a new page, so changing a pattern does not change pages already written. Styles: `.vk-organiser-page` and `.vk-organiser-hero` in the theme's `screen.scss`, the logo and badge in their blocks.
 
 ---
 
