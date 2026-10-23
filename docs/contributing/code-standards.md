@@ -1,7 +1,7 @@
 # Code standards
 
 ```bash
-./validate.sh         # the one check: CLAUDE.md size, PHPCS, Prettier, unit tests, theme + plugin build
+./validate.sh         # the one check: PHP/Node versions, CLAUDE.md size, Dependabot coverage, PHPCS, Prettier, unit tests, theme + plugin build
 ./vendor/bin/phpunit  # unit tests only (tests.md)
 composer run phpcs    # PHPCS only
 composer run phpcbf   # auto-fix PHP
