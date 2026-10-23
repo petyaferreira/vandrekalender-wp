@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T12:29:24+00:00\n"
+"POT-Creation-Date: 2026-10-23T12:37:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -246,8 +246,11 @@ msgid "Route"
 msgstr ""
 
 #. translators: %s: distance in kilometres
+#. translators: %s: route distance in km.
 #: blocks/event-info-card/render.php:123
+#: blocks/organiser-stats/render.php:31
 #: build/blocks/event-info-card/render.php:123
+#: build/blocks/organiser-stats/render.php:31
 #, php-format
 msgid "%s km"
 msgstr ""
@@ -466,35 +469,33 @@ msgid_plural "%s walks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/organiser-stats/render.php:24
-#: build/blocks/organiser-stats/render.php:24
-msgid "upcoming walk"
-msgid_plural "upcoming walks"
-msgstr[0] ""
-msgstr[1] ""
+#: blocks/organiser-stats/render.php:22
+#: build/blocks/organiser-stats/render.php:22
+msgid "Upcoming walks"
+msgstr ""
 
-#: blocks/organiser-stats/render.php:28
-#: build/blocks/organiser-stats/render.php:28
-msgid "region"
-msgid_plural "regions"
-msgstr[0] ""
-msgstr[1] ""
+#: blocks/organiser-stats/render.php:23
+#: build/blocks/organiser-stats/render.php:23
+#: includes/event/class-event.php:695
+#: includes/event/class-event.php:703
+msgid "Regions"
+msgstr ""
 
-#: blocks/organiser-stats/render.php:37
-#: build/blocks/organiser-stats/render.php:37
-msgid "km"
+#: blocks/organiser-stats/render.php:29
+#: build/blocks/organiser-stats/render.php:29
+msgid "Distances"
 msgstr ""
 
 #. translators: 1: shortest route in km, 2: longest route in km.
-#: blocks/organiser-stats/render.php:41
-#: build/blocks/organiser-stats/render.php:41
+#: blocks/organiser-stats/render.php:33
+#: build/blocks/organiser-stats/render.php:33
 #, php-format
-msgid "%1$s to %2$s"
+msgid "%1$s–%2$s km"
 msgstr ""
 
-#: blocks/organiser-stats/render.php:42
-#: build/blocks/organiser-stats/render.php:42
-msgid "km, shortest to longest walk"
+#: blocks/organiser-stats/render.php:36
+#: build/blocks/organiser-stats/render.php:36
+msgid "The organiser in numbers"
 msgstr ""
 
 #: blocks/slider/render.php:71
@@ -1121,11 +1122,6 @@ msgstr ""
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:695
-#: includes/event/class-event.php:703
-msgid "Regions"
-msgstr ""
-
 #: includes/event/class-event.php:697
 msgid "Search Regions"
 msgstr ""
@@ -1181,7 +1177,7 @@ msgstr ""
 
 #: includes/event/class-event.php:766
 #: includes/event/class-event.php:774
-#: includes/organiser/class-organiser.php:110
+#: includes/organiser/class-organiser.php:109
 msgid "Organisers"
 msgstr ""
 
@@ -1210,62 +1206,62 @@ msgstr ""
 msgid "New Organiser Name"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:98
-#: includes/organiser/class-organiser.php:100
+#: includes/organiser/class-organiser.php:97
+#: includes/organiser/class-organiser.php:99
 msgid "Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:99
+#: includes/organiser/class-organiser.php:98
 msgid "Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:101
+#: includes/organiser/class-organiser.php:100
 msgid "Add New Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:102
+#: includes/organiser/class-organiser.php:101
 msgid "Edit Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:103
+#: includes/organiser/class-organiser.php:102
 msgid "View Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:104
+#: includes/organiser/class-organiser.php:103
 msgid "View Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:105
+#: includes/organiser/class-organiser.php:104
 msgid "All Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:106
+#: includes/organiser/class-organiser.php:105
 msgid "Search Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:107
+#: includes/organiser/class-organiser.php:106
 msgid "No organiser pages found."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:108
+#: includes/organiser/class-organiser.php:107
 msgid "No organiser pages found in trash."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:201
+#: includes/organiser/class-organiser.php:200
 msgid "Choose the organisation in the Organiser panel before publishing."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:211
+#: includes/organiser/class-organiser.php:210
 msgid "This organiser does not exist."
 msgstr ""
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:222
+#: includes/organiser/class-organiser.php:221
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:383
+#: includes/organiser/class-organiser.php:382
 msgid "Calendar"
 msgstr ""
 

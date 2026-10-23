@@ -1,22 +1,17 @@
-// Round logo in the organiser page's hero (docs/design/organiser-page/):
-// 72px on mobile, 140px from 600px. The initials fill in until there is a
-// featured image.
+// Round logo in the organiser page's hero
+// (docs/design/organiser-page/arrangoer-header-1b.html): 88px. The initials
+// fill in until there is a featured image.
 .vk-organiser-logo {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   overflow: hidden;
   border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
   border-radius: 50%;
   background: var(--wp--preset--color--cream, #faf5ec);
-
-  @media (min-width: 600px) {
-    width: 140px;
-    height: 140px;
-  }
 
   &__image {
     width: 100%;
@@ -27,11 +22,7 @@
   &__initials {
     color: var(--wp--preset--color--forest, #2d5f3f);
     font-family: var(--wp--preset--font-family--newsreader, serif);
-    font-size: var(--wp--preset--font-size--extra-large, 1.5rem);
+    font-size: 2rem;
     font-weight: 300;
-
-    @media (min-width: 600px) {
-      font-size: var(--wp--preset--font-size--3-extra-large, 2.5rem);
-    }
   }
 }
