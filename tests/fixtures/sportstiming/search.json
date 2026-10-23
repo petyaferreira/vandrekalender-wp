@@ -1,0 +1,59 @@
+{
+ "TotalResults": 19,
+ "Events": [
+  {
+   "Date": "2026-10-25",
+   "GroupTitle": "Denne uge",
+   "Name": "Lundhags EventyrHike Svanninge Bakker 2026",
+   "EventTypeIcon": "/images/eventtypes/ico_hike_256.png?v2",
+   "EventTypeName": "Hike",
+   "Location": "Faaborg",
+   "LinkEvent": "/event/17385",
+   "LinkResults": "/event/17385/results",
+   "RegStatus": 2
+  },
+  {
+   "Date": "2026-11-01",
+   "GroupTitle": "Næste uge",
+   "Name": "Egeskovløbet 2026",
+   "EventTypeIcon": "/images/eventtypes/ico_run_256.png?v2",
+   "EventTypeName": "Løb, Walk",
+   "Location": "Bjerringbro",
+   "LinkEvent": "/event/19426",
+   "LinkResults": "/event/19426/results",
+   "RegStatus": 2
+  },
+  {
+   "Date": "2027-05-07",
+   "GroupTitle": "Maj 2027",
+   "Name": "Long Lonely Wolf Walk 2027",
+   "EventTypeIcon": "/images/eventtypes/ico_walk_256.png?v2",
+   "EventTypeName": "Walk",
+   "Location": "Roslev",
+   "LinkEvent": "/event/18672",
+   "LinkResults": "/event/18672/results",
+   "RegStatus": 2
+  },
+  {
+   "Date": "2027-05-08",
+   "GroupTitle": "Maj 2027",
+   "Name": "Long Lonely Wolf Walk 2027",
+   "EventTypeIcon": "/images/eventtypes/ico_walk_256.png?v2",
+   "EventTypeName": "Walk",
+   "Location": "Roslev",
+   "LinkEvent": "/event/18672",
+   "LinkResults": "/event/18672/results",
+   "RegStatus": 2
+  },
+  {
+   "Date": "2027-06-12",
+   "GroupTitle": "Juni 2027",
+   "Name": "Vandretur På Jyske Ås - Klokkerholm - Østervrå",
+   "EventTypeIcon": "/images/eventtypes/ico_hike_256.png?v2",
+   "EventTypeName": "Hike",
+   "LinkEvent": "/event/19811",
+   "LinkResults": "/event/19811/results",
+   "RegStatus": 2
+  }
+ ]
+}
