@@ -275,7 +275,9 @@ Recurring occurrences are deduplicated differently instead, without touching pub
 - **Old `/event/` base.** `Vandrekalender_Legacy_Event_Urls` 301-redirects the pre-Polylang `/event/{slug}/` URLs (still indexed, still hit) to the current `/begivenhed/{slug}/` permalink; a second hop into the redirect above is expected and fine.
 - **Restoring what the old sweep already drafted.** `wp vandrekalender restore-past-drafts [--dry-run]` republishes scraped, unclaimed drafts the old cleanup created — distinguished from a draft caused by the removal sweep above (`event_date` on or after `post_modified` means cancelled at the source, left alone) by `event_date` being at least 6 days before `post_modified` (the cleanup ran 7+ days after the event). It publishes with `wp_update_post` and verifies `post_name` didn't change.
 
-Tombstones (not re-creating admin-deleted events) are not built ([#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36)). Deleting events older than ~12 months and answering 410 Gone is not built either ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
+**Known limitation: an admin can't remove a scraped event for good** while the source still lists it. `upsert_event()` finds events by source URL with `post_status => 'any'`, which leaves out trashed posts, and it always writes `post_status => 'publish'`. So on the next scrape a Draft event is published again, a permanently deleted one is created again, and a trashed one comes back as a new duplicate (the trashed copy stays in Trash). Only claimed events are left alone. No event has needed removing so far, so tombstones (a list of dismissed source URLs) are not built. If this becomes a problem, reopen [#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36), which has the analysis and the open question about admin drafts versus drafts from the removal sweep.
+
+Deleting events older than ~12 months and answering 410 Gone is not built either ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
 
 > Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim flow ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)).
 
@@ -300,10 +302,6 @@ Trigger manually:
 ## Not Built Yet
 
 None of the following exists in code yet. Open work is tracked as GitHub issues; this section keeps the design notes and decisions.
-
-### Tombstones
-
-Events deleted by an admin should not be re-created on the next scrape. Maintain a tombstone list of dismissed source URLs that `upsert_event()` checks before inserting. Tracked in [#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36).
 
 ### Admin scraping dashboard
 
