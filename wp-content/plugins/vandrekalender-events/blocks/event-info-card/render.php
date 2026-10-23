@@ -40,6 +40,7 @@ $vk_address       = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ADDR
 $vk_source_url    = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_SOURCE_URL, true );
 $vk_organiser_url = get_post_meta( $vk_post_id, \Vandrekalender\Event::META_ORGANISER_URL, true );
 
+$vk_is_past  = \Vandrekalender\Event::is_past_date( (string) $vk_date );
 $vk_book_url = $vk_source_url ? $vk_source_url : $vk_organiser_url;
 $vk_place    = $vk_place_name ? $vk_place_name : $vk_municipality;
 $vk_place    = $vk_place ? $vk_place : \Vandrekalender\Event::coordinates_label( $vk_post_id );
@@ -278,6 +279,8 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 		<p class="vk-info-card__organiser">
 			<?php esc_html_e( 'You are the organiser of this walk', 'vandrekalender-events' ); ?>
 		</p>
+	<?php elseif ( $vk_is_past ) : ?>
+		<p class="vk-info-card__note"><?php esc_html_e( 'This walk has taken place.', 'vandrekalender-events' ); ?></p>
 	<?php elseif ( $vk_joinable ) : ?>
 		<form
 			class="vk-info-card__join"
