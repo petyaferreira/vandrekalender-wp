@@ -9,6 +9,6 @@
         "build": "wp-scripts build"
     },
     "devDependencies": {
-        "@wordpress/scripts": "^36.1.0"
+        "@wordpress/scripts": "^37.0.0"
     }
 }
