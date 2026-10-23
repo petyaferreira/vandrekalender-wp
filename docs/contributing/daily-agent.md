@@ -9,8 +9,18 @@ A Claude Code scheduled cloud agent runs every day at 22:00 (Europe/Copenhagen).
 1. **Pick one issue.** Only an open issue with the `agent-ready` label, without `needs-decision`, and without an open PR for it. Take the lowest issue number (the oldest), not the board order: the sandbox blocks GitHub's GraphQL API, so `gh project`, `gh issue list` and `gh pr list` fail there. Use the REST API instead: `gh api 'repos/petyaferreira/vandrekalender-wp/issues?labels=agent-ready&state=open&sort=created&direction=asc&per_page=100'` (skip entries with `pull_request`, they are PRs). Then `gh api 'repos/petyaferreira/vandrekalender-wp/pulls?state=open&per_page=100'` and check each PR's `body` and `head.ref` for the issue number (`#<n>`, `Closes #<n>`, or `<n>` in the branch name); if one matches, skip that issue. Only Petya adds `agent-ready`; never add it yourself.
 2. **Nothing to pick: stop.** Do not look for other work.
 3. **Read the issue** (`gh issue view <n>`). If it is unclear, or bigger than one small PR, comment on the issue with the question or a proposed split, remove `agent-ready`, and stop.
-4. **Do the work** as in [tasks-and-issues.md](tasks-and-issues.md) and [pull-requests.md](pull-requests.md): branch from `main`, only what the issue asks, `./validate.sh`, a PR that says `Closes #<n>`. Skip moving the board card to In Progress: `gh project item-edit` is GraphQL and fails in the sandbox. Wherever a `gh` command fails with the GraphQL error, use the `gh api` REST call instead.
-5. **Review loop, at most two rounds.** Wait for the checks (`gh pr checks <PR> --watch`), read the review, fix what is right. If Validate or the review is still not green after two rounds, comment on the PR what is blocking and stop.
+4. **Do the work** as in [tasks-and-issues.md](tasks-and-issues.md) and [pull-requests.md](pull-requests.md): branch from `main`, only what the issue asks plus its [cleanup](../principles/cleanup.md), `./validate.sh`, a PR that says `Closes #<n>`. Cleanup: before opening the PR, `git grep` the old names the change replaces and fix every hit. #115 replaced the `vandrekalender.dk` domain in one table and left it in README and three docs. Skip moving the board card to In Progress: `gh project item-edit` is GraphQL and fails in the sandbox. Wherever a `gh` command fails with the GraphQL error, use the `gh api` REST call instead.
+5. **Review loop, at most two rounds.** `gh pr checks` and `gh pr view` are GraphQL and fail here; use these:
+
+   ```bash
+   R=repos/petyaferreira/vandrekalender-wp
+   SHA=$(gh api $R/pulls/<PR> --jq .head.sha)
+   gh api $R/commits/$SHA/check-runs --jq '.check_runs[] | "\(.name) \(.status) \(.conclusion)"'
+   gh api --paginate $R/issues/<PR>/comments --jq '.[] | select(.user.login == "claude[bot]") | .body'
+   gh api --paginate $R/pulls/<PR>/comments --jq '.[] | "\(.path):\(.line) \(.body)"'
+   ```
+
+   Run the check-runs call every minute until `Validate` and `claude-review` are `completed`, then read the last review summary and the inline comments. The review is done only when the summary ends with `Verdict: no findings`. The `claude-review` check passes whatever the verdict says: #115 stopped at a green check with `Verdict: changes requested`. Otherwise fix what is right, push, and check again. After two rounds without `no findings`, comment on the PR what is blocking and stop. Every run ends with a merge or a PR comment that says why not.
 6. **Merge or hand over.** Low risk (`./pr-risk.sh <PR>`): run `./merge-low-risk.sh <PR>`. Medium or high: leave the PR for Petya.
 
 One issue per run, even when it finished early. In the cloud there is no Docker stack: say in the PR that the change was not tested on the local stack.

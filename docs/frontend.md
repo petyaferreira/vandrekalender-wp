@@ -8,16 +8,16 @@ Design references: [design/](design/index.md).
 
 ## Where frontend code lives (plugin)
 
-One rule: **code that needs compiling goes through the build; static files ship as-is.**
+One rule: **our own JS and CSS goes through the build.** Its version is then the build's content hash (`index.asset.php`), so a changed file gets a new URL after a deploy and browsers don't keep a cached old copy.
 
 | Folder | What | Build? |
 |---|---|---|
 | `blocks/` | Gutenberg block sources (block.json, edit.js, view.js, style.scss) | Yes → `build/blocks/`, registered from there |
-| `resources/` | Non-block editor scripts that import `@wordpress/*` packages (e.g. event-meta-fields sidebar) | Yes → `build/resources/` |
-| `assets/` | Plain dependency-free JS/CSS served directly (e.g. `assets/js/filtered-count-view.js`) | No — enqueued as-is, committed to git |
+| `resources/` | Non-block scripts: the editor sidebars (event-meta-fields, organiser-fields) and the `[vk_filtered_count]` frontend script (filtered-count). Each one is an entry in `build:resources` and `start:resources` in `package.json` | Yes → `build/resources/`, registered from there with the version in its `index.asset.php` |
+| `assets/` | Third-party libraries (`assets/vendor/swiper/`) and media (`assets/video/`), served as-is | No. A library is registered with its own version number (Swiper `'12.0.3'`); change it when the library is upgraded |
 | `build/` | Compiled output. Gitignored — CI builds it on deploy. Never edit by hand | — |
 
-If a file in `assets/` ever starts importing `@wordpress/*` packages or needs JSX, move it into `resources/` and wire it into `build:resources`.
+A new script of our own goes in `blocks/` or `resources/`, never in `assets/` ([decision 0009](decisions/0009-assets-versioned-by-build.md)).
 
 ---
 
@@ -67,10 +67,12 @@ It lazy-loads Leaflet and the `leaflet-gpx` plugin with a dynamic `import()` of 
 
 A download link per route sits below the map.
 
+**Organiser page blocks** (`blocks/organiser-*`, used only in the organiser section patterns, hidden from the inserter). **Organiser Logo** renders the organiser page's featured image in a circle, or `Event::organiser_initials()` of the page title until there is one. **Official Organiser Badge** renders "Officiel arrangør" only when `organiser_official` is set; in the editor it shows faded otherwise. **Organiser Stats** and **Organiser Regions** render nothing yet (a placeholder in the editor): their numbers are step 5c of the [organisers plan](plans/organisers-plan.md), and they exist now so pages written before then already contain them.
+
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
 - `[vk_upcoming_count]` — number of upcoming events (event date ≥ today). Static — never reacts to the filter bar. Used on the cover hero.
-- `[vk_filtered_count]` — number of events matching the active filters. Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `assets/js/filtered-count-view.js`).
+- `[vk_filtered_count]` — number of events matching the active filters, plus what the page pins (see [Filter Bar](#filter-bar)). Server-renders the initial count from the URL params, then updates live via `GET /vandrekalender/v1/events/count` whenever the Event Filters block broadcasts `vk:filters-change` (enqueues `build/resources/filtered-count/index.js`, built from `resources/filtered-count/index.js`). The pinned filters reach the script in `data-presets`.
 
 ---
 
@@ -84,6 +86,7 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
 | `single-event.html` | Single event view. |
+| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Organiser::filter_breadcrumbs()`) and the post content. The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `index.html`, `taxonomy.html` | Archive fallbacks. |
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
@@ -104,7 +107,25 @@ The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk
 
 The URL is the single source of truth. `view.js` (a plain `viewScript`) reads the controls on every change, writes them to the query string with `history.replaceState`, and dispatches a bubbling `vk:filters-change` event on `document`. On load it fills the controls from the URL, so reloads and shared links keep their state. "Reset" clears everything. Event Cards, Event Calendar, Event Map and the `[vk_filtered_count]` shortcode listen for `vk:filters-change`; the server side reads the same params with `Vandrekalender_Event_Rest_Api::filters_from_query()`.
 
-With no date params the query is floored at today (upcoming events only); an explicit past range still works. On a region or length archive page, the Event Cards block pins that term regardless of the URL.
+With no date params the query is floored at today (upcoming events only); an explicit past range still works. Some pages pin a filter regardless of the URL, through `Vandrekalender_Event_Rest_Api::page_presets()`: a region or length archive its term, an organiser page its organiser. Event Cards, Event Calendar, Event Map and `[vk_filtered_count]` merge those presets over the URL's filters. On an organiser page the organiser select is left out. An organiser page without an organiser (a draft) pins `NO_ORGANISER`, which matches no walk, so it never shows every walk as its own.
+
+With no filters from the visitor and nothing upcoming, Event Cards says "Der er ingen kommende ture lige nu." instead of "no walks match your filters".
+
+---
+
+## Organiser Page
+
+`/arrangoerer/<slug>/`, a post of the `organiser` post type ([data-model.md](data-model.md#custom-post-type-organiser), [decision 0008](decisions/0008-organiser-pages-as-post-type.md)), design in `docs/design/organiser-page/`. A new page starts from five theme patterns (`Organiser::PATTERNS`, the post type's `template`), top to bottom:
+
+| Pattern | Content |
+|---|---|
+| `organiser-hero` | Organiser Logo, Official Organiser Badge, the post title as H1, the excerpt as the short description (write one: without it WordPress cuts one from the page's text), and a "Besøg hjemmeside" button whose link the editor sets |
+| `organiser-stats` | "Arrangøren i tal" and Organiser Stats |
+| `organiser-walks` | "Kommende ture" with `[vk_filtered_count]`, the filter bar, and the list, calendar and map tabs (list first). Anchor `#kommende-ture` |
+| `organiser-about` | Two columns: "Om arrangøren" heading (renamed per organiser), text and an image, then "Ture i hele landet" with Organiser Regions |
+| `organiser-faq` | "Ofte stillede spørgsmål" and a core Accordion, starting with two questions that fit every organiser |
+
+Each pattern's outer group has `templateLock: "contentOnly"`: texts, images, links and FAQ questions can be changed and added, the sections and their order cannot. The patterns are in the theme, the post type's `template` names them from the plugin; it only applies to a new page, so changing a pattern does not change pages already written. Styles: `.vk-organiser-page` and `.vk-organiser-hero` in the theme's `screen.scss`, the logo and badge in their blocks.
 
 ---
 
@@ -118,6 +139,6 @@ One `<li class="vk-card">` per event, rendered by the Event Cards block, the who
 
 `single-event.html` is the header part, then `<main>` with the title (wide), and two columns: a 66% column with the excerpt, featured image, post content and the **Event Route Map**; a 34% column with the **Event Info Card**. The info card's route tabs switch the price and times and tell the route map which track to show (`vk:route-change`); both are described under Blocks above.
 
-**Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on vandrekalender.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
+**Sign-up CTA.** One slot in one place — the bottom of the Event Info Card. An event created on allevandreture.dk gets "Jeg kommer" there (or "Du er arrangør af denne tur" if you created it); a scraped event gets "Book din plads" in the identical slot. See the Event Info Card block above.
 
 > `single-event.html` also exists as a **user customisation in the database** (`wp_template` post `single-event`). Editing the theme file alone changes nothing on a site that has one — the DB copy wins. Add new blocks in the Site Editor, or update both.

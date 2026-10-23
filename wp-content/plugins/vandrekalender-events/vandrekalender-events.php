@@ -31,6 +31,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-municipalities.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-utm-converter.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-wkt.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
@@ -43,6 +44,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-sports
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-dvl.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagverden.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser.php';
 
 new Vandrekalender_Roles();
 new Vandrekalender_Gpx_Uploads();
@@ -62,6 +64,7 @@ new Vandrekalender_Facebook_Importer();
  * Initialize classes.
  */
 \Vandrekalender\Event::instance();
+\Vandrekalender\Organiser::instance();
 
 /**
  * Inline upcoming-events counter for use inside paragraph text, where a block
@@ -83,16 +86,26 @@ add_shortcode(
 
 /**
  * Register (but don't enqueue) the filtered-count frontend script, so the
- * shortcode below can enqueue it only on pages that actually use it.
+ * shortcode below can enqueue it only on pages that actually use it. Its
+ * version is the build's content hash, so a changed file gets a new URL.
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
+		$asset_file = VANDREKALENDER_EVENTS_DIR . 'build/resources/filtered-count/index.asset.php';
+
+		if ( ! file_exists( $asset_file ) ) {
+			error_log( 'Vandrekalender: build/resources/filtered-count/ is missing, so [vk_filtered_count] does not update when filters change. Run npm run build in the plugin.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- must reach the server log on production.
+			return;
+		}
+
+		$asset = require $asset_file;
+
 		wp_register_script(
 			'vandrekalender-filtered-count',
-			VANDREKALENDER_EVENTS_URL . 'assets/js/filtered-count-view.js',
-			[],
-			VANDREKALENDER_EVENTS_VERSION,
+			VANDREKALENDER_EVENTS_URL . 'build/resources/filtered-count/index.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 	}
@@ -100,34 +113,24 @@ add_action(
 
 /**
  * Register Swiper styles and scripts. This is currently used by slider block.
+ * The version is Swiper's own; change it when the files in
+ * assets/vendor/swiper/ are upgraded.
  */
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		$css_rel = 'assets/vendor/swiper/swiper-bundle.min.css';
-		$js_rel  = 'assets/vendor/swiper/swiper-bundle.min.js';
-
-		$css_path = VANDREKALENDER_EVENTS_DIR . $css_rel;
-		$js_path  = VANDREKALENDER_EVENTS_DIR . $js_rel;
-
-		$css_url = VANDREKALENDER_EVENTS_URL . $css_rel;
-		$js_url  = VANDREKALENDER_EVENTS_URL . $js_rel;
-
-		$css_ver = file_exists( $css_path ) ? filemtime( $css_path ) : null;
-		$js_ver  = file_exists( $js_path ) ? filemtime( $js_path ) : null;
-
 		wp_register_style(
 			'swiper',
-			$css_url,
+			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.css',
 			[],
-			$css_ver
+			'12.0.3'
 		);
 
 		wp_register_script(
 			'swiper',
-			$js_url,
+			VANDREKALENDER_EVENTS_URL . 'assets/vendor/swiper/swiper-bundle.min.js',
 			[],
-			$js_ver,
+			'12.0.3',
 			true
 		);
 	}
@@ -144,15 +147,19 @@ add_action(
 add_shortcode(
 	'vk_filtered_count',
 	function () {
-		$count = Vandrekalender_Event_Rest_Api::count_events(
-			Vandrekalender_Event_Rest_Api::filters_from_query()
+		// Same pinned filters as the cards (an organiser page counts only its
+		// organiser's walks); the script merges them over the URL's.
+		$presets = Vandrekalender_Event_Rest_Api::page_presets();
+		$count   = Vandrekalender_Event_Rest_Api::count_events(
+			array_merge( Vandrekalender_Event_Rest_Api::filters_from_query(), $presets )
 		);
 
 		wp_enqueue_script( 'vandrekalender-filtered-count' );
 
 		return sprintf(
-			'<span class="vk-filtered-count" role="status" data-rest-url="%s">%s</span>',
+			'<span class="vk-filtered-count" role="status" data-rest-url="%s" data-presets="%s">%s</span>',
 			esc_attr( esc_url_raw( rest_url( 'vandrekalender/v1/events/count' ) ) ),
+			esc_attr( (string) wp_json_encode( (object) $presets ) ),
 			esc_html( number_format_i18n( $count ) )
 		);
 	}
@@ -276,10 +283,11 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					continue;
 				}
 
-				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)', $verb, $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'] ) );
+				WP_CLI::log( sprintf( '%s %d: %s → %s, %s (%s)%s', $verb, $post_id, $address, $geo['lat'], $geo['lng'], $geo['municipality'], $geo['approximate'] ? ', approximate' : '' ) );
 				if ( ! $dry_run ) {
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LAT, $geo['lat'] );
 					update_post_meta( $post_id, \Vandrekalender\Event::META_LNG, $geo['lng'] );
+					update_post_meta( $post_id, \Vandrekalender\Event::META_LOCATION_APPROXIMATE, $geo['approximate'] );
 					// '' would clear a municipality the post already has.
 					if ( '' !== $geo['municipality'] ) {
 						update_post_meta( $post_id, \Vandrekalender\Event::META_MUNICIPALITY, $geo['municipality'] );

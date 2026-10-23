@@ -34,7 +34,8 @@ $vk_upcoming_ids = get_posts(
 		]
 	)
 );
-$vk_organisers   = $vk_upcoming_ids ? wp_get_object_terms(
+// On an organiser's page the organiser is pinned, so there is nothing to pick.
+$vk_organisers = $vk_upcoming_ids && ! isset( Vandrekalender_Event_Rest_Api::page_presets()['organiser'] ) ? wp_get_object_terms(
 	$vk_upcoming_ids,
 	\Vandrekalender\Event::TAX_ORGANISER,
 	[
@@ -42,7 +43,7 @@ $vk_organisers   = $vk_upcoming_ids ? wp_get_object_terms(
 		'order'   => 'ASC',
 	]
 ) : [];
-$vk_organisers   = is_wp_error( $vk_organisers ) ? [] : $vk_organisers;
+$vk_organisers = is_wp_error( $vk_organisers ) ? [] : $vk_organisers;
 
 $vk_lengths = [
 	'kort'   => __( 'Short (0–10 km)', 'vandrekalender-events' ),

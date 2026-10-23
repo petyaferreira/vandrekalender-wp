@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/organiser-logo",
+    "title": "Organiser Logo",
+    "category": "widgets",
+    "description": "The organiser page's logo: its featured image, or the organiser's initials until it has one.",
+    "textdomain": "vandrekalender-events",
+    "usesContext": ["postId", "postType"],
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "inserter": false
+    }
+}

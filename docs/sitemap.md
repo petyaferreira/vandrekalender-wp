@@ -20,7 +20,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | `/begivenhed/[slug]` | Single event detail page | V1 |
 | `/om` | About page — site mission, how it works, membership info | V1 |
 | `/kontakt` | Contact form | V1 |
-| `/arrangoerer/[slug]` | Organiser page — all events of one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` | Live with the generic archive template (`taxonomy.html`); its own template is step 5 of [the organisers plan](plans/organisers-plan.md) |
+| `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>` | Template and sections live; the computed numbers are step 5c of [the organisers plan](plans/organisers-plan.md) |
 | `/privatlivspolitik` | Privacy policy (GDPR) | V1 |
 | `/vilkaar` | Terms of use | V1 |
 | `/cookies` | Cookie policy | V1 |
@@ -129,10 +129,10 @@ All three tabs update simultaneously when filters change.
 | User settings (profile page) | V1 |
 | Membership management (email domain match, admin assignment) | V1 |
 | Membership copy on `/om` and `/vilkaar` | V1 |
-| Organiser overview page (`/arrangoerer/`, all organisers) | Not built; step 5 of [the organisers plan](plans/organisers-plan.md) |
+| Organiser overview page (`/arrangoerer/`, all organisers) | The `organiser` post type archive exists with the default template; its own template is step 5d of [the organisers plan](plans/organisers-plan.md) |
 | Member invitations | V2 |
 | Custom admin/creator pages (beyond native WP) | V2+ |
 
 ---
 
-*vandrekalender.dk — Sitemap v1.0*
+*allevandreture.dk — Sitemap v1.0*

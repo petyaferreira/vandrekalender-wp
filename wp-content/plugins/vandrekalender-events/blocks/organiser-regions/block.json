@@ -1,0 +1,16 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/organiser-regions",
+    "title": "Organiser Regions",
+    "category": "widgets",
+    "description": "The regions where the organiser has upcoming walks, each linking to its walks there.",
+    "textdomain": "vandrekalender-events",
+    "usesContext": ["postId", "postType"],
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "inserter": false
+    }
+}

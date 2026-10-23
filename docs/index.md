@@ -31,24 +31,26 @@ wp-content/plugins/vandrekalender-events/
 ├── vandrekalender-events.php   ← plugin bootstrap
 ├── includes/
 │   ├── event/class-event.php   ← CPT, taxonomies, meta registration
+│   ├── organiser/class-organiser.php ← organiser page post type, term links
 │   ├── class-event-*.php       ← REST API, join flow, attendees, schema, sitemap, past events
 │   ├── class-scraper-*.php     ← scraper base (upsert), scheduler, log, alerts, admin
 │   ├── scrapers/               ← one class per source
 │   └── …                       ← geocoder, municipalities, roles, GPX uploads, Facebook importer
 ├── blocks/                     ← Gutenberg blocks → build/blocks
-├── resources/                  ← editor scripts (event meta fields) → build/resources
+├── resources/                  ← editor scripts (event and organiser page fields) and the filtered-count script → build/resources
 └── data/                       ← static data (municipalities.json)
 
 wp-content/themes/vandrekalender-theme/
 ├── theme.json                  ← design tokens
 ├── templates/, parts/          ← FSE page templates, header + footer
+├── patterns/                   ← block patterns, incl. the organiser page sections
 └── resources/                  ← theme JS/SCSS → public/
 
 tests/                          ← PHPUnit without WordPress (docs/contributing/tests.md)
 ├── wp-stubs.php                ← stand-ins for the WordPress functions the tests reach
 ├── fakes/                      ← fake geocoder, scrapers that read fixtures
 ├── fixtures/                   ← saved copies of source sites
-└── Scrapers/                   ← one test per scraper (DVL so far)
+└── Scrapers/                   ← one test per scraper (DVL, Mammut, Opdag Verden so far)
 
 .github/workflows/
 ├── ci.yml                      ← Validate on every push/PR; staging deploy on main after Validate

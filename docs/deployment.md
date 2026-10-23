@@ -80,8 +80,10 @@ Two gotchas when changing what gets stripped:
 | Environment | URL | How to deploy |
 |---|---|---|
 | Local | http://localhost:${WORDPRESS_PORT} | `./start.sh` |
-| Staging | https://staging.vandrekalender.dk | Push to `main` → GitHub Actions auto-deploys |
-| Production | https://vandrekalender.dk | GitHub Actions → workflow_dispatch → choose `production` |
+| Staging | https://staging.allevandreture.dk | Push to `main` → GitHub Actions auto-deploys |
+| Production | https://allevandreture.dk | GitHub Actions → workflow_dispatch → choose `production` |
+
+The old `vandrekalender.dk` and `staging.vandrekalender.dk` answer `301` to the new domains and are not environments any more. The move is described in [history/migration-to-allevandreture.md](history/migration-to-allevandreture.md).
 
 ---
 
@@ -310,12 +312,12 @@ Consequences worth knowing:
 
 **One OAuth client covers all three environments** — the same Client ID and
 Secret everywhere. What separates the environments is the redirect URI list on
-the client (Google Cloud console → Clients), which must contain exactly:
+the client (Google Cloud console → Clients), which must contain at least (the old vandrekalender.dk entries may stay until that domain is dropped):
 
 ```
 http://localhost:8080/wp-login.php
-https://staging.vandrekalender.dk/wp-login.php
-https://vandrekalender.dk/wp-login.php
+https://staging.allevandreture.dk/wp-login.php
+https://allevandreture.dk/wp-login.php
 ```
 
 Plus the matching **Authorized JavaScript origins** (scheme + host only, no
@@ -372,9 +374,11 @@ KDS token may stay browser-side is an open decision, see
 ## Datafordeler API key (all environments)
 
 The server-side reverse lookup (municipality and nearest address from
-coordinates, used for DVL events and pasted coordinates in the editor) calls
-Datafordeler's GraphQL API. The plugin reads the key **only** from the constant
-`VANDREKALENDER_DATAFORDELER_API_KEY`; there is no fallback in the code.
+coordinates, used for DVL events and pasted coordinates in the editor) and the
+geocoder's postcode fallback (the centre of a postcode area, when a scraped
+street is not in the register) call Datafordeler's GraphQL API. The plugin
+reads the key **only** from the constant `VANDREKALENDER_DATAFORDELER_API_KEY`;
+there is no fallback in the code.
 
 ```php
 define( 'VANDREKALENDER_DATAFORDELER_API_KEY', '…' );

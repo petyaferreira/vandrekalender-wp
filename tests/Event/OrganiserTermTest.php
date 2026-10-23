@@ -1,4 +1,4 @@
-<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
+<?php
 /**
  * Which event_organiser term a scraped event gets from its source (#32).
  *

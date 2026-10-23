@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-20T12:15:22+00:00\n"
+"POT-Creation-Date: 2026-10-22T07:43:14+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -34,141 +34,147 @@ msgstr "Indholdstype, blokke, REST API og scraping til Vandrekalender."
 msgid "Petya Ferreira"
 msgstr ""
 
-#: blocks/event-calendar/render.php:130
-#: build/blocks/event-calendar/render.php:130
+#: blocks/event-calendar/render.php:123
+#: build/blocks/event-calendar/render.php:123
 msgid "Mon"
 msgstr "Man"
 
-#: blocks/event-calendar/render.php:131
-#: build/blocks/event-calendar/render.php:131
+#: blocks/event-calendar/render.php:124
+#: build/blocks/event-calendar/render.php:124
 msgid "Tue"
 msgstr "Tir"
 
-#: blocks/event-calendar/render.php:132
-#: build/blocks/event-calendar/render.php:132
+#: blocks/event-calendar/render.php:125
+#: build/blocks/event-calendar/render.php:125
 msgid "Wed"
 msgstr "Ons"
 
-#: blocks/event-calendar/render.php:133
-#: build/blocks/event-calendar/render.php:133
+#: blocks/event-calendar/render.php:126
+#: build/blocks/event-calendar/render.php:126
 msgid "Thu"
 msgstr "Tor"
 
-#: blocks/event-calendar/render.php:134
-#: build/blocks/event-calendar/render.php:134
+#: blocks/event-calendar/render.php:127
+#: build/blocks/event-calendar/render.php:127
 msgid "Fri"
 msgstr "Fre"
 
-#: blocks/event-calendar/render.php:135
-#: build/blocks/event-calendar/render.php:135
+#: blocks/event-calendar/render.php:128
+#: build/blocks/event-calendar/render.php:128
 msgid "Sat"
 msgstr "Lør"
 
-#: blocks/event-calendar/render.php:136
-#: build/blocks/event-calendar/render.php:136
+#: blocks/event-calendar/render.php:129
+#: build/blocks/event-calendar/render.php:129
 msgid "Sun"
 msgstr "Søn"
 
-#: blocks/event-calendar/render.php:165
-#: build/blocks/event-calendar/render.php:165
+#: blocks/event-calendar/render.php:158
+#: build/blocks/event-calendar/render.php:158
 msgid "Previous month"
 msgstr "Forrige måned"
 
-#: blocks/event-calendar/render.php:174
-#: build/blocks/event-calendar/render.php:174
+#: blocks/event-calendar/render.php:167
+#: build/blocks/event-calendar/render.php:167
 msgid "Next month"
 msgstr "Næste måned"
 
 #. translators: 1: long date, 2: number of events.
-#: blocks/event-calendar/render.php:240
-#: build/blocks/event-calendar/render.php:240
+#: blocks/event-calendar/render.php:233
+#: build/blocks/event-calendar/render.php:233
 #, php-format
 msgid "%1$s — %2$d walk"
 msgid_plural "%1$s — %2$d walks"
 msgstr[0] "%1$s — %2$d vandretur"
 msgstr[1] "%1$s — %2$d vandreture"
 
-#: blocks/event-calendar/render.php:264 blocks/event-cards/render.php:107
-#: blocks/event-info-card/render.php:71 blocks/event-map/render.php:72
-#: build/blocks/event-calendar/render.php:264
-#: build/blocks/event-cards/render.php:107
+#: blocks/event-calendar/render.php:257 blocks/event-cards/render.php:110
+#: blocks/event-info-card/render.php:71 blocks/event-map/render.php:65
+#: build/blocks/event-calendar/render.php:257
+#: build/blocks/event-cards/render.php:110
 #: build/blocks/event-info-card/render.php:71
-#: build/blocks/event-map/render.php:72
+#: build/blocks/event-map/render.php:65
 msgid "Free"
 msgstr "Gratis"
 
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
-#: blocks/event-calendar/render.php:267 blocks/event-cards/render.php:110
-#: blocks/event-map/render.php:74 build/blocks/event-calendar/render.php:267
-#: build/blocks/event-cards/render.php:110 build/blocks/event-map/render.php:74
+#: blocks/event-calendar/render.php:260 blocks/event-cards/render.php:113
+#: blocks/event-map/render.php:67 build/blocks/event-calendar/render.php:260
+#: build/blocks/event-cards/render.php:113 build/blocks/event-map/render.php:67
 #, php-format
 msgid "from %d kr"
 msgstr "fra %d kr"
 
-#: blocks/event-cards/render.php:75 build/blocks/event-cards/render.php:75
+#: blocks/event-cards/render.php:74 build/blocks/event-cards/render.php:74
 msgid "No walks match your filters."
 msgstr "Ingen vandreture matcher dine filtre."
 
-#: blocks/event-cards/render.php:155 build/blocks/event-cards/render.php:155
+#: blocks/event-cards/render.php:75 build/blocks/event-cards/render.php:75
+msgid "There are no upcoming walks right now."
+msgstr "Der er ingen kommende ture lige nu."
+
+#: blocks/event-cards/render.php:158 build/blocks/event-cards/render.php:158
 msgid "Show more walks"
 msgstr "Vis flere vandreture"
 
-#: blocks/event-filters/render.php:48 build/blocks/event-filters/render.php:48
+#: blocks/event-filters/render.php:49 build/blocks/event-filters/render.php:49
 msgid "Short (0–10 km)"
 msgstr "Kort (0–10 km)"
 
-#: blocks/event-filters/render.php:49 build/blocks/event-filters/render.php:49
+#: blocks/event-filters/render.php:50 build/blocks/event-filters/render.php:50
 msgid "Medium (10–25 km)"
 msgstr "Mellem (10–25 km)"
 
-#: blocks/event-filters/render.php:50 build/blocks/event-filters/render.php:50
+#: blocks/event-filters/render.php:51 build/blocks/event-filters/render.php:51
 msgid "Long (25+ km)"
 msgstr "Lang (25+ km)"
 
-#: blocks/event-filters/render.php:55 build/blocks/event-filters/render.php:55
+#: blocks/event-filters/render.php:56 build/blocks/event-filters/render.php:56
 #: includes/event/class-event.php:696
 msgid "Region"
 msgstr "Region"
 
-#: blocks/event-filters/render.php:57 build/blocks/event-filters/render.php:57
+#: blocks/event-filters/render.php:58 build/blocks/event-filters/render.php:58
 msgid "All regions"
 msgstr "Alle regioner"
 
-#: blocks/event-filters/render.php:66 blocks/event-info-card/render.php:262
-#: build/blocks/event-filters/render.php:66
+#: blocks/event-filters/render.php:67 blocks/event-info-card/render.php:262
+#: build/blocks/event-filters/render.php:67
 #: build/blocks/event-info-card/render.php:262
 #: includes/event/class-event.php:767
 #: build/resources/event-meta-fields/index.js:1
+#: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
+#: resources/organiser-fields/index.js:29
 msgid "Organiser"
 msgstr "Arrangør"
 
-#: blocks/event-filters/render.php:68 build/blocks/event-filters/render.php:68
+#: blocks/event-filters/render.php:69 build/blocks/event-filters/render.php:69
 msgid "All organisers"
 msgstr "Alle arrangører"
 
-#: blocks/event-filters/render.php:77 blocks/event-filters/render.php:78
-#: build/blocks/event-filters/render.php:77
-#: build/blocks/event-filters/render.php:78 includes/event/class-event.php:731
+#: blocks/event-filters/render.php:78 blocks/event-filters/render.php:79
+#: build/blocks/event-filters/render.php:78
+#: build/blocks/event-filters/render.php:79 includes/event/class-event.php:731
 msgid "Length"
 msgstr "Længde"
 
-#: blocks/event-filters/render.php:89 build/blocks/event-filters/render.php:89
+#: blocks/event-filters/render.php:90 build/blocks/event-filters/render.php:90
 msgid "From date"
 msgstr "Fra dato"
 
-#: blocks/event-filters/render.php:94 build/blocks/event-filters/render.php:94
+#: blocks/event-filters/render.php:95 build/blocks/event-filters/render.php:95
 msgid "To date"
 msgstr "Til dato"
 
-#: blocks/event-filters/render.php:102
-#: build/blocks/event-filters/render.php:102
+#: blocks/event-filters/render.php:103
+#: build/blocks/event-filters/render.php:103
 msgid "Free only"
 msgstr "Kun gratis"
 
-#: blocks/event-filters/render.php:107
-#: build/blocks/event-filters/render.php:107
+#: blocks/event-filters/render.php:108
+#: build/blocks/event-filters/render.php:108
 msgid "Reset"
 msgstr "Nulstil"
 
@@ -316,32 +322,32 @@ msgstr "Book din plads"
 msgid "Registration is handled by the organiser"
 msgstr "Tilmelding sker via arrangørens side"
 
-#: blocks/event-map/render.php:75 build/blocks/event-map/render.php:75
+#: blocks/event-map/render.php:68 build/blocks/event-map/render.php:68
 msgid "See details"
 msgstr "Se detaljer"
 
-#: blocks/event-map/render.php:76 build/blocks/event-map/render.php:76
+#: blocks/event-map/render.php:69 build/blocks/event-map/render.php:69
 msgid "No walks with a location match your filters."
 msgstr "Ingen vandreture med placering matcher dine filtre."
 
-#: blocks/event-map/render.php:77 blocks/event-map/render.php:104
-#: build/blocks/event-map/render.php:77 build/blocks/event-map/render.php:104
+#: blocks/event-map/render.php:70 blocks/event-map/render.php:97
+#: build/blocks/event-map/render.php:70 build/blocks/event-map/render.php:97
 msgid "Loading map…"
 msgstr "Indlæser kort…"
 
-#: blocks/event-map/render.php:78 build/blocks/event-map/render.php:78
+#: blocks/event-map/render.php:71 build/blocks/event-map/render.php:71
 msgid "Could not load the map. Please try again."
 msgstr "Kunne ikke indlæse kortet. Prøv igen."
 
-#: blocks/event-map/render.php:79 build/blocks/event-map/render.php:79
+#: blocks/event-map/render.php:72 build/blocks/event-map/render.php:72
 msgid "The map could not be loaded."
 msgstr "Kortet kunne ikke indlæses."
 
-#: blocks/event-map/render.php:91 build/blocks/event-map/render.php:91
+#: blocks/event-map/render.php:84 build/blocks/event-map/render.php:84
 msgid "Map of walking events in Denmark"
 msgstr "Kort over vandreture i Danmark"
 
-#: blocks/event-map/render.php:103 build/blocks/event-map/render.php:103
+#: blocks/event-map/render.php:96 build/blocks/event-map/render.php:96
 msgid "Reset map"
 msgstr "Nulstil kort"
 
@@ -361,6 +367,14 @@ msgstr "Kort over rutens spor"
 #, php-format
 msgid "Download GPX (%s km)"
 msgstr "Download GPX (%s km)"
+
+#: blocks/organiser-badge/render.php:19
+#: build/blocks/organiser-badge/render.php:19 blocks/organiser-badge/edit.js:29
+#: build/blocks/organiser-badge/index.js:1
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:50
+msgid "Official organiser"
+msgstr "Officiel arrangør"
 
 #: blocks/slider/render.php:71 build/blocks/slider/render.php:71
 msgid "Slider navigation"
@@ -554,11 +568,11 @@ msgstr "Denne tur har fundet sted."
 msgid "Upcoming walks nearby"
 msgstr "Kommende vandreture i nærheden"
 
-#: includes/class-event-rest-api.php:134
+#: includes/class-event-rest-api.php:138
 msgid "Too many address lookups. Wait a few minutes and try again."
 msgstr "For mange adresseopslag. Vent et par minutter, og prøv igen."
 
-#: includes/class-event-rest-api.php:553
+#: includes/class-event-rest-api.php:612
 msgid "Event not found."
 msgstr "Begivenheden blev ikke fundet."
 
@@ -682,70 +696,94 @@ msgstr "Kilde"
 msgid "View on Facebook"
 msgstr "Se på Facebook"
 
-#: includes/class-geocoder.php:130
+#: includes/class-geocoder.php:143
 msgid "Address lookup returned no coordinates."
 msgstr "Adresseopslaget returnerede ingen koordinater."
 
 #. translators: %s: four-digit municipality code, e.g. 0101.
-#: includes/class-geocoder.php:140
+#: includes/class-geocoder.php:153
 #, php-format
 msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
 msgstr "Kommunekoden \"%s\" findes ikke i data/municipalities.json, så begivenheden får ingen region. Tilføj den til filen."
 
-#: includes/class-geocoder.php:178 includes/class-geocoder.php:665
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:208
+#, php-format
+msgid "Address \"%1$s\" was not found, and postcode %2$s has no area, so the event gets no pin."
+msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s har intet område, så begivenheden får ingen nål."
+
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:223
+#, php-format
+msgid "Address \"%1$s\" was not found and names no town to check postcode %2$s against, so the event gets no pin."
+msgstr "Adressen \"%1$s\" blev ikke fundet og nævner ingen by at holde postnummer %2$s op imod, så begivenheden får ingen nål."
+
+#. translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address.
+#: includes/class-geocoder.php:229
+#, php-format
+msgid "Address \"%1$s\" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin."
+msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s er %3$s, ikke %4$s, så begivenheden får ingen nål."
+
+#. translators: 1: address, 2: four-digit postcode.
+#: includes/class-geocoder.php:252
+#, php-format
+msgid "Street not found for \"%1$s\", so the pin is placed in the middle of postcode %2$s."
+msgstr "Vejen i \"%1$s\" blev ikke fundet, så nålen sættes midt i postnummer %2$s."
+
+#: includes/class-geocoder.php:305 includes/class-geocoder.php:792
 msgid "Address search returned an unexpected response."
 msgstr "Adressesøgningen returnerede et uventet svar."
 
-#: includes/class-geocoder.php:533
+#: includes/class-geocoder.php:660
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr "Datafordeler er ikke sat op (VANDREKALENDER_DATAFORDELER_API_KEY mangler), så der kunne ikke findes kommune eller adresse ud fra koordinater."
 
-#: includes/class-geocoder.php:537
+#: includes/class-geocoder.php:664
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr "Et opslag i Datafordeler blev sprunget over, fordi Datafordeler fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:559
+#: includes/class-geocoder.php:686
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr "Kaldet til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:572
+#: includes/class-geocoder.php:699
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr "Datafordeler afviste API-nøglen (udløbet, forkert eller oprettet for under 15 minutter siden). Se docs/deployment.md → Datafordeler API key."
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:580
+#: includes/class-geocoder.php:707
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr "Datafordeler returnerede HTTP %d."
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:593
+#: includes/class-geocoder.php:720
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr "Forespørgslen til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:594
+#: includes/class-geocoder.php:721
 msgid "unexpected response"
 msgstr "uventet svar"
 
-#: includes/class-geocoder.php:615
+#: includes/class-geocoder.php:742
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr "Adressesøgning er ikke sat op (VANDREKALENDER_ADRESSEVAELGER_TOKEN mangler), så ingen adresser blev geokodet."
 
-#: includes/class-geocoder.php:620
+#: includes/class-geocoder.php:747
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr "Et adresseopslag blev sprunget over, fordi adressesøgningen fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:640
+#: includes/class-geocoder.php:767
 #, php-format
 msgid "Address search request failed: %s"
 msgstr "Adressesøgningen fejlede: %s"
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:653
+#: includes/class-geocoder.php:780
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr "Adressesøgningen returnerede HTTP %d."
@@ -758,7 +796,7 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
-#: includes/class-roles.php:192
+#: includes/class-roles.php:210
 msgid "Event Author"
 msgstr "Turopretter"
 
@@ -1012,6 +1050,7 @@ msgid "New Length Name"
 msgstr "Navn på ny længde"
 
 #: includes/event/class-event.php:766 includes/event/class-event.php:774
+#: includes/organiser/class-organiser.php:109
 msgid "Organisers"
 msgstr "Arrangører"
 
@@ -1038,6 +1077,65 @@ msgstr "Tilføj ny arrangør"
 #: includes/event/class-event.php:773
 msgid "New Organiser Name"
 msgstr "Ny arrangørs navn"
+
+#: includes/organiser/class-organiser.php:97
+#: includes/organiser/class-organiser.php:99
+msgid "Organiser pages"
+msgstr "Arrangørsider"
+
+#: includes/organiser/class-organiser.php:98
+msgid "Organiser page"
+msgstr "Arrangørside"
+
+#: includes/organiser/class-organiser.php:100
+msgid "Add New Organiser page"
+msgstr "Tilføj ny arrangørside"
+
+#: includes/organiser/class-organiser.php:101
+msgid "Edit Organiser page"
+msgstr "Redigér arrangørside"
+
+#: includes/organiser/class-organiser.php:102
+msgid "View Organiser page"
+msgstr "Vis arrangørside"
+
+#: includes/organiser/class-organiser.php:103
+msgid "View Organiser pages"
+msgstr "Vis arrangørsider"
+
+#: includes/organiser/class-organiser.php:104
+msgid "All Organiser pages"
+msgstr "Alle arrangørsider"
+
+#: includes/organiser/class-organiser.php:105
+msgid "Search Organiser pages"
+msgstr "Søg i arrangørsider"
+
+#: includes/organiser/class-organiser.php:106
+msgid "No organiser pages found."
+msgstr "Ingen arrangørsider fundet."
+
+#: includes/organiser/class-organiser.php:107
+msgid "No organiser pages found in trash."
+msgstr "Ingen arrangørsider fundet i papirkurven."
+
+#: includes/organiser/class-organiser.php:200
+msgid "Choose the organisation in the Organiser panel before publishing."
+msgstr "Vælg organisationen i panelet Arrangør, før du udgiver."
+
+#: includes/organiser/class-organiser.php:210
+msgid "This organiser does not exist."
+msgstr "Denne arrangør findes ikke."
+
+#. translators: %s: title of the organiser page that already has the organiser
+#: includes/organiser/class-organiser.php:221
+#, php-format
+msgid "This organiser already has a page: \"%s\"."
+msgstr "Denne arrangør har allerede en side: \"%s\"."
+
+#: includes/organiser/class-organiser.php:373
+msgid "Calendar"
+msgstr "Kalender"
 
 #. translators: %s: trip title.
 #: includes/scrapers/class-scraper-opdagverden.php:152
@@ -1102,6 +1200,19 @@ msgstr "Hover-tekst"
 #: blocks/link-box/edit.js:97 build/blocks/link-box/index.js:1
 msgid "Hover background"
 msgstr "Hover-baggrund"
+
+#: blocks/organiser-badge/edit.js:22 build/blocks/organiser-badge/index.js:1
+msgid "Hidden on the page: the organiser is not marked as official (Organiser panel)."
+msgstr "Vises ikke på siden: arrangøren er ikke markeret som officiel (panelet Arrangør)."
+
+#: blocks/organiser-regions/edit.js:10
+#: build/blocks/organiser-regions/index.js:1
+msgid "Organiser regions: the regions with the organiser’s upcoming walks and their counts, each linking to the walks there."
+msgstr "Arrangørens regioner: regionerne med arrangørens kommende ture og antallet, hver med link til turene dér."
+
+#: blocks/organiser-stats/edit.js:10 build/blocks/organiser-stats/index.js:1
+msgid "Organiser stats: upcoming walks, regions and distances, computed from the organiser’s walks."
+msgstr "Arrangøren i tal: kommende ture, regioner og distancer, beregnet ud fra arrangørens ture."
 
 #: blocks/slider/edit.js:42 build/blocks/slider/index.js:1
 msgid "Slider settings"
@@ -1341,7 +1452,9 @@ msgid "Add route"
 msgstr "Tilføj rute"
 
 #: build/resources/event-meta-fields/index.js:1
+#: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:924
+#: resources/organiser-fields/index.js:34
 msgid "Organisation"
 msgstr "Organisation"
 
@@ -1385,6 +1498,16 @@ msgstr "Ny her?"
 #: resources/event-meta-fields/index.js:1062
 msgid "Watch the how-to video"
 msgstr "Se hvordan-videoen"
+
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:41
+msgid "The page shows this organisation’s walks. One page per organisation."
+msgstr "Siden viser denne organisations ture. Én side pr. organisation."
+
+#: build/resources/organiser-fields/index.js:1
+#: resources/organiser-fields/index.js:53
+msgid "Shows the “Officiel arrangør” badge on the page."
+msgstr "Viser mærket “Officiel arrangør” på siden."
 
 #: blocks/event-calendar/block.json build/blocks/event-calendar/block.json
 msgctxt "block title"
@@ -1455,6 +1578,48 @@ msgstr "Linkboks"
 msgctxt "block description"
 msgid "A container that turns all of its content into a single link. Don't place other links or buttons inside it."
 msgstr "En container, der gør hele sit indhold til ét link. Placér ikke andre links eller knapper i den."
+
+#: blocks/organiser-badge/block.json build/blocks/organiser-badge/block.json
+msgctxt "block title"
+msgid "Official Organiser Badge"
+msgstr "Mærket Officiel arrangør"
+
+#: blocks/organiser-badge/block.json build/blocks/organiser-badge/block.json
+msgctxt "block description"
+msgid "The \"Officiel arrangør\" badge, shown only when the organiser page is flagged as official."
+msgstr "Mærket \"Officiel arrangør\", som kun vises, når arrangørsiden er markeret som officiel."
+
+#: blocks/organiser-logo/block.json build/blocks/organiser-logo/block.json
+msgctxt "block title"
+msgid "Organiser Logo"
+msgstr "Arrangørlogo"
+
+#: blocks/organiser-logo/block.json build/blocks/organiser-logo/block.json
+msgctxt "block description"
+msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
+msgstr "Arrangørsidens logo: det fremhævede billede, eller arrangørens forbogstaver indtil der er et."
+
+#: blocks/organiser-regions/block.json
+#: build/blocks/organiser-regions/block.json
+msgctxt "block title"
+msgid "Organiser Regions"
+msgstr "Arrangørens regioner"
+
+#: blocks/organiser-regions/block.json
+#: build/blocks/organiser-regions/block.json
+msgctxt "block description"
+msgid "The regions where the organiser has upcoming walks, each linking to its walks there."
+msgstr "Regionerne hvor arrangøren har kommende ture, hver med link til turene dér."
+
+#: blocks/organiser-stats/block.json build/blocks/organiser-stats/block.json
+msgctxt "block title"
+msgid "Organiser Stats"
+msgstr "Arrangøren i tal"
+
+#: blocks/organiser-stats/block.json build/blocks/organiser-stats/block.json
+msgctxt "block description"
+msgid "The organiser's numbers, computed from its upcoming walks."
+msgstr "Arrangørens tal, beregnet ud fra de kommende ture."
 
 #: blocks/slider-slide/block.json build/blocks/slider-slide/block.json
 msgctxt "block title"

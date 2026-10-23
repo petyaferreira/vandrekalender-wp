@@ -1,4 +1,4 @@
-<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
+<?php
 /**
  * DVL scraper on saved copies of dvl.dk (tests/fixtures/dvl/, fetched
  * 2026-10-19): the maps feed, the Sæby tour (21 October, summer time) and the

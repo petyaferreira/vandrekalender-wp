@@ -117,7 +117,7 @@ cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import(
 | `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via Adressevælger search |
 | `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
 | `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
-| `event_location_approximate` | boolean | — | — | `true` when `event_lat`/`event_lng` only place the walk roughly: a scraper had no exact meeting point (Opdag Verden: a point on the route, or the centre of the region, see `docs/scrapers.md`). The map still shows the pin, but `Event::coordinates()` treats it as missing, so there is no "GPS …" label, directions go to the place name instead, and the JSON-LD has no `geo`. The editor sets it to `false` whenever someone sets the location by hand. Default `false` |
+| `event_location_approximate` | boolean | — | — | `true` when `event_lat`/`event_lng` only place the walk roughly: a scraper had no exact meeting point (Opdag Verden: a point on the route, or the centre of the region; Mammut and Sportstiming: the centre of the postcode area when the geocoder does not know the street; see `docs/scrapers.md`). The map still shows the pin, but `Event::coordinates()` treats it as missing, so there is no "GPS …" label, directions go to the place name instead, and the JSON-LD has no `geo`. The editor sets it to `false` whenever someone sets the location by hand. Default `false` |
 | `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from the picked address (code mapped through `data/municipalities.json`). Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
 
 ### Proximity Search (v2)
@@ -140,6 +140,10 @@ When a user searches "Valby", it is geocoded to coordinates, then a custom SQL h
 ### `event_organiser` Taxonomy
 
 One term per organisation (Dansk Vandrelaug, Mammutmarch, Opdag Verden). Built in [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32); see the Taxonomies section below.
+
+### `organiser` post type (the organiser's page)
+
+See [Custom Post Type: `organiser`](#custom-post-type-organiser).
 
 ### Post Meta
 
@@ -179,11 +183,29 @@ All scraping fields are admin only — never visible to event creators or the pu
 
 ---
 
+## Custom Post Type: `organiser`
+
+An organiser's public page, one per `event_organiser` term ([decision 0008](decisions/0008-organiser-pages-as-post-type.md)). Registered in `includes/organiser/class-organiser.php`.
+
+- **URL:** `/arrangoerer/<post-slug>/`; the post type archive `/arrangoerer/` is the overview. Not translated: Danish only.
+- **supports:** `title`, `editor`, `thumbnail` (the logo), `excerpt`, `revisions`, `custom-fields`
+- **show_in_rest:** `true`. `query_var` is `false`, so `?organiser=<slug>` stays the front page's filter and is not read as a request for an organiser post.
+- **Capabilities:** own set (`edit_organisers`, `publish_organisers`, …), granted to administrators only in `Vandrekalender_Roles`. Organisations editing their own page: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
+
+| Meta key | Type | Notes |
+|---|---|---|
+| `organiser_term` | int | The `event_organiser` term the page is about. Set in the editor's Organiser panel. Needed to publish (or schedule, or make private): without it the save fails with `vandrekalender_organiser_term_missing` (400); a draft can wait. One page per term: saving a second post with the same term (any status but trash) fails with `vandrekalender_organiser_term_taken` (409), an unknown term with `vandrekalender_organiser_term_invalid` (400). The check runs only on REST saves (the block editor), not on WP-CLI or `wp_insert_post()`, not when a trashed page is restored, and not atomically: two saves at the same moment can both pass. Enough while only admins edit; revisit in [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86). Admins only |
+| `organiser_official` | bool | Shows the "Officiel arrangør" badge. Admins only |
+
+**Links.** `get_term_link()` on an `event_organiser` term returns the published page linked to it, else `/?organiser=<term-slug>`. A request for `/arrangoerer/<slug>/` with no published page, where `<slug>` is a term slug, redirects (302, since a page may be published there later) to `/?organiser=<slug>`, so the term archive URLs from before the post type keep working.
+
+---
+
 ## Taxonomies
 
 ### `event_organiser`
 
-One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. Rewrite slug `arrangoerer`, so a term's archive is `/arrangoerer/<term-slug>/`. Shown as a column and a dropdown filter on the admin Events list.
+One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. No archive of its own (no rewrite, not publicly queryable): a term's link is its organiser page when one is published, else the front page filtered by it (`/?organiser=<term-slug>`); see [Organiser pages](#custom-post-type-organiser). Shown as a column and a dropdown filter on the admin Events list (the `event_organiser=<slug>` query var still works in wp-admin; front-end code queries with `tax_query`).
 
 - **Scraped events:** `upsert_event()` sets the term on every run from `event_source_name`, for the sources in `Event::ORGANISER_SOURCES` (the term has the source's name). Other sources get none: Sportstiming is a sign-up platform, not an organiser ([#88](https://github.com/petyaferreira/vandrekalender-wp/issues/88)). `wp vandrekalender backfill-organiser [--dry-run]` sets it on events scraped before the taxonomy existed, and lists manual and Facebook events without one.
 - **Other events:** only admins assign it (`assign_terms` needs `manage_categories`), in the **Organisation** field of the editor's Organiser panel (the default taxonomy panel is hidden). Organisations with members who share events: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
@@ -267,10 +289,10 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 {
   "id": 42,
   "title": "Mammutmarch",
-  "permalink": "https://vandrekalender.dk/begivenhed/mammutmarch",
+  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
   "date": "2026-06-20",
   "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://vandrekalender.dk/wp-content/uploads/mammutmarch.jpg",
+  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
   "place_name": "Gribskov Naturpark",
   "lat": 56.051,
   "lng": 12.301,
@@ -322,11 +344,11 @@ Returns full detail for a single event. Used by the event detail page.
 {
   "id": 42,
   "title": "Mammutmarch",
-  "permalink": "https://vandrekalender.dk/begivenhed/mammutmarch",
+  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
   "date": "2026-06-20",
   "content": "<p>Full description...</p>",
   "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://vandrekalender.dk/wp-content/uploads/mammutmarch.jpg",
+  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
   "place_name": "Gribskov Naturpark",
   "address": "Esrum Møllegård, Esrum Klostervej 14, 3230 Græsted",
   "lat": 56.051,
@@ -336,7 +358,7 @@ Returns full detail for a single event. Used by the event detail page.
   "region": "hovedstaden",
   "routes": [
     { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0, "gpx_id": "", "gpx_url": "" },
-    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://vandrekalender.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
+    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://allevandreture.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
   ],
   "organiser_name": "Mammutmarch",
   "organiser_url": "https://mammutmarch.dk",

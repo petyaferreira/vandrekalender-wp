@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/organiser-badge",
+    "title": "Official Organiser Badge",
+    "category": "widgets",
+    "description": "The \"Officiel arrangør\" badge, shown only when the organiser page is flagged as official.",
+    "textdomain": "vandrekalender-events",
+    "usesContext": ["postId", "postType"],
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "inserter": false
+    }
+}

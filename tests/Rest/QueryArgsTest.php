@@ -1,4 +1,4 @@
-<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
+<?php
 /**
  * How the filter bar's params become a WP_Query (#32).
  *

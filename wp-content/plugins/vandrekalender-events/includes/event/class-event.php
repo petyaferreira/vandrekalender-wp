@@ -762,7 +762,7 @@ class Event {
 			self::TAX_ORGANISER,
 			self::CUSTOMPOSTTYPE,
 			[
-				'labels'            => [
+				'labels'             => [
 					'name'          => __( 'Organisers', 'vandrekalender-events' ),
 					'singular_name' => __( 'Organiser', 'vandrekalender-events' ),
 					'search_items'  => __( 'Search Organisers', 'vandrekalender-events' ),
@@ -773,20 +773,20 @@ class Event {
 					'new_item_name' => __( 'New Organiser Name', 'vandrekalender-events' ),
 					'menu_name'     => __( 'Organisers', 'vandrekalender-events' ),
 				],
-				'hierarchical'      => false,
-				'public'            => true,
-				'show_in_rest'      => true,
-				'show_admin_column' => true,
-				'capabilities'      => [
+				'hierarchical'       => false,
+				'public'             => true,
+				'show_in_rest'       => true,
+				'show_admin_column'  => true,
+				'capabilities'       => [
 					'manage_terms' => 'manage_categories',
 					'edit_terms'   => 'manage_categories',
 					'delete_terms' => 'manage_categories',
 					'assign_terms' => 'manage_categories',
 				],
-				'rewrite'           => [
-					'slug'       => 'arrangoerer',
-					'with_front' => false,
-				],
+				// No archive of its own: a term links to its organiser page,
+				// or to the calendar filtered by it (Organiser::filter_term_link()).
+				'publicly_queryable' => false,
+				'rewrite'            => false,
 			]
 		);
 	}

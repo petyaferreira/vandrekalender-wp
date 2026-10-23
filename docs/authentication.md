@@ -50,7 +50,7 @@ The organizer is promoted from a free-text field to a real entity, implemented a
 
 - Each organization (DVL, Mammutmarch, …) is one taxonomy term.
 - Each event is attached to exactly one organizer term.
-- Taxonomy term archive pages provide the public `/arrangoerer/[slug]` profile pages for free.
+- The public `/arrangoerer/[slug]` page is not the term archive but a post of the `organiser` post type linked to the term ([decision 0008](decisions/0008-organiser-pages-as-post-type.md)). That post is what an organisation's members get to edit; today only administrators can.
 - Term meta `email_domain` stores the organization's email domain (e.g. `dvl.dk`).
 - The scraper seeds organizer terms automatically: when importing from `dvl.dk`, it creates/finds the DVL term and saves the domain extracted from `event_source_url`.
 
@@ -115,7 +115,7 @@ A user belongs to **at most one organization**. The `organizer_id` user meta is 
 
 An organization member is not forced to post everything under the organization's name. The block editor's **Organiser panel** gets a "Post as" toggle (stored as a meta field):
 
-- **Organization (default):** the event is attached to the user's organizer term. It appears in the shared list and on the organization's public `/arrangoerer/` page.
+- **Organization (default):** the event is attached to the user's organizer term. It appears in the shared list and on the organization's public page, `/arrangoerer/<slug>/` (not the `/arrangoerer/` overview).
 - **Private:** no organizer term is attached. The event behaves like a solo organizer's event: visible only to its author in wp-admin, displayed publicly under the person's own name.
 
 **Author-only rule:** the toggle is visible and editable only by the event's `post_author`. Without this rule, a colleague could flip someone's private walk into an organization event from the shared list.
@@ -261,4 +261,4 @@ When a scraped event is claimed (domain-matched token email, per DataModel v3), 
 
 ---
 
-*vandrekalender.dk — Authentication & Organization Architecture v1.1*
+*allevandreture.dk — Authentication & Organization Architecture v1.1*

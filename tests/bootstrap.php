@@ -16,11 +16,16 @@ require __DIR__ . '/../vendor/autoload.php';
 define( 'ABSPATH', __DIR__ . '/' );
 
 require __DIR__ . '/wp-stubs.php';
+require __DIR__ . '/class-wp-error.php';
 require __DIR__ . '/fakes/class-vandrekalender-geocoder.php';
 
-define( 'VANDREKALENDER_TEST_INCLUDES', __DIR__ . '/../wp-content/plugins/vandrekalender-events/includes' );
+define( 'VANDREKALENDER_EVENTS_DIR', __DIR__ . '/../wp-content/plugins/vandrekalender-events/' );
+define( 'VANDREKALENDER_TEST_INCLUDES', VANDREKALENDER_EVENTS_DIR . 'includes' );
 
 require VANDREKALENDER_TEST_INCLUDES . '/event/class-event.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-wkt.php';
+require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-municipalities.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-dvl.php';
@@ -29,3 +34,5 @@ require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-opdagverden.php'
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-sportstiming.php';
 
 require __DIR__ . '/fakes/class-test-scraper-dvl.php';
+require __DIR__ . '/fakes/class-test-scraper-mammut.php';
+require __DIR__ . '/fakes/class-test-scraper-opdagverden.php';

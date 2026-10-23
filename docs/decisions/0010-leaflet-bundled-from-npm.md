@@ -1,4 +1,4 @@
-# 0008: Leaflet and its plugins are bundled from npm, not loaded from a CDN
+# 0010: Leaflet and its plugins are bundled from npm, not loaded from a CDN
 
 Decided 8 October 2026 with Petya, done in [#31](https://github.com/petyaferreira/vandrekalender-wp/issues/31).
 
