@@ -236,7 +236,6 @@ When a scraped event is claimed (domain-matched token email, see [data-model.md]
 | Membership management copy on `/om` and `/vilkaar`, later a "For arrangører" page | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
 | Organizer claim flow attaching to organizer term | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
 | Member invitations | [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41) |
-| Self-service member management (candidate paid feature) | An idea, no issue yet; see [monetisation](business/monetisation.md) |
 
 ## Resolved Decisions Log
 

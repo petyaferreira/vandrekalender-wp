@@ -234,11 +234,6 @@ Auto-assigned on save from all `distance_km` values in `event_routes`. An event 
 | Medium | `medium` | 10–25 km |
 | Long | `long` | 25+ km |
 
-### Not built
-
-- `event_category` — activity type (Walking, Running, Cycling etc.). Not needed while all events are walking
-- `event_tags` — labels e.g. `dog-friendly`, `family-friendly`. Deferred until real user feedback indicates the need
-
 ---
 
 ## Filter Bar Summary
@@ -258,8 +253,6 @@ All filters for the frontend event listing. Each filter maps to either a meta fi
 | Field | Filter type | Notes |
 |---|---|---|
 | `event_lat` / `event_lng` | Proximity search | Find events within X km of a searched location. Requires haversine SQL query. [#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42) |
-| `event_municipality` | Dropdown | All Danish municipalities. More granular than region filter |
-| `event_tags` | Multi-select | e.g. dog-friendly, family-friendly |
 
 ---
 

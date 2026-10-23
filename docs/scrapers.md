@@ -48,13 +48,7 @@ The list below is grouped by type. **Built** in the notes marks a source that ha
 
 **No API: the paste-a-link importer.** The **Add from Facebook** admin screen (**Events → Add from Facebook**, `Vandrekalender_Facebook_Importer`) lets an admin paste public `facebook.com/events/…` URLs — one per line, up to 30 per batch. For each **new** URL the importer normalises it, deduplicates against `event_source_url`, fetches the page server-side, and prefills a **draft** event from its Open Graph tags — title, cover image, and (parsed out of Facebook's generated og:description sentence) the **event date**, **organiser name**, and **place name** where present — plus **one seeded empty route** (so the event surfaces in calendar views; the admin fills distance/time/price) — with `event_source = facebook` / `event_source_name = Facebook`. **Group-hosted events** (created inside a group rather than shared into it) are login-walled to *all* anonymous agents including Facebook's own crawler UA (verified 2026-07-03) — those import as empty drafts with only the source URL, to be filled in manually from the browser. The page fetch uses the plain `Vandrekalender/1.0` user-agent (Facebook rejects spoofed browser UAs with HTTP 400 but serves link-preview data to simple ones); the cover image lives on Facebook's lookaside crawler-media endpoint, which only serves image bytes to link-preview crawler UAs, so that one request identifies as `facebookexternalhit`. The admin verifies the date and completes routes and address (Adressevælger address search in the editor) and publishes — the usual save hooks derive region/length/is-free. If Facebook serves a login wall anyway, the importer still creates the draft with only the source URL set. Already-imported URLs are **skipped untouched** (create-or-skip, never update), so re-pasting a whole list is safe. No Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
 
-**Groups (Vandreture i Danmark, DVL group, …).** A group's event *listing* is only rendered for logged-in browsers (verified 2026-07-03), and Meta shut down the Groups API entirely in April 2024, so listings cannot be fetched automatically by anyone. The importer page therefore ships a **link-collector bookmarklet**: the admin opens the group's events page in their own logged-in browser, clicks the bookmarklet, and every `facebook.com/events/{id}` link on the page is copied to the clipboard for pasting into the batch field. Weekly routine: open each group's events tab → scroll → bookmarklet → paste → complete the new drafts (verify date, add routes and address) → publish.
-
-| Source | URL | Type | Priority | Notes |
-|---|---|---|---|---|
-| Facebook Events API | developers.facebook.com | Graph API | Not built | Reading public events from Pages/groups you don't own is largely unavailable to third-party apps. Reliable access only for a Page you/the organiser admin, via a Page token. Needs a Developer App, App Review (weeks), and business verification |
-| Vandring Danmark (FB group) | facebook.com/groups/* | manual | Not built | Private group — API access effectively gone for outside apps. Manual or group-admin partnership only |
-| Local walking FB groups | Various | manual | Not built | Many small local groups. Manual entry or organiser submission |
+**Groups (Vandreture i Danmark, DVL group, …).** A group's event *listing* is only rendered for logged-in browsers (verified 2026-07-03), and Meta shut down the Groups API entirely in April 2024, so listings cannot be fetched automatically by anyone. The importer page therefore ships a **link-collector bookmarklet**: the admin opens the group's events page in their own logged-in browser, clicks the bookmarklet, and every `facebook.com/events/{id}` link on the page is copied to the clipboard for pasting into the batch field. Weekly routine: open each group's events tab → scroll → bookmarklet → paste → complete the new drafts (verify date, add routes and address) → publish. The routine is easy to forget; how to make it reliable or automate it: [#164](https://github.com/petyaferreira/vandrekalender-wp/issues/164).
 
 ### Sources still to research
 
@@ -157,7 +151,7 @@ The base class then provides:
 - `record_warning( string $message ): void` — records a problem that does not stop the run; shown under the scraper's row in the Scraper Log (read by the scheduler with `take_warnings()`).
 - `mark_source_url_seen( string $url ): void` — scrapers call this for every URL found in the source's listing, *before* fetching the detail page, so a temporarily unreachable detail page is not mistaken for a removed event. `run()` also marks the source URL of every parsed event automatically.
 
-> **Kept simple.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist: the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
+> Each scraper parses its fields (the Layer 2 regex) in its own `parse()` or small private helpers. The patterns follow each site's HTML, so there is no shared field-mapping code.
 
 ### Geocoding (server-side Adressevælger helper) — built
 
@@ -319,21 +313,16 @@ Events deleted by an admin should not be re-created on the next scrape. Maintain
 plus the current schedule status. Runs are stored in the `vandrekalender_scraper_runs`
 option (capped, most recent first) by `Vandrekalender_Scraper_Log`.
 
-Still planned: a queue of flagged events needing manual enrichment
-([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)), and a
-per-scraper "Run now" button in the UI.
+Not built: a queue of flagged events needing manual enrichment
+([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)).
 
 ### Facebook scraping
 
 **Decision (2026-06-24): no Graph API.** Not worth the cost. **Update (2026-07-03):** the site ships the paste-a-link importer instead (**Events → Add from Facebook**, see [Facebook](#facebook) above) — no Meta app, best-effort Open Graph prefill into a draft.
 
-Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) are effectively closed to outside apps.
+Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) and small local walking groups are effectively closed to outside apps, so their events come in through the bookmarklet routine above, manual entry, or the organiser.
 
 Facebook-only events (e.g. AMA Vandringen) are handled by manual entry or by the organiser submitting/claiming the event. Revisit the API only if an organiser partnership makes a Page-token approach worthwhile. If pursued later: available fields are name, description, start_time, end_time, place (name + location), cover photo; distance is almost never structured, so Layer 2 regex on the description usually falls through to Layer 3.
-
-### LLM extraction
-
-Once the source list grows beyond ~10 sources, hand-maintaining Layer 1 selector maps and Layer 2 regex per source becomes impractical. The idea: feed raw event HTML to an LLM with a prompt to return structured JSON matching the schema. The LLM replaces Layers 1 and 2 — it reads free-form content and returns typed fields. Layer 3 (required-field validation and flagging) still applies on top. Adding a source then becomes trivial: just a URL, no custom scraper class.
 
 ---
 
