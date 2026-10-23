@@ -29,19 +29,33 @@ One issue per run, even when it finished early. In the cloud there is no Docker 
 
 ## Setup in the cloud
 
-Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`):
+Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`). Run these as **four separate Bash commands, in this order, each with `timeout: 600000`**. Each fits in 10 minutes on its own, so it finishes in the foreground. Times measured on 23 October 2026 ([#154](https://github.com/petyaferreira/vandrekalender-wp/issues/154)):
 
 ```bash
-export PATH=/opt/node24/bin:$PATH
+# 1. Composer: 4–9 minutes
 export COMPOSER_ALLOW_SUPERUSER=1
 composer config --global 'preferred-install.wpackagist-plugin/*' dist
 composer config --global 'preferred-install.wpackagist-theme/*' dist
 composer config --global 'preferred-install.*' source
 composer install --no-interaction
-npm ci
-(cd wp-content/themes/vandrekalender-theme && (npm ci || npm install))
-(cd wp-content/plugins/vandrekalender-events && (npm ci || npm install))
 ```
+
+```bash
+# 2. Root npm (Prettier): seconds
+export PATH=/opt/node24/bin:$PATH && npm ci
+```
+
+```bash
+# 3. Theme: about 1½ minutes
+export PATH=/opt/node24/bin:$PATH && cd wp-content/themes/vandrekalender-theme && (npm ci || npm install)
+```
+
+```bash
+# 4. Plugin: under a minute
+export PATH=/opt/node24/bin:$PATH && cd wp-content/plugins/vandrekalender-events && (npm ci || npm install)
+```
+
+Do not put them in one command: on 23 October the four together ran past 10 minutes and were moved to the background ([#155](https://github.com/petyaferreira/vandrekalender-wp/issues/155)). If a command is moved to the background anyway, wait for its completion notification. Do not write wait loops (`until … pgrep …; sleep`) and do not use `pkill`: on 23 October such a loop waited 10 minutes for nothing, and `pkill` killed the agent's own shell.
 
 Shell state does not carry over between commands, so start **every** command that runs `node`, `npm` or `./validate.sh` with `export PATH=/opt/node24/bin:$PATH`. Otherwise the sandbox's own Node 22 runs, and the `versions` check in `./validate.sh` fails.
 
