@@ -227,8 +227,9 @@ body {
 
 // Organiser page (single-organiser.html and the organiser-* patterns, design
 // in docs/design/organiser-page/). Sections are spaced like the design's
-// "extra-large" gap.
-.vk-organiser-page .wp-block-post-content > * + * {
+// "extra-large" gap, "Andre arrangører" under the content too.
+.vk-organiser-page .wp-block-post-content > * + *,
+.vk-organiser-page .wp-block-post-content + .vk-organiser-others {
   margin-block-start: var(--wp--preset--spacing--extra-large);
 }
 

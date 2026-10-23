@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-22T07:43:14+00:00\n"
+"POT-Creation-Date: 2026-10-23T10:58:11+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -89,19 +89,19 @@ msgstr[0] "%1$s — %2$d vandretur"
 msgstr[1] "%1$s — %2$d vandreture"
 
 #: blocks/event-calendar/render.php:257 blocks/event-cards/render.php:110
-#: blocks/event-info-card/render.php:71 blocks/event-map/render.php:65
+#: blocks/event-info-card/render.php:72 blocks/event-map/render.php:43
 #: build/blocks/event-calendar/render.php:257
 #: build/blocks/event-cards/render.php:110
-#: build/blocks/event-info-card/render.php:71
-#: build/blocks/event-map/render.php:65
+#: build/blocks/event-info-card/render.php:72
+#: build/blocks/event-map/render.php:43
 msgid "Free"
 msgstr "Gratis"
 
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
 #: blocks/event-calendar/render.php:260 blocks/event-cards/render.php:113
-#: blocks/event-map/render.php:67 build/blocks/event-calendar/render.php:260
-#: build/blocks/event-cards/render.php:113 build/blocks/event-map/render.php:67
+#: blocks/event-map/render.php:45 build/blocks/event-calendar/render.php:260
+#: build/blocks/event-cards/render.php:113 build/blocks/event-map/render.php:45
 #, php-format
 msgid "from %d kr"
 msgstr "fra %d kr"
@@ -110,7 +110,9 @@ msgstr "fra %d kr"
 msgid "No walks match your filters."
 msgstr "Ingen vandreture matcher dine filtre."
 
-#: blocks/event-cards/render.php:75 build/blocks/event-cards/render.php:75
+#: blocks/event-cards/render.php:75 blocks/organiser-regions/render.php:20
+#: build/blocks/event-cards/render.php:75
+#: build/blocks/organiser-regions/render.php:20
 msgid "There are no upcoming walks right now."
 msgstr "Der er ingen kommende ture lige nu."
 
@@ -139,9 +141,9 @@ msgstr "Region"
 msgid "All regions"
 msgstr "Alle regioner"
 
-#: blocks/event-filters/render.php:67 blocks/event-info-card/render.php:262
+#: blocks/event-filters/render.php:67 blocks/event-info-card/render.php:263
 #: build/blocks/event-filters/render.php:67
-#: build/blocks/event-info-card/render.php:262
+#: build/blocks/event-info-card/render.php:263
 #: includes/event/class-event.php:767
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
@@ -179,191 +181,197 @@ msgid "Reset"
 msgstr "Nulstil"
 
 #. translators: %s: price in Danish kroner
-#: blocks/event-info-card/render.php:75
-#: build/blocks/event-info-card/render.php:75
+#: blocks/event-info-card/render.php:76
+#: build/blocks/event-info-card/render.php:76
 #, php-format
 msgid "%s kr"
 msgstr "%s kr"
 
 #. translators: %s: start time, e.g. 09:00
-#: blocks/event-info-card/render.php:90
-#: build/blocks/event-info-card/render.php:90
+#: blocks/event-info-card/render.php:91
+#: build/blocks/event-info-card/render.php:91
 #, php-format
 msgid "at %s"
 msgstr "kl. %s"
 
 #. translators: %s: number of hours
-#: blocks/event-info-card/render.php:105
-#: build/blocks/event-info-card/render.php:105
+#: blocks/event-info-card/render.php:106
+#: build/blocks/event-info-card/render.php:106
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] "%s time"
 msgstr[1] "%s timer"
 
-#: blocks/event-info-card/render.php:116 blocks/event-info-card/render.php:228
-#: build/blocks/event-info-card/render.php:116
-#: build/blocks/event-info-card/render.php:228
+#: blocks/event-info-card/render.php:117 blocks/event-info-card/render.php:229
+#: build/blocks/event-info-card/render.php:117
+#: build/blocks/event-info-card/render.php:229
 #: build/resources/event-meta-fields/index.js:1
 #: resources/event-meta-fields/index.js:795
 msgid "Route"
 msgstr "Rute"
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:122
-#: build/blocks/event-info-card/render.php:122
+#: blocks/event-info-card/render.php:123
+#: build/blocks/event-info-card/render.php:123
 #, php-format
 msgid "%s km"
 msgstr "%s km"
 
-#: blocks/event-info-card/render.php:139
-#: build/blocks/event-info-card/render.php:139
+#: blocks/event-info-card/render.php:140
+#: build/blocks/event-info-card/render.php:140
 msgid "I'm going"
 msgstr "Jeg kommer"
 
-#: blocks/event-info-card/render.php:140
-#: build/blocks/event-info-card/render.php:140
+#: blocks/event-info-card/render.php:141
+#: build/blocks/event-info-card/render.php:141
 msgid "Attending"
 msgstr "Deltager"
 
-#: blocks/event-info-card/render.php:141
-#: build/blocks/event-info-card/render.php:141
+#: blocks/event-info-card/render.php:142
+#: build/blocks/event-info-card/render.php:142
 msgid "You are signed up — we have emailed you a confirmation."
 msgstr "Du er tilmeldt — vi har sendt dig en bekræftelse på mail."
 
-#: blocks/event-info-card/render.php:149
-#: build/blocks/event-info-card/render.php:149
+#: blocks/event-info-card/render.php:150
+#: build/blocks/event-info-card/render.php:150
 msgid "Sign-up failed. Please try again."
 msgstr "Tilmelding mislykkedes. Prøv igen."
 
-#: blocks/event-info-card/render.php:150
-#: build/blocks/event-info-card/render.php:150
+#: blocks/event-info-card/render.php:151
+#: build/blocks/event-info-card/render.php:151
 msgid "Cancellation failed. Please try again."
 msgstr "Afmelding mislykkedes. Prøv igen."
 
-#: blocks/event-info-card/render.php:160
-#: build/blocks/event-info-card/render.php:160
+#: blocks/event-info-card/render.php:161
+#: build/blocks/event-info-card/render.php:161
 msgid "You are signed up for this walk."
 msgstr "Du er tilmeldt denne tur."
 
-#: blocks/event-info-card/render.php:162
-#: build/blocks/event-info-card/render.php:162
+#: blocks/event-info-card/render.php:163
+#: build/blocks/event-info-card/render.php:163
 msgid "You need an account to sign up. We will bring you straight back here."
 msgstr "Du skal have en konto for at tilmelde dig. Vi sender dig direkte tilbage hertil."
 
-#: blocks/event-info-card/render.php:184
-#: build/blocks/event-info-card/render.php:184
+#: blocks/event-info-card/render.php:185
+#: build/blocks/event-info-card/render.php:185
 msgid "per participant"
 msgstr "pr. deltager"
 
-#: blocks/event-info-card/render.php:211
-#: build/blocks/event-info-card/render.php:211
+#: blocks/event-info-card/render.php:212
+#: build/blocks/event-info-card/render.php:212
 msgid "Date"
 msgstr "Dato"
 
-#: blocks/event-info-card/render.php:218
-#: build/blocks/event-info-card/render.php:218
+#: blocks/event-info-card/render.php:219
+#: build/blocks/event-info-card/render.php:219
 msgid "Start time"
 msgstr "Starttid"
 
-#: blocks/event-info-card/render.php:223
-#: build/blocks/event-info-card/render.php:223
+#: blocks/event-info-card/render.php:224
+#: build/blocks/event-info-card/render.php:224
 msgid "Cutoff time"
 msgstr "Makstid"
 
-#: blocks/event-info-card/render.php:236 blocks/event-route-map/render.php:121
-#: build/blocks/event-info-card/render.php:236
-#: build/blocks/event-route-map/render.php:121
+#: blocks/event-info-card/render.php:237 blocks/event-route-map/render.php:109
+#: build/blocks/event-info-card/render.php:237
+#: build/blocks/event-route-map/render.php:109
 msgid "Download GPX"
 msgstr "Download GPX"
 
-#: blocks/event-info-card/render.php:244
-#: build/blocks/event-info-card/render.php:244
+#: blocks/event-info-card/render.php:245
+#: build/blocks/event-info-card/render.php:245
 msgid "Place"
 msgstr "Sted"
 
-#: blocks/event-info-card/render.php:253
-#: build/blocks/event-info-card/render.php:253
+#: blocks/event-info-card/render.php:254
+#: build/blocks/event-info-card/render.php:254
 msgid "Show directions"
 msgstr "Vis rutevejledning"
 
-#: blocks/event-info-card/render.php:279
-#: build/blocks/event-info-card/render.php:279
+#: blocks/event-info-card/render.php:280
+#: build/blocks/event-info-card/render.php:280
 msgid "You are the organiser of this walk"
 msgstr "Du er arrangør af denne tur"
 
-#: blocks/event-info-card/render.php:321
-#: build/blocks/event-info-card/render.php:321
+#: blocks/event-info-card/render.php:283
+#: build/blocks/event-info-card/render.php:283
+#: includes/class-event-past-events.php:282
+msgid "This walk has taken place."
+msgstr "Denne tur har fundet sted."
+
+#: blocks/event-info-card/render.php:324
+#: build/blocks/event-info-card/render.php:324
 msgid "Cancel your sign-up?"
 msgstr "Vil du afmelde dig?"
 
-#: blocks/event-info-card/render.php:322
-#: build/blocks/event-info-card/render.php:322
+#: blocks/event-info-card/render.php:325
+#: build/blocks/event-info-card/render.php:325
 msgid "You will be taken off the list for this walk. You can sign up again later if you change your mind."
 msgstr "Du bliver fjernet fra listen til denne tur. Du kan tilmelde dig igen senere, hvis du skifter mening."
 
-#: blocks/event-info-card/render.php:326
-#: build/blocks/event-info-card/render.php:326
+#: blocks/event-info-card/render.php:329
+#: build/blocks/event-info-card/render.php:329
 msgid "No, keep my place"
 msgstr "Nej, behold min plads"
 
-#: blocks/event-info-card/render.php:334
-#: build/blocks/event-info-card/render.php:334
+#: blocks/event-info-card/render.php:337
+#: build/blocks/event-info-card/render.php:337
 msgid "Yes, cancel"
 msgstr "Ja, afmeld mig"
 
-#: blocks/event-info-card/render.php:341
-#: build/blocks/event-info-card/render.php:341
+#: blocks/event-info-card/render.php:344
+#: build/blocks/event-info-card/render.php:344
 msgid "Book your place"
 msgstr "Book din plads"
 
-#: blocks/event-info-card/render.php:343
-#: build/blocks/event-info-card/render.php:343
+#: blocks/event-info-card/render.php:346
+#: build/blocks/event-info-card/render.php:346
 msgid "Registration is handled by the organiser"
 msgstr "Tilmelding sker via arrangørens side"
 
-#: blocks/event-map/render.php:68 build/blocks/event-map/render.php:68
+#: blocks/event-map/render.php:46 build/blocks/event-map/render.php:46
 msgid "See details"
 msgstr "Se detaljer"
 
-#: blocks/event-map/render.php:69 build/blocks/event-map/render.php:69
+#: blocks/event-map/render.php:47 build/blocks/event-map/render.php:47
 msgid "No walks with a location match your filters."
 msgstr "Ingen vandreture med placering matcher dine filtre."
 
-#: blocks/event-map/render.php:70 blocks/event-map/render.php:97
-#: build/blocks/event-map/render.php:70 build/blocks/event-map/render.php:97
+#: blocks/event-map/render.php:48 blocks/event-map/render.php:75
+#: build/blocks/event-map/render.php:48 build/blocks/event-map/render.php:75
 msgid "Loading map…"
 msgstr "Indlæser kort…"
 
-#: blocks/event-map/render.php:71 build/blocks/event-map/render.php:71
+#: blocks/event-map/render.php:49 build/blocks/event-map/render.php:49
 msgid "Could not load the map. Please try again."
 msgstr "Kunne ikke indlæse kortet. Prøv igen."
 
-#: blocks/event-map/render.php:72 build/blocks/event-map/render.php:72
+#: blocks/event-map/render.php:50 build/blocks/event-map/render.php:50
 msgid "The map could not be loaded."
 msgstr "Kortet kunne ikke indlæses."
 
-#: blocks/event-map/render.php:84 build/blocks/event-map/render.php:84
+#: blocks/event-map/render.php:62 build/blocks/event-map/render.php:62
 msgid "Map of walking events in Denmark"
 msgstr "Kort over vandreture i Danmark"
 
-#: blocks/event-map/render.php:96 build/blocks/event-map/render.php:96
+#: blocks/event-map/render.php:74 build/blocks/event-map/render.php:74
 msgid "Reset map"
 msgstr "Nulstil kort"
 
-#: blocks/event-route-map/render.php:101
-#: build/blocks/event-route-map/render.php:101
+#: blocks/event-route-map/render.php:89
+#: build/blocks/event-route-map/render.php:89
 msgid "Show all routes"
 msgstr "Vis alle ruter"
 
-#: blocks/event-route-map/render.php:108
-#: build/blocks/event-route-map/render.php:108
+#: blocks/event-route-map/render.php:96
+#: build/blocks/event-route-map/render.php:96
 msgid "Map of the route track"
 msgstr "Kort over rutens spor"
 
 #. translators: %s: distance in kilometres
-#: blocks/event-route-map/render.php:119
-#: build/blocks/event-route-map/render.php:119
+#: blocks/event-route-map/render.php:107
+#: build/blocks/event-route-map/render.php:107
 #, php-format
 msgid "Download GPX (%s km)"
 msgstr "Download GPX (%s km)"
@@ -375,6 +383,65 @@ msgstr "Download GPX (%s km)"
 #: resources/organiser-fields/index.js:50
 msgid "Official organiser"
 msgstr "Officiel arrangør"
+
+#: blocks/organiser-others/render.php:36
+#: build/blocks/organiser-others/render.php:36
+msgid "Other organisers"
+msgstr "Andre arrangører"
+
+#. translators: %s: number of upcoming walks.
+#: blocks/organiser-others/render.php:56
+#: build/blocks/organiser-others/render.php:56
+#, php-format
+msgid "%s upcoming walk"
+msgid_plural "%s upcoming walks"
+msgstr[0] "%s kommende tur"
+msgstr[1] "%s kommende ture"
+
+#: blocks/organiser-others/render.php:57
+#: build/blocks/organiser-others/render.php:57
+msgid "No upcoming walks"
+msgstr "Ingen kommende ture"
+
+#. translators: %s: number of upcoming walks in the region.
+#: blocks/organiser-regions/render.php:30
+#: build/blocks/organiser-regions/render.php:30
+#, php-format
+msgid "%s walk"
+msgid_plural "%s walks"
+msgstr[0] "%s tur"
+msgstr[1] "%s ture"
+
+#: blocks/organiser-stats/render.php:24
+#: build/blocks/organiser-stats/render.php:24
+msgid "upcoming walk"
+msgid_plural "upcoming walks"
+msgstr[0] "kommende tur"
+msgstr[1] "kommende ture"
+
+#: blocks/organiser-stats/render.php:28
+#: build/blocks/organiser-stats/render.php:28
+msgid "region"
+msgid_plural "regions"
+msgstr[0] "region"
+msgstr[1] "regioner"
+
+#: blocks/organiser-stats/render.php:37
+#: build/blocks/organiser-stats/render.php:37
+msgid "km"
+msgstr "km"
+
+#. translators: 1: shortest route in km, 2: longest route in km.
+#: blocks/organiser-stats/render.php:41
+#: build/blocks/organiser-stats/render.php:41
+#, php-format
+msgid "%1$s to %2$s"
+msgstr "%1$s til %2$s"
+
+#: blocks/organiser-stats/render.php:42
+#: build/blocks/organiser-stats/render.php:42
+msgid "km, shortest to longest walk"
+msgstr "km, korteste til længste tur"
 
 #: blocks/slider/render.php:71 build/blocks/slider/render.php:71
 msgid "Slider navigation"
@@ -561,10 +628,6 @@ msgid "You are the organiser of this event."
 msgstr "Du er arrangør af denne tur."
 
 #: includes/class-event-past-events.php:286
-msgid "This walk has taken place."
-msgstr "Denne tur har fundet sted."
-
-#: includes/class-event-past-events.php:290
 msgid "Upcoming walks nearby"
 msgstr "Kommende vandreture i nærheden"
 
@@ -1133,7 +1196,7 @@ msgstr "Denne arrangør findes ikke."
 msgid "This organiser already has a page: \"%s\"."
 msgstr "Denne arrangør har allerede en side: \"%s\"."
 
-#: includes/organiser/class-organiser.php:373
+#: includes/organiser/class-organiser.php:382
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -1204,6 +1267,10 @@ msgstr "Hover-baggrund"
 #: blocks/organiser-badge/edit.js:22 build/blocks/organiser-badge/index.js:1
 msgid "Hidden on the page: the organiser is not marked as official (Organiser panel)."
 msgstr "Vises ikke på siden: arrangøren er ikke markeret som officiel (panelet Arrangør)."
+
+#: blocks/organiser-others/edit.js:10 build/blocks/organiser-others/index.js:1
+msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
+msgstr "Andre arrangører: op til seks andre arrangører med en side, først dem med ture i de samme regioner."
 
 #: blocks/organiser-regions/edit.js:10
 #: build/blocks/organiser-regions/index.js:1
@@ -1598,6 +1665,16 @@ msgstr "Arrangørlogo"
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
 msgstr "Arrangørsidens logo: det fremhævede billede, eller arrangørens forbogstaver indtil der er et."
+
+#: blocks/organiser-others/block.json build/blocks/organiser-others/block.json
+msgctxt "block title"
+msgid "Other Organisers"
+msgstr "Andre arrangører"
+
+#: blocks/organiser-others/block.json build/blocks/organiser-others/block.json
+msgctxt "block description"
+msgid "\"Andre arrangører\": the other organisers with a page, those with walks in the same regions first."
+msgstr "\"Andre arrangører\": de andre arrangører med en side, først dem med ture i de samme regioner."
 
 #: blocks/organiser-regions/block.json
 #: build/blocks/organiser-regions/block.json
