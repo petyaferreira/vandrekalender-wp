@@ -144,7 +144,7 @@ Validate with the Rich Results Test and fix warnings about missing offers or ima
 
 ## 8. Event card change (see the Kort board)
 
-* Add an organiser line under the walk title: round logo (24 px, initials fallback) plus the organiser name, linking to the organiser page. Variant B in the design.
+* Add an organiser line under the walk title: round logo (24 px, initials fallback) plus the organiser name, linking to the organiser page. Variant B in the design. (Changed in the build: plain text, not a link, since the whole card is already a link to the walk; see [the plan's step 6](../../plans/organisers-plan.md#step-6-organiser-on-the-event-cards).)
 * The whole card still links to the walk. Use the stretched link pattern: the title link covers the card with a pseudo element, and the organiser link sits above it with position relative and a higher z-index, so there is no link inside a link.
 * The organiser link needs a touch area of at least 32 px height on mobile (44 px preferred when space allows).
 * On the walk's own page, add an "Arrangør" row to the facts box between "Sted" and the booking button. Hide it when the walk has no organiser.

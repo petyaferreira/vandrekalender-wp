@@ -70,13 +70,13 @@ One PR each:
 - **5b. Template and section patterns.** `single-organiser.html` (header, breadcrumb, post content, footer); theme patterns `organiser-hero`, `organiser-stats`, `organiser-walks`, `organiser-about` and `organiser-faq` as above, with placeholders where a 5c block goes. A new organiser post starts from them, locked to content only (texts, images, links, FAQ). The cards, calendar, map and filter blocks preset the organiser from the post's term, as they do on a term archive today. Zero state when there are no upcoming walks.
 - **5c. Computed blocks.** Stats (upcoming walks, regions, km range), the regions table with filtered links, and "Andre arrangører". All from the linked term, live.
 - **5d. Overview `/arrangoerer/`.** The post type archive (`archive-organiser.html`): every organiser with a page, with logo or initials, upcoming walks and regions. The breadcrumb and "Se alle arrangører" link there.
-- **5e. SEO.** Title and meta description from the spec (section 5) through Rank Math's filters, the excerpt as the description fallback; Organization and ItemList JSON-LD in our own schema class; noindex for a page with no text and no walks. Together with the event-page templates in [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
+- **5e. SEO.** Moved out of this plan to [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167), to be decided together with the event pages' SEO in [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
 
 Content: Petya writes each page on production, from the organisers' own websites; the spec's drafts have `[FYLD UD]` gaps, none of which may go live.
 
 ## Step 6: organiser on the event cards
 
-Variant B of the design: under the title, a line with the badge and the organiser name linking to its page. The whole card stays a link to the walk (stretched link), with the organiser link above it, so there is no link inside a link. Touch target at least 32 px. The front page's "Officielle arrangører" strip links to the organiser pages.
+Variant B of the design, as plain text: under the title, a line with the badge (initials) and the organiser name. It is not a link: the whole card is one link to the walk, and a second link inside it would be invalid HTML; a stretched link would make it valid but means rebuilding the cards and puts two tap targets in a small card. The organiser page is one tap away on the walk's page (the info card's "Arrangør" row, step 3). The front page's "Officielle arrangører" strip, which is not inside a card, links to the organiser pages.
 
 ## Status
 
@@ -88,4 +88,6 @@ Variant B of the design: under the title, a line with the badge and the organise
   - 5a: post type, term link and redirect in [#122](https://github.com/petyaferreira/vandrekalender-wp/pull/122).
   - 5b: template, section patterns, Organiser Logo and Official Organiser Badge blocks, and the walk blocks pinned to the organiser, in [#130](https://github.com/petyaferreira/vandrekalender-wp/pull/130). Stats and Regions are registered as empty blocks so pages written now already have them; 5c fills them in. Publishing a page now needs its organiser. Admin labels are "Arrangørsider"/"Arrangørside", so the menu is not confused with the taxonomy's "Arrangører".
   - 5c: Organiser Stats (upcoming walks, regions, km range), Organiser Regions and Other Organisers ("Andre arrangører", in the template), computed per request in `Organiser_Walks`, in [#162](https://github.com/petyaferreira/vandrekalender-wp/pull/162). "Se alle arrangører" comes with the overview in 5d.
-  - 5d: overview `archive-organiser.html`; Other Organisers became Organiser List with `show` "others" or "all", so both lists share one card; "Se alle arrangører" under "Andre arrangører"; the overview's title is "Arrangører", in PR #166.
+  - 5d: overview `archive-organiser.html`; Other Organisers became Organiser List with `show` "others" or "all", so both lists share one card; "Se alle arrangører" under "Andre arrangører"; the overview's title is "Arrangører", in [#166](https://github.com/petyaferreira/vandrekalender-wp/pull/166).
+  - 5e: moved to [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167) (23 October 2026), with [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
+- Step 6: changed to plain text on the cards (23 October 2026), no link inside the card's link.
