@@ -20,7 +20,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | `/begivenhed/[slug]` | Single event detail page | V1 |
 | `/om` | About page — site mission, how it works, membership info | V1 |
 | `/kontakt` | Contact form | V1 |
-| `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>` | Template and sections live; the computed numbers are step 5c of [the organisers plan](plans/organisers-plan.md) |
+| `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>` | Live, with the computed stats, regions and "Andre arrangører"; SEO is step 5e of [the organisers plan](plans/organisers-plan.md) |
 | `/privatlivspolitik` | Privacy policy (GDPR) | V1 |
 | `/vilkaar` | Terms of use | V1 |
 | `/cookies` | Cookie policy | V1 |
