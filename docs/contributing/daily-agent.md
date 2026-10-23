@@ -6,7 +6,7 @@ A Claude Code scheduled cloud agent runs every day at 22:00 (Europe/Copenhagen).
 
 ## One run
 
-1. **Pick one issue.** Only an open issue with the `agent-ready` label, without `needs-decision`, and without an open PR for it. Take the lowest issue number (the oldest), not the board order: the sandbox blocks GitHub's GraphQL API, so `gh project`, `gh issue list` and `gh pr list` fail there. Use the REST API instead: `gh api 'repos/petyaferreira/vandrekalender-wp/issues?labels=agent-ready&state=open&sort=created&direction=asc&per_page=100'` (skip entries with `pull_request`, they are PRs). Then `gh api 'repos/petyaferreira/vandrekalender-wp/pulls?state=open&per_page=100'` and check each PR's `body` and `head.ref` for the issue number (`#<n>`, `Closes #<n>`, or `<n>` in the branch name); if one matches, skip that issue. Only Petya adds `agent-ready`; never add it yourself.
+1. **Pick one issue.** Only an open issue with the `agent-ready` label, without `needs-decision`, and without an open PR for it. Take the lowest issue number (the oldest), not the board order: the sandbox blocks GitHub's GraphQL API, so `gh project`, `gh issue list` and `gh pr list` fail there. Use the REST API instead: `gh api 'repos/petyaferreira/vandrekalender-wp/issues?labels=agent-ready&state=open&sort=created&direction=asc&per_page=100'` (skip entries with `pull_request`, they are PRs). Then `gh api 'repos/petyaferreira/vandrekalender-wp/pulls?state=open&per_page=100'` and check each PR's `body` and `head.ref` for the issue number (`#<n>`, `Closes #<n>`, or `<n>` in the branch name); if one matches, skip that issue. Never add `agent-ready` yourself, not even to issues you file during the run.
 2. **Nothing to pick: stop.** Do not look for other work.
 3. **Read the issue** (`gh issue view <n>`). If it is unclear, or bigger than one small PR, comment on the issue with the question or a proposed split, remove `agent-ready`, and stop.
 4. **Do the work** as in [tasks-and-issues.md](tasks-and-issues.md) and [pull-requests.md](pull-requests.md): branch from `main`, only what the issue asks plus its [cleanup](../principles/cleanup.md), `./validate.sh`, a PR that says `Closes #<n>`. Cleanup: before opening the PR, `git grep` the old names the change replaces and fix every hit. #115 replaced the `vandrekalender.dk` domain in one table and left it in README and three docs. Skip moving the board card to In Progress: `gh project item-edit` is GraphQL and fails in the sandbox. Wherever a `gh` command fails with the GraphQL error, use the `gh api` REST call instead.
@@ -48,7 +48,7 @@ Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreir
 
 ## For Petya
 
-- Mark a card for it: add the `agent-ready` label. Good cards are clear and small; product-docs cards are finished completely (merged), code cards come back as a PR for review.
+- Mark a card for it: add the `agent-ready` label. Agents in your sessions add it to issues they file when the issue qualifies ([tasks-and-issues.md](tasks-and-issues.md)); remove it if you disagree. Good cards are clear and small; product-docs cards are finished completely (merged), code cards come back as a PR for review.
 - See what it did: `gh pr list --author @me --state all --search "created:>=<date>"`, and merged without you: `gh pr list --state merged --label auto-merged`.
 - Cost: check `/usage` the morning after. Each run also triggers one review-bot run.
 - Pause or change the time: claude.ai/code → Routines.
