@@ -1,12 +1,19 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
-    "name": "vandrekalender/organiser-others",
-    "title": "Other Organisers",
+    "name": "vandrekalender/organiser-list",
+    "title": "Organiser List",
     "category": "widgets",
-    "description": "\"Andre arrangører\": the other organisers with a page, those with walks in the same regions first.",
+    "description": "Organisers with a page: \"Andre arrangører\" under an organiser page, or all of them on the overview.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],
+    "attributes": {
+        "show": {
+            "type": "string",
+            "enum": ["others", "all"],
+            "default": "others"
+        }
+    },
     "editorScript": "file:./index.js",
     "style": "file:./style-index.css",
     "render": "file:./render.php",

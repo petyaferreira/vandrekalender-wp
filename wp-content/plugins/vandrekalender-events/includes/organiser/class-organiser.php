@@ -80,6 +80,7 @@ class Organiser {
 		add_action( 'template_redirect', [ $this, 'maybe_redirect_to_calendar' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
 		add_filter( 'block_core_breadcrumbs_items', [ $this, 'filter_breadcrumbs' ] );
+		add_filter( 'post_type_archive_title', [ $this, 'filter_archive_title' ], 10, 2 );
 	}
 
 	/**
@@ -383,6 +384,25 @@ class Organiser {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * The overview's title is "Arrangører" (the archives label, as in the
+	 * breadcrumb), not the admin's "Arrangørsider" that WordPress takes
+	 * from the post type's name.
+	 *
+	 * @param string $title     Archive title.
+	 * @param string $post_type Post type of the archive.
+	 * @return string
+	 */
+	public function filter_archive_title( string $title, string $post_type ): string {
+		if ( self::CUSTOMPOSTTYPE !== $post_type ) {
+			return $title;
+		}
+
+		$object = get_post_type_object( self::CUSTOMPOSTTYPE );
+
+		return $object ? (string) $object->labels->archives : $title;
 	}
 
 	/**
