@@ -114,6 +114,8 @@ Handle singular and plural ("1 tur", "2 ture"). Omit the sentence parts that hav
 
 ## 5. Meta, headings and copy rules
 
+> **Not built yet:** titles, meta descriptions and the JSON-LD of section 7 are decided together with the event pages' SEO in [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167) and [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
+
 * Title template: `{Navn}: {N} kommende vandreture | Alle Vandreture` (aim for 60 characters or fewer, drop "{N} kommende" if too long)
 * Meta description template: `Se kommende vandreture fra {Navn}: {N} ture i {R} regioner, {F} gratis. Find dato, sted og længde, og tilmeld dig hos arrangøren.` (aim for 155 characters or fewer)
 * Zero upcoming walks: `Se tidligere vandreture fra {Navn} og få besked om nye ture. Find dato, sted og længde på Alle Vandreture.`
@@ -144,9 +146,8 @@ Validate with the Rich Results Test and fix warnings about missing offers or ima
 
 ## 8. Event card change (see the Kort board)
 
-* Add an organiser line under the walk title: round logo (24 px, initials fallback) plus the organiser name, linking to the organiser page. Variant B in the design.
-* The whole card still links to the walk. Use the stretched link pattern: the title link covers the card with a pseudo element, and the organiser link sits above it with position relative and a higher z-index, so there is no link inside a link.
-* The organiser link needs a touch area of at least 32 px height on mobile (44 px preferred when space allows).
+* Add an organiser line under the walk title: round logo (24 px, initials fallback) plus the organiser name. Variant B in the design.
+* The whole card still links to the walk. (Changed in the build: the organiser line is plain text, not a link, so there is no second link or stretched link inside the card; see [the plan's step 6](../../plans/organisers-plan.md#step-6-organiser-on-the-event-cards).)
 * On the walk's own page, add an "Arrangør" row to the facts box between "Sted" and the booking button. Hide it when the walk has no organiser.
 * Front page: make the names in the "Officielle arrangører" strip links to the organiser pages.
 * Region pages and the front page should link to organisers wherever an organiser name is shown.
