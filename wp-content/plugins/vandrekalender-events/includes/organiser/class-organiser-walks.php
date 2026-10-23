@@ -4,7 +4,7 @@
  *
  * The numbers on an organiser page, computed from the upcoming walks of its
  * event_organiser term on every render, never typed by hand (step 5c of
- * docs/plans/organisers-plan.md): the Organiser Stats, Organiser Regions and
+ * docs/history/organisers-plan.md): the Organiser Stats, Organiser Regions and
  * Organiser List blocks.
  *
  * @package Vandrekalender

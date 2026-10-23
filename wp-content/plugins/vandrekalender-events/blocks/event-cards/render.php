@@ -121,7 +121,7 @@ $vk_wrapper_attributes = [
 					$vk_region    = ! is_wp_error( $vk_regions ) && ! empty( $vk_regions ) ? $vk_regions[0] : '';
 					$vk_image_url = get_the_post_thumbnail_url( $vk_event_id, 'large' );
 
-					// Organiser line (step 6 of docs/plans/organisers-plan.md): the
+					// Organiser line (step 6 of docs/history/organisers-plan.md): the
 					// event_organiser term, else the event's own organiser name, as
 					// in the info card. Plain text: the whole card is one link to
 					// the walk. The logo is the organiser page's featured image.

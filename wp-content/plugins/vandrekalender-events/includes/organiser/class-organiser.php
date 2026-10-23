@@ -33,7 +33,7 @@ class Organiser {
 	public const META_OFFICIAL = 'organiser_official';
 
 	// The theme's section patterns a new organiser page starts from, top to
-	// bottom (docs/plans/organisers-plan.md, step 5).
+	// bottom (docs/history/organisers-plan.md, step 5).
 	public const PATTERNS = [
 		'vandrekalender-theme/organiser-hero',
 		'vandrekalender-theme/organiser-stats',

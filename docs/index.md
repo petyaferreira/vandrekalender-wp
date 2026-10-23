@@ -19,7 +19,7 @@ These pages describe the product as it is now (source of truth). Open the one th
 | [contributing/](contributing/index.md) | How we work: issues, PRs, code standards, local dev | Yes |
 | [principles/](principles/index.md) | Rules for how we build, each with an example from this repo | Yes |
 | [decisions/](decisions/index.md) | Decisions already taken, with the reason. Check before proposing a big change | Yes |
-| `plans/` | Plans for features that need several PRs, while they are being built: [organisers](plans/organisers-plan.md) | Yes, until done |
+| `plans/` | Plans for features that need several PRs, while they are being built (none right now; finished ones are in [history/](history/index.md)) | Yes, until done |
 | [design/](design/index.md) | Current design references | Yes |
 | [business/](business/index.md) | Not about code: GDPR, naming, monetisation, pitch | Owned by Petya |
 | [history/](history/index.md) | Frozen: finished plans and briefs, original specs, old mockups. Never a description of the code now | No |

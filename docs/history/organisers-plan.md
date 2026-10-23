@@ -1,6 +1,6 @@
 # Organisers: taxonomy, organiser pages and filters
 
-Status: in progress (steps 1–4 done; step 5 replanned on 21 October 2026, in review). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
+Status: done (23 October 2026; step 5e, SEO, moved to [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167)). Issue: [#32](https://github.com/petyaferreira/vandrekalender-wp/issues/32). Owner: Petya. One PR per step, in order, as in [pull-requests.md → Planned features](../contributing/pull-requests.md#planned-features) (branches `feature/organisers-<n>-<short-name>`).
 
 ## Goal
 
@@ -90,4 +90,4 @@ Variant B of the design, as plain text: under the title, a line with the badge (
   - 5c: Organiser Stats (upcoming walks, regions, km range), Organiser Regions and Other Organisers ("Andre arrangører", in the template), computed per request in `Organiser_Walks`, in [#162](https://github.com/petyaferreira/vandrekalender-wp/pull/162). "Se alle arrangører" comes with the overview in 5d.
   - 5d: overview `archive-organiser.html`; Other Organisers became Organiser List with `show` "others" or "all", so both lists share one card; "Se alle arrangører" under "Andre arrangører"; the overview's title is "Arrangører", in [#166](https://github.com/petyaferreira/vandrekalender-wp/pull/166).
   - 5e: moved to [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167) (23 October 2026), with [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
-- Step 6: changed to plain text on the cards (23 October 2026), no link inside the card's link. Built in PR #TBD; hidden on an organiser's own page. The "Officielle arrangører" strip on the front page is page content (the Frontpage post), so its links are set in the editor on production.
+- Step 6: changed to plain text on the cards (23 October 2026), no link inside the card's link. Built in [#169](https://github.com/petyaferreira/vandrekalender-wp/pull/169); hidden on an organiser's own page. The "Officielle arrangører" strip on the front page is page content (the Frontpage post), so its links are set in the editor on production.

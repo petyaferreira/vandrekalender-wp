@@ -5,6 +5,7 @@ Frozen records. Nothing here is kept up to date, so never use these files to lea
 | File | What it was | How it works now |
 |---|---|---|
 | [PLAN.md](PLAN.md) | The original build plan, archived 14 Oct 2026 (#48) | [docs/](../index.md) |
+| [organisers-plan.md](organisers-plan.md) | Organiser taxonomy, filter, organiser pages, overview and the organiser on cards (#32, done 23 Oct 2026); SEO moved to #167 | [data-model.md](../data-model.md) → organiser, [frontend.md](../frontend.md) → Organiser Page, [sitemap.md](../sitemap.md) |
 | [route-gpx-plan.md](route-gpx-plan.md) | Route GPX tracks, PR by PR (done 13 Oct 2026) | [data-model.md](../data-model.md) → `event_routes`, [frontend.md](../frontend.md) → Event Route Map |
 | [dawa-migration-plan.md](dawa-migration-plan.md) | DAWA → Adressevælger and Datafordeler (done 8 Oct 2026) | [data-model.md](../data-model.md) → address search, [scrapers.md](../scrapers.md) → Geocoding |
 | [past-events-brief.md](past-events-brief.md) | Keep past event pages public instead of drafting them (Sep 2026) | [scrapers.md](../scrapers.md), [sitemap.md](../sitemap.md) |
