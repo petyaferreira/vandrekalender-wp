@@ -109,12 +109,34 @@
     min-width: 0;
   }
 
-  &__date {
+  // Date and organiser in one row (docs/design/organiser-page/tur-kort-2a.html);
+  // a long organiser name is cut with an ellipsis, the date never wraps.
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
     font-size: var(--wp--preset--font-size--x-small, 0.75rem);
-    text-transform: uppercase;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__date {
+    flex: none;
     color: var(--wp--preset--color--bark, #7a5230);
+    font-weight: 700;
+  }
+
+  &__sep {
+    color: var(--wp--preset--color--pebble, #7a7268);
+  }
+
+  &__organiser {
+    overflow: hidden;
+    color: var(--wp--preset--color--pebble, #7a7268);
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__title {
@@ -132,34 +154,20 @@
   &__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 6px;
     margin-top: auto;
-    padding-top: 0.5rem;
+    padding-top: 0.875rem;
   }
 
+  // All tags look the same (tur-kort-2a.html).
   &__distance,
   &__price,
   &__region {
-    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
-    padding: 0.15rem 0.55rem;
+    padding: 4px 10px;
     border-radius: 999px;
-    white-space: nowrap;
-  }
-
-  &__distance {
-    background: var(--wp--preset--color--meadow, #c2d9b0);
-    color: var(--wp--preset--color--forest, #2d5f3f);
-  }
-
-  &__price {
     background: var(--wp--preset--color--cream, #faf5ec);
-    color: var(--wp--preset--color--bark, #7a5230);
-    font-weight: 600;
-  }
-
-  &__region {
-    background: var(--wp--preset--color--forest, #2d5f3f);
-    color: var(--wp--preset--color--white, #fff);
-    text-transform: capitalize;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    white-space: nowrap;
   }
 }

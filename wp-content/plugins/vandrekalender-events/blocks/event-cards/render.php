@@ -51,6 +51,10 @@ $vk_shown_ids = array_slice( $vk_ids, 0, $vk_page * $vk_per_page );
 // One query each for posts, meta, and terms instead of several per card.
 _prime_post_caches( $vk_shown_ids, true, true );
 
+// On an organiser's page every walk is its own, so its name would repeat on
+// every card.
+$vk_show_organiser = ! isset( $vk_presets['organiser'] );
+
 $vk_wrapper_attributes = [
 	'class'                     => 'vk-cards',
 	'data-wp-interactive'       => 'vandrekalender/event-cards',
@@ -116,6 +120,28 @@ $vk_wrapper_attributes = [
 					$vk_regions   = wp_get_post_terms( $vk_event_id, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] );
 					$vk_region    = ! is_wp_error( $vk_regions ) && ! empty( $vk_regions ) ? $vk_regions[0] : '';
 					$vk_image_url = get_the_post_thumbnail_url( $vk_event_id, 'large' );
+
+					// Organiser next to the date (step 6 of
+					// docs/history/organisers-plan.md, design
+					// docs/design/organiser-page/tur-kort-2a.html): the
+					// event_organiser term, else the event's own organiser name, as
+					// in the info card. Plain text: the whole card is one link to
+					// the walk.
+					$vk_organiser_terms = $vk_show_organiser ? get_the_terms( $vk_event_id, \Vandrekalender\Event::TAX_ORGANISER ) : false;
+					$vk_organiser_name  = '';
+					if ( $vk_show_organiser ) {
+						$vk_organiser_name = is_array( $vk_organiser_terms )
+							? $vk_organiser_terms[0]->name
+							: (string) get_post_meta( $vk_event_id, \Vandrekalender\Event::META_ORGANISER_NAME, true );
+					}
+
+					// "Lør 24. okt", with the year only when it is not this year.
+					$vk_timestamp   = $vk_date ? strtotime( $vk_date ) : false;
+					$vk_date_format = $vk_timestamp && gmdate( 'Y', $vk_timestamp ) !== current_time( 'Y' )
+						/* translators: card date with year, PHP date format. */
+						? _x( 'D j M Y', 'event card date', 'vandrekalender-events' )
+						/* translators: card date, PHP date format. */
+						: _x( 'D j M', 'event card date', 'vandrekalender-events' );
 					?>
 					<li class="vk-card">
 						<a class="vk-card__link" href="<?php echo esc_url( get_permalink( $vk_event_id ) ); ?>">
@@ -126,8 +152,18 @@ $vk_wrapper_attributes = [
 								<?php endif; ?>
 							></div>
 							<div class="vk-card__body">
-								<?php if ( $vk_date ) : ?>
-									<span class="vk-card__date"><?php echo esc_html( wp_date( get_option( 'date_format' ), strtotime( $vk_date ), new DateTimeZone( 'UTC' ) ) ); ?></span>
+								<?php if ( $vk_timestamp || $vk_organiser_name ) : ?>
+									<span class="vk-card__top">
+										<?php if ( $vk_timestamp ) : ?>
+											<time class="vk-card__date" datetime="<?php echo esc_attr( gmdate( 'Y-m-d', $vk_timestamp ) ); ?>"><?php echo esc_html( wp_date( $vk_date_format, $vk_timestamp, new DateTimeZone( 'UTC' ) ) ); ?></time>
+										<?php endif; ?>
+										<?php if ( $vk_timestamp && $vk_organiser_name ) : ?>
+											<span class="vk-card__sep" aria-hidden="true">·</span>
+										<?php endif; ?>
+										<?php if ( $vk_organiser_name ) : ?>
+											<span class="vk-card__organiser"><?php echo esc_html( $vk_organiser_name ); ?></span>
+										<?php endif; ?>
+									</span>
 								<?php endif; ?>
 								<span class="vk-card__title"><?php echo esc_html( get_the_title( $vk_event_id ) ); ?></span>
 								<?php if ( $vk_place ) : ?>
