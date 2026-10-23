@@ -4,22 +4,13 @@
  * Plain classic script, not the Interactivity API: the single event page is
  * not a router region, so there is no <head>-morphing hazard to guard
  * against and no shared state to coordinate (see docs/history/route-gpx-plan.md,
- * PR 3b). Lazy-loads Leaflet and the leaflet-gpx plugin from a CDN, draws
+ * PR 3b). Lazy-loads Leaflet and the leaflet-gpx plugin from the npm bundle, draws
  * one L.GPX layer per route that has a file, and shows only the currently
  * selected route's track (matching the Event Info Card's active tab on
  * first paint, then the `vk:route-change` event it dispatches on every
  * click — blocks/event-info-card/view.js), with a "Show all routes" toggle
  * button to see every track together.
  */
-
-const LEAFLET_VERSION = '1.9.4';
-const GPX_PLUGIN_VERSION = '2.2.0';
-const CDN = 'https://cdnjs.cloudflare.com/ajax/libs';
-
-const ASSETS = {
-  leafletJs: `${CDN}/leaflet/${LEAFLET_VERSION}/leaflet.min.js`,
-  gpxJs: `${CDN}/leaflet-gpx/${GPX_PLUGIN_VERSION}/gpx.min.js`,
-};
 
 // Distinct per-route colours, cycling if there are more routes than colours.
 const ROUTE_COLORS = [
@@ -31,46 +22,21 @@ const ROUTE_COLORS = [
 ];
 
 /**
- * Load a script once, resolving when ready.
- *
- * @param {string} src Script URL.
- * @return {Promise} Resolves on load, rejects on error.
- */
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) {
-      if (existing.dataset.loaded) {
-        resolve();
-      } else {
-        existing.addEventListener('load', () => resolve());
-        existing.addEventListener('error', reject);
-      }
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.addEventListener('load', () => {
-      script.dataset.loaded = '1';
-      resolve();
-    });
-    script.addEventListener('error', reject);
-    document.head.appendChild(script);
-  });
-}
-
-/**
  * Ensure Leaflet and the leaflet-gpx plugin are available.
+ *
+ * Both are npm dependencies, imported lazily so pages without a route map do
+ * not load them. leaflet-gpx extends the global `L`, so the global is set
+ * before the plugin is imported.
  *
  * @return {Promise} Resolves once both are ready.
  */
 async function ensureLeafletGpx() {
   if (!window.L) {
-    await loadScript(ASSETS.leafletJs);
+    const leaflet = await import('leaflet');
+    window.L = leaflet.default || leaflet;
   }
   if (!window.L.GPX) {
-    await loadScript(ASSETS.gpxJs);
+    await import('leaflet-gpx');
   }
 }
 

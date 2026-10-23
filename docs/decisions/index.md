@@ -13,10 +13,11 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0007](0007-daily-scheduled-agent.md) | A scheduled agent works one `agent-ready` issue a day, within the Pro subscription | 19 Oct 2026 |
 | [0008](0008-organiser-pages-as-post-type.md) | Organiser pages are a post type, linked to the organiser taxonomy | 21 Oct 2026 |
 | [0009](0009-assets-versioned-by-build.md) | The plugin's own scripts and styles are versioned by the build's content hash, not by file time | 22 Oct 2026 |
+| [0010](0010-leaflet-bundled-from-npm.md) | Leaflet and its plugins are bundled from npm, not loaded from a CDN | 8 Oct 2026 |
 
 ## Format
 
-A record is written in the same PR as the change that makes the decision ([pull-requests.md](../contributing/pull-requests.md#before-opening-a-pr)). A new record is the next number, `NNNN-short-name.md`, and only for a decision that would otherwise be proposed again. A two-way tweak needs no record ([two-way doors](../principles/two-way-doors.md)).
+A record is written in the same PR as the change that makes the decision ([pull-requests.md](../contributing/pull-requests.md#before-opening-a-pr)). A new record is the next number, `NNNN-short-name.md`, even when the decision was taken earlier: numbers follow the order records were written, and the date is when the decision was taken (0004 and 0010 are dated before the record above them). A record is only for a decision that would otherwise be proposed again. A two-way tweak needs no record ([two-way doors](../principles/two-way-doors.md)).
 
 ```markdown
 # NNNN: <the decision, as a statement>

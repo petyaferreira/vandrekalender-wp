@@ -1,5 +1,5 @@
 #!/bin/bash
-# The single check that a change is ready: CLAUDE.md size, PHPCS, Prettier,
+# The single check that a change is ready: CLAUDE.md size, Dependabot coverage, PHPCS, Prettier,
 # unit tests, the PR risk rules and both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
@@ -77,7 +77,33 @@ claude_md_size() {
     [ "$lines" -le "$MAX_CLAUDE_MD_LINES" ]
 }
 
+# Every committed package.json and composer.json needs a Dependabot entry,
+# or its dependencies are never updated (docs/principles/dependabot-for-dependencies.md).
+dependabot_coverage() {
+    local config=.github/dependabot.yml entries manifest dir eco missing=0
+    if [ ! -f "$config" ]; then
+        echo "Missing $config"
+        return 1
+    fi
+    # One "<ecosystem> <directory>" line per entry.
+    entries=$(awk '/package-ecosystem:/ { eco = $NF } /directory:/ { d = $NF; gsub(/["\047]/, "", d); print eco " " d }' "$config")
+    while IFS= read -r manifest; do
+        dir="/$(dirname "$manifest")"
+        [ "$dir" = "/." ] && dir=/
+        case "$manifest" in
+            *package.json) eco=npm ;;
+            *) eco=composer ;;
+        esac
+        if ! grep -qxF "$eco $dir" <<<"$entries"; then
+            echo "$manifest has no entry in $config (package-ecosystem: $eco, directory: $dir)"
+            missing=1
+        fi
+    done < <(git ls-files -- 'package.json' '*/package.json' 'composer.json' '*/composer.json')
+    return $missing
+}
+
 run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
+run dependabot "add the missing entry to .github/dependabot.yml (docs/principles/dependabot-for-dependencies.md)" dependabot_coverage
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs
 run prettier "fix with: ./node_modules/.bin/prettier --write <file>" prettier_check
 run pr-risk "a path is in the wrong risk category: fix classify() in pr-risk.sh, or the expected category in its self-test if the rule changed on purpose (docs/decisions/0006-agents-merge-low-risk-prs.md)" ./pr-risk.sh --self-test

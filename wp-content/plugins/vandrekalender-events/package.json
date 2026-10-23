@@ -15,5 +15,10 @@
     "devDependencies": {
         "@wordpress/icons": "^15.1.0",
         "@wordpress/scripts": "^30.0.0"
+    },
+    "dependencies": {
+        "leaflet": "1.9.4",
+        "leaflet-gpx": "2.2.0",
+        "leaflet.markercluster": "1.5.3"
     }
 }
