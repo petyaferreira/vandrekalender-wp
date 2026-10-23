@@ -20,15 +20,7 @@ Coordinates come from the server-side Adressevælger helper (see [Geocoding](#ge
 
 ## Part 1 — Event Sources
 
-**V1 implementation order.** The full list below is grouped by type. For v1 we build scrapers in this order:
-
-| # | Source | Why |
-|---|---|---|
-| 1 | Mammut March | First target, already scaffolded. Known organiser, easy to eyeball the result |
-| 2 | Sportstiming.dk | Walking events only |
-| 3 | Dansk Vandrelaug (DVL) | Richest, most representative source (free guided walks) |
-
-Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if feasible. Low-value sources have been dropped.
+The list below is grouped by type. **Built** in the notes marks a source that has a scraper. Priority reflects rough value (**High**, **Medium**); low-value sources have been dropped.
 
 ### Walking organisations
 
@@ -50,19 +42,13 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 |---|---|---|---|---|
 | Mammut March | mammutmarch.dk | JSON API | High | **Built** as `Vandrekalender_Scraper_Mammut`. 24-hour march ("100 km til fods"). Since autumn 2026 a Next.js site backed by a public JSON API (`https://mm-backend-production-f4af.up.railway.app/api`, the one its pages call; every request needs the header `x-locale: dk`). `/events?country=dk` lists the events (name, date, address, city, distances, image; the list also has Berlin, Stockholm and Göteborg, skipped as not Danish). `/events/{id}/variants` gives the variants per distance (participation only, or with an event shirt); the participation price is `basePrice` in øre. There is no public single-event endpoint, so the description is read from the event page `/events/<slug>` (the first `.tiptap-content` element). Start times are only published shortly before the march ("i startgrupper; tidspunkterne offentliggøres senere"); the variants' `startTime` is used once set. Until autumn 2026 the event pages were at `/<n>-km-marsch/<slug>/`; see [Source URL changes](#source-url-changes) |
 | Riddermarchen | riddermarchen.dk | HTML scrape | High | Well-known Danish military-style march. Domain resolves but is client-rendered, so content is not visible to a plain fetch. Checked 2026-06-24 |
-| AMA Vandringen | Facebook only | FB importer (v1) | Medium | Exists only on Facebook. 21/42/55 km options. v1: import via **Events → Add from Facebook**. Facebook API deferred to v2 |
+| AMA Vandringen | Facebook only | FB importer | Medium | Exists only on Facebook. 21/42/55 km options. Imported via **Events → Add from Facebook**. No Facebook API, see [Facebook scraping](#facebook-scraping) |
 
 ### Facebook
 
-**API deferred to v2 — v1 uses the paste-a-link importer.** The **Add from Facebook** admin screen (**Events → Add from Facebook**, `Vandrekalender_Facebook_Importer`) lets an admin paste public `facebook.com/events/…` URLs — one per line, up to 30 per batch. For each **new** URL the importer normalises it, deduplicates against `event_source_url`, fetches the page server-side, and prefills a **draft** event from its Open Graph tags — title, cover image, and (parsed out of Facebook's generated og:description sentence) the **event date**, **organiser name**, and **place name** where present — plus **one seeded empty route** (so the event surfaces in calendar views; the admin fills distance/time/price) — with `event_source = facebook` / `event_source_name = Facebook`. **Group-hosted events** (created inside a group rather than shared into it) are login-walled to *all* anonymous agents including Facebook's own crawler UA (verified 2026-07-03) — those import as empty drafts with only the source URL, to be filled in manually from the browser. The page fetch uses the plain `Vandrekalender/1.0` user-agent (Facebook rejects spoofed browser UAs with HTTP 400 but serves link-preview data to simple ones); the cover image lives on Facebook's lookaside crawler-media endpoint, which only serves image bytes to link-preview crawler UAs, so that one request identifies as `facebookexternalhit`. The admin verifies the date and completes routes and address (Adressevælger address search in the editor) and publishes — the usual save hooks derive region/length/is-free. If Facebook serves a login wall anyway, the importer still creates the draft with only the source URL set. Already-imported URLs are **skipped untouched** (create-or-skip, never update), so re-pasting a whole list is safe. No Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
+**No API: the paste-a-link importer.** The **Add from Facebook** admin screen (**Events → Add from Facebook**, `Vandrekalender_Facebook_Importer`) lets an admin paste public `facebook.com/events/…` URLs — one per line, up to 30 per batch. For each **new** URL the importer normalises it, deduplicates against `event_source_url`, fetches the page server-side, and prefills a **draft** event from its Open Graph tags — title, cover image, and (parsed out of Facebook's generated og:description sentence) the **event date**, **organiser name**, and **place name** where present — plus **one seeded empty route** (so the event surfaces in calendar views; the admin fills distance/time/price) — with `event_source = facebook` / `event_source_name = Facebook`. **Group-hosted events** (created inside a group rather than shared into it) are login-walled to *all* anonymous agents including Facebook's own crawler UA (verified 2026-07-03) — those import as empty drafts with only the source URL, to be filled in manually from the browser. The page fetch uses the plain `Vandrekalender/1.0` user-agent (Facebook rejects spoofed browser UAs with HTTP 400 but serves link-preview data to simple ones); the cover image lives on Facebook's lookaside crawler-media endpoint, which only serves image bytes to link-preview crawler UAs, so that one request identifies as `facebookexternalhit`. The admin verifies the date and completes routes and address (Adressevælger address search in the editor) and publishes — the usual save hooks derive region/length/is-free. If Facebook serves a login wall anyway, the importer still creates the draft with only the source URL set. Already-imported URLs are **skipped untouched** (create-or-skip, never update), so re-pasting a whole list is safe. No Meta Developer App, no App Review. See [Facebook scraping](#facebook-scraping) for why the API route is not worth it yet.
 
-**Groups (Vandreture i Danmark, DVL group, …).** A group's event *listing* is only rendered for logged-in browsers (verified 2026-07-03), and Meta shut down the Groups API entirely in April 2024, so listings cannot be fetched automatically by anyone. The importer page therefore ships a **link-collector bookmarklet**: the admin opens the group's events page in their own logged-in browser, clicks the bookmarklet, and every `facebook.com/events/{id}` link on the page is copied to the clipboard for pasting into the batch field. Weekly routine: open each group's events tab → scroll → bookmarklet → paste → complete the new drafts (verify date, add routes and address) → publish.
-
-| Source | URL | Type | Priority | Notes |
-|---|---|---|---|---|
-| Facebook Events API | developers.facebook.com | Graph API | v2 | Reading public events from Pages/groups you don't own is largely unavailable to third-party apps. Reliable access only for a Page you/the organiser admin, via a Page token. Needs a Developer App, App Review (weeks), and business verification |
-| Vandring Danmark (FB group) | facebook.com/groups/* | manual | v2 (backlog) | Private group — API access effectively gone for outside apps. Manual or group-admin partnership only |
-| Local walking FB groups | Various | manual | v2 (backlog) | Many small local groups. Manual entry or organiser submission |
+**Groups (Vandreture i Danmark, DVL group, …).** A group's event *listing* is only rendered for logged-in browsers (verified 2026-07-03), and Meta shut down the Groups API entirely in April 2024, so listings cannot be fetched automatically by anyone. The importer page therefore ships a **link-collector bookmarklet**: the admin opens the group's events page in their own logged-in browser, clicks the bookmarklet, and every `facebook.com/events/{id}` link on the page is copied to the clipboard for pasting into the batch field. Weekly routine: open each group's events tab → scroll → bookmarklet → paste → complete the new drafts (verify date, add routes and address) → publish. The routine is easy to forget; how to make it reliable or automate it: [#164](https://github.com/petyaferreira/vandrekalender-wp/issues/164).
 
 ### Sources still to research
 
@@ -74,7 +60,7 @@ Priority below reflects rough value: **High** = v1 target, **Medium** = v1 if fe
 
 Scraped data rarely maps cleanly to the event schema. Each source structures its events differently — one has a clear distance field, another buries it in a description paragraph, a third does not mention it at all. A three-layer approach handles this consistently across sources.
 
-> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **Adressevælger** (DAWA shut down on 1 October 2026). Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope for v1** (no difficulty field in the schema). The tables below use the real schema keys.
+> **Reconciled with the real schema.** Distance, start time, cut-off time, and price live **inside `event_routes`** (an array of route objects), not as flat fields. `is_free` is **computed at read time** from route prices (never stored as meta), and `event_length` (Short/Medium/Long taxonomy) is **auto-assigned on save** from route distances. Geocoding uses **Adressevælger** (DAWA shut down on 1 October 2026). Field names use British spelling (`event_organiser_name`). Difficulty is **out of scope** (no difficulty field in the schema). The tables below use the real schema keys.
 
 ### Layer 1 — Direct field mapping
 
@@ -165,7 +151,7 @@ The base class then provides:
 - `record_warning( string $message ): void` — records a problem that does not stop the run; shown under the scraper's row in the Scraper Log (read by the scheduler with `take_warnings()`).
 - `mark_source_url_seen( string $url ): void` — scrapers call this for every URL found in the source's listing, *before* fetching the detail page, so a temporarily unreachable detail page is not mistaken for a removed event. `run()` also marks the source URL of every parsed event automatically.
 
-> **Kept simple for v1.** The original plan proposed a third `normalise()` method plus a shared `FieldMapper` utility. These do not exist and are deferred: for v1 the Layer 2 regex lives inside each scraper's `parse()` or small private helpers. Extracting a shared `FieldMapper` is the right move once a second scraper needs the same patterns.
+> Each scraper parses its fields (the Layer 2 regex) in its own `parse()` or small private helpers. The patterns follow each site's HTML, so there is no shared field-mapping code.
 
 ### Geocoding (server-side Adressevælger helper) — built
 
@@ -289,9 +275,9 @@ Recurring occurrences are deduplicated differently instead, without touching pub
 - **Old `/event/` base.** `Vandrekalender_Legacy_Event_Urls` 301-redirects the pre-Polylang `/event/{slug}/` URLs (still indexed, still hit) to the current `/begivenhed/{slug}/` permalink; a second hop into the redirect above is expected and fine.
 - **Restoring what the old sweep already drafted.** `wp vandrekalender restore-past-drafts [--dry-run]` republishes scraped, unclaimed drafts the old cleanup created — distinguished from a draft caused by the removal sweep above (`event_date` on or after `post_modified` means cancelled at the source, left alone) by `event_date` being at least 6 days before `post_modified` (the cleanup ran 7+ days after the event). It publishes with `wp_update_post` and verifies `post_name` didn't change.
 
-Tombstones (not re-creating admin-deleted events) are deferred to v2 ([#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36)). Deleting events older than ~12 months and answering 410 Gone is also deferred ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
+Tombstones (not re-creating admin-deleted events) are not built ([#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36)). Deleting events older than ~12 months and answering 410 Gone is not built either ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)).
 
-> Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim-flow milestone.
+> Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim flow ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)).
 
 ### Scheduling
 
@@ -307,11 +293,11 @@ Trigger manually:
 ./wp.sh cron event run vandrekalender_run_scrapers
 ```
 
-> **Planned (v2):** per-source schedules instead of one shared daily run ([#39](https://github.com/petyaferreira/vandrekalender-wp/issues/39)).
+> **Not built:** per-source schedules instead of one shared daily run ([#39](https://github.com/petyaferreira/vandrekalender-wp/issues/39)).
 
 ---
 
-## Planned (v2 and later)
+## Not Built Yet
 
 None of the following exists in code yet. Open work is tracked as GitHub issues; this section keeps the design notes and decisions.
 
@@ -327,21 +313,16 @@ Events deleted by an admin should not be re-created on the next scrape. Maintain
 plus the current schedule status. Runs are stored in the `vandrekalender_scraper_runs`
 option (capped, most recent first) by `Vandrekalender_Scraper_Log`.
 
-Still planned: a queue of flagged events needing manual enrichment
-([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)), and a
-per-scraper "Run now" button in the UI.
+Not built: a queue of flagged events needing manual enrichment
+([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)).
 
 ### Facebook scraping
 
-**Decision (2026-06-24): API deferred to v2.** Not worth the cost for v1. **Update (2026-07-03):** v1 instead ships the paste-a-link importer (**Events → Add from Facebook**, see [Facebook](#facebook) above) — no Meta app, best-effort Open Graph prefill into a draft.
+**Decision (2026-06-24): no Graph API.** Not worth the cost. **Update (2026-07-03):** the site ships the paste-a-link importer instead (**Events → Add from Facebook**, see [Facebook](#facebook) above) — no Meta app, best-effort Open Graph prefill into a draft.
 
-Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) are effectively closed to outside apps.
+Reading event data through the Graph API needs a Meta Developer App plus App Review (weeks), and usually business verification and a privacy policy. The bigger problem is access: Meta has locked down public content, so reading events from Pages or groups you do **not** own is largely unavailable to third-party apps. The only reliable route is reading events for a Page that you or the organiser admin, using that Page's access token. Private groups (e.g. Vandring Danmark) and small local walking groups are effectively closed to outside apps, so their events come in through the bookmarklet routine above, manual entry, or the organiser.
 
-For v1, Facebook-only events (e.g. AMA Vandringen) are handled by manual entry or by the organiser submitting/claiming the event. Revisit the API only if an organiser partnership makes a Page-token approach worthwhile. If pursued later: available fields are name, description, start_time, end_time, place (name + location), cover photo; distance is almost never structured, so Layer 2 regex on the description usually falls through to Layer 3.
-
-### LLM extraction (V3)
-
-Once the source list grows beyond ~10 sources, hand-maintaining Layer 1 selector maps and Layer 2 regex per source becomes impractical. The V3 approach: feed raw event HTML to an LLM with a prompt to return structured JSON matching the schema. The LLM replaces Layers 1 and 2 — it reads free-form content and returns typed fields. Layer 3 (required-field validation and flagging) still applies on top. Adding a source then becomes trivial: just a URL, no custom scraper class.
+Facebook-only events (e.g. AMA Vandringen) are handled by manual entry or by the organiser submitting/claiming the event. Revisit the API only if an organiser partnership makes a Page-token approach worthwhile. If pursued later: available fields are name, description, start_time, end_time, place (name + location), cover photo; distance is almost never structured, so Layer 2 regex on the description usually falls through to Layer 3.
 
 ---
 
