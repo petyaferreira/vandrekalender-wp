@@ -54,7 +54,7 @@
         "wp-coding-standards/wpcs": "^3.1",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "squizlabs/php_codesniffer": "^3.11",
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^13.4"
     },
     "extra": {
         "installer-paths": {
