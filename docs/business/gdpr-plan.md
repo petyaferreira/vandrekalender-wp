@@ -41,7 +41,7 @@ These are things only you can do because they need your logins. Order does not m
 5. Fluent Forms retention. In wp-admin, Fluent Forms, Settings, look for the option to not store entries in the database, or set a reminder to delete entries older than 12 months. The simplest is to turn off storing entries, since the message also arrives at kontakt@ by email.
 6. Read the Danish privacy policy draft below, fix anything that is wrong about how the site actually works, and give it to Claude Code as the page content.
 7. Save the fortegnelse section below as a file in the project folder. It is the one document Datatilsynet may ask for.
-8. Set a yearly reminder to re-read the privacy policy when features change. The next known trigger is the V2 organisation entity and event claiming, which adds new data.
+8. Set a yearly reminder to re-read the privacy policy when features change. The next known trigger is organisation members and event claiming ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)), which adds new data.
 
 ## Tasks for Claude Code
 

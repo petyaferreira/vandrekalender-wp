@@ -18,6 +18,6 @@
 
 ---
 
-## V1 vs. V2+ Scope
+## Free and Paid
 
-<!-- What's in v1 for free, what's deferred to paid tiers go here -->
+Not written yet: [#45](https://github.com/petyaferreira/vandrekalender-wp/issues/45).

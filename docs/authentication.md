@@ -1,8 +1,8 @@
 # Vandrekalender.dk — Authentication & Organization Architecture
 
-**Version 1.1 · Technical Document**
-
 Defines the authentication flow, user roles, email verification policy, the organizer entity, and how multiple users share ownership of an organization's events.
+
+> **What is built:** the Event Author role with a restricted wp-admin where authors see only their own events, login with Google or a WordPress account, and the [Join Gate](#the-join-gate--logging-in-mid-action). Email verification is not enforced ([#40](https://github.com/petyaferreira/vandrekalender-wp/issues/40)). Everything about organisation members (domain match, shared list, "Post as", claiming) is design, not built: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86). [Status](#status) lists each piece.
 
 ---
 
@@ -54,13 +54,13 @@ The organizer is promoted from a free-text field to a real entity, implemented a
 - Term meta `email_domain` stores the organization's email domain (e.g. `dvl.dk`).
 - The scraper seeds organizer terms automatically: when importing from `dvl.dk`, it creates/finds the DVL term and saves the domain extracted from `event_source_url`.
 
-> **Data model impact:** `event_organiser_name` (free string) remains for display/scraper fallback, but ownership and querying use the `organizer` taxonomy term. To be reflected in DataModel v4.
+> **Data model impact:** `event_organiser_name` (free string) remains for display/scraper fallback, but ownership and querying use the `organizer` taxonomy term.
 
 ## Linking Users to an Organization
 
 Each user optionally carries a user meta field `organizer_id` containing the term ID of their organization. Users without it are solo organizers.
 
-### V1 — Automatic: email domain match
+### Automatic: email domain match
 
 1. User completes email verification (OAuth or confirmation link).
 2. The system extracts the domain from the email address (the part after `@`).
@@ -90,11 +90,11 @@ function vk_attach_user_to_organizer($user_id, $email) {
 
 **Public email provider blocklist (hardcoded):** gmail.com, googlemail.com, hotmail.com, outlook.com, live.com, yahoo.com, icloud.com, protonmail.com, mail.dk, youmail.dk, ofir.dk. These domains may never be saved as an organization's `email_domain`, and never trigger attachment.
 
-### V1 — Fallback: admin manual assignment
+### Fallback: admin manual assignment
 
 Many volunteer organizations (DVL chapters in particular) have members on private Gmail addresses, so domain match will not catch everyone. The site admin can set `organizer_id` on any user from wp-admin. Low volume, ~30 seconds per case.
 
-### V2 — Member invitations
+### Member invitations
 
 Tracked in [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41).
 
@@ -124,11 +124,11 @@ An organization member is not forced to post everything under the organization's
 
 **Flat structure — decided.** All members of an organization are equal. There is no owner or admin role inside an organization, no internal permission matrix.
 
-- **Joining:** domain match (automatic), admin assignment (V1 fallback), invitation (V2). All require a verified email first.
-- **Removal / leaving:** handled exclusively by the **site admin**, on request. Organizations contact the site to have a member removed (e.g. an employee who left). No self-service removal in V1/V2.
+- **Joining:** domain match (automatic), admin assignment (fallback), invitation. All require a verified email first.
+- **Removal / leaving:** handled exclusively by the **site admin**, on request. Organizations contact the site to have a member removed (e.g. an employee who left). No self-service removal.
 - **Stale membership:** there is no automatic detection when someone leaves the real-world organization. Their access remains until the organization requests removal.
 
-**Site content task:** the contact-based membership management must be communicated on the site — a short paragraph on `/om` and a line in `/vilkaar` for V1, later consolidated into a dedicated "For arrangører" info page.
+**Site content task:** the contact-based membership management must be communicated on the site — a short paragraph on `/om` and a line in `/vilkaar` first, later consolidated into a dedicated "For arrangører" info page.
 
 **Future monetization note (non-binding):** manual membership management is the free tier. Self-service member management, multiple organization admins, verified badges, or analytics are candidate paid features. Removal of a member is never paywalled.
 
@@ -221,28 +221,22 @@ Because email verification is not yet enforced (see above; [#40](https://github.
 
 ## Interaction with the Claim Flow
 
-When a scraped event is claimed (domain-matched token email, per DataModel v3), the claim attaches the event to the **organizer term**, not just to the claiming individual. Every member of that organization then benefits from the claim. `event_claimed_by` still records which individual performed the claim.
+When a scraped event is claimed (domain-matched token email, see [data-model.md](data-model.md)), the claim attaches the event to the **organizer term**, not just to the claiming individual. Every member of that organization then benefits from the claim. `event_claimed_by` still records which individual performed the claim.
 
-## Phase Plan
+## Status
 
-| Feature | Phase |
+| Feature | Status |
 |---|---|
-| Event Author role + restricted wp-admin | V1 |
-| Google OAuth login | V1 |
-| Email/password registration with mandatory email verification | V1 |
-| Organizer taxonomy + term `email_domain` seeded by scraper | V1 |
-| Automatic attachment via email domain match (post-verification) | V1 |
-| Public email provider blocklist | V1 |
-| Admin manual organization assignment | V1 |
-| Shared event list (`post__in` merge + `map_meta_cap`) | V1 |
-| "Post as" toggle in the Organiser panel (author-only) | V1 |
-| "Posted as" admin column + filter tabs (views) | V1 |
-| `event_last_edited_by` meta | V1 |
-| Membership management copy on `/om` and `/vilkaar` | V1 |
-| Member invitations | V2 |
-| Organizer claim flow attaching to organizer term | V2 |
-| "For arrangører" dedicated info page | V2 |
-| Self-service member management (candidate paid feature) | V3+ |
+| Event Author role + restricted wp-admin | Built (`Vandrekalender_Roles`) |
+| Google OAuth login | Built (Login with Google plugin) |
+| Email/password registration | Built (native WordPress). Mandatory email verification: [#40](https://github.com/petyaferreira/vandrekalender-wp/issues/40) |
+| Organiser taxonomy, terms set by the scrapers | Built as `event_organiser`. Term meta `email_domain`: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
+| Automatic attachment via email domain match, public email provider blocklist, admin manual assignment | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
+| Shared event list (`post__in` merge + `map_meta_cap`), "Post as" toggle, "Posted as" column + filter tabs, `event_last_edited_by` | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
+| Membership management copy on `/om` and `/vilkaar`, later a "For arrangører" page | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
+| Organizer claim flow attaching to organizer term | [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
+| Member invitations | [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41) |
+| Self-service member management (candidate paid feature) | An idea, no issue yet; see [monetisation](business/monetisation.md) |
 
 ## Resolved Decisions Log
 
@@ -251,14 +245,10 @@ When a scraped event is claimed (domain-matched token email, per DataModel v3), 
 | Multiple organizations per user? | No. One `organizer_id` per email. Second context = second email/account |
 | Can org members post privately? | Yes — "Post as" toggle, organization is the default, author-only control |
 | Member removal — who and how? | Site admin only, on request from the organization. Flat structure, no internal roles |
-| Invitation permission levels? | None. All members equal (flat). Hierarchy deferred to V3 at the earliest |
+| Invitation permission levels? | None. All members equal (flat). No hierarchy planned |
 | Stale membership after leaving the real organization? | No automatic detection. Removed by admin on request |
 
 ## Open Questions
 
-- Final placement and wording of the membership management copy (short `/om` paragraph + `/vilkaar` line for V1; dedicated "For arrangører" page later).
+- Final placement and wording of the membership management copy (short `/om` paragraph + `/vilkaar` line first; dedicated "For arrangører" page later).
 - Monetization model and timing for organization tooling (self-service management, multiple admins, verified badge, analytics). Principle fixed: member removal is never paywalled.
-
----
-
-*allevandreture.dk — Authentication & Organization Architecture v1.1*
