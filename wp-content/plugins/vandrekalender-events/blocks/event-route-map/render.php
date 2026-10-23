@@ -42,9 +42,6 @@ if ( empty( $vk_gpx_routes ) ) {
 	return;
 }
 
-// Leaflet's CSS is bundled into this block's stylesheet (leaflet/style.css, imported in index.js), not
-// injected from JS — see docs/frontend.md.
-
 /**
  * Format a route's distance as "N km", trimming trailing zeroes.
  *

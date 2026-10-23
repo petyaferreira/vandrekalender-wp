@@ -14,11 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Leaflet's CSS is bundled into this block's stylesheet (leaflet/style.css, imported in index.js), NOT
-// injected from view.js: the interactivity router manages the <head> across
-// client-side navigations, and JS-injected <link> tags come out of that
-// morphing present but no longer applied. The block stylesheet is part of
-// every server render, so the router keeps it.
+// Leaflet's CSS ships in the block stylesheet, never injected from JS: see docs/frontend.md.
 
 // Pin what the page itself filters by (the term on a region or length
 // archive, the organiser on its page), so the map only shows that
