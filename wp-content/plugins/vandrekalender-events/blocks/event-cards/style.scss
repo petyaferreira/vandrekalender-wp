@@ -124,6 +124,39 @@
     line-height: 1.2;
   }
 
+  // Organiser line under the title (variant B in
+  // docs/design/organiser-page/Kort.dc.html), plain text inside the card's
+  // link: a round 24px logo or initials, then the name.
+  &__organiser {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    font-weight: 600;
+  }
+
+  &__organiser-badge {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+    border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
+    border-radius: 50%;
+    background: var(--wp--preset--color--cream, #faf5ec);
+    color: var(--wp--preset--color--forest, #2d5f3f);
+    font-size: 10px;
+    font-weight: 600;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
   &__place {
     font-size: var(--wp--preset--font-size--small, 0.875rem);
     color: var(--wp--preset--color--pebble, #7a7268);
