@@ -265,15 +265,15 @@
         },
         {
             "name": "wpackagist-plugin/polylang",
-            "version": "3.9.0",
+            "version": "3.9.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/polylang/",
-                "reference": "trunk"
+                "reference": "tags/3.9.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/polylang.zip?timestamp=1792398807"
+                "url": "https://downloads.wordpress.org/plugin/polylang.3.9.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -2543,5 +2543,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
