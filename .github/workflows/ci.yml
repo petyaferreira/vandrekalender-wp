@@ -25,6 +25,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      # PHP 8.4, the version Nordicway and local Docker run (decision 0011).
+      # ubuntu-latest ships 8.3.
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+
       # With dev packages: PHPCS and PHPUnit are two.
       - name: Install Composer packages
         run: composer install --no-interaction --prefer-dist
