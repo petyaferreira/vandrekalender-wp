@@ -1,5 +1,5 @@
 #!/bin/bash
-# The single check that a change is ready: CLAUDE.md size, Dependabot coverage, PHPCS, Prettier,
+# The single check that a change is ready: PHP and Node versions, CLAUDE.md size, Dependabot coverage, PHPCS, Prettier,
 # unit tests, the PR risk rules and both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
@@ -66,6 +66,21 @@ build() {
     return 1
 }
 
+# The PHP and Node every environment runs (decisions 0011 and 0012). npm only
+# warns about an unsupported Node, so without this a wrong version stays green.
+PHP_VERSION=8.4
+
+runtime_versions() {
+    local php node want_node ok=0
+    php=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')
+    node=$(node -p 'process.versions.node.split(".")[0]')
+    want_node=$(tr -d '[:space:]v' <.nvmrc)
+    echo "PHP $php (want $PHP_VERSION), Node $node (want $want_node, from .nvmrc)"
+    [ "$php" = "$PHP_VERSION" ] || ok=1
+    [ "$node" = "$want_node" ] || ok=1
+    return $ok
+}
+
 # CLAUDE.md is read by every agent on every task, so it stays a map.
 MAX_CLAUDE_MD_LINES=25
 
@@ -102,6 +117,7 @@ dependabot_coverage() {
     return $missing
 }
 
+run versions "switch to the version named above: nvm use for Node; for PHP see docs/decisions/0011-php-84-everywhere.md. To change the version, change it everywhere (decisions 0011 and 0012)" runtime_versions
 run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
 run dependabot "add the missing entry to .github/dependabot.yml (docs/principles/dependabot-for-dependencies.md)" dependabot_coverage
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs

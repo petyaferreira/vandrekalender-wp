@@ -32,6 +32,7 @@ One issue per run, even when it finished early. In the cloud there is no Docker 
 Before `./validate.sh`, install what CI installs (`.github/workflows/ci.yml`):
 
 ```bash
+export PATH=/opt/node24/bin:$PATH
 export COMPOSER_ALLOW_SUPERUSER=1
 composer config --global 'preferred-install.wpackagist-plugin/*' dist
 composer config --global 'preferred-install.wpackagist-theme/*' dist
@@ -42,11 +43,15 @@ npm ci
 (cd wp-content/plugins/vandrekalender-events && (npm ci || npm install))
 ```
 
+Shell state does not carry over between commands, so start **every** command that runs `node`, `npm` or `./validate.sh` with `export PATH=/opt/node24/bin:$PATH`. Otherwise the sandbox's own Node 22 runs, and the `versions` check in `./validate.sh` fails.
+
+PHP 8.4 and Node 24 come from the environment's setup script, not from the repo: the sandbox ships PHP 8.3 and Node 20–22, and we use PHP 8.4 and Node 24 everywhere ([decisions 0011](../decisions/0011-php-84-everywhere.md) and [0012](../decisions/0012-node-24-everywhere.md)). The script installs PHP 8.4 from the `ondrej/php` PPA (key from `keyserver.ubuntu.com`, packages from `ppa.launchpadcontent.net`, both on the environment's allowed domains) and Node 24 from `nodejs.org` into `/opt/node24`. It ends by checking both versions, so a session on the wrong version fails at startup ("Setup script failed") instead of running. The script only lives in claude.ai/code → environment settings; its text is in [#150](https://github.com/petyaferreira/vandrekalender-wp/issues/150).
+
 The sandbox runs as root, and Composer then turns its plugins off. This repo needs two: one registers the WordPress standard with PHPCS (without it the `phpcs` check fails), the other installs the WordPress plugins into `wp-content/`. `COMPOSER_ALLOW_SUPERUSER=1` turns them back on; the sandbox is discarded after each run.
 
 The sandbox's network proxy blocks `api.github.com` for every repo but this one, so Composer cannot download GitHub packages (PHPCS, PHPUnit and most others) as zips. The `preferred-install` lines make it clone them with `git` instead, which works. WordPress plugins and themes stay zips from `downloads.wordpress.org`: their fallback is `svn`, which the sandbox does not have. Do not add `--prefer-dist`, it overrides these lines. The install takes about 6½ minutes. The global config only lives in the sandbox; `composer.json`, CI and local installs are unchanged. The environment's network access must allow `wpackagist.org` and `downloads.wordpress.org` (claude.ai/code → environment settings).
 
-Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreira/vandrekalender-wp/issues/81)): PHP 8.3, Composer 2.8, Node 22, and `gh` can reach the repo with push rights. `gh auth status` reports the token as invalid there although API calls work; trust the API calls, not that line. The install steps above were checked by probe runs on 20 October 2026: `composer install` exits 0 and `phpcs` lists the WordPress standard.
+Checked by a probe run on 19 October 2026 ([#81](https://github.com/petyaferreira/vandrekalender-wp/issues/81)): Composer 2.8, and `gh` can reach the repo with push rights. `gh auth status` reports the token as invalid there although API calls work; trust the API calls, not that line. The install steps above were checked by probe runs on 20 October 2026: `composer install` exits 0 and `phpcs` lists the WordPress standard.
 
 ## For Petya
 
