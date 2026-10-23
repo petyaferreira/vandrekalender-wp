@@ -17,7 +17,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 
 ## Format
 
-A record is written in the same PR as the change that makes the decision ([pull-requests.md](../contributing/pull-requests.md#before-opening-a-pr)). A new record is the next number, `NNNN-short-name.md`, and only for a decision that would otherwise be proposed again. A two-way tweak needs no record ([two-way doors](../principles/two-way-doors.md)).
+A record is written in the same PR as the change that makes the decision ([pull-requests.md](../contributing/pull-requests.md#before-opening-a-pr)). A new record is the next number, `NNNN-short-name.md`, even when the decision was taken earlier: numbers follow the order records were written, and the date is when the decision was taken (0004 and 0010 are dated before the record above them). A record is only for a decision that would otherwise be proposed again. A two-way tweak needs no record ([two-way doors](../principles/two-way-doors.md)).
 
 ```markdown
 # NNNN: <the decision, as a statement>
