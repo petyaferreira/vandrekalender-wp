@@ -36,3 +36,4 @@ require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-sportstiming.php
 require __DIR__ . '/fakes/class-test-scraper-dvl.php';
 require __DIR__ . '/fakes/class-test-scraper-mammut.php';
 require __DIR__ . '/fakes/class-test-scraper-opdagverden.php';
+require __DIR__ . '/fakes/class-test-scraper-sportstiming.php';
