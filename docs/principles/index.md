@@ -9,7 +9,7 @@ Short rules for how we build Vandrekalender. Each page is one rule with a real e
 | [Fail loudly at the right layer](fail-loudly.md) | A lookup, file or install could be missing and the code could carry on quietly |
 | [Two-way and one-way doors](two-way-doors.md) | Changing URLs, stored meta shapes or production data; deciding how much review a change needs |
 | [Examples over prose](examples-over-prose.md) | Writing docs, or a procedure with several steps |
-| [Dependabot for every npm package.json](dependabot-for-npm.md) | Adding, moving or removing a `package.json`, or adding a third-party library |
+| [Dependabot watches every dependency file](dependabot-for-dependencies.md) | Adding, moving or removing a `package.json` or `composer.json`, or adding a third-party library |
 | [Keep agent context lean](lean-agent-context.md) | Editing `CLAUDE.md` or an `index.md`, or deciding where a rule belongs |
 
 How we work: [../contributing/](../contributing/index.md). How the product works: [../index.md](../index.md).

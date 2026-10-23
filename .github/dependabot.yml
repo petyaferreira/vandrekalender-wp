@@ -12,3 +12,7 @@ updates:
     directory: /wp-content/themes/vandrekalender-theme
     schedule:
       interval: weekly
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
