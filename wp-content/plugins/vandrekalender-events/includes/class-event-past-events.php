@@ -166,11 +166,7 @@ class Vandrekalender_Event_Past_Events {
 	private function is_past( int $post_id ): bool {
 		$date = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_DATE, true );
 
-		if ( '' === $date ) {
-			return false;
-		}
-
-		return $date < current_time( 'Y-m-d' );
+		return \Vandrekalender\Event::is_past_date( $date );
 	}
 
 	/**

@@ -820,6 +820,23 @@ class Event {
 	}
 
 	/**
+	 * Whether an event date (Y-m-d) is before today in the site timezone, so an
+	 * event stays open for booking all of its own day. An event without a date
+	 * is never past.
+	 *
+	 * @param string      $date  Event date, Y-m-d, or ''.
+	 * @param string|null $today Today as Y-m-d; defaults to the site's today.
+	 * @return bool
+	 */
+	public static function is_past_date( string $date, ?string $today = null ): bool {
+		if ( '' === $date ) {
+			return false;
+		}
+
+		return $date < ( $today ?? current_time( 'Y-m-d' ) );
+	}
+
+	/**
 	 * Up to three initials for an organiser's badge, until it has a logo:
 	 * "Over Stok og Sten" → "OSS". Short joining words are skipped.
 	 *
