@@ -285,16 +285,25 @@ class Organiser {
 	}
 
 	/**
+	 * The published organiser post per event_organiser term ID.
+	 *
+	 * @return array<int,int>
+	 */
+	public function published_posts(): array {
+		if ( null === $this->published_posts ) {
+			$this->published_posts = array_flip( array_filter( $this->linked_terms( 'publish' ) ) );
+		}
+		return $this->published_posts;
+	}
+
+	/**
 	 * The published organiser post linked to a term, 0 when there is none.
 	 *
 	 * @param int $term_id event_organiser term ID.
 	 * @return int
 	 */
 	public function published_post_for_term( int $term_id ): int {
-		if ( null === $this->published_posts ) {
-			$this->published_posts = array_flip( array_filter( $this->linked_terms( 'publish' ) ) );
-		}
-		return $this->published_posts[ $term_id ] ?? 0;
+		return $this->published_posts()[ $term_id ] ?? 0;
 	}
 
 	/**

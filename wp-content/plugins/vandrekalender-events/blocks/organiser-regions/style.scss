@@ -1,0 +1,41 @@
+// "Ture i hele landet" list (docs/design/organiser-page/): one bordered box,
+// a row per region with its count on the right.
+ul.vk-organiser-regions {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
+  border-radius: 12px;
+  list-style: none;
+}
+
+.vk-organiser-regions {
+  &__item + &__item {
+    border-top: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-sizing: border-box;
+    min-height: 52px;
+    padding: 0 24px;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--wp--preset--color--cream, #faf5ec);
+    }
+  }
+
+  &__count {
+    flex: none;
+    color: var(--wp--preset--color--forest, #2d5f3f);
+    font-weight: 600;
+  }
+}

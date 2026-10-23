@@ -68,7 +68,7 @@ It lazy-loads Leaflet and the `leaflet-gpx` plugin with a dynamic `import()` of 
 
 A download link per route sits below the map.
 
-**Organiser page blocks** (`blocks/organiser-*`, used only in the organiser section patterns, hidden from the inserter). **Organiser Logo** renders the organiser page's featured image in a circle, or `Event::organiser_initials()` of the page title until there is one. **Official Organiser Badge** renders "Officiel arrangør" only when `organiser_official` is set; in the editor it shows faded otherwise. **Organiser Stats** and **Organiser Regions** render nothing yet (a placeholder in the editor): their numbers are step 5c of the [organisers plan](plans/organisers-plan.md), and they exist now so pages written before then already contain them.
+**Organiser page blocks** (`blocks/organiser-*`, used only in the organiser section patterns, hidden from the inserter). **Organiser Logo** renders the organiser page's featured image in a circle, or `Event::organiser_initials()` of the page title until there is one. **Official Organiser Badge** renders "Officiel arrangør" only when `organiser_official` is set; in the editor it shows faded otherwise. **Organiser Stats** renders tiles for the organiser's upcoming walks, the regions they are in and the shortest to longest route (left out when no route has a distance). **Organiser Regions** lists those regions with their number of walks, most first, each linking to the same page filtered by the region at its walks (`?region=<slug>#kommende-ture`), or "Der er ingen kommende ture lige nu." without walks. **Other Organisers** ("Andre arrangører", in `single-organiser.html`, not in the post) shows up to six other organisers with a published page, those sharing the most regions first, then by number of walks; nothing when there is no other page. All three compute from the linked term's upcoming walks on every render, never stored, through `Organiser_Walks` (one query for every organiser's upcoming walks per request). In the editor, Stats and Regions show a placeholder text.
 
 **Event count shortcodes** (registered in `vandrekalender-events.php`, for use inside paragraph text). Both render an inline `<span>` that inherits the surrounding text colour and size:
 
@@ -87,7 +87,7 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
 | `single-event.html` | Single event view. |
-| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Organiser::filter_breadcrumbs()`) and the post content. The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
+| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Organiser::filter_breadcrumbs()`), the post content and Other Organisers ("Andre arrangører"). The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `index.html`, `taxonomy.html` | Archive fallbacks. |
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
@@ -126,7 +126,7 @@ With no filters from the visitor and nothing upcoming, Event Cards says "Der er 
 | `organiser-about` | Two columns: "Om arrangøren" heading (renamed per organiser), text and an image, then "Ture i hele landet" with Organiser Regions |
 | `organiser-faq` | "Ofte stillede spørgsmål" and a core Accordion, starting with two questions that fit every organiser |
 
-Each pattern's outer group has `templateLock: "contentOnly"`: texts, images, links and FAQ questions can be changed and added, the sections and their order cannot. The patterns are in the theme, the post type's `template` names them from the plugin; it only applies to a new page, so changing a pattern does not change pages already written. Styles: `.vk-organiser-page` and `.vk-organiser-hero` in the theme's `screen.scss`, the logo and badge in their blocks.
+Each pattern's outer group has `templateLock: "contentOnly"`: texts, images, links and FAQ questions can be changed and added, the sections and their order cannot. The patterns are in the theme, the post type's `template` names them from the plugin; it only applies to a new page, so changing a pattern does not change pages already written. Styles: `.vk-organiser-page` and `.vk-organiser-hero` in the theme's `screen.scss`, the logo, badge, stats, regions and other organisers in their blocks.
 
 ---
 

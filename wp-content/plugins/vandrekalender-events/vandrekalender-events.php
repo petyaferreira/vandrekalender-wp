@@ -45,6 +45,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-dvl.ph
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-opdagverden.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/event/class-event.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/organiser/class-organiser-walks.php';
 
 new Vandrekalender_Roles();
 new Vandrekalender_Gpx_Uploads();
