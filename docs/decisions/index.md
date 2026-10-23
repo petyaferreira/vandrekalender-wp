@@ -16,6 +16,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0010](0010-leaflet-bundled-from-npm.md) | Leaflet and its plugins are bundled from npm, not loaded from a CDN | 8 Oct 2026 |
 | [0011](0011-php-84-everywhere.md) | PHP 8.4 everywhere, the version Nordicway runs | 23 Oct 2026 |
 | [0012](0012-node-24-everywhere.md) | Node 24 everywhere, set once in `.nvmrc` | 23 Oct 2026 |
+| [0013](0013-github-rest-only-in-the-cloud.md) | In the cloud, agents use the GitHub REST API only; GraphQL is blocked by design | 23 Oct 2026 |
 
 ## Format
 
