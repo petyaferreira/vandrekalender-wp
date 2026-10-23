@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 $vk_post_id = (int) ( $block->context['postId'] ?? get_the_ID() );
 $vk_term    = $vk_post_id ? \Vandrekalender\Organiser::term_for_post( $vk_post_id ) : null;
-$vk_pages   = \Vandrekalender\Organiser::instance()->published_posts();
+$vk_pages   = \Vandrekalender\Organiser_Walks::other_pages( \Vandrekalender\Organiser::instance()->published_posts(), $vk_post_id );
 
 $vk_names = [];
 foreach ( $vk_pages as $vk_term_id => $vk_page_id ) {

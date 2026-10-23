@@ -179,6 +179,24 @@ class Organiser_Walks {
 	}
 
 	/**
+	 * The published organiser pages other than the one shown, by post ID: a
+	 * page without a term (a draft preview, or its term deleted) is still
+	 * left out.
+	 *
+	 * @param array<int,int> $pages   Published page per term ID.
+	 * @param int            $post_id The organiser page shown.
+	 * @return array<int,int>
+	 */
+	public static function other_pages( array $pages, int $post_id ): array {
+		return array_filter(
+			$pages,
+			static function ( int $page_id ) use ( $post_id ): bool {
+				return $page_id !== $post_id;
+			}
+		);
+	}
+
+	/**
 	 * The other organisers to show under "Andre arrangører": those sharing
 	 * the most regions with this one first, then those with the most
 	 * upcoming walks, then by name.

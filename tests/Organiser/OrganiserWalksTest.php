@@ -179,6 +179,27 @@ class OrganiserWalksTest extends TestCase {
 	}
 
 	/**
+	 * The page shown is left out by its post ID, also when its term is gone
+	 * and the lookup still has it under the old term ID.
+	 */
+	public function test_other_pages_leave_out_the_page_shown(): void {
+		$pages = [
+			10 => 100,
+			20 => 200,
+			30 => 300,
+		];
+
+		$this->assertSame(
+			[
+				10 => 100,
+				30 => 300,
+			],
+			Organiser_Walks::other_pages( $pages, 200 )
+		);
+		$this->assertSame( $pages, Organiser_Walks::other_pages( $pages, 999 ) );
+	}
+
+	/**
 	 * At most the limit is returned.
 	 */
 	public function test_related_limit(): void {
