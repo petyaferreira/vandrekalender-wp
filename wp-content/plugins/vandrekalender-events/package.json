@@ -13,7 +13,7 @@
         "start:resources": "rm -rf build/resources && (wp-scripts start resources/event-meta-fields/index.js --output-path=build/resources/event-meta-fields & wp-scripts start resources/organiser-fields/index.js --output-path=build/resources/organiser-fields & wp-scripts start resources/filtered-count/index.js --output-path=build/resources/filtered-count)"
     },
     "devDependencies": {
-        "@wordpress/icons": "^18.0.0",
+        "@wordpress/icons": "^19.0.0",
         "@wordpress/scripts": "^37.0.0"
     },
     "dependencies": {
