@@ -40,6 +40,14 @@ jobs:
           ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
           fetch-depth: 0
 
+      # PHP 8.4, the version Nordicway and local Docker run (decision 0011).
+      # ubuntu-latest ships 8.3.
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+
       - name: Install Composer packages
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
