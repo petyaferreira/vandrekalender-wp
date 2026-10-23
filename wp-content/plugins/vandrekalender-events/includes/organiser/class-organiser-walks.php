@@ -5,7 +5,7 @@
  * The numbers on an organiser page, computed from the upcoming walks of its
  * event_organiser term on every render, never typed by hand (step 5c of
  * docs/plans/organisers-plan.md): the Organiser Stats, Organiser Regions and
- * Other Organisers blocks.
+ * Organiser List blocks.
  *
  * @package Vandrekalender
  */
@@ -176,6 +176,31 @@ class Organiser_Walks {
 	 */
 	public static function region_url( string $permalink, string $slug ): string {
 		return $permalink . ( str_contains( $permalink, '?' ) ? '&' : '?' ) . 'region=' . rawurlencode( $slug ) . '#kommende-ture';
+	}
+
+	/**
+	 * Every organiser with a page for the overview /arrangoerer/, by name,
+	 * with its number of upcoming walks and the names of its regions (most
+	 * walks first, as in regions()).
+	 *
+	 * @param array<int,array<int,array{regions:array<string,string>}>> $by_term Walks per term ID, from by_term().
+	 * @param array<int,string>                                         $names   Name per term ID of the organisers with a page.
+	 * @return array<int,array{term_id:int,walks:int,regions:string[]}>
+	 */
+	public static function overview( array $by_term, array $names ): array {
+		uasort( $names, 'strnatcasecmp' );
+
+		$overview = [];
+		foreach ( $names as $term_id => $name ) {
+			$walks      = $by_term[ $term_id ] ?? [];
+			$overview[] = [
+				'term_id' => (int) $term_id,
+				'walks'   => count( $walks ),
+				'regions' => array_column( self::regions( $walks ), 'name' ),
+			];
+		}
+
+		return $overview;
 	}
 
 	/**

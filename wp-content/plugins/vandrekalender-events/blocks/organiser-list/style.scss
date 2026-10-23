@@ -1,6 +1,7 @@
-// "Andre arrangører" under an organiser page (docs/design/organiser-page/):
+// Organiser cards: "Andre arrangører" under an organiser page and the
+// overview /arrangoerer/ (docs/design/organiser-page/),
 // one column on mobile, two from 600px, three from 960px.
-.vk-organiser-others {
+.vk-organiser-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -77,8 +78,18 @@
     font-weight: 600;
   }
 
-  &__walks {
+  &__walks,
+  &__regions {
     color: var(--wp--preset--color--pebble, #7a7268);
     font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__all {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    align-self: flex-start;
+    min-height: 44px;
+    font-weight: 600;
   }
 }

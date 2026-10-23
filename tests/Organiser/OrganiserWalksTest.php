@@ -179,6 +179,50 @@ class OrganiserWalksTest extends TestCase {
 	}
 
 	/**
+	 * The overview lists every organiser with a page by name, case and
+	 * numbers ignored, with its walks and its regions, most walks first.
+	 */
+	public function test_overview(): void {
+		$by_term = [
+			1 => [ self::walk( [ 'hoved' => 'Hovedstaden' ] ), self::walk( [ 'midt' => 'Midtjylland' ] ), self::walk( [ 'midt' => 'Midtjylland' ] ) ],
+			2 => [ self::walk( [ 'nord' => 'Nordjylland' ] ) ],
+		];
+		$names   = [
+			1 => 'Opdag Verden',
+			2 => 'dansk Vandrelaug',
+			3 => 'Mammutmarch',
+		];
+
+		$this->assertSame(
+			[
+				[
+					'term_id' => 2,
+					'walks'   => 1,
+					'regions' => [ 'Nordjylland' ],
+				],
+				[
+					'term_id' => 3,
+					'walks'   => 0,
+					'regions' => [],
+				],
+				[
+					'term_id' => 1,
+					'walks'   => 3,
+					'regions' => [ 'Midtjylland', 'Hovedstaden' ],
+				],
+			],
+			Organiser_Walks::overview( $by_term, $names )
+		);
+	}
+
+	/**
+	 * No organiser pages, an empty overview.
+	 */
+	public function test_overview_empty(): void {
+		$this->assertSame( [], Organiser_Walks::overview( [], [] ) );
+	}
+
+	/**
 	 * The page shown is left out by its post ID, also when its term is gone
 	 * and the lookup still has it under the old term ID.
 	 */

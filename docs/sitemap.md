@@ -18,6 +18,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | `/begivenhed/[slug]` | Single event detail page |
 | `/om` | About page — site mission, how it works, membership info |
 | `/kontakt` | Contact form |
+| `/arrangoerer/` | Organiser overview — every organiser with a published page, by name, with its upcoming walks and regions (the `organiser` post type archive, `archive-organiser.html`); "Se alle arrangører" on each organiser page links here |
 | `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>`. Shows the computed stats, regions and "Andre arrangører"; SEO is step 5e of [the organisers plan](plans/organisers-plan.md) |
 | `/privatlivspolitik` | Privacy policy (GDPR) |
 | `/vilkaar` | Terms of use |
@@ -119,6 +120,5 @@ All three tabs update simultaneously when filters change.
 
 ## Not Built Yet
 
-- Organiser overview page (`/arrangoerer/`, all organisers): the `organiser` post type archive exists with the default template; its own template is step 5d of [the organisers plan](plans/organisers-plan.md).
 - Organisation membership (email domain match, admin assignment, shared event list, membership copy on `/om` and `/vilkaar`): [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
 - Member invitations: [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41).

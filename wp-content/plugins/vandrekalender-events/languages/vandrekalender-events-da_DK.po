@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-23T10:58:11+00:00\n"
+"POT-Creation-Date: 2026-10-23T11:44:57+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -384,24 +384,34 @@ msgstr "Download GPX (%s km)"
 msgid "Official organiser"
 msgstr "Officiel arrangør"
 
-#: blocks/organiser-others/render.php:36
-#: build/blocks/organiser-others/render.php:36
+#: blocks/organiser-list/render.php:47
+#: build/blocks/organiser-list/render.php:47
 msgid "Other organisers"
 msgstr "Andre arrangører"
 
+#: blocks/organiser-list/render.php:51
+#: build/blocks/organiser-list/render.php:51
+msgid "There are no organiser pages yet."
+msgstr "Der er ingen arrangørsider endnu."
+
 #. translators: %s: number of upcoming walks.
-#: blocks/organiser-others/render.php:56
-#: build/blocks/organiser-others/render.php:56
+#: blocks/organiser-list/render.php:72
+#: build/blocks/organiser-list/render.php:72
 #, php-format
 msgid "%s upcoming walk"
 msgid_plural "%s upcoming walks"
 msgstr[0] "%s kommende tur"
 msgstr[1] "%s kommende ture"
 
-#: blocks/organiser-others/render.php:57
-#: build/blocks/organiser-others/render.php:57
+#: blocks/organiser-list/render.php:73
+#: build/blocks/organiser-list/render.php:73
 msgid "No upcoming walks"
 msgstr "Ingen kommende ture"
+
+#: blocks/organiser-list/render.php:90
+#: build/blocks/organiser-list/render.php:90
+msgid "See all organisers"
+msgstr "Se alle arrangører"
 
 #. translators: %s: number of upcoming walks in the region.
 #: blocks/organiser-regions/render.php:30
@@ -1113,7 +1123,7 @@ msgid "New Length Name"
 msgstr "Navn på ny længde"
 
 #: includes/event/class-event.php:766 includes/event/class-event.php:774
-#: includes/organiser/class-organiser.php:109
+#: includes/organiser/class-organiser.php:110
 msgid "Organisers"
 msgstr "Arrangører"
 
@@ -1141,62 +1151,62 @@ msgstr "Tilføj ny arrangør"
 msgid "New Organiser Name"
 msgstr "Ny arrangørs navn"
 
-#: includes/organiser/class-organiser.php:97
-#: includes/organiser/class-organiser.php:99
+#: includes/organiser/class-organiser.php:98
+#: includes/organiser/class-organiser.php:100
 msgid "Organiser pages"
 msgstr "Arrangørsider"
 
-#: includes/organiser/class-organiser.php:98
+#: includes/organiser/class-organiser.php:99
 msgid "Organiser page"
 msgstr "Arrangørside"
 
-#: includes/organiser/class-organiser.php:100
+#: includes/organiser/class-organiser.php:101
 msgid "Add New Organiser page"
 msgstr "Tilføj ny arrangørside"
 
-#: includes/organiser/class-organiser.php:101
+#: includes/organiser/class-organiser.php:102
 msgid "Edit Organiser page"
 msgstr "Redigér arrangørside"
 
-#: includes/organiser/class-organiser.php:102
+#: includes/organiser/class-organiser.php:103
 msgid "View Organiser page"
 msgstr "Vis arrangørside"
 
-#: includes/organiser/class-organiser.php:103
+#: includes/organiser/class-organiser.php:104
 msgid "View Organiser pages"
 msgstr "Vis arrangørsider"
 
-#: includes/organiser/class-organiser.php:104
+#: includes/organiser/class-organiser.php:105
 msgid "All Organiser pages"
 msgstr "Alle arrangørsider"
 
-#: includes/organiser/class-organiser.php:105
+#: includes/organiser/class-organiser.php:106
 msgid "Search Organiser pages"
 msgstr "Søg i arrangørsider"
 
-#: includes/organiser/class-organiser.php:106
+#: includes/organiser/class-organiser.php:107
 msgid "No organiser pages found."
 msgstr "Ingen arrangørsider fundet."
 
-#: includes/organiser/class-organiser.php:107
+#: includes/organiser/class-organiser.php:108
 msgid "No organiser pages found in trash."
 msgstr "Ingen arrangørsider fundet i papirkurven."
 
-#: includes/organiser/class-organiser.php:200
+#: includes/organiser/class-organiser.php:201
 msgid "Choose the organisation in the Organiser panel before publishing."
 msgstr "Vælg organisationen i panelet Arrangør, før du udgiver."
 
-#: includes/organiser/class-organiser.php:210
+#: includes/organiser/class-organiser.php:211
 msgid "This organiser does not exist."
 msgstr "Denne arrangør findes ikke."
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:221
+#: includes/organiser/class-organiser.php:222
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
 msgstr "Denne arrangør har allerede en side: \"%s\"."
 
-#: includes/organiser/class-organiser.php:382
+#: includes/organiser/class-organiser.php:383
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -1268,7 +1278,11 @@ msgstr "Hover-baggrund"
 msgid "Hidden on the page: the organiser is not marked as official (Organiser panel)."
 msgstr "Vises ikke på siden: arrangøren er ikke markeret som officiel (panelet Arrangør)."
 
-#: blocks/organiser-others/edit.js:10 build/blocks/organiser-others/index.js:1
+#: blocks/organiser-list/edit.js:11 build/blocks/organiser-list/index.js:1
+msgid "Organiser list: every organiser with a page, by name, with its upcoming walks and regions."
+msgstr "Arrangørliste: alle arrangører med en side, efter navn, med deres kommende ture og regioner."
+
+#: blocks/organiser-list/edit.js:15 build/blocks/organiser-list/index.js:1
 msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
 msgstr "Andre arrangører: op til seks andre arrangører med en side, først dem med ture i de samme regioner."
 
@@ -1656,6 +1670,16 @@ msgctxt "block description"
 msgid "The \"Officiel arrangør\" badge, shown only when the organiser page is flagged as official."
 msgstr "Mærket \"Officiel arrangør\", som kun vises, når arrangørsiden er markeret som officiel."
 
+#: blocks/organiser-list/block.json build/blocks/organiser-list/block.json
+msgctxt "block title"
+msgid "Organiser List"
+msgstr "Arrangørliste"
+
+#: blocks/organiser-list/block.json build/blocks/organiser-list/block.json
+msgctxt "block description"
+msgid "Organisers with a page: \"Andre arrangører\" under an organiser page, or all of them on the overview."
+msgstr "Arrangører med en side: \"Andre arrangører\" under en arrangørside, eller dem alle på oversigten."
+
 #: blocks/organiser-logo/block.json build/blocks/organiser-logo/block.json
 msgctxt "block title"
 msgid "Organiser Logo"
@@ -1665,16 +1689,6 @@ msgstr "Arrangørlogo"
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
 msgstr "Arrangørsidens logo: det fremhævede billede, eller arrangørens forbogstaver indtil der er et."
-
-#: blocks/organiser-others/block.json build/blocks/organiser-others/block.json
-msgctxt "block title"
-msgid "Other Organisers"
-msgstr "Andre arrangører"
-
-#: blocks/organiser-others/block.json build/blocks/organiser-others/block.json
-msgctxt "block description"
-msgid "\"Andre arrangører\": the other organisers with a page, those with walks in the same regions first."
-msgstr "\"Andre arrangører\": de andre arrangører med en side, først dem med ture i de samme regioner."
 
 #: blocks/organiser-regions/block.json
 #: build/blocks/organiser-regions/block.json

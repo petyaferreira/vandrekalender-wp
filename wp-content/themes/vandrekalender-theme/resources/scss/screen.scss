@@ -229,7 +229,7 @@ body {
 // in docs/design/organiser-page/). Sections are spaced like the design's
 // "extra-large" gap, "Andre arrangører" under the content too.
 .vk-organiser-page .wp-block-post-content > * + *,
-.vk-organiser-page .wp-block-post-content + .vk-organiser-others {
+.vk-organiser-page .wp-block-post-content + .vk-organiser-list {
   margin-block-start: var(--wp--preset--spacing--extra-large);
 }
 

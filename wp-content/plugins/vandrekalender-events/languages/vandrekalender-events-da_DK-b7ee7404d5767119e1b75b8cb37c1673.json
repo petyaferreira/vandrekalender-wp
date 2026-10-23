@@ -1,7 +1,7 @@
 {
     "translation-revision-date": "2026-10-08 15:00+0200",
     "generator": "WP-CLI\/2.12.0",
-    "source": "build\/blocks\/organiser-others\/index.js",
+    "source": "build\/blocks\/organiser-list\/index.js",
     "domain": "messages",
     "locale_data": {
         "messages": {
@@ -10,6 +10,9 @@
                 "lang": "da_DK",
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
+            "Organiser list: every organiser with a page, by name, with its upcoming walks and regions.": [
+                "Arrang\u00f8rliste: alle arrang\u00f8rer med en side, efter navn, med deres kommende ture og regioner."
+            ],
             "Other organisers: up to six other organisers with a page, those with walks in the same regions first.": [
                 "Andre arrang\u00f8rer: op til seks andre arrang\u00f8rer med en side, f\u00f8rst dem med ture i de samme regioner."
             ]
