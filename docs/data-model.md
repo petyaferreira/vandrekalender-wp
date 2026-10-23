@@ -115,14 +115,14 @@ cp resources/event-meta-fields/utm-to-latlng.js /tmp/utm.mjs && node -e "import(
 |---|---|---|---|---|
 | `event_place_name` | string | — | — | Optional human-readable name e.g. `Dyrehaven` or `Silkeborg Sti ved parkeringen`. Shown on event cards. Falls back to `event_municipality`, then to the coordinates as "GPS 55.67286° N, 12.56103° Ø" (`Event::coordinates_label()`, also used in the info card and join emails) |
 | `event_address` | string | ✅ | — | Full validated address string e.g. `I G Smiths Alle 12, 2650 Hvidovre`. Set via Adressevælger search |
-| `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
-| `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from the picked address. Used for map pins in the v1 map view. Proximity search filter deferred to v2 |
+| `event_lat` | float | ✅ | ✅ (map) | Latitude. Derived from the picked address. Used for map pins in the map view. Proximity search: [#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42) |
+| `event_lng` | float | ✅ | ✅ (map) | Longitude. Derived from the picked address. Used for map pins in the map view. Proximity search: [#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42) |
 | `event_location_approximate` | boolean | — | — | `true` when `event_lat`/`event_lng` only place the walk roughly: a scraper had no exact meeting point (Opdag Verden: a point on the route, or the centre of the region; Mammut and Sportstiming: the centre of the postcode area when the geocoder does not know the street; see `docs/scrapers.md`). The map still shows the pin, but `Event::coordinates()` treats it as missing, so there is no "GPS …" label, directions go to the place name instead, and the JSON-LD has no `geo`. The editor sets it to `false` whenever someone sets the location by hand. Default `false` |
-| `event_municipality` | string | ✅ | — (v2) | Municipality name e.g. `Hvidovre`. Derived from the picked address (code mapped through `data/municipalities.json`). Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. Municipality-level filtering deferred to v2 |
+| `event_municipality` | string | ✅ | — | Municipality name e.g. `Hvidovre`. Derived from the picked address (code mapped through `data/municipalities.json`). Used internally to assign `event_region` taxonomy term. Fallback display value on cards if `event_place_name` is not set. There is no municipality filter |
 
-### Proximity Search (v2)
+### Proximity Search (not built)
 
-When a user searches "Valby", it is geocoded to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Deferred to v2 ([#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42)).
+When a user searches "Valby", it is geocoded to coordinates, then a custom SQL haversine query finds events within a given radius using `event_lat` / `event_lng`. Standard `meta_query` cannot do this. Not built: [#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42).
 
 ---
 
@@ -222,7 +222,7 @@ One term per organisation, e.g. **Dansk Vandrelaug** for every DVL chapter. No a
 | Midtjylland | `midtjylland` |
 | Nordjylland | `nordjylland` |
 
-Used as the primary location filter on the frontend (v1). Municipality-level filtering deferred to v2.
+Used as the primary location filter on the frontend. There is no municipality-level filter.
 
 ### `event_length`
 
@@ -233,11 +233,6 @@ Auto-assigned on save from all `distance_km` values in `event_routes`. An event 
 | Short | `short` | 0–10 km |
 | Medium | `medium` | 10–25 km |
 | Long | `long` | 25+ km |
-
-### Deferred to v2
-
-- `event_category` — activity type (Walking, Running, Cycling etc.). Not needed in v1 since all events are walking
-- `event_tags` — labels e.g. `dog-friendly`, `family-friendly`. Deferred until real user feedback indicates the need
 
 ---
 
@@ -253,13 +248,11 @@ All filters for the frontend event listing. Each filter maps to either a meta fi
 | `event_organiser` | Dropdown | Organisers with at least one upcoming event. Taxonomy query |
 | `is_free` | Toggle | Show free only / show all. Derived from `event_routes` prices, filtered in PHP (not a meta query) |
 
-### Deferred to v2
+### Not built
 
 | Field | Filter type | Notes |
 |---|---|---|
-| `event_lat` / `event_lng` | Proximity search | Find events within X km of a searched location. Requires haversine SQL query |
-| `event_municipality` | Dropdown | All Danish municipalities. More granular than region filter |
-| `event_tags` | Multi-select | e.g. dog-friendly, family-friendly |
+| `event_lat` / `event_lng` | Proximity search | Find events within X km of a searched location. Requires haversine SQL query. [#42](https://github.com/petyaferreira/vandrekalender-wp/issues/42) |
 
 ---
 

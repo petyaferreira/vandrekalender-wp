@@ -2,8 +2,6 @@
 
 > Source of truth for all pages, URLs, authentication, and navigation.
 
-**Version 1.0 — Updated June 2026**
-
 ---
 
 ## Overview
@@ -14,16 +12,16 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 
 ## Public Pages (No Auth Required)
 
-| URL | Purpose | Phase |
-|---|---|---|
-| `/` | Homepage — hero, search, filters, calendar/list/map tabs (all real-time filtered) | V1 |
-| `/begivenhed/[slug]` | Single event detail page | V1 |
-| `/om` | About page — site mission, how it works, membership info | V1 |
-| `/kontakt` | Contact form | V1 |
-| `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>` | Live, with the computed stats, regions and "Andre arrangører"; SEO is step 5e of [the organisers plan](plans/organisers-plan.md) |
-| `/privatlivspolitik` | Privacy policy (GDPR) | V1 |
-| `/vilkaar` | Terms of use | V1 |
-| `/cookies` | Cookie policy | V1 |
+| URL | Purpose |
+|---|---|
+| `/` | Homepage — hero, search, filters, calendar/list/map tabs (all real-time filtered) |
+| `/begivenhed/[slug]` | Single event detail page |
+| `/om` | About page — site mission, how it works, membership info |
+| `/kontakt` | Contact form |
+| `/arrangoerer/[slug]` | Organiser page — a post of the `organiser` post type, linked to one `event_organiser` term, e.g. `/arrangoerer/dansk-vandrelaug/` ([data-model.md](data-model.md#custom-post-type-organiser)). An organiser without a published page redirects to `/?organiser=<slug>`. Shows the computed stats, regions and "Andre arrangører"; SEO is step 5e of [the organisers plan](plans/organisers-plan.md) |
+| `/privatlivspolitik` | Privacy policy (GDPR) |
+| `/vilkaar` | Terms of use |
+| `/cookies` | Cookie policy |
 
 ---
 
@@ -44,12 +42,12 @@ See `docs/authentication.md` for full details.
 
 ## Logged-in User Pages (Native WordPress)
 
-Users with the "Event Author" role access these WordPress native pages. No custom front-end pages in V1.
+Users with the "Event Author" role access these WordPress native pages. There are no custom front-end pages for them.
 
 | URL | Purpose | Notes |
 |---|---|---|
 | `/wp-admin/post-new.php?post_type=event` | Create/edit event | Standard WP post editor. Dashboard widget shows onboarding video on first visit |
-| `/wp-admin/edit.php?post_type=event` | My events list | Filtered to show organization events + user's own private events. Author column, "Posted as" column (organization/private), filter tabs |
+| `/wp-admin/edit.php?post_type=event` | My events list | Shows only the user's own events (`Vandrekalender_Roles::restrict_event_list_to_own()`). The shared organisation list, "Posted as" column and filter tabs: [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86) |
 | `/wp-admin/profile.php` | User settings | Avatar, display name, email, language preferences, password |
 
 ---
@@ -61,7 +59,7 @@ Users with the "Event Author" role access these WordPress native pages. No custo
 | `/wp-admin` | WordPress dashboard | Administrators only |
 | `/wp-admin/post-new.php?post_type=event` | Manage all events | Administrators only |
 | `/wp-admin/edit.php?post_type=event` | Event list with approval/removal | Administrators only |
-| `/wp-admin/edit-tags.php?taxonomy=organizer` | Manage organizations | Administrators only |
+| `/wp-admin/edit-tags.php?taxonomy=event_organiser&post_type=event` | Manage organisers | Administrators only |
 
 ---
 
@@ -119,20 +117,8 @@ All three tabs update simultaneously when filters change.
 
 ---
 
-## Phase Plan
+## Not Built Yet
 
-| Feature | Phase |
-|---|---|
-| All public pages (homepage, event detail, about, contact, legal) | V1 |
-| Google OAuth + native WP registration/login/password reset | V1 |
-| Event editor with organizer/team support | V1 |
-| User settings (profile page) | V1 |
-| Membership management (email domain match, admin assignment) | V1 |
-| Membership copy on `/om` and `/vilkaar` | V1 |
-| Organiser overview page (`/arrangoerer/`, all organisers) | The `organiser` post type archive exists with the default template; its own template is step 5d of [the organisers plan](plans/organisers-plan.md) |
-| Member invitations | V2 |
-| Custom admin/creator pages (beyond native WP) | V2+ |
-
----
-
-*allevandreture.dk — Sitemap v1.0*
+- Organiser overview page (`/arrangoerer/`, all organisers): the `organiser` post type archive exists with the default template; its own template is step 5d of [the organisers plan](plans/organisers-plan.md).
+- Organisation membership (email domain match, admin assignment, shared event list, membership copy on `/om` and `/vilkaar`): [#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86).
+- Member invitations: [#41](https://github.com/petyaferreira/vandrekalender-wp/issues/41).

@@ -1,6 +1,6 @@
 # Vandrekalender
 
-Walking events calendar for Denmark (v1: walking tours in Denmark only). Aggregates events from scrapers, Facebook and user submissions. WordPress: plugin `wp-content/plugins/vandrekalender-events`, theme `wp-content/themes/vandrekalender-theme`, local Docker stack.
+Walking events calendar for Denmark (walking tours in Denmark only). Aggregates events from scrapers, Facebook and user submissions. WordPress: plugin `wp-content/plugins/vandrekalender-events`, theme `wp-content/themes/vandrekalender-theme`, local Docker stack.
 
 `./validate.sh` is the single check that a change is ready. CI runs the same script, and staging deploys only when it passes.
 
