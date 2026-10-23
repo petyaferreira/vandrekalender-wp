@@ -46,7 +46,7 @@ Block sources live in `wp-content/plugins/vandrekalender-events/blocks/`. Beside
 The bottom CTA slot holds exactly one of four things, decided server-side:
 
 - `Vandrekalender_Event_Attendees::is_joinable()` **and the viewer is the event's organiser** (`Vandrekalender_Event_Join::is_event_organiser()`, i.e. the `post_author`) → a non-interactive line, "Du er arrangør af denne tur". The organiser runs the walk, so they are not one of its attendees; none of the interactive join state is set up for them (no `data-wp-interactive`, no dialog). The self-join is also refused in the backend (see below), so this is a UI mirror of a real rule, not just a hidden button.
-- The event date is before today in the site timezone (`Event::is_past_date()`) → only the note "Denne tur har fundet sted." No booking link, no sign-up button.
+- The event date is before today in the site timezone (`Event::is_past_date()`) → only the note "Denne tur har fundet sted." No booking link, no sign-up button. The join itself is refused in the backend too: `Vandrekalender_Event_Past_Events::disable_join_for_past_events()` turns `is_joinable()` off for past events, using the same `is_past_date()`.
 - `is_joinable()` for anyone else → the sign-up button. Server-rendered with its final label, so first paint is right: "Jeg kommer" in forest, or "Deltager" in meadow (the lighter green) when the visitor is already signed up.
 - Otherwise (today or a future date), the original "Book din plads" link out to `event_source_url`/`event_organiser_url`.
 
