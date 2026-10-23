@@ -147,7 +147,7 @@ Validate with the Rich Results Test and fix warnings about missing offers or ima
 ## 8. Event card change (see the Kort board)
 
 * Add an organiser line under the walk title: round logo (24 px, initials fallback) plus the organiser name. Variant B in the design.
-* The whole card still links to the walk. (Changed in the build: the organiser line is plain text, not a link, so there is no second link or stretched link inside the card; see [the plan's step 6](../../history/organisers-plan.md#step-6-organiser-on-the-event-cards).)
+* The whole card still links to the walk. (Changed in the build: the organiser is plain text next to the date, without a logo, as in `tur-kort-2a.html`, so there is no second link or stretched link inside the card; see [the plan's step 6](../../history/organisers-plan.md#step-6-organiser-on-the-event-cards).)
 * On the walk's own page, add an "Arrangør" row to the facts box between "Sted" and the booking button. Hide it when the walk has no organiser.
 * Front page: make the names in the "Officielle arrangører" strip links to the organiser pages.
 * Region pages and the front page should link to organisers wherever an organiser name is shown.

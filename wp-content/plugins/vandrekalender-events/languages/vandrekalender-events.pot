@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T11:44:57+00:00\n"
+"POT-Creation-Date: 2026-10-23T12:29:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -89,11 +89,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: blocks/event-calendar/render.php:257
-#: blocks/event-cards/render.php:110
+#: blocks/event-cards/render.php:114
 #: blocks/event-info-card/render.php:72
 #: blocks/event-map/render.php:43
 #: build/blocks/event-calendar/render.php:257
-#: build/blocks/event-cards/render.php:110
+#: build/blocks/event-cards/render.php:114
 #: build/blocks/event-info-card/render.php:72
 #: build/blocks/event-map/render.php:43
 msgid "Free"
@@ -102,29 +102,43 @@ msgstr ""
 #. translators: %d: lowest route price in kroner.
 #. translators: %d: lowest price in kroner.
 #: blocks/event-calendar/render.php:260
-#: blocks/event-cards/render.php:113
+#: blocks/event-cards/render.php:117
 #: blocks/event-map/render.php:45
 #: build/blocks/event-calendar/render.php:260
-#: build/blocks/event-cards/render.php:113
+#: build/blocks/event-cards/render.php:117
 #: build/blocks/event-map/render.php:45
 #, php-format
 msgid "from %d kr"
 msgstr ""
 
-#: blocks/event-cards/render.php:74
-#: build/blocks/event-cards/render.php:74
+#: blocks/event-cards/render.php:78
+#: build/blocks/event-cards/render.php:78
 msgid "No walks match your filters."
 msgstr ""
 
-#: blocks/event-cards/render.php:75
+#: blocks/event-cards/render.php:79
 #: blocks/organiser-regions/render.php:20
-#: build/blocks/event-cards/render.php:75
+#: build/blocks/event-cards/render.php:79
 #: build/blocks/organiser-regions/render.php:20
 msgid "There are no upcoming walks right now."
 msgstr ""
 
-#: blocks/event-cards/render.php:158
-#: build/blocks/event-cards/render.php:158
+#. translators: card date with year, PHP date format.
+#: blocks/event-cards/render.php:142
+#: build/blocks/event-cards/render.php:142
+msgctxt "event card date"
+msgid "D j M Y"
+msgstr ""
+
+#. translators: card date, PHP date format.
+#: blocks/event-cards/render.php:144
+#: build/blocks/event-cards/render.php:144
+msgctxt "event card date"
+msgid "D j M"
+msgstr ""
+
+#: blocks/event-cards/render.php:194
+#: build/blocks/event-cards/render.php:194
 msgid "Show more walks"
 msgstr ""
 

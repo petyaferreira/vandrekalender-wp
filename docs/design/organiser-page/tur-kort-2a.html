@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tur-kort 2a</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2f5d3a;
+    --cream: #f6f3ea;
+    --line: #dfe6cf;
+    --ink: #1d1f1b;
+    --muted: #666;
+    --date: #7a4a2a;
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--sans); color: var(--ink); background: #fff; }
+  a { color: var(--green); }
+  a:hover { color: #1f4028; }
+
+  .tour-grid { max-width: 1060px; margin: 0 auto; padding: 32px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .tour-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; transition: box-shadow .15s, border-color .15s; }
+  .tour-card:hover { border-color: #c4d4b4; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .tour-card:hover .tour-card__title { color: var(--green); }
+
+  .tour-card__img { aspect-ratio: 16 / 9; width: 100%; object-fit: cover; display: block; background: var(--cream); }
+
+  .tour-card__body { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 20px; }
+
+  .tour-card__meta { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; min-width: 0; }
+  .tour-card__date { font-weight: 700; color: var(--date); white-space: nowrap; }
+  .tour-card__sep { color: #bbb; }
+  .tour-card__organiser { font-weight: 600; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .tour-card__title { font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.25; margin: 0; text-wrap: pretty; transition: color .15s; }
+  .tour-card__location { font-size: 14px; color: var(--muted); margin: 0; }
+
+  .tour-card__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: auto 0 0; padding: 14px 0 0; list-style: none; }
+  .tour-card__tags li { background: var(--cream); border-radius: 999px; padding: 4px 10px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="tour-grid">
+
+  <a class="tour-card" href="#">
+    <img class="tour-card__img" src="" alt="">
+    <div class="tour-card__body">
+      <div class="tour-card__meta">
+        <time class="tour-card__date" datetime="2026-10-24">Lør 24. okt</time>
+        <span class="tour-card__sep" aria-hidden="true">·</span>
+        <span class="tour-card__organiser">Dansk Vandrelaug</span>
+      </div>
+      <h3 class="tour-card__title">Lørdagstraver – Holte, Furesøen og Næsse-slottet</h3>
+      <p class="tour-card__location">Holte Station, Rudersdal</p>
+      <ul class="tour-card__tags">
+        <li>8 km</li>
+        <li>Gratis</li>
+        <li>Hovedstaden</li>
+      </ul>
+    </div>
+  </a>
+
+</div>
+</body>
+</html>
