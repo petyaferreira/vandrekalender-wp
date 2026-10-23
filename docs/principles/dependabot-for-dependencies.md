@@ -29,7 +29,7 @@ updates:
       interval: weekly
 ```
 
-Once a week, Dependabot opens a PR for each dependency with a newer version. It opens a PR straight away when a security advisory affects one. CI runs on those PRs like on any other. Composer covers the WordPress plugins installed from `composer.json` (Rank Math, Polylang, Fluent Forms and others) as well as the dev tools.
+Once a week, Dependabot opens a PR for each dependency with a newer version. It opens a PR straight away when a security advisory affects one. `Validate` runs on those PRs like on any other; the review bot skips them, because it only sees a version number and a lockfile, so `Validate` (and for frontend packages a look at the site) is the real test ([#146](https://github.com/petyaferreira/vandrekalender-wp/issues/146)). Composer covers the WordPress plugins installed from `composer.json` (Rank Math, Polylang, Fluent Forms and others) as well as the dev tools.
 
 Leaflet was loaded from cdnjs, where nothing told us about new versions. Moving it to npm with Dependabot fixed that ([decision 0010](../decisions/0010-leaflet-bundled-from-npm.md)).
 
