@@ -36,7 +36,6 @@ class Organiser {
 	// bottom (docs/history/organisers-plan.md, step 5).
 	public const PATTERNS = [
 		'vandrekalender-theme/organiser-hero',
-		'vandrekalender-theme/organiser-stats',
 		'vandrekalender-theme/organiser-walks',
 		'vandrekalender-theme/organiser-about',
 		'vandrekalender-theme/organiser-faq',

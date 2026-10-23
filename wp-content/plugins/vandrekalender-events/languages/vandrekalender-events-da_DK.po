@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-23T12:29:24+00:00\n"
+"POT-Creation-Date: 2026-10-23T12:37:58+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -224,8 +224,10 @@ msgid "Route"
 msgstr "Rute"
 
 #. translators: %s: distance in kilometres
-#: blocks/event-info-card/render.php:123
+#. translators: %s: route distance in km.
+#: blocks/event-info-card/render.php:123 blocks/organiser-stats/render.php:31
 #: build/blocks/event-info-card/render.php:123
+#: build/blocks/organiser-stats/render.php:31
 #, php-format
 msgid "%s km"
 msgstr "%s km"
@@ -434,36 +436,33 @@ msgid_plural "%s walks"
 msgstr[0] "%s tur"
 msgstr[1] "%s ture"
 
-#: blocks/organiser-stats/render.php:24
-#: build/blocks/organiser-stats/render.php:24
-msgid "upcoming walk"
-msgid_plural "upcoming walks"
-msgstr[0] "kommende tur"
-msgstr[1] "kommende ture"
+#: blocks/organiser-stats/render.php:22
+#: build/blocks/organiser-stats/render.php:22
+msgid "Upcoming walks"
+msgstr "Kommende ture"
 
-#: blocks/organiser-stats/render.php:28
-#: build/blocks/organiser-stats/render.php:28
-msgid "region"
-msgid_plural "regions"
-msgstr[0] "region"
-msgstr[1] "regioner"
+#: blocks/organiser-stats/render.php:23
+#: build/blocks/organiser-stats/render.php:23
+#: includes/event/class-event.php:695 includes/event/class-event.php:703
+msgid "Regions"
+msgstr "Regioner"
 
-#: blocks/organiser-stats/render.php:37
-#: build/blocks/organiser-stats/render.php:37
-msgid "km"
-msgstr "km"
+#: blocks/organiser-stats/render.php:29
+#: build/blocks/organiser-stats/render.php:29
+msgid "Distances"
+msgstr "Distancer"
 
 #. translators: 1: shortest route in km, 2: longest route in km.
-#: blocks/organiser-stats/render.php:41
-#: build/blocks/organiser-stats/render.php:41
+#: blocks/organiser-stats/render.php:33
+#: build/blocks/organiser-stats/render.php:33
 #, php-format
-msgid "%1$s to %2$s"
-msgstr "%1$s til %2$s"
+msgid "%1$s–%2$s km"
+msgstr "%1$s–%2$s km"
 
-#: blocks/organiser-stats/render.php:42
-#: build/blocks/organiser-stats/render.php:42
-msgid "km, shortest to longest walk"
-msgstr "km, korteste til længste tur"
+#: blocks/organiser-stats/render.php:36
+#: build/blocks/organiser-stats/render.php:36
+msgid "The organiser in numbers"
+msgstr "Arrangøren i tal"
 
 #: blocks/slider/render.php:71 build/blocks/slider/render.php:71
 msgid "Slider navigation"
@@ -1078,10 +1077,6 @@ msgstr "%s° V"
 msgid "GPS %1$s, %2$s"
 msgstr "GPS %1$s, %2$s"
 
-#: includes/event/class-event.php:695 includes/event/class-event.php:703
-msgid "Regions"
-msgstr "Regioner"
-
 #: includes/event/class-event.php:697
 msgid "Search Regions"
 msgstr "Søg i regioner"
@@ -1135,7 +1130,7 @@ msgid "New Length Name"
 msgstr "Navn på ny længde"
 
 #: includes/event/class-event.php:766 includes/event/class-event.php:774
-#: includes/organiser/class-organiser.php:110
+#: includes/organiser/class-organiser.php:109
 msgid "Organisers"
 msgstr "Arrangører"
 
@@ -1163,62 +1158,62 @@ msgstr "Tilføj ny arrangør"
 msgid "New Organiser Name"
 msgstr "Ny arrangørs navn"
 
-#: includes/organiser/class-organiser.php:98
-#: includes/organiser/class-organiser.php:100
+#: includes/organiser/class-organiser.php:97
+#: includes/organiser/class-organiser.php:99
 msgid "Organiser pages"
 msgstr "Arrangørsider"
 
-#: includes/organiser/class-organiser.php:99
+#: includes/organiser/class-organiser.php:98
 msgid "Organiser page"
 msgstr "Arrangørside"
 
-#: includes/organiser/class-organiser.php:101
+#: includes/organiser/class-organiser.php:100
 msgid "Add New Organiser page"
 msgstr "Tilføj ny arrangørside"
 
-#: includes/organiser/class-organiser.php:102
+#: includes/organiser/class-organiser.php:101
 msgid "Edit Organiser page"
 msgstr "Redigér arrangørside"
 
-#: includes/organiser/class-organiser.php:103
+#: includes/organiser/class-organiser.php:102
 msgid "View Organiser page"
 msgstr "Vis arrangørside"
 
-#: includes/organiser/class-organiser.php:104
+#: includes/organiser/class-organiser.php:103
 msgid "View Organiser pages"
 msgstr "Vis arrangørsider"
 
-#: includes/organiser/class-organiser.php:105
+#: includes/organiser/class-organiser.php:104
 msgid "All Organiser pages"
 msgstr "Alle arrangørsider"
 
-#: includes/organiser/class-organiser.php:106
+#: includes/organiser/class-organiser.php:105
 msgid "Search Organiser pages"
 msgstr "Søg i arrangørsider"
 
-#: includes/organiser/class-organiser.php:107
+#: includes/organiser/class-organiser.php:106
 msgid "No organiser pages found."
 msgstr "Ingen arrangørsider fundet."
 
-#: includes/organiser/class-organiser.php:108
+#: includes/organiser/class-organiser.php:107
 msgid "No organiser pages found in trash."
 msgstr "Ingen arrangørsider fundet i papirkurven."
 
-#: includes/organiser/class-organiser.php:201
+#: includes/organiser/class-organiser.php:200
 msgid "Choose the organisation in the Organiser panel before publishing."
 msgstr "Vælg organisationen i panelet Arrangør, før du udgiver."
 
-#: includes/organiser/class-organiser.php:211
+#: includes/organiser/class-organiser.php:210
 msgid "This organiser does not exist."
 msgstr "Denne arrangør findes ikke."
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:222
+#: includes/organiser/class-organiser.php:221
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
 msgstr "Denne arrangør har allerede en side: \"%s\"."
 
-#: includes/organiser/class-organiser.php:383
+#: includes/organiser/class-organiser.php:382
 msgid "Calendar"
 msgstr "Kalender"
 

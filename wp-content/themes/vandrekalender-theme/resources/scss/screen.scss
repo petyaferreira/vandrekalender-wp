@@ -233,33 +233,63 @@ body {
   margin-block-start: var(--wp--preset--spacing--extra-large);
 }
 
-// Hero: logo, text and the website button in one row from 600px; below that
-// they stack, as in the mobile design.
+// Hero (docs/design/organiser-page/arrangoer-header-1b.html): the intro
+// (logo and badge, name, description, website button) beside the 320px
+// numbers panel; one column below 860px.
 .vk-organiser-hero {
-  gap: var(--wp--preset--spacing--medium) var(--wp--preset--spacing--large);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 56px;
+  align-items: start;
 
-  .vk-organiser-hero__text {
-    flex: 1 1 420px;
+  // The group's flow layout would push the panel down by the block gap.
+  > * {
+    margin-block: 0;
+  }
+
+  @media (max-width: 859.98px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--wp--preset--spacing--large);
+  }
+
+  .vk-organiser-hero__intro {
+    gap: 20px;
     min-width: 0;
-    gap: var(--wp--preset--spacing--regular);
 
     > * {
       margin: 0;
     }
   }
 
-  .wp-block-post-excerpt__excerpt {
-    max-width: 800px;
-    margin: 0;
+  .vk-organiser-hero__top {
+    gap: 20px;
   }
 
-  @media (max-width: 599.98px) {
-    flex-direction: column;
-    align-items: flex-start !important; // Beats the layout's inline center.
+  .wp-block-post-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1;
+  }
 
-    // In a column the 420px basis above would be a height.
-    .vk-organiser-hero__text {
-      flex: none;
+  .wp-block-post-excerpt__excerpt {
+    max-width: 680px;
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  // Dark outline, not the theme's green one.
+  .wp-block-button.is-style-outline .wp-block-button__link {
+    padding: 10px 22px;
+    border: 1.5px solid var(--wp--preset--color--charcoal);
+    background: transparent;
+    color: var(--wp--preset--color--charcoal);
+    font-size: 15px;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--wp--preset--color--charcoal);
+      color: var(--wp--preset--color--white);
     }
   }
 }
