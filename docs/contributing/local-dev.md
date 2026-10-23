@@ -9,6 +9,7 @@ composer install              # installs PHPCS + git hooks
 # WordPress:  http://localhost:${WORDPRESS_PORT}
 # phpMyAdmin: http://localhost:${PHPMYADMIN_PORT}
 
+nvm use                       # Node version from .nvmrc (decision 0012)
 cd wp-content/themes/vandrekalender-theme && npm install && npm run build
 cd wp-content/plugins/vandrekalender-events && npm install && npm run build
 ```

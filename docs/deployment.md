@@ -420,16 +420,17 @@ One key serves all three of our environments.
 ### Deploy Steps
 
 1. Checkout code
-2. Node 20 setup
-3. `npm ci && npm run build` in `wp-content/themes/vandrekalender-theme`
-4. `npm ci && npm run build` in `wp-content/plugins/vandrekalender-events`
-5. rsync theme + plugin into staging dir (excludes node_modules, src, resources, webpack configs)
-6. Write SSH key + known_hosts
-7. SCP to `NORDICWAY_DEST_PATH`
-8. Write `mu-plugins/00-vk-google-login.php` from the environment's Google secrets
-9. Write `mu-plugins/00-vk-address-search.php` from the environment's `ADRESSEVAELGER_TOKEN` secret
-10. Write `mu-plugins/00-vk-datafordeler.php` from the environment's `DATAFORDELER_API_KEY` secret
-11. Post-deploy SSH sanity check
+2. PHP 8.4 setup, then `composer install --no-dev` ([decision 0011](decisions/0011-php-84-everywhere.md))
+3. Node setup, version from `.nvmrc` ([decision 0012](decisions/0012-node-24-everywhere.md))
+4. `npm ci && npm run build` in `wp-content/themes/vandrekalender-theme`
+5. `npm ci && npm run build` in `wp-content/plugins/vandrekalender-events`
+6. rsync theme + plugin into staging dir (excludes node_modules, src, resources, webpack configs)
+7. Write SSH key + known_hosts
+8. SCP to `NORDICWAY_DEST_PATH`
+9. Write `mu-plugins/00-vk-google-login.php` from the environment's Google secrets
+10. Write `mu-plugins/00-vk-address-search.php` from the environment's `ADRESSEVAELGER_TOKEN` secret
+11. Write `mu-plugins/00-vk-datafordeler.php` from the environment's `DATAFORDELER_API_KEY` secret
+12. Post-deploy SSH sanity check
 
 ---
 
