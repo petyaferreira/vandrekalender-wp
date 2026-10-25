@@ -17,6 +17,9 @@
         }
     ],
     "config": {
+        "platform": {
+            "php": "8.4.1"
+        },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "composer/installers": true
@@ -38,6 +41,7 @@
         ]
     },
     "require": {
+        "php": ">=8.4",
         "composer/installers": "^2.3",
         "wpackagist-theme/twentytwentyfive": "^1.0",
         "wpackagist-plugin/safe-svg": "^2.4",
