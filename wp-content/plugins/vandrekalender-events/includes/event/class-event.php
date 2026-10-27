@@ -83,6 +83,33 @@ class Event {
 		add_action( 'added_post_meta', [ $this, 'on_event_meta_saved' ], 10, 4 );
 		add_action( 'updated_post_meta', [ $this, 'on_event_meta_saved' ], 10, 4 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
+		add_action( 'template_redirect', [ $this, 'maybe_redirect_archive_to_calendar' ] );
+	}
+
+	/**
+	 * Where the event archive (/begivenhed/) goes: the front page, where the
+	 * calendar lists the upcoming events. The archive has no template of its
+	 * own and would render empty (#176).
+	 *
+	 * @param bool   $is_archive Whether the request is the event archive.
+	 * @param string $home       The front page URL.
+	 * @return string|null The URL to redirect to, or null for any other request.
+	 */
+	public static function archive_redirect_target( bool $is_archive, string $home ): ?string {
+		return $is_archive ? $home : null;
+	}
+
+	/**
+	 * 301 the event archive to the front page.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_archive_to_calendar(): void {
+		$target = self::archive_redirect_target( is_post_type_archive( self::CUSTOMPOSTTYPE ), home_url( '/' ) );
+		if ( null !== $target ) {
+			wp_safe_redirect( $target, 301 );
+			exit;
+		}
 	}
 
 	/**
