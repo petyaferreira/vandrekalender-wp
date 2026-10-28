@@ -4,7 +4,7 @@ Decided 28 October 2026 with Petya ([#38](https://github.com/petyaferreira/vandr
 
 ## Decision
 
-There is no wp-admin screen or flag that lists scraped events missing data (no distance, no pin, no region) so they can be fixed by hand. A route without a distance is published without one, and its card shows no distance badge ([scrapers.md → Layer 3](../scrapers.md#layer-3--leave-empty-and-flag)).
+There is no wp-admin screen or flag that lists scraped events missing data (no distance, no pin, no region) so they can be fixed by hand. A route without a distance is published without one, and its card shows no distance badge ([scrapers.md → Layer 3](../scrapers.md#layer-3--leave-empty-hold-as-draft-or-reject)).
 
 ## Why
 

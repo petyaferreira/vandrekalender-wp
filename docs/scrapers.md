@@ -94,7 +94,7 @@ The free/paid state (`is_free`) and the `event_length` taxonomy are **not scrape
 
 Pattern extraction runs after direct mapping. If a pattern matches, the field is populated; if not, the field is left null and passed to Layer 3.
 
-### Layer 3 — Leave empty and flag
+### Layer 3 — Leave empty, hold as draft, or reject
 
 Some fields cannot be extracted from some sources. Rather than guessing or silently publishing incomplete data, missing fields are handled explicitly by severity:
 
