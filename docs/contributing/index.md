@@ -10,6 +10,7 @@ Open only the page the task needs.
 | [code-standards.md](code-standards.md) | `./validate.sh` failed, or you need PHPCS / Prettier / the pre-commit hook |
 | [local-dev.md](local-dev.md) | Setting up or running the Docker stack, building assets, WP-CLI, installing a plugin, local email |
 | [daily-agent.md](daily-agent.md) | You are the daily agent, or you change what it does |
+| [project-setup.md](project-setup.md) | Setting up a new project from this one, or checking the settings that live outside the repo |
 | [harness-engineering.md](harness-engineering.md) | Deciding where a new rule belongs (check, script, review prompt or doc) |
 
 Rules for how we build: [../principles/](../principles/index.md).
