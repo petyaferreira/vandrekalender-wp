@@ -1,5 +1,5 @@
 #!/bin/bash
-# The single check that a change is ready: PHP and Node versions, CLAUDE.md size, Dependabot coverage, PHPCS, Prettier,
+# The single check that a change is ready: PHP and Node versions, CLAUDE.md size, Dependabot coverage, the daily agent's REST-only steps, PHPCS, Prettier,
 # unit tests, the PR risk rules and both builds.
 # CI runs this same script (.github/workflows/ci.yml), so green here is green there.
 #
@@ -117,9 +117,19 @@ dependabot_coverage() {
     return $missing
 }
 
+# The daily agent runs in the cloud, where GraphQL is blocked (decision 0013): its
+# steps must not tell it to run gh pr, gh issue or gh project. Only the part
+# before "For Petya" is checked; that section is for her own machine.
+daily_agent_rest_only() {
+    local hits
+    hits=$(awk '/^## For Petya/ { exit } /gh (pr|issue|project)([^a-z-]|$)/ { print FILENAME ":" FNR ": " $0 }' docs/contributing/daily-agent.md)
+    [ -z "$hits" ] || { echo "$hits"; return 1; }
+}
+
 run versions "switch to the version named above: nvm use for Node; for PHP see docs/decisions/0011-php-84-everywhere.md. To change the version, change it everywhere (decisions 0011 and 0012)" runtime_versions
 run claude-md-size "CLAUDE.md is a map read on every task: move the detail into a page under docs/ and link it (docs/principles/lean-agent-context.md). Raise MAX_CLAUDE_MD_LINES in validate.sh only on purpose" claude_md_size
 run dependabot "add the missing entry to .github/dependabot.yml (docs/principles/dependabot-for-dependencies.md)" dependabot_coverage
+run daily-agent-rest "use ./gh-rest.sh or a gh api REST call in docs/contributing/daily-agent.md: GraphQL is blocked in the cloud (docs/decisions/0013-github-rest-only-in-the-cloud.md)" daily_agent_rest_only
 run phpcs "fix with: composer run phpcbf, then fix what remains by hand" phpcs
 run prettier "fix with: ./node_modules/.bin/prettier --write <file>" prettier_check
 run pr-risk "a path is in the wrong risk category: fix classify() in pr-risk.sh, or the expected category in its self-test if the rule changed on purpose (docs/decisions/0006-agents-merge-low-risk-prs.md)" ./pr-risk.sh --self-test

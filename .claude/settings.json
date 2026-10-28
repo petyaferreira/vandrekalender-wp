@@ -1,6 +1,6 @@
 {
     "permissions": {
-        "allow": ["Bash(./pr-risk.sh *)", "Bash(./merge-low-risk.sh *)"],
+        "allow": ["Bash(./pr-risk.sh *)", "Bash(./merge-low-risk.sh *)", "Bash(./gh-rest.sh *)"],
         "deny": [
             "Bash(gh pr merge *)",
             "Bash(gh api *merge*)",
