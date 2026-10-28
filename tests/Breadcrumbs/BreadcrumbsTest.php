@@ -1,6 +1,7 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
 /**
- * Breadcrumbs: every trail starts with "Kalender" (#170).
+ * Breadcrumbs: every trail starts with "Kalender" (#170), and an event's
+ * trail is "Kalender / Title" (#176).
  *
  * @package Vandrekalender
  */
@@ -68,5 +69,67 @@ class BreadcrumbsTest extends TestCase {
 		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '' );
 
 		$this->assertSame( [ 'Kalender', 'Arrangører', 'Dansk Vandrelaug' ], array_column( $result, 'label' ) );
+	}
+
+	/**
+	 * An event's trail is "Kalender / Title": the region core adds goes.
+	 */
+	public function test_event_trail_drops_core_middle_items(): void {
+		$items = [
+			[
+				'label' => 'Home',
+				'url'   => self::HOME,
+			],
+			[
+				'label' => 'Midtjylland',
+				'url'   => 'https://vandrekalender.dk/region/midtjylland/',
+			],
+			[ 'label' => 'Bjerge Skov' ],
+		];
+
+		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [] );
+
+		$this->assertSame( [ 'Kalender', 'Bjerge Skov' ], array_column( $result, 'label' ) );
+	}
+
+	/**
+	 * Given middle items replace core's.
+	 */
+	public function test_middle_items_replace_cores(): void {
+		$items  = [
+			[
+				'label' => 'Home',
+				'url'   => self::HOME,
+			],
+			[
+				'label' => 'Sjælland',
+				'url'   => 'https://vandrekalender.dk/region/sjaelland/',
+			],
+			[ 'label' => 'Glasruten' ],
+		];
+		$middle = [
+			[
+				'label' => 'Tidligere ture',
+				'url'   => 'https://vandrekalender.dk/tidligere-ture/',
+			],
+		];
+
+		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', $middle );
+
+		$this->assertSame( [ 'Kalender', 'Tidligere ture', 'Glasruten' ], array_column( $result, 'label' ) );
+	}
+
+	/**
+	 * A trail with only the home item is left alone.
+	 */
+	public function test_home_only_trail_is_left_alone(): void {
+		$items = [
+			[
+				'label' => 'Home',
+				'url'   => self::HOME,
+			],
+		];
+
+		$this->assertCount( 1, Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [] ) );
 	}
 }
