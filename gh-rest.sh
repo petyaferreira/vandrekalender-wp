@@ -57,7 +57,7 @@ pr_review() {
     echo "${summary:-(no claude[bot] comment yet)}"
     echo
     echo "== Inline comments =="
-    gh api --paginate "repos/$REPO/pulls/$1/comments" --jq '.[] | "\(.path):\(.line) \(.body)"'
+    gh api --paginate "repos/$REPO/pulls/$1/comments" --jq '.[] | "\(.path):\(.line // .original_line) \(.body)"'
 }
 
 pr_create() {
