@@ -18,6 +18,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0012](0012-node-24-everywhere.md) | Node 24 everywhere, set once in `.nvmrc` | 23 Oct 2026 |
 | [0013](0013-github-rest-only-in-the-cloud.md) | In the cloud, agents use the GitHub REST API only; GraphQL is blocked by design | 23 Oct 2026 |
 | [0014](0014-no-enrichment-queue.md) | No wp-admin queue of scraped events missing data | 28 Oct 2026 |
+| [0015](0015-past-walks-page-in-code.md) | The past walks page `/tidligere-ture/` is defined in code (rewrite rules and a template), not as a page in the database | 28 Oct 2026 |
 
 ## Format
 
