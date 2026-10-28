@@ -38,7 +38,7 @@ class Organiser {
 		'vandrekalender-theme/organiser-hero',
 		'vandrekalender-theme/organiser-walks',
 		'vandrekalender-theme/organiser-about',
-		'vandrekalender-theme/organiser-faq',
+		'vandrekalender-theme/organiser-regions-past',
 	];
 
 	/**
