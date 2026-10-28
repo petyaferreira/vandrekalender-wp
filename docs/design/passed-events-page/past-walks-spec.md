@@ -16,12 +16,12 @@ Purpose: a plain archive for people who want to find a walk that already happene
 * **Filters:** search in name and place, region, organiser, and a reset link. Filters change the list without changing the canonical URL.
 * **"Spring til måned":** links to the month pages inside the retention window, as plain links in the HTML. This also gives Google a clear path to every month.
 * **Empty months are never shown.** A month only appears as a group in the list and as a chip in "Spring til måned" if at least one walk matches the current filters. Example: when the list is filtered to Mammutmarch, which only has walks in some months, only those months show up, and the chips are recalculated for that filter. The design files show this with gaps in the chip row (Okt, Sep, Jun, Maj, Mar, Nov).
-* **Month pages with no walks do not exist.** Do not create or link an empty month page. A request for one returns 404 (410 if the month once had walks), and it is not in the sitemap. Chips on a filtered list keep the filter in the link (for example `?arrangoer=mammutmarch`), and the page canonicalises to the clean month URL.
+* **Month pages with no walks do not exist.** Do not create or link an empty month page. A request for one returns 404 (410 if the month once had walks), and it is not in the sitemap. Chips on a filtered list keep the filter in the link (for example `?organiser=mammutmarch`), and the page canonicalises to the clean month URL.
 * **"Nyere" and "Ældre" skip empty months.** They go to the next page or month that has walks. The "Side 1 af N" count is calculated from the filtered list only.
 * **Pagination:** "Nyere" and "Ældre" links and "Side 1 af 9". 30 walks per page. They must work without JavaScript. The disabled link is not a link.
 * **Count line:** "212 afholdte ture, nyeste først", derived from the data.
 * **Call to action at the bottom:** "Lyst til at gå selv?" with a button to the upcoming walks.
-* **Organiser page link:** the "Se flere tidligere ture" link on an organiser page goes to `/tidligere-ture/?arrangoer={slug}` (or a clean URL `/arrangoerer/{slug}/tidligere/` if you prefer, decide before building).
+* **Organiser page link:** the "Se flere tidligere ture" link on an organiser page goes to `/tidligere-ture/?organiser={slug}` (decided 28 October 2026: the same `organiser` parameter as the calendar filters).
 
 Meta and headings:
 
@@ -35,7 +35,7 @@ Meta and headings:
 Indexing:
 
 * The archive, the month pages and numbered pages are indexable and in the sitemap.
-* Filtered and search URLs (`?q=`, `?region=`, `?arrangoer=`) are noindex, follow, and canonical to the clean URL.
+* Filtered and search URLs (`?q=`, `?region=`, `?organiser=`) are noindex, follow, and canonical to the clean URL.
 * Do not add Event markup for the archive list. Event markup belongs on the walk pages.
 
 ## 2. Retention: walks older than 12 months
