@@ -16,4 +16,4 @@ A "needs enrichment" flag, meta field, admin column, filter or screen for scrape
 
 ## Revisit when
 
-Events held as drafts (no coordinates, no date) turn out to be common and go unnoticed. Then report them where Petya already looks, the Scraper Log or the alert email, not in a new queue.
+Scraped events with missing data turn out to be common and go unnoticed. Then report them where Petya already looks, the Scraper Log or the alert email, not in a new queue. (What happens to events without coordinates or a date is open in [#188](https://github.com/petyaferreira/vandrekalender-wp/issues/188).)
