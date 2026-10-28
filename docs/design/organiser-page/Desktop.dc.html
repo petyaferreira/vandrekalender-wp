@@ -37,7 +37,7 @@ Alle Vandreture
 
 <section style="display: flex; flex-wrap: wrap; align-items: center; gap: 32px; padding: 24px 0 64px">
 <div style="width: 140px; height: 140px; border-radius: 50%; background: #FAF5EC; border: 1px solid #C2D9B0; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-weight: 300; font-size: 40px; color: #2D5F3F; flex: none">DVL</div>
-<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
 <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F; background: #C2D9B0; border-radius: 999px; padding: 6px 12px">Officiel arrangør</span>
 <h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 56px; line-height: 1.2">Dansk Vandrelaug</h1>
 <p style="margin: 0; max-width: 800px; font-size: 18px; line-height: 1.5">Landsdækkende forening for vandrere. Lokale afdelinger arrangerer gåture året rundt, fra korte byture til lange dagsture i naturen. [Kort beskrivelse af arrangøren, op til 3 linjer]</p>
@@ -106,25 +106,28 @@ Besøg hjemmeside
 </section>
 
 <section aria-labelledby="om-h" style="display: flex; flex-wrap: wrap; gap: 48px; padding-top: 64px">
-<div style="flex: 1 1 520px; min-width: 0; max-width: 800px; display: flex; flex-direction: column; gap: 16px">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
 <h2 id="om-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 48px; line-height: 1.2">Om Dansk Vandrelaug</h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.5">Dansk Vandrelaug kalder sig Danmarks største vandrefællesskab. Foreningen har 20 lokale afdelinger, blandt andre Aarhus, København og Viborg, og arrangerer over 2.000 ture om året, fra korte hverdagsture til lange dagsture i naturen.</p>
 <p style="margin: 0; font-size: 18px; line-height: 1.5">Ud over de almindelige gåture har foreningen ture med ekstra oplevelser eller udfordringer under navnet Vandring Plus, lange lørdagsture og ture gennem byen under navnet Gå grønt gennem byen. Foreningen tilbyder også vandreferier.</p>
 <p style="margin: 0; font-size: 18px; line-height: 1.5">På Alle Vandreture samler vi de ture, som foreningens afdelinger offentliggør. Tid, mødested og pris kan ændre sig, så tjek altid turens side hos arrangøren.</p>
+<p style="margin: 0; font-size: 14px; color: #7A7268">Kilde: dvl.dk, hentet 19. oktober 2026.</p>
 </div>
-<div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
-<dl style="margin: 0; background: #FAF5EC; border: 1px solid #C2D9B0; border-radius: 12px; padding: 4px 24px; display: flex; flex-direction: column">
-<div style="padding: 16px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Afdelinger</dt><dd style="margin: 4px 0 0; font-size: 16px">20 lokale afdelinger</dd></div>
-<div style="padding: 16px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Medlemskab</dt><dd style="margin: 4px 0 0; font-size: 16px">Første halve år 147,50 kr, derefter 295 kr pr. halve år</dd></div>
-<div style="padding: 16px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Kontakt</dt><dd style="margin: 4px 0 0; font-size: 16px; line-height: 1.5"><a href="mailto:dvl@dvl.dk">dvl@dvl.dk</a><br>Telefon 3312 1165, tirsdag og fredag kl. 9 til 12</dd></div>
-<div style="padding: 16px 0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Adresse</dt><dd style="margin: 4px 0 0; font-size: 16px">Kultorvet 7, 1175 København K</dd></div>
-</dl>
-<p style="margin: 0; font-size: 14px; color: #7A7268">Kilde: dvl.dk, hentet 19. oktober 2026. Priser kan ændre sig.</p>
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<h2 id="faq-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 48px; line-height: 1.2">Ofte stillede spørgsmål</h2>
+<div style="display: flex; flex-direction: column; border-top: 1px solid #C2D9B0">
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="4">
+<details style="border-bottom: 1px solid #C2D9B0; padding: 4px 0">
+<summary style="min-height: 52px; display: flex; align-items: center; cursor: pointer; font-size: 18px; font-weight: 600">{{f.q}}</summary>
+<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: #1D1A14">{{f.a}}</p>
+</details>
+</sc-for>
+</div>
 </div>
 </section>
 
 <section style="display: flex; flex-wrap: wrap; gap: 48px; padding-top: 64px">
-<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
 <h2 id="reg-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 48px; line-height: 1.2">Ture i hele landet</h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.5">Dansk Vandrelaug har kommende ture i fire regioner. Vælg en region for at se turene i kalenderen.</p>
 <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border: 1px solid #C2D9B0; border-radius: 12px; overflow: hidden">
@@ -133,7 +136,7 @@ Besøg hjemmeside
 </sc-for>
 </ul>
 </div>
-<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
 <h2 id="old-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 48px; line-height: 1.2">Tidligere ture</h2>
 <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
 <sc-for list="{{past}}" as="p" hint-placeholder-count="4">
@@ -145,18 +148,6 @@ Besøg hjemmeside
 </sc-for>
 </ul>
 <a href="#" style="font-size: 16px; font-weight: 600; min-height: 44px; display: flex; align-items: center">Se flere tidligere ture ›</a>
-</div>
-</section>
-
-<section aria-labelledby="faq-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 64px; max-width: 800px">
-<h2 id="faq-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 48px; line-height: 1.2">Ofte stillede spørgsmål</h2>
-<div style="display: flex; flex-direction: column; border-top: 1px solid #C2D9B0">
-<sc-for list="{{faq}}" as="f" hint-placeholder-count="4">
-<details style="border-bottom: 1px solid #C2D9B0; padding: 4px 0">
-<summary style="min-height: 52px; display: flex; align-items: center; cursor: pointer; font-size: 18px; font-weight: 600">{{f.q}}</summary>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: #1D1A14">{{f.a}}</p>
-</details>
-</sc-for>
 </div>
 </section>
 

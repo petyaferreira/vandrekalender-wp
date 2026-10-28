@@ -16,7 +16,7 @@ Colors (hex in the design file, then the theme slug):
 
 * #2D5F3F forest: header and footer background, primary buttons, region chips, badge text, outline button border and text, labels above filters
 * #C2D9B0 meadow: all borders and dividers, "Officiel arrangør" badge background, km chip background, image placeholder
-* #FAF5EC cream: filter box, stat tiles, facts box, price chip background, logo circle background
+* #FAF5EC cream: filter box, stat tiles, price chip background, logo circle background
 * #7A5230 bark: walk dates on cards (amber failed contrast on white, #96), text in the price chip ("Gratis", "50 kr")
 * #7A7268 pebble: secondary text on white (breadcrumb, place, counts, "Kilde")
 * #1D1A14 charcoal: body text, headings, text on cream backgrounds
@@ -52,7 +52,7 @@ Spacing and layout:
 
 Things the theme.json does not define (take these from the existing front page CSS, and match them exactly):
 
-* Border radius: the design uses 12px on cards, filter box, stat tiles and facts box, 8px on inputs, and fully round on chips and buttons. Check the front page and copy its values.
+* Border radius: the design uses 12px on cards, filter box and stat tiles, 8px on inputs, and fully round on chips and buttons. Check the front page and copy its values.
 * Header and footer: the green bars in the design are placeholders. Use the existing header and footer template parts.
 * Card shadows and hover states: none in the design. Copy from the front page cards.
 
@@ -67,12 +67,12 @@ Accessibility notes on the existing colors:
 2. Hero: logo (initials fallback), badge "Officiel arrangør" (only when flagged), H1 with the organiser name, short description, button "Besøg hjemmeside" (external link, rel="noopener", no nofollow needed for an editorial link, use rel="nofollow noopener" if the link is user supplied)
 3. "Arrangøren i tal": four derived stats and "Næste tur"
 4. "Kommende ture": filters and walk cards, same component as the front page
-5. "Om [Navn]": 150 to 250 words plus a facts list and a source line
-6. "Ture i hele landet": regions with counts, each linking to the calendar filtered by region
-7. "Tidligere ture": last 4 to 8 past walks, link to full archive
-8. "Ofte stillede spørgsmål": native details and summary elements, rendered in the HTML so Google can read them
-9. "Andre arrangører": 6 related organisers, ordered by shared regions
-10. Footer
+5. Two column section. Left column: "Om [Navn]" with 150 to 250 words, then a short source line ("Kilde: dvl.dk, hentet 19. oktober 2026."). There is no facts box. Right column: "Ofte stillede spørgsmål" as native details and summary elements, rendered in the HTML so Google can read them. On mobile it is one column, in this order: Om, then Ofte stillede spørgsmål.
+6. Two column section below it. Left column: "Ture i hele landet" with regions and counts, each linking to the calendar filtered by region. Right column: "Tidligere ture" with the organiser's last 3 past walks and "Se flere tidligere ture ›", which goes to the past walks page filtered to the organiser ([past walks spec](../passed-events-page/past-walks-spec.md)). On mobile it is one column, in this order: Ture i hele landet, then Tidligere ture.
+7. "Andre arrangører": 6 related organisers, ordered by shared regions
+8. Footer
+
+Layout notes for sections 5 and 6 on desktop: both columns are equal width (flex 1 1 480px with a 48px gap) and wrap to one column when the screen is too narrow for two. The columns sit inside the wide container (1376px max). Each column has its own H2 at the same level and size. The FAQ column starts level with the Om heading, and the Tidligere ture column starts level with the Ture i hele landet heading. Columns are top aligned, and the shorter one does not stretch.
 
 ## 3. URL and routing
 
@@ -84,7 +84,7 @@ Accessibility notes on the existing colors:
 
 ## 4. Data model
 
-> **Changed in the build:** an organiser's page is a post (post type `organiser`) linked to its `event_organiser` term, edited in the block editor from locked section patterns, not the admin fields below. The facts, source line and generated summary are dropped. See [the plan's step 5](../../history/organisers-plan.md#step-5-organiser-pages) and [decision 0008](../../decisions/0008-organiser-pages-as-post-type.md).
+> **Changed in the build:** an organiser's page is a post (post type `organiser`) linked to its `event_organiser` term, edited in the block editor from locked section patterns, not the admin fields below. The facts and the generated summary are dropped. See [the plan's step 5](../../history/organisers-plan.md#step-5-organiser-pages) and [decision 0008](../../decisions/0008-organiser-pages-as-post-type.md).
 
 Stored per organiser (editable in WP admin):
 
@@ -94,7 +94,6 @@ Stored per organiser (editable in WP admin):
 * logo (square, min 256 px), logo_alt
 * website_url
 * is_official (boolean, controls the badge)
-* facts (repeater of label and value, optional rows: Afdelinger, Medlemskab, Kontakt, Adresse, Grundlagt, Tilmelding)
 * source_url and source_checked_at (shows "Kilde: dvl.dk, hentet 19. oktober 2026")
 * faq (repeater of question and answer, 3 to 6 items)
 
@@ -162,7 +161,7 @@ Validate with the Rich Results Test and fix warnings about missing offers or ima
 
 ## 10. Content: the seven organisers on the front page today
 
-Source of the list: the "Officielle arrangører" strip on allevandreture.dk. Texts below are drafts for you to correct.
+Source of the list: the "Officielle arrangører" strip on allevandreture.dk. Texts below are drafts for you to correct. The "Facts" lines under each organiser are no longer shown as a box on the page. Use them only as source material for the about text or the FAQ.
 
 ### 10.1 DVL (Dansk Vandrelaug), slug dansk-vandrelaug
 
@@ -258,10 +257,14 @@ Nothing verified. The name is generic and search returned unrelated travel opera
 3. Do you want an /arrangoerer/ index page in the first release, or only the seven single pages?
 4. Should "Officiel arrangør" be set by you per organiser, or only for associations?
 
-## 12. Definition of done
+## 12. Past walks page and retention
+
+Moved to [the past walks spec](../passed-events-page/past-walks-spec.md).
+
+## 13. Definition of done
 
 * Seven organiser pages render with the sections above, mobile first, tested at 360, 390 and 1280 px.
 * No bracketed [FYLD UD] text is visible on any live page.
 * Title, meta description, canonical, breadcrumb and JSON-LD validate.
-* Event cards show the organiser line and link to the organiser page without nested links.
+* Event cards show the organiser line.
 * Pages are in the sitemap and the front page organiser names link to them.
