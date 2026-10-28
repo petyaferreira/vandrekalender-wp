@@ -1,7 +1,6 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
 /**
- * Breadcrumbs: every trail starts with "Kalender" and never contains the
- * event archive (#170).
+ * Breadcrumbs: every trail starts with "Kalender" (#170).
  *
  * @package Vandrekalender
  */
@@ -13,8 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class BreadcrumbsTest extends TestCase {
 
-	const HOME    = 'https://vandrekalender.dk/';
-	const ARCHIVE = 'https://vandrekalender.dk/begivenhed/';
+	const HOME = 'https://vandrekalender.dk/';
 
 	/**
 	 * Core names the home item "Home"; the site's home is the calendar.
@@ -28,7 +26,7 @@ class BreadcrumbsTest extends TestCase {
 			[ 'label' => 'Midtjylland' ],
 		];
 
-		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [ self::ARCHIVE ] );
+		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '' );
 
 		$this->assertSame( 'Kalender', $result[0]['label'] );
 		$this->assertSame( self::HOME, $result[0]['url'] );
@@ -46,55 +44,13 @@ class BreadcrumbsTest extends TestCase {
 			],
 		];
 
-		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Calendar', 'https://vandrekalender.dk/en/', [] );
+		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Calendar', 'https://vandrekalender.dk/en/' );
 
 		$this->assertSame( 'https://vandrekalender.dk/en/', $result[0]['url'] );
 	}
 
 	/**
-	 * An event's trail is "Kalender / Title": the event archive is dropped.
-	 */
-	public function test_event_archive_is_dropped(): void {
-		$items = [
-			[
-				'label' => 'Home',
-				'url'   => self::HOME,
-			],
-			[
-				'label' => 'Begivenheder',
-				'url'   => self::ARCHIVE,
-			],
-			[ 'label' => 'Kyststien' ],
-		];
-
-		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [ self::ARCHIVE ] );
-
-		$this->assertSame( [ 'Kalender', 'Kyststien' ], array_column( $result, 'label' ) );
-	}
-
-	/**
-	 * The archive matches with or without a trailing slash.
-	 */
-	public function test_archive_matches_without_trailing_slash(): void {
-		$items = [
-			[
-				'label' => 'Home',
-				'url'   => self::HOME,
-			],
-			[
-				'label' => 'Begivenheder',
-				'url'   => 'https://vandrekalender.dk/begivenhed',
-			],
-			[ 'label' => 'Kyststien' ],
-		];
-
-		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [ self::ARCHIVE ] );
-
-		$this->assertCount( 2, $result );
-	}
-
-	/**
-	 * Trails without the archive, such as the organiser pages, keep every item.
+	 * Every item after home is kept, such as the organiser overview.
 	 */
 	public function test_other_items_are_kept(): void {
 		$items = [
@@ -109,7 +65,7 @@ class BreadcrumbsTest extends TestCase {
 			[ 'label' => 'Dansk Vandrelaug' ],
 		];
 
-		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '', [ self::ARCHIVE ] );
+		$result = Vandrekalender_Breadcrumbs::apply_rules( $items, self::HOME, 'Kalender', '' );
 
 		$this->assertSame( [ 'Kalender', 'Arrangører', 'Dansk Vandrelaug' ], array_column( $result, 'label' ) );
 	}

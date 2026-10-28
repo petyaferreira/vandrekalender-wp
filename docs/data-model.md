@@ -11,7 +11,7 @@ Registered in `includes/event/class-event.php`.
 - **Slug:** `event` (code always in English — URL slugs translated via Polylang, see `docs/i18n.md`)
 - **Public URL slug:** `begivenhed` (Danish default), `event` (English)
 - **supports:** `title`, `editor`, `excerpt`, `thumbnail`, `author`, `custom-fields`
-- **has_archive:** `true`: the archive is `/begivenhed/` (the rewrite slug). It has no template, so it 301s to the front page (#176)
+- **has_archive:** `false`: the calendar on the front page lists the events, so `/begivenhed/` is a 404 (#176). Event URLs keep the `/begivenhed/` base through the rewrite slug
 - **show_in_rest:** `true` — required for block editor and REST API
 
 ---

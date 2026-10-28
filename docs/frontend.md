@@ -92,7 +92,7 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `taxonomy.html` | Region (`/region/<slug>/`) and length (`/laengde/<slug>/`) pages, with breadcrumbs ("Kalender / Region"). |
 | `index.html` | Archive fallback. |
 
-Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active) and drops the event archive `/begivenhed/` from the trail. The front page and top-level pages have no breadcrumbs.
+Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active). Events have no archive (#176), so an event's trail is "Kalender / Title". The front page and top-level pages have no breadcrumbs.
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
 
