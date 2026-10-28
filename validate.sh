@@ -122,7 +122,7 @@ dependabot_coverage() {
 # before "For Petya" is checked; that section is for her own machine.
 daily_agent_rest_only() {
     local hits
-    hits=$(awk '/^## For Petya/ { exit } /gh (pr|issue|project) / { print FILENAME ":" FNR ": " $0 }' docs/contributing/daily-agent.md)
+    hits=$(awk '/^## For Petya/ { exit } /gh (pr|issue|project)([^a-z-]|$)/ { print FILENAME ":" FNR ": " $0 }' docs/contributing/daily-agent.md)
     [ -z "$hits" ] || { echo "$hits"; return 1; }
 }
 
