@@ -165,6 +165,10 @@ class Vandrekalender_Past_Walks {
 	 * @return int[]
 	 */
 	public static function ids( array $filters ): array {
+		// Empty values count as unset, so no filters and empty filters share
+		// one query.
+		$filters = array_filter( array_intersect_key( $filters, array_flip( self::FILTER_KEYS ) ), 'strlen' );
+		ksort( $filters );
 		$key = md5( (string) wp_json_encode( $filters ) );
 		if ( isset( self::$ids[ $key ] ) ) {
 			return self::$ids[ $key ];
