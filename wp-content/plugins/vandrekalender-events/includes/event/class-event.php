@@ -91,41 +91,50 @@ class Event {
 	 * @return void
 	 */
 	public function register_post_type(): void {
-		register_post_type(
-			self::CUSTOMPOSTTYPE,
-			[
-				'labels'          => [
-					'name'               => __( 'Events', 'vandrekalender-events' ),
-					'singular_name'      => __( 'Event', 'vandrekalender-events' ),
-					'menu_name'          => __( 'Events', 'vandrekalender-events' ),
-					'add_new_item'       => __( 'Add New Event', 'vandrekalender-events' ),
-					'edit_item'          => __( 'Edit Event', 'vandrekalender-events' ),
-					'view_item'          => __( 'View Event', 'vandrekalender-events' ),
-					'view_items'         => __( 'View Events', 'vandrekalender-events' ),
-					'update_item'        => __( 'Update Event', 'vandrekalender-events' ),
-					'all_items'          => __( 'All Events', 'vandrekalender-events' ),
-					'search_items'       => __( 'Search Events', 'vandrekalender-events' ),
-					'not_found'          => __( 'No events found.', 'vandrekalender-events' ),
-					'not_found_in_trash' => __( 'No events found in trash.', 'vandrekalender-events' ),
-				],
-				// 'custom-fields' enables the meta box panel in the editor.
-				'supports'        => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
-				// Own capability set (edit_events, publish_events, …) so the
-				// event_author role can work with events without gaining
-				// access to regular posts. Granted in Vandrekalender_Roles.
-				'capability_type' => [ 'event', 'events' ],
-				'map_meta_cap'    => true,
-				'public'          => true,
-				'show_in_rest'    => true,
-				'has_archive'     => true,
-				'rewrite'         => [
-					'slug'       => 'begivenhed',
-					'with_front' => false,
-				],
-				'menu_icon'       => 'dashicons-location-alt',
-				'menu_position'   => 5,
-			]
-		);
+		register_post_type( self::CUSTOMPOSTTYPE, self::post_type_args() );
+	}
+
+	/**
+	 * The event post type's registration arguments.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public static function post_type_args(): array {
+		return [
+			'labels'          => [
+				'name'               => __( 'Events', 'vandrekalender-events' ),
+				'singular_name'      => __( 'Event', 'vandrekalender-events' ),
+				'menu_name'          => __( 'Events', 'vandrekalender-events' ),
+				'add_new_item'       => __( 'Add New Event', 'vandrekalender-events' ),
+				'edit_item'          => __( 'Edit Event', 'vandrekalender-events' ),
+				'view_item'          => __( 'View Event', 'vandrekalender-events' ),
+				'view_items'         => __( 'View Events', 'vandrekalender-events' ),
+				'update_item'        => __( 'Update Event', 'vandrekalender-events' ),
+				'all_items'          => __( 'All Events', 'vandrekalender-events' ),
+				'search_items'       => __( 'Search Events', 'vandrekalender-events' ),
+				'not_found'          => __( 'No events found.', 'vandrekalender-events' ),
+				'not_found_in_trash' => __( 'No events found in trash.', 'vandrekalender-events' ),
+			],
+			// 'custom-fields' enables the meta box panel in the editor.
+			'supports'        => [ 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields' ],
+			// Own capability set (edit_events, publish_events, …) so the
+			// event_author role can work with events without gaining
+			// access to regular posts. Granted in Vandrekalender_Roles.
+			'capability_type' => [ 'event', 'events' ],
+			'map_meta_cap'    => true,
+			'public'          => true,
+			'show_in_rest'    => true,
+			// No archive: the calendar on the front page lists the events, and
+			// /begivenhed/ would render an empty page (#176). Event URLs keep
+			// the /begivenhed/ base through the rewrite slug.
+			'has_archive'     => false,
+			'rewrite'         => [
+				'slug'       => 'begivenhed',
+				'with_front' => false,
+			],
+			'menu_icon'       => 'dashicons-location-alt',
+			'menu_position'   => 5,
+		];
 	}
 
 	/**
