@@ -31,6 +31,16 @@ function __( string $text, string $domain = 'default' ): string { // phpcs:ignor
 }
 
 /**
+ * Remove trailing slashes and backslashes (as WordPress).
+ *
+ * @param string $value Value.
+ * @return string
+ */
+function untrailingslashit( string $value ): string {
+	return rtrim( $value, '/\\' );
+}
+
+/**
  * Escape for HTML, without double-encoding existing entities (as WordPress).
  *
  * @param string $text Text.

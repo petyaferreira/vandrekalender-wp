@@ -86,10 +86,13 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page.html` (default) | Pages without a rendered title. Also the hero template: make the first content block a full-width Cover and it sits flush against the header. |
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
-| `single-event.html` | Single event view. |
-| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Organiser::filter_breadcrumbs()`), the post content and Organiser List ("Andre arrangører"). The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
+| `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title"). |
+| `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Vandrekalender_Breadcrumbs`), the post content and Organiser List ("Andre arrangører"). The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `archive-organiser.html` | The organiser overview `/arrangoerer/`: breadcrumbs ("Kalender / Arrangører"), heading and intro, and Organiser List with every organiser. The browser title is the post type's archives label "Arrangører" (`Organiser::filter_archive_title()`), not the admin's "Arrangørsider". |
-| `index.html`, `taxonomy.html` | Archive fallbacks. |
+| `taxonomy.html` | Region (`/region/<slug>/`) and length (`/laengde/<slug>/`) pages, with breadcrumbs ("Kalender / Region"). |
+| `index.html` | Archive fallback. |
+
+Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active) and drops the event archive `/begivenhed/` from the trail. The front page and top-level pages have no breadcrumbs.
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
 
