@@ -54,7 +54,7 @@ What deletion does to SEO: deleted pages drop out of Google and lose their searc
 * **Early removal:** private guides can ask for their walks to be removed earlier. Support a manual "fjern nu" action in the admin.
 * **Default decision:** no text only archive rows beyond 12 months. Add that later only if Search Console shows the old pages still matter.
 
-Open question: do you want an extra "behold" list in the admin, or only the flag on each walk?
+Decided (28 October 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6465222423)): only the flag on each walk, off by default, with a "Behold" column and a "Due for removal" filter in the Events list. Removal runs without anyone acting; checking Search Console is optional.
 
 ## 3. Definition of done
 
