@@ -5,23 +5,22 @@ defined( 'ABSPATH' ) || exit;
 /**
  * The past walks page "Tidligere vandreture" at /tidligere-ture/ (#176):
  * walks of the last RETENTION_MONTHS months whose date has passed, newest
- * first, grouped by month, 30 per page (/tidligere-ture/side/2/).
+ * first, grouped by month, 30 per page (?side=2).
  * Design and spec: docs/design/passed-events-page/.
  *
- * Defined in code, not as a page in the database, so staging and production
- * need no setup: rewrite rules set the query vars, the main query is skipped
- * (the Past Walks block runs its own), and the theme's past-walks.html
- * template renders the page.
+ * The page is a normal WordPress page (default template) built from the
+ * theme's "Past walks page" pattern, whose Past Walks block renders the list
+ * (decision 0015). This class finds that page for the links to it, and sets
+ * what the page's own settings can't: noindex on filtered URLs, the
+ * canonical of page 2 and on, and a 404 past the last page.
  *
  * @package Vandrekalender
  */
 class Vandrekalender_Past_Walks {
 
 	const SLUG        = 'tidligere-ture';
-	const QUERY_VAR   = 'vk_past_walks';
-	const PAGE_VAR    = 'vk_side';
-	const PAGE_SLUG   = 'side';
-	const TEMPLATE    = 'past-walks';
+	const BLOCK       = 'vandrekalender/past-walks';
+	const PAGE_PARAM  = 'side';
 	const PER_PAGE    = 30;
 	const FILTER_KEYS = [ 'q', 'region', 'organiser' ];
 
@@ -39,57 +38,59 @@ class Vandrekalender_Past_Walks {
 	private static $ids = [];
 
 	/**
-	 * Constructor — hooks the route, the template, the head tags and the
-	 * front page link.
+	 * Constructor — hooks the page checks, the head tags and the front page
+	 * link.
 	 */
 	public function __construct() {
-		add_action( 'init', [ $this, 'add_rewrite_rules' ] );
-		add_filter( 'query_vars', [ $this, 'add_query_vars' ] );
-		add_filter( 'posts_pre_query', [ $this, 'skip_main_query' ], 10, 2 );
-		add_action( 'template_redirect', [ $this, 'maybe_404' ] );
-		add_filter( 'home_template_hierarchy', [ $this, 'use_template' ] );
-		add_filter( 'document_title_parts', [ $this, 'filter_title_parts' ] );
-		add_filter( 'document_title_separator', [ $this, 'filter_title_separator' ] );
+		add_action( 'template_redirect', [ $this, 'check_page_number' ] );
 		add_filter( 'wp_robots', [ $this, 'filter_robots' ] );
-		add_filter( 'rank_math/frontend/title', [ $this, 'filter_rank_math_title' ] );
-		add_filter( 'rank_math/frontend/description', [ $this, 'filter_rank_math_description' ] );
-		add_filter( 'rank_math/frontend/canonical', [ $this, 'filter_rank_math_canonical' ] );
 		add_filter( 'rank_math/frontend/robots', [ $this, 'filter_rank_math_robots' ] );
+		add_filter( 'rank_math/frontend/canonical', [ $this, 'filter_rank_math_canonical' ] );
 		add_filter( 'render_block_vandrekalender/tabs', [ $this, 'append_front_page_link' ] );
 	}
 
 	/**
-	 * A page of the list, with the visitor's filters as query params.
+	 * A page of the list, with the visitor's filters as query params: the
+	 * published page at /tidligere-ture/. '' when there is none, so callers
+	 * leave the link out instead of linking to a 404.
 	 *
 	 * @param int                  $page    Page number.
 	 * @param array<string,string> $filters Filters (q, region, organiser); empty ones are left out.
 	 * @return string
 	 */
 	public static function url( int $page = 1, array $filters = [] ): string {
-		$path = $page > 1 ? self::SLUG . '/' . self::PAGE_SLUG . '/' . $page : self::SLUG;
-		$url  = home_url( user_trailingslashit( $path ) );
+		// On the page itself, its own URL, whatever its slug.
+		$post = self::is_page() ? get_queried_object() : get_page_by_path( self::SLUG );
+		if ( ! $post instanceof \WP_Post || 'publish' !== $post->post_status ) {
+			return '';
+		}
 
-		$filters = array_filter( array_intersect_key( $filters, array_flip( self::FILTER_KEYS ) ), 'strlen' );
+		$args = array_filter( array_intersect_key( $filters, array_flip( self::FILTER_KEYS ) ), 'strlen' );
+		if ( $page > 1 ) {
+			$args[ self::PAGE_PARAM ] = (string) $page;
+		}
 
-		return $filters ? add_query_arg( array_map( 'rawurlencode', $filters ), $url ) : $url;
+		$url = (string) get_permalink( $post );
+		return $args ? add_query_arg( array_map( 'rawurlencode', $args ), $url ) : $url;
 	}
 
 	/**
-	 * Whether the current request is the page.
+	 * Whether the current request is a page with the Past Walks block.
 	 *
 	 * @return bool
 	 */
 	public static function is_page(): bool {
-		return (bool) get_query_var( self::QUERY_VAR );
+		return is_page() && has_block( self::BLOCK, get_queried_object() );
 	}
 
 	/**
-	 * The page number of the current request.
+	 * The page number of the current request (?side=N).
 	 *
 	 * @return int
 	 */
 	public static function current_page(): int {
-		return max( 1, (int) get_query_var( self::PAGE_VAR ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only page number.
+		return isset( $_GET[ self::PAGE_PARAM ] ) ? max( 1, (int) $_GET[ self::PAGE_PARAM ] ) : 1;
 	}
 
 	/**
@@ -268,55 +269,18 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * Route /tidligere-ture/ and /tidligere-ture/side/N/ to the page.
+	 * ?side=1 redirects to the page without it; a page number past the last
+	 * page is a 404.
 	 *
 	 * @return void
 	 */
-	public function add_rewrite_rules(): void {
-		add_rewrite_rule( '^' . self::SLUG . '/?$', 'index.php?' . self::QUERY_VAR . '=1', 'top' );
-		add_rewrite_rule( '^' . self::SLUG . '/' . self::PAGE_SLUG . '/([0-9]+)/?$', 'index.php?' . self::QUERY_VAR . '=1&' . self::PAGE_VAR . '=$matches[1]', 'top' );
-	}
-
-	/**
-	 * Make the query vars public, so the rewrite rules can set them.
-	 *
-	 * @param string[] $vars Public query vars.
-	 * @return string[]
-	 */
-	public function add_query_vars( array $vars ): array {
-		$vars[] = self::QUERY_VAR;
-		$vars[] = self::PAGE_VAR;
-		return $vars;
-	}
-
-	/**
-	 * The page's main query would list blog posts; the Past Walks block
-	 * queries the walks itself, so return no posts without touching the
-	 * database.
-	 *
-	 * @param array<int,mixed>|null $posts Posts to return instead of querying, or null.
-	 * @param \WP_Query             $query The query.
-	 * @return array<int,mixed>|null
-	 */
-	public function skip_main_query( ?array $posts, \WP_Query $query ): ?array {
-		if ( $query->is_main_query() && $query->get( self::QUERY_VAR ) ) {
-			return [];
-		}
-		return $posts;
-	}
-
-	/**
-	 * /side/1/ redirects to the clean URL; a page number past the last page
-	 * is a 404.
-	 *
-	 * @return void
-	 */
-	public function maybe_404(): void {
-		if ( ! self::is_page() || '' === (string) get_query_var( self::PAGE_VAR ) ) {
+	public function check_page_number(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only page number.
+		if ( ! isset( $_GET[ self::PAGE_PARAM ] ) || ! self::is_page() ) {
 			return;
 		}
 
-		$page    = (int) get_query_var( self::PAGE_VAR );
+		$page    = self::current_page();
 		$filters = self::filters_from_request();
 
 		if ( $page <= 1 ) {
@@ -332,101 +296,6 @@ class Vandrekalender_Past_Walks {
 		$wp_query->set_404();
 		status_header( 404 );
 		nocache_headers();
-	}
-
-	/**
-	 * WordPress treats the page as the blog home (no other query flag is
-	 * set), so put the page's own template first.
-	 *
-	 * @param string[] $templates Template candidates, best first.
-	 * @return string[]
-	 */
-	public function use_template( array $templates ): array {
-		if ( self::is_page() ) {
-			array_unshift( $templates, self::TEMPLATE . '.php' );
-		}
-		return $templates;
-	}
-
-	/**
-	 * The page's title, with the page number from page 2.
-	 *
-	 * @return string
-	 */
-	private static function title(): string {
-		$title = __( 'Past walks in Denmark', 'vandrekalender-events' );
-		$page  = self::current_page();
-
-		/* translators: 1: page title, 2: page number. */
-		return $page > 1 ? sprintf( __( '%1$s, page %2$d', 'vandrekalender-events' ), $title, $page ) : $title;
-	}
-
-	/**
-	 * The browser title without Rank Math: "Tidligere vandreture i Danmark
-	 * | <site>".
-	 *
-	 * @param array<string,string> $parts Title parts.
-	 * @return array<string,string>
-	 */
-	public function filter_title_parts( array $parts ): array {
-		if ( self::is_page() ) {
-			$parts['title'] = self::title();
-		}
-		return $parts;
-	}
-
-	/**
-	 * The separator the spec asks for ("|").
-	 *
-	 * @param string $separator Title separator.
-	 * @return string
-	 */
-	public function filter_title_separator( string $separator ): string {
-		return self::is_page() ? '|' : $separator;
-	}
-
-	/**
-	 * The browser title with Rank Math, which has no title of its own for
-	 * this page.
-	 *
-	 * @param string $title Rank Math's title.
-	 * @return string
-	 */
-	public function filter_rank_math_title( $title ) {
-		return self::is_page() ? self::title() . ' | ' . get_bloginfo( 'name' ) : $title;
-	}
-
-	/**
-	 * The meta description, through Rank Math.
-	 *
-	 * @param string $description Rank Math's description.
-	 * @return string
-	 */
-	public function filter_rank_math_description( $description ) {
-		if ( ! self::is_page() ) {
-			return $description;
-		}
-		return sprintf(
-			/* translators: %d: number of months the page lists. */
-			_n(
-				'See walks that have already taken place in the last %d month: date, place, length and organiser.',
-				'See walks that have already taken place in the last %d months: date, place, length and organiser.',
-				self::RETENTION_MONTHS,
-				'vandrekalender-events'
-			),
-			self::RETENTION_MONTHS
-		);
-	}
-
-	/**
-	 * The canonical URL, through Rank Math, which has none for this page:
-	 * the page without filters.
-	 *
-	 * @param string $canonical Rank Math's canonical URL.
-	 * @return string
-	 */
-	public function filter_rank_math_canonical( $canonical ) {
-		return self::is_page() ? self::url( self::current_page() ) : $canonical;
 	}
 
 	/**
@@ -458,20 +327,36 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
+	 * Page 2 and on are their own canonical (Rank Math would point them at
+	 * page 1, which drops the query string); filters are never part of it.
+	 *
+	 * @param string $canonical Rank Math's canonical URL.
+	 * @return string
+	 */
+	public function filter_rank_math_canonical( $canonical ) {
+		if ( ! self::is_page() || self::current_page() < 2 ) {
+			return $canonical;
+		}
+		$url = self::url( self::current_page() );
+		return '' !== $url ? $url : $canonical;
+	}
+
+	/**
 	 * "Se tidligere vandreture" under the calendar, list and map tabs on the
 	 * front page. Added here rather than in the page's content, so no site
-	 * needs the page edited by hand.
+	 * needs the front page edited by hand.
 	 *
 	 * @param string $block_content The rendered tabs block.
 	 * @return string
 	 */
 	public function append_front_page_link( string $block_content ): string {
-		if ( ! is_front_page() ) {
+		$url = is_front_page() ? self::url() : '';
+		if ( '' === $url ) {
 			return $block_content;
 		}
 		return $block_content . sprintf(
 			'<p class="vk-past-walks-link"><a href="%s">%s <span aria-hidden="true">›</span></a></p>',
-			esc_url( self::url() ),
+			esc_url( $url ),
 			esc_html__( 'See past walks', 'vandrekalender-events' )
 		);
 	}

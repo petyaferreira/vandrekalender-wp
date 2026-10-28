@@ -593,8 +593,7 @@ register_deactivation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'dea
  * runs — normally a manual "Save" on Settings → Permalinks. A file-sync deploy
  * flushes nothing, so a changed CPT or taxonomy slug 404s until someone flushes
  * by hand. This builds a signature from every non-core post type and taxonomy's
- * rewrite config, the rules added with add_rewrite_rule() (e.g. /tidligere-ture/)
- * and the plugin version, and flushes once whenever it changes.
+ * rewrite config (plus the plugin version) and flushes once whenever it changes.
  * It costs nothing on normal requests, self-heals after any deploy that alters a
  * slug, and needs no edits when new post types or taxonomies are added.
  *
@@ -612,9 +611,6 @@ function vandrekalender_events_maybe_flush_rewrite_rules() {
 	foreach ( get_taxonomies( [ '_builtin' => false ], 'objects' ) as $taxonomy ) {
 		$signature['tax'][ $taxonomy->name ] = $taxonomy->rewrite;
 	}
-
-	global $wp_rewrite;
-	$signature['rules'] = $wp_rewrite->extra_rules_top;
 
 	if ( isset( $signature['cpt'] ) ) {
 		ksort( $signature['cpt'] );

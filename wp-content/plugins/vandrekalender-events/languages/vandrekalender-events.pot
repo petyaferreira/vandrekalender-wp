@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T09:31:30+00:00\n"
+"POT-Creation-Date: 2026-10-28T09:51:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -541,8 +541,7 @@ msgstr ""
 
 #: blocks/past-walks/render.php:72
 #: build/blocks/past-walks/render.php:72
-#: includes/class-breadcrumbs.php:36
-#: includes/class-breadcrumbs.php:66
+#: includes/class-breadcrumbs.php:62
 msgid "Past walks"
 msgstr ""
 
@@ -699,7 +698,7 @@ msgstr ""
 msgid "The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
 msgstr ""
 
-#: includes/class-breadcrumbs.php:42
+#: includes/class-breadcrumbs.php:37
 msgid "Calendar"
 msgstr ""
 
@@ -808,11 +807,11 @@ msgstr ""
 msgid "You are the organiser of this event."
 msgstr ""
 
-#: includes/class-event-past-events.php:286
+#: includes/class-event-past-events.php:288
 msgid "See all past walks"
 msgstr ""
 
-#: includes/class-event-past-events.php:290
+#: includes/class-event-past-events.php:293
 msgid "Upcoming walks nearby"
 msgstr ""
 
@@ -1046,25 +1045,7 @@ msgstr ""
 msgid "This file is not a valid GPX track."
 msgstr ""
 
-#: includes/class-past-walks.php:353
-msgid "Past walks in Denmark"
-msgstr ""
-
-#. translators: 1: page title, 2: page number.
-#: includes/class-past-walks.php:357
-#, php-format
-msgid "%1$s, page %2$d"
-msgstr ""
-
-#. translators: %d: number of months the page lists.
-#: includes/class-past-walks.php:407
-#, php-format
-msgid "See walks that have already taken place in the last %d month: date, place, length and organiser."
-msgid_plural "See walks that have already taken place in the last %d months: date, place, length and organiser."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-past-walks.php:471
+#: includes/class-past-walks.php:360
 msgid "See past walks"
 msgstr ""
 

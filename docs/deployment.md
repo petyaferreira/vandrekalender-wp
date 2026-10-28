@@ -436,7 +436,7 @@ One key serves all three of our environments.
 
 ## Permalinks / rewrite rules
 
-Rewrite rules flush **automatically** when any custom slug changes. The `vandrekalender-events` plugin bootstrap (`vandrekalender_events_maybe_flush_rewrite_rules` in `vandrekalender-events.php`, on `init` priority 99) builds a signature from every non-core post type and taxonomy's rewrite config, the rules added with `add_rewrite_rule()` (e.g. `/tidligere-ture/`) and the plugin version, and calls `flush_rewrite_rules()` once whenever that signature changes. After a deploy that touches a slug, the flush happens on the first request, so there is **no need** to manually open Settings → Permalinks and Save.
+Rewrite rules flush **automatically** when any custom slug changes. The `vandrekalender-events` plugin bootstrap (`vandrekalender_events_maybe_flush_rewrite_rules` in `vandrekalender-events.php`, on `init` priority 99) builds a signature from every non-core post type and taxonomy's rewrite config plus the plugin version, and calls `flush_rewrite_rules()` once whenever that signature changes. After a deploy that touches a slug, the flush happens on the first request, so there is **no need** to manually open Settings → Permalinks and Save.
 
 Because the signature is computed from all registered post types and taxonomies, new CPTs or taxonomies (e.g. the planned organiser taxonomy) are covered automatically with no code change. It only flushes when something changes, so normal requests pay nothing. Bumping `VANDREKALENDER_EVENTS_VERSION` also forces a one-time flush.
 

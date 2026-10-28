@@ -31,11 +31,6 @@ class Vandrekalender_Breadcrumbs {
 		// which this block is not on; pll_home_url() gives /en/ on English pages.
 		$home_link = function_exists( 'pll_home_url' ) ? (string) pll_home_url() : '';
 
-		// The past walks page is no post, so core gives only the home item.
-		if ( Vandrekalender_Past_Walks::is_page() ) {
-			$items[] = [ 'label' => __( 'Past walks', 'vandrekalender-events' ) ];
-		}
-
 		return self::apply_rules(
 			$items,
 			home_url( '/' ),
@@ -56,15 +51,16 @@ class Vandrekalender_Breadcrumbs {
 			return null;
 		}
 
-		$date = (string) get_post_meta( get_queried_object_id(), \Vandrekalender\Event::META_DATE, true );
-		if ( ! \Vandrekalender\Event::is_past_date( $date ) ) {
+		$date       = (string) get_post_meta( get_queried_object_id(), \Vandrekalender\Event::META_DATE, true );
+		$past_walks = \Vandrekalender\Event::is_past_date( $date ) ? Vandrekalender_Past_Walks::url() : '';
+		if ( '' === $past_walks ) {
 			return [];
 		}
 
 		return [
 			[
 				'label' => __( 'Past walks', 'vandrekalender-events' ),
-				'url'   => Vandrekalender_Past_Walks::url(),
+				'url'   => $past_walks,
 			],
 		];
 	}

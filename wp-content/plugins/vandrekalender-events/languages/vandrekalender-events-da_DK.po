@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-28T09:31:30+00:00\n"
+"POT-Creation-Date: 2026-10-28T09:51:58+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -487,25 +487,25 @@ msgid_plural "Here you find walks that have already taken place. The archive sho
 msgstr[0] "Her finder du vandreture, der allerede er afholdt. Arkivet viser den seneste %d måned. Brug det til at finde en tur igen, se hvor andre har gået, eller få idéer til næste år."
 msgstr[1] "Her finder du vandreture, der allerede er afholdt. Arkivet viser de seneste %d måneder. Brug det til at finde en tur igen, se hvor andre har gået, eller få idéer til næste år."
 
+#
 #: blocks/past-walks/render.php:70 blocks/past-walks/render.php:103
 #: build/blocks/past-walks/render.php:70 build/blocks/past-walks/render.php:103
-#
 msgid "Show walks"
 msgstr "Vis ture"
 
-#: blocks/past-walks/render.php:72 build/blocks/past-walks/render.php:72
-#: includes/class-breadcrumbs.php:36 includes/class-breadcrumbs.php:66
 #
+#: blocks/past-walks/render.php:72 build/blocks/past-walks/render.php:72
+#: includes/class-breadcrumbs.php:62
 msgid "Past walks"
 msgstr "Tidligere ture"
 
-#: blocks/past-walks/render.php:75 build/blocks/past-walks/render.php:75
 #
+#: blocks/past-walks/render.php:75 build/blocks/past-walks/render.php:75
 msgid "Filters"
 msgstr "Filtre"
 
-#: blocks/past-walks/render.php:77 build/blocks/past-walks/render.php:77
 #
+#: blocks/past-walks/render.php:77 build/blocks/past-walks/render.php:77
 msgid "Search name or place"
 msgstr "Søg i navn eller sted"
 
@@ -513,8 +513,8 @@ msgstr "Søg i navn eller sted"
 msgid "E.g. Tirsdagstraveren or Viborg"
 msgstr "Fx Tirsdagstraveren eller Viborg"
 
-#: blocks/past-walks/render.php:113 build/blocks/past-walks/render.php:113
 #
+#: blocks/past-walks/render.php:113 build/blocks/past-walks/render.php:113
 msgid "There are no past walks yet."
 msgstr "Der er ingen tidligere ture endnu."
 
@@ -526,14 +526,14 @@ msgid_plural "%s past walks, newest first"
 msgstr[0] "%s afholdt tur, nyeste først"
 msgstr[1] "%s afholdte ture, nyeste først"
 
-#: blocks/past-walks/render.php:146 build/blocks/past-walks/render.php:146
 #
+#: blocks/past-walks/render.php:146 build/blocks/past-walks/render.php:146
 msgid "Walk and organiser"
 msgstr "Tur og arrangør"
 
+#
 #. translators: past walk date, PHP date format.
 #: blocks/past-walks/render.php:193 build/blocks/past-walks/render.php:193
-#
 msgctxt "past walk date"
 msgid "D j M"
 msgstr "D j. M"
@@ -639,7 +639,7 @@ msgstr "filen mangler"
 msgid "The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
 msgstr "Introduktionsvideoen mangler på %s, så turoprettere får ingen video vist. Den følger med pluginnet, så det betyder som regel, at filen ikke blev committet, eller at deployet ikke fik den med."
 
-#: includes/class-breadcrumbs.php:42
+#: includes/class-breadcrumbs.php:37
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -748,12 +748,12 @@ msgstr "Denne begivenhed tager ikke imod tilmeldinger."
 msgid "You are the organiser of this event."
 msgstr "Du er arrangør af denne tur."
 
-#: includes/class-event-past-events.php:286
 #
+#: includes/class-event-past-events.php:288
 msgid "See all past walks"
 msgstr "Se alle tidligere vandreture"
 
-#: includes/class-event-past-events.php:290
+#: includes/class-event-past-events.php:293
 msgid "Upcoming walks nearby"
 msgstr "Kommende vandreture i nærheden"
 
@@ -985,27 +985,8 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
-#: includes/class-past-walks.php:353
 #
-msgid "Past walks in Denmark"
-msgstr "Tidligere vandreture i Danmark"
-
-#. translators: 1: page title, 2: page number.
-#: includes/class-past-walks.php:357
-#, php-format
-msgid "%1$s, page %2$d"
-msgstr "%1$s, side %2$d"
-
-#. translators: %d: number of months the page lists.
-#: includes/class-past-walks.php:407
-#, php-format
-msgid "See walks that have already taken place in the last %d month: date, place, length and organiser."
-msgid_plural "See walks that have already taken place in the last %d months: date, place, length and organiser."
-msgstr[0] "Se vandreture, der allerede er afholdt den seneste %d måned: dato, sted, længde og arrangør."
-msgstr[1] "Se vandreture, der allerede er afholdt de seneste %d måneder: dato, sted, længde og arrangør."
-
-#: includes/class-past-walks.php:471
-#
+#: includes/class-past-walks.php:360
 msgid "See past walks"
 msgstr "Se tidligere vandreture"
 
