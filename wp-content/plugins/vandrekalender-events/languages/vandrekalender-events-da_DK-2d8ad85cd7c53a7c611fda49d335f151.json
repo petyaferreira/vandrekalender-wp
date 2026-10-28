@@ -1,0 +1,18 @@
+{
+    "translation-revision-date": "2026-10-08 15:00+0200",
+    "generator": "WP-CLI\/2.12.0",
+    "source": "build\/blocks\/past-walks\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "da_DK",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Past walks: the walks of the last months, newest first, grouped by month, with filters and pages.": [
+                "Tidligere ture: turene fra de seneste m\u00e5neder, nyeste f\u00f8rst, grupperet efter m\u00e5ned, med filtre og sider."
+            ]
+        }
+    }
+}

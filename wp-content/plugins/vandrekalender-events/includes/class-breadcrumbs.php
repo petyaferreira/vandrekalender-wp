@@ -4,9 +4,10 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Site-wide breadcrumbs for the core Breadcrumbs block: every trail starts
- * with "Kalender" (the site's home is the calendar), and an event's trail is
- * "Kalender / Title". Events have no archive (#176), so core would otherwise
- * put one of the event's terms (its region) in between.
+ * with "Kalender" (the site's home is the calendar). An event's trail is
+ * "Kalender / Title", or "Kalender / Tidligere ture / Title" once it has
+ * taken place. Events have no archive (#176), so core would otherwise put
+ * one of the event's terms (its region) in between.
  *
  * @package Vandrekalender
  */
@@ -30,13 +31,42 @@ class Vandrekalender_Breadcrumbs {
 		// which this block is not on; pll_home_url() gives /en/ on English pages.
 		$home_link = function_exists( 'pll_home_url' ) ? (string) pll_home_url() : '';
 
+		// The past walks page is no post, so core gives only the home item.
+		if ( Vandrekalender_Past_Walks::is_page() ) {
+			$items[] = [ 'label' => __( 'Past walks', 'vandrekalender-events' ) ];
+		}
+
 		return self::apply_rules(
 			$items,
 			home_url( '/' ),
 			__( 'Calendar', 'vandrekalender-events' ),
 			$home_link,
-			is_singular( \Vandrekalender\Event::CUSTOMPOSTTYPE ) ? [] : null
+			self::event_middle()
 		);
+	}
+
+	/**
+	 * The items between home and an event: none, or the past walks page once
+	 * the walk has taken place. Null on any other page (core's items stay).
+	 *
+	 * @return array<int,array<string,string>>|null
+	 */
+	private static function event_middle(): ?array {
+		if ( ! is_singular( \Vandrekalender\Event::CUSTOMPOSTTYPE ) ) {
+			return null;
+		}
+
+		$date = (string) get_post_meta( get_queried_object_id(), \Vandrekalender\Event::META_DATE, true );
+		if ( ! \Vandrekalender\Event::is_past_date( $date ) ) {
+			return [];
+		}
+
+		return [
+			[
+				'label' => __( 'Past walks', 'vandrekalender-events' ),
+				'url'   => Vandrekalender_Past_Walks::url(),
+			],
+		];
 	}
 
 	/**

@@ -267,7 +267,8 @@ class Vandrekalender_Event_Past_Events {
 	}
 
 	/**
-	 * Build the notice + nearby-upcoming-walks markup for a past event page.
+	 * Build the notice, the link to the past walks page and the
+	 * nearby-upcoming-walks markup for a past event page.
 	 *
 	 * @param int $post_id Event post ID.
 	 * @return string HTML.
@@ -280,6 +281,9 @@ class Vandrekalender_Event_Past_Events {
 		<div class="vk-past-event-notice">
 			<p class="vk-past-event-notice__text">
 				<?php esc_html_e( 'This walk has taken place.', 'vandrekalender-events' ); ?>
+			</p>
+			<p class="vk-past-event-notice__all">
+				<a href="<?php echo esc_url( Vandrekalender_Past_Walks::url() ); ?>"><?php esc_html_e( 'See all past walks', 'vandrekalender-events' ); ?></a>
 			</p>
 			<?php if ( $upcoming ) : ?>
 				<p class="vk-past-event-notice__heading">
