@@ -107,13 +107,19 @@ Besøg hjemmeside
 <p style="margin: 0; font-size: 16px; line-height: 1.5">Dansk Vandrelaug kalder sig Danmarks største vandrefællesskab. Foreningen har 20 lokale afdelinger, blandt andre Aarhus, København og Viborg, og arrangerer over 2.000 ture om året, fra korte hverdagsture til lange dagsture i naturen.</p>
 <p style="margin: 0; font-size: 16px; line-height: 1.5">Ud over de almindelige gåture har foreningen ture med ekstra oplevelser eller udfordringer under navnet Vandring Plus, lange lørdagsture og ture gennem byen under navnet Gå grønt gennem byen. Foreningen tilbyder også vandreferier.</p>
 <p style="margin: 0; font-size: 16px; line-height: 1.5">På Alle Vandreture samler vi de ture, som foreningens afdelinger offentliggør. Tid, mødested og pris kan ændre sig, så tjek altid turens side hos arrangøren.</p>
-<dl style="margin: 8px 0 0; background: #FAF5EC; border: 1px solid #C2D9B0; border-radius: 12px; padding: 4px 16px; display: flex; flex-direction: column">
-<div style="padding: 12px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Afdelinger</dt><dd style="margin: 4px 0 0; font-size: 16px">20 lokale afdelinger</dd></div>
-<div style="padding: 12px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Medlemskab</dt><dd style="margin: 4px 0 0; font-size: 16px">Første halve år 147,50 kr, derefter 295 kr pr. halve år</dd></div>
-<div style="padding: 12px 0; border-bottom: 1px solid #C2D9B0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Kontakt</dt><dd style="margin: 4px 0 0; font-size: 16px; line-height: 1.5"><a href="mailto:dvl@dvl.dk">dvl@dvl.dk</a><br>Telefon 3312 1165, tirsdag og fredag kl. 9 til 12</dd></div>
-<div style="padding: 12px 0"><dt style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Adresse</dt><dd style="margin: 4px 0 0; font-size: 16px">Kultorvet 7, 1175 København K</dd></div>
-</dl>
-<p style="margin: 0; font-size: 14px; color: #7A7268">Kilde: dvl.dk, hentet 19. oktober 2026. Priser kan ændre sig.</p>
+<p style="margin: 0; font-size: 14px; color: #7A7268">Kilde: dvl.dk, hentet 19. oktober 2026.</p>
+</section>
+
+<section aria-labelledby="faq-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 32px">
+<h2 id="faq-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 32px; line-height: 1.2">Ofte stillede spørgsmål</h2>
+<div style="display: flex; flex-direction: column; border-top: 1px solid #C2D9B0">
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="4">
+<details style="border-bottom: 1px solid #C2D9B0; padding: 4px 0">
+<summary style="min-height: 48px; display: flex; align-items: center; cursor: pointer; font-size: 16px; font-weight: 600">{{f.q}}</summary>
+<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: #1D1A14">{{f.a}}</p>
+</details>
+</sc-for>
+</div>
 </section>
 
 <section aria-labelledby="reg-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 32px">
@@ -138,18 +144,6 @@ Besøg hjemmeside
 </sc-for>
 </ul>
 <a href="#" style="font-size: 16px; font-weight: 600; min-height: 44px; display: flex; align-items: center">Se flere tidligere ture ›</a>
-</section>
-
-<section aria-labelledby="faq-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 32px">
-<h2 id="faq-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 32px; line-height: 1.2">Ofte stillede spørgsmål</h2>
-<div style="display: flex; flex-direction: column; border-top: 1px solid #C2D9B0">
-<sc-for list="{{faq}}" as="f" hint-placeholder-count="4">
-<details style="border-bottom: 1px solid #C2D9B0; padding: 4px 0">
-<summary style="min-height: 48px; display: flex; align-items: center; cursor: pointer; font-size: 16px; font-weight: 600">{{f.q}}</summary>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: #1D1A14">{{f.a}}</p>
-</details>
-</sc-for>
-</div>
 </section>
 
 <section aria-labelledby="andre-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 32px">

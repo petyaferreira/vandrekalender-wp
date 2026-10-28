@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Tidligere vandreture</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;font-size:16px;line-height:1.5;color:#1D1A14;background:#FFFFFF}
+a{color:#1E6FA5}a:hover,a:focus,a:active{color:#154F78}
+</style>
+</helmet>
+<div style="width: 100%; min-width: 0; display: flex; flex-direction: column; background: #FFFFFF">
+
+<header style="background: #2D5F3F; height: 64px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; justify-content: space-between">
+<a href="#" style="display: flex; align-items: center; gap: 12px; color: #FFFFFF; text-decoration: none; font-family: 'Newsreader', serif; font-weight: 300; font-size: 24px">
+<span style="width: 36px; height: 36px; border: 2px solid #FFFFFF; border-radius: 12px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600">AV</span>
+Alle Vandreture
+</a>
+<button aria-label="Åbn menu" style="width: 44px; height: 44px; background: none; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+</button>
+</header>
+
+<main style="padding: 0 16px 48px; display: flex; flex-direction: column">
+
+<nav aria-label="Brødkrumme" style="padding: 20px 0 8px; font-size: 14px; color: #7A7268; display: flex; flex-wrap: wrap; gap: 6px">
+<a href="#">Kalender</a><span aria-hidden="true">/</span><span>Tidligere ture</span>
+</nav>
+
+<section style="display: flex; flex-direction: column; gap: 16px; padding: 16px 0 32px">
+<h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 36px; line-height: 1.2">Tidligere vandreture</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5">Her finder du vandreture, der allerede er afholdt. Arkivet viser de seneste 12 måneder. Brug det til at finde en tur igen, se hvor andre har gået, eller få idéer til næste år.</p>
+<div role="tablist" aria-label="Vis ture" style="display: flex; border-bottom: 1px solid #C2D9B0">
+<a href="#" style="min-height: 48px; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 600; text-decoration: none; color: #7A7268">Kommende ture</a>
+<a href="#" aria-current="page" style="min-height: 48px; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 600; text-decoration: none; color: #2D5F3F; border-bottom: 3px solid #2D5F3F; margin-bottom: -1px">Tidligere ture</a>
+</div>
+</section>
+
+<section aria-label="Filtre" style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FAF5EC; border: 1px solid #C2D9B0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="sog" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Søg i navn eller sted</label>
+<input id="sog" type="search" placeholder="Fx Tirsdagstraveren eller Viborg" style="height: 48px; box-sizing: border-box; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="region" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Region</label>
+<select id="region" style="height: 48px; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit"><option>Alle regioner</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="arr" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Arrangør</label>
+<select id="arr" style="height: 48px; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit"><option>Alle arrangører</option></select>
+</div>
+<a href="#" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-size: 14px">Nulstil</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Spring til måned</span>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{monthChips}}" as="m" hint-placeholder-count="6">
+<li><a href="#" style="min-height: 44px; box-sizing: border-box; padding: 0 16px; display: inline-flex; align-items: center; border: 1px solid #2D5F3F; border-radius: 999px; background: #FFFFFF; color: #2D5F3F; font-size: 14px; text-decoration: none">{{m}}</a></li>
+</sc-for>
+</ul>
+</div>
+
+<p style="margin: 0; font-size: 14px; color: #7A7268">212 afholdte ture, nyeste først</p>
+</section>
+
+<section aria-label="Afholdte ture" style="display: flex; flex-direction: column; gap: 32px; padding-top: 16px">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 2px solid #2D5F3F">
+<h2 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 24px; line-height: 1.2">{{g.month}}</h2>
+<span style="font-size: 14px; color: #7A7268">{{g.count}}</span>
+</div>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
+<li style="padding: 16px 0; border-bottom: 1px solid #C2D9B0; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #7A7268">{{r.date}}</span>
+<a href="#" style="font-size: 18px; font-weight: 600; line-height: 1.3; text-decoration: none; color: #1D1A14">{{r.title}}</a>
+<span style="font-size: 14px; color: #7A7268">{{r.place}}, {{r.region}}</span>
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 4px">
+<span style="font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: #C2D9B0; color: #1D1A14">{{r.km}}</span>
+<a href="#" style="min-height: 32px; display: inline-flex; align-items: center; font-size: 14px">{{r.org}}</a>
+</span>
+</li>
+</sc-for>
+</ul>
+</div>
+</sc-for>
+</section>
+
+<nav aria-label="Sider" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 32px">
+<span style="min-height: 48px; padding: 0 20px; display: inline-flex; align-items: center; border: 1px solid #C2D9B0; border-radius: 999px; font-size: 16px; font-weight: 600; color: #7A7268">‹ Nyere</span>
+<span style="font-size: 14px; color: #7A7268">Side 1 af 9</span>
+<a href="#" style="min-height: 48px; padding: 0 20px; display: inline-flex; align-items: center; border: 1.5px solid #2D5F3F; border-radius: 999px; font-size: 16px; font-weight: 600; text-decoration: none; color: #2D5F3F">Ældre ›</a>
+</nav>
+
+<section aria-labelledby="kom-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 48px">
+<h2 id="kom-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 32px; line-height: 1.2">Lyst til at gå selv?</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.5">Mange af de samme arrangører går igen hver uge eller hver måned. Se hvad der kommer.</p>
+<a href="#" style="align-self: stretch; min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #2D5F3F; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none">Se kommende ture</a>
+</section>
+</main>
+
+<footer style="background: #2D5F3F; color: #FFFFFF; padding: 32px 16px; display: flex; flex-direction: column; gap: 16px">
+<div style="font-family: 'Newsreader', serif; font-weight: 300; font-size: 24px">Alle Vandreture</div>
+<a href="#" style="color: #FFFFFF; font-size: 16px">Kalender</a>
+<a href="#" style="color: #FFFFFF; font-size: 16px">Om os</a>
+<a href="#" style="color: #FFFFFF; font-size: 16px">Kontakt</a>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+monthChips: ['Okt 2026', 'Sep 2026', 'Jun 2026', 'Maj 2026', 'Mar 2026', 'Nov 2025'],
+groups: [
+{ month: 'Oktober 2026', count: '18 ture', rows: [
+{ date: 'TIRS 27. OKT', title: 'Tirsdagstraveren', place: 'Frederikssund', region: 'Hovedstaden', km: '6 km', org: 'Dansk Vandrelaug' },
+{ date: 'MAN 26. OKT', title: 'Lunteholdets mandagstur', place: 'Skjolhøjkilen, Aarhus', region: 'Midtjylland', km: '6 km', org: 'Dansk Vandrelaug' },
+{ date: 'LØR 24. OKT', title: 'Lang lørdag i Viborg', place: 'Viborg', region: 'Midtjylland', km: '18 km', org: 'Dansk Vandrelaug' },
+{ date: 'SØN 18. OKT', title: 'Amager Rundt', place: 'Amager Strand, København', region: 'Hovedstaden', km: '24 km', org: 'Amager Rundt' }
+] },
+{ month: 'September 2026', count: '31 ture', rows: [
+{ date: 'LØR 26. SEP', title: 'Fototur med tema', place: 'Carlsberg St, København', region: 'Hovedstaden', km: '4 km', org: 'Dansk Vandrelaug' },
+{ date: 'SØN 20. SEP', title: 'Kyststi mod nord', place: 'Gilleleje Havn', region: 'Hovedstaden', km: '12 km', org: 'En GÅtur langs kysten' },
+{ date: 'LØR 12. SEP', title: 'Over Stok og Sten', place: 'Silkeborg', region: 'Midtjylland', km: '30 km', org: 'Over Stok og Sten' }
+] }
+]
+};
+}
+}
+</script>
+</body>
+</html>
