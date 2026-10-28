@@ -4,7 +4,7 @@ Decided 23 October 2026 ([#142](https://github.com/petyaferreira/vandrekalender-
 
 ## Decision
 
-In a cloud session, agents talk to GitHub through the REST API only: `gh api repos/petyaferreira/vandrekalender-wp/...`, and REST-based subcommands such as `gh workflow run` and `gh run list`. They do not use `gh pr`, `gh issue` or `gh project`, which are built on GraphQL.
+In a cloud session, agents talk to GitHub through the REST API only (`./gh-rest.sh` wraps the calls the daily agent needs): `gh api repos/petyaferreira/vandrekalender-wp/...`, and REST-based subcommands such as `gh workflow run` and `gh run list`. They do not use `gh pr`, `gh issue` or `gh project`, which are built on GraphQL.
 
 ## Why
 
