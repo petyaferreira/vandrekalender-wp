@@ -8,7 +8,7 @@ Design files: `Tidligere.dc.html` (mobile) and `TidligereDesktop.dc.html` (deskt
 
 Purpose: a plain archive for people who want to find a walk that already happened. It is a list, not a second calendar. Do not build a calendar view or a map view for this page.
 
-* **URLs:** `/tidligere-ture/` is the archive. Month pages are `/tidligere-ture/2026/10/`. Further pages of one month or of the whole list are `/tidligere-ture/side/2/`. All of these are real URLs with plain links between them.
+* **URLs:** `/tidligere-ture/` is the archive. Month pages are `/tidligere-ture/2026/10/`. Further pages of one month or of the whole list are `?side=2` (built: a query parameter, the same as the calendar list's, so no extra URL rules; decided 28 October 2026). All of these are real URLs with plain links between them.
 * **Tabs:** "Kommende ture" and "Tidligere ture" at the top. The current tab uses aria-current="page". Tabs are links, not JavaScript.
 * **List:** grouped by month, newest first, with the month name and number of walks in each group header. Each row shows date, walk name, place, region, distance and organiser name (links to the organiser page). No images, no price chips, no "Gratis" label.
 * **Desktop row:** grid with columns date, walk and organiser, place, distance, region. **Mobile row:** stacked, date on top, then name, then place and region, then a distance chip and the organiser link.
@@ -30,7 +30,7 @@ Meta and headings:
 * Month page title: `Vandreture i {måned} {år}: {N} afholdte ture | Alle Vandreture`
 * Month page meta: `Se de {N} vandreture, der blev afholdt i {måned} {år}. Find dato, sted, længde og arrangør.`
 * One H1 ("Tidligere vandreture", or "Vandreture i {måned} {år}" on month pages). Month group headings are H2.
-* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup.
+* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup. (Built without: the page is a top-level page like Om os, which have no breadcrumb; decided 28 October 2026. A past event's breadcrumb does go through Tidligere ture.)
 
 Indexing:
 

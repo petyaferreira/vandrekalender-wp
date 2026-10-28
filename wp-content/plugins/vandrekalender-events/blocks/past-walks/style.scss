@@ -1,0 +1,364 @@
+// The past walks page /tidligere-ture/ (docs/design/passed-events-page/):
+// rows stack on mobile and become a five-column grid from 782px.
+$vk-past-walks-desktop: 782px;
+
+.vk-past-walks {
+  --vk-pw-line: var(--wp--preset--color--meadow, #c2d9b0);
+  --vk-pw-muted: var(--wp--preset--color--pebble, #7a7268);
+  --vk-pw-forest: var(--wp--preset--color--forest, #2d5f3f);
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__intro {
+    max-width: 800px;
+    margin: 0;
+    font-size: var(--wp--preset--font-size--regular, 1rem);
+    line-height: 1.5;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      font-size: var(--wp--preset--font-size--medium, 1.125rem);
+    }
+  }
+
+  // Tabs are links: "Kommende ture" goes to the calendar.
+  &__tabs {
+    display: flex;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--vk-pw-line);
+  }
+
+  &__tab {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 16px;
+    color: var(--vk-pw-muted);
+    font-weight: 600;
+    text-decoration: none;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      padding: 0 24px;
+    }
+
+    &[aria-current='page'] {
+      margin-bottom: -1px;
+      border-bottom: 3px solid var(--vk-pw-forest);
+      color: var(--vk-pw-forest);
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--vk-pw-line);
+    border-radius: 12px;
+    background: var(--wp--preset--color--cream, #faf5ec);
+
+    @media (min-width: $vk-past-walks-desktop) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    &.is-enhanced .vk-past-walks__submit {
+      display: none;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      &--search {
+        flex: 1 1 280px;
+      }
+
+      select {
+        width: 224px;
+      }
+    }
+  }
+
+  &__label {
+    color: var(--vk-pw-forest);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    height: 48px;
+    padding: 0 12px;
+    border: 1px solid var(--vk-pw-line);
+    border-radius: 8px;
+    background: var(--wp--preset--color--white, #fff);
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    font-family: inherit;
+    font-size: var(--wp--preset--font-size--regular, 1rem);
+
+    @media (min-width: $vk-past-walks-desktop) {
+      height: 44px;
+    }
+  }
+
+  &__submit {
+    align-self: flex-start;
+    min-height: 44px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--vk-pw-forest);
+    color: var(--wp--preset--color--white, #fff);
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  &__reset {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    min-height: 44px;
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+
+    @media (min-width: $vk-past-walks-desktop) {
+      align-self: auto;
+    }
+  }
+
+  &__count,
+  &__empty {
+    margin: 8px 0 0;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__month {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      margin-top: 32px;
+    }
+  }
+
+  &__month-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--vk-pw-forest);
+
+    @media (min-width: $vk-past-walks-desktop) {
+      padding-bottom: 12px;
+    }
+  }
+
+  &__month-title {
+    margin: 0;
+    font-size: var(--wp--preset--font-size--extra-large, 1.5rem);
+    line-height: 1.2;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      font-size: var(--wp--preset--font-size--2-extra-large, 2rem);
+    }
+  }
+
+  &__month-count {
+    flex: none;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__columns {
+    display: none;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Mobile: date, name, "place, region", then the distance chip and the
+  // organiser link on one line.
+  &__row {
+    display: grid;
+    grid-template-areas:
+      'date date'
+      'title title'
+      'place-region place-region'
+      'length organiser';
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--vk-pw-line);
+  }
+
+  &__date {
+    grid-area: date;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    grid-area: title;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    font-size: var(--wp--preset--font-size--medium, 1.125rem);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &__organiser {
+    display: inline-flex;
+    grid-area: organiser;
+    align-items: center;
+    justify-self: start;
+    min-height: 32px;
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__place,
+  &__region {
+    display: none;
+  }
+
+  &__place-region {
+    grid-area: place-region;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__length {
+    grid-area: length;
+    justify-self: start;
+    margin-top: 4px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--vk-pw-line);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+  }
+
+  // Desktop: date | walk and organiser | place | length | region.
+  @media (min-width: $vk-past-walks-desktop) {
+    &__columns,
+    &__row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 240px 80px 160px;
+      gap: 2px 24px;
+    }
+
+    &__columns {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--vk-pw-line);
+      color: var(--vk-pw-muted);
+      font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    &__row {
+      grid-template-areas:
+        'date title place length region'
+        'date organiser place length region';
+    }
+
+    &__date {
+      font-size: var(--wp--preset--font-size--small, 0.875rem);
+      letter-spacing: 0;
+    }
+
+    &__organiser {
+      min-height: 0;
+    }
+
+    &__place-region {
+      display: none;
+    }
+
+    &__place,
+    &__region {
+      display: block;
+      line-height: 1.4;
+    }
+
+    &__place {
+      grid-area: place;
+    }
+
+    &__region {
+      grid-area: region;
+    }
+
+    &__length {
+      margin: 0;
+      padding: 0;
+      background: none;
+      font-size: var(--wp--preset--font-size--regular, 1rem);
+      font-weight: 400;
+    }
+  }
+
+  &__pages {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 32px;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      justify-content: center;
+      gap: 24px;
+      padding-top: 48px;
+    }
+  }
+
+  &__page-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 1.5px solid var(--vk-pw-forest);
+    border-radius: 999px;
+    color: var(--vk-pw-forest);
+    font-weight: 600;
+    text-decoration: none;
+
+    &.is-disabled {
+      border: 1px solid var(--vk-pw-line);
+      color: var(--vk-pw-muted);
+    }
+  }
+
+  &__page-count {
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+}

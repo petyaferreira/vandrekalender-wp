@@ -86,15 +86,31 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page.html` (default) | Pages without a rendered title. Also the hero template: make the first content block a full-width Cover and it sits flush against the header. |
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
-| `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title"). |
+| `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title", or "Kalender / Tidligere ture / Title" for a walk the past walks page lists: past, within its 12 months). |
 | `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Vandrekalender_Breadcrumbs`), the post content and Organiser List ("Andre arrangører"). The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `archive-organiser.html` | The organiser overview `/arrangoerer/`: breadcrumbs ("Kalender / Arrangører"), heading and intro, and Organiser List with every organiser. The browser title is the post type's archives label "Arrangører" (`Organiser::filter_archive_title()`), not the admin's "Arrangørsider". |
 | `taxonomy.html` | Region (`/region/<slug>/`) and length (`/laengde/<slug>/`) pages, with breadcrumbs ("Kalender / Region"). |
 | `index.html` | Archive fallback. |
 
-Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active). Events have no archive (#176), so an event's trail is "Kalender / Title". The front page and top-level pages have no breadcrumbs.
+Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active). Events have no archive (#176), so core would put the event's region in the trail; an event's trail is "Kalender / Title" instead, or "Kalender / Tidligere ture / Title" for a walk the past walks page lists (past, within `RETENTION_MONTHS`). The front page and top-level pages (including the past walks page) have no breadcrumbs.
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
+
+## Past Walks Page
+
+`/tidligere-ture/` lists the walks of the last `Vandrekalender_Past_Walks::RETENTION_MONTHS` (12) months up to yesterday, newest first, grouped by month (design and spec: `docs/design/passed-events-page/`). It is a normal page with the default template (`page.html`), whose content is three blocks: an H1 Heading (wide, so it lines up with the list; "Page (with title)" would put the title in the 800px column), the **Past Walks** block (wide) and the theme pattern **Call to action: upcoming walks** (`patterns/upcoming-walks-cta.php`, "Lyst til at gå selv?") ([decision 0015](decisions/0015-past-walks-page-is-a-page.md)). No breadcrumb: it is a top-level page, and its tabs link back to the calendar.
+
+**Setup, once per site** (local, staging, production): Pages → Add New, title "Tidligere vandreture", slug `tidligere-ture`, default template; add a Heading (H1 "Tidligere vandreture", align wide, top margin Medium), the Past Walks block (align wide) and the "Call to action: upcoming walks" pattern; publish. In Rank Math set the title `Tidligere vandreture i Danmark | Alle Vandreture` and the description `Se vandreture, der allerede er afholdt de seneste 12 måneder: dato, sted, længde og arrangør.` Until the page exists, the links to it are left out.
+
+The **Past Walks** block (`blocks/past-walks/`) renders the list and works without JavaScript:
+
+- Intro (the month count reads `RETENTION_MONTHS`), the tabs "Kommende ture" (the front page) and "Tidligere ture" as links, and the filters as a GET form: search in the walk's name, place and municipality (`q`), region and organiser (`region`, `organiser`, the same parameters as the calendar filters; only organisers with a walk in the window are offered). `view.js` submits on a changed select, hides the "Vis ture" button and leaves empty fields out of the URL.
+- Count line, month groups (header with the month's total over the whole filtered list), and rows: date, walk (links to the walk), organiser (links to `get_term_link()`, the organiser page or the filtered calendar), place, length, region. Rows stack on mobile and become a five-column grid from 782px.
+- 30 walks per page: `?side=2` (the same parameter as the calendar list's "Vis flere"), with "Nyere" / "Ældre" links that keep the filters. `?side=1` redirects to the page without it; a page past the last is a 404.
+- `Vandrekalender_Past_Walks` (`includes/class-past-walks.php`) adds what the page's own settings can't: `noindex, follow` on filtered URLs, and page 2 and on as their own canonical (Rank Math would drop `?side=`). It finds the page by its slug `tidligere-ture` for the links to it.
+- Links to the page: "Se alle tidligere vandreture" under a past event's "Denne tur har fundet sted" notice, "Se tidligere vandreture" after the calendar/list/map tabs on the front page (`render_block` on `vandrekalender/tabs`, only on the front page, so the front page needs no editing), and "Tidligere ture" in a past event's breadcrumb.
+
+Month pages, "Spring til måned" and the sitemap entries are the next step of #176; the organiser page's "Tidligere ture" section the one after.
 
 ---
 
