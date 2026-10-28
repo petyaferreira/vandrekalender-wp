@@ -63,7 +63,7 @@ pr_review() {
 pr_create() {
     local title="${1:-}" body_file="${2:-}" branch
     [ -n "$title" ] && [ -f "$body_file" ] || usage
-    branch=$(git rev-parse --abbrev-ref HEAD)
+    branch=$(git symbolic-ref --short -q HEAD) || { echo "pr-create: detached HEAD, switch to the branch with the change" >&2; exit 1; }
     [ "$branch" != main ] || { echo "pr-create: on main, switch to the branch with the change" >&2; exit 1; }
     gh api -X POST "repos/$REPO/pulls" -f title="$title" -f head="$branch" -f base=main -F body=@"$body_file" \
         --jq '"#\(.number) \(.html_url)"'
