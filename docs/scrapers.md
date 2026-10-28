@@ -94,14 +94,14 @@ The free/paid state (`is_free`) and the `event_length` taxonomy are **not scrape
 
 Pattern extraction runs after direct mapping. If a pattern matches, the field is populated; if not, the field is left null and passed to Layer 3.
 
-### Layer 3 — Leave empty and flag
+### Layer 3 — Leave empty, hold as draft, or reject
 
 Some fields cannot be extracted from some sources. Rather than guessing or silently publishing incomplete data, missing fields are handled explicitly by severity:
 
 | Missing field | Behaviour |
 |---|---|
 | Optional field (e.g. a route's `start_time`) | Field left null. Event still published. Card shows no badge for that field |
-| `event_routes` distance | Route left without distance, event published, **flagged** for manual enrichment *(flagging UI is planned, [#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38))* |
+| `event_routes` distance | Route left without distance, event published. Card shows no distance badge ([no enrichment queue](decisions/0014-no-enrichment-queue.md)) |
 | `event_lat` / `event_lng` (geocoding failed) | Event held as **draft** — coordinates required for the map view. Admin must resolve |
 | `event_date` | Event held as **draft** — date is a required field |
 | `post_title` | Event **rejected** entirely — not created |
@@ -305,14 +305,14 @@ None of the following exists in code yet. Open work is tracked as GitHub issues;
 
 ### Admin scraping dashboard
 
-**Partly built.** A **Scraper Log** screen now exists under **Events → Scraper Log**
+**Built.** A **Scraper Log** screen exists under **Events → Scraper Log**
 (`Vandrekalender_Scraper_Admin`), listing recent runs with their trigger
 (cron/manual), duration, total events updated, and per-scraper counts or errors,
 plus the current schedule status. Runs are stored in the `vandrekalender_scraper_runs`
 option (capped, most recent first) by `Vandrekalender_Scraper_Log`.
 
-Not built: a queue of flagged events needing manual enrichment
-([#38](https://github.com/petyaferreira/vandrekalender-wp/issues/38)).
+A queue of events missing data, to fix by hand, will not be built
+([decision 0014](decisions/0014-no-enrichment-queue.md)).
 
 ### Facebook scraping
 
