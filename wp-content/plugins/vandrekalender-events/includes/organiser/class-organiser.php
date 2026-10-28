@@ -78,7 +78,6 @@ class Organiser {
 		add_action( 'deleted_post_meta', [ $this, 'forget_published_posts_on_term_change' ], 10, 3 );
 		add_action( 'template_redirect', [ $this, 'maybe_redirect_to_calendar' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
-		add_filter( 'block_core_breadcrumbs_items', [ $this, 'filter_breadcrumbs' ] );
 		add_filter( 'post_type_archive_title', [ $this, 'filter_archive_title' ], 10, 2 );
 	}
 
@@ -363,26 +362,6 @@ class Organiser {
 		$term    = $term_id ? get_term( $term_id, Event::TAX_ORGANISER ) : null;
 
 		return $term instanceof \WP_Term ? $term : null;
-	}
-
-	/**
-	 * Breadcrumbs on the organiser pages and the overview: "Kalender /
-	 * Arrangører / Name". The site's home is the calendar, so it is named
-	 * that rather than core's "Home".
-	 *
-	 * @param array<int,array<string,mixed>> $items Breadcrumb items, home first.
-	 * @return array<int,array<string,mixed>>
-	 */
-	public function filter_breadcrumbs( array $items ): array {
-		if ( ! is_singular( self::CUSTOMPOSTTYPE ) && ! is_post_type_archive( self::CUSTOMPOSTTYPE ) ) {
-			return $items;
-		}
-
-		if ( isset( $items[0]['url'] ) && untrailingslashit( $items[0]['url'] ) === untrailingslashit( home_url( '/' ) ) ) {
-			$items[0]['label'] = __( 'Calendar', 'vandrekalender-events' );
-		}
-
-		return $items;
 	}
 
 	/**
