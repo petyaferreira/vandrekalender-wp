@@ -30,7 +30,7 @@ Meta and headings:
 * Month page title: `Vandreture i {måned} {år}: {N} afholdte ture | Alle Vandreture`
 * Month page meta: `Se de {N} vandreture, der blev afholdt i {måned} {år}. Find dato, sted, længde og arrangør.`
 * One H1 ("Tidligere vandreture", or "Vandreture i {måned} {år}" on month pages). Month group headings are H2.
-* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup.
+* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup. (Built without: the page is a top-level page like Om os, which have no breadcrumb; decided 28 October 2026. A past event's breadcrumb does go through Tidligere ture.)
 
 Indexing:
 

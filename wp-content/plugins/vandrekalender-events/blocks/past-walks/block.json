@@ -12,7 +12,6 @@
     "render": "file:./render.php",
     "supports": {
         "align": ["wide"],
-        "html": false,
-        "inserter": false
+        "html": false
     }
 }

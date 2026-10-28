@@ -16,7 +16,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 |---|---|
 | `/` | Homepage — hero, search, filters, calendar/list/map tabs (all real-time filtered) |
 | `/begivenhed/[slug]` | Single event detail page |
-| `/tidligere-ture/` | Past walks of the last 12 months, newest first, grouped by month, 30 per page (`?side=2`), with search, region and organiser filters (`?q=`, `?region=`, `?organiser=`, noindex). A normal page built from the "Past walks page" pattern, created once per site. Linked from past events and the front page. See [frontend.md](frontend.md#past-walks-page) |
+| `/tidligere-ture/` | Past walks of the last 12 months, newest first, grouped by month, 30 per page (`?side=2`), with search, region and organiser filters (`?q=`, `?region=`, `?organiser=`, noindex). A normal page (the Past Walks block and a call-to-action pattern), created once per site. Linked from past events and the front page. See [frontend.md](frontend.md#past-walks-page) |
 | `/om` | About page — site mission, how it works, membership info |
 | `/kontakt` | Contact form |
 | `/arrangoerer/` | Organiser overview — every organiser with a published page, by name, with its upcoming walks and regions (the `organiser` post type archive, `archive-organiser.html`); "Se alle arrangører" on each organiser page links here |

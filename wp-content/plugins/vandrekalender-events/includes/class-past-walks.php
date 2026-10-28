@@ -8,9 +8,9 @@ defined( 'ABSPATH' ) || exit;
  * first, grouped by month, 30 per page (?side=2).
  * Design and spec: docs/design/passed-events-page/.
  *
- * The page is a normal WordPress page (default template) built from the
- * theme's "Past walks page" pattern, whose Past Walks block renders the list
- * (decision 0015). This class finds that page for the links to it, and sets
+ * The page is a normal WordPress page (default template): an H1 Heading,
+ * the Past Walks block, which renders the list, and the theme's
+ * call-to-action pattern (decision 0015). This class finds that page for the links to it, and sets
  * what the page's own settings can't: noindex on filtered URLs, the
  * canonical of page 2 and on, and a 404 past the last page.
  *

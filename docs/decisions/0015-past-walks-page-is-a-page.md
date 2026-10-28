@@ -1,14 +1,14 @@
-# 0015: The past walks page is a normal page built from a pattern, not a route and template in code
+# 0015: The past walks page is a normal page built from a block and a pattern, not a route and template in code
 
 Decided 28 October 2026 with Petya ([#176](https://github.com/petyaferreira/vandrekalender-wp/issues/176), PR [#186](https://github.com/petyaferreira/vandrekalender-wp/pull/186)).
 
 ## Decision
 
-`/tidligere-ture/` is a normal WordPress page (slug `tidligere-ture`, default template `page.html`), built from the theme pattern "Past walks page" (`patterns/past-walks-page.php`): breadcrumbs, the H1, the Past Walks block and the call to action. Pages of the list are `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered URLs, the canonical of page 2 and on, a 404 past the last page, and the links to the page (found by its slug, left out while it doesn't exist).
+`/tidligere-ture/` is a normal WordPress page (slug `tidligere-ture`, default template). Its content is an H1 Heading block (wide, lined up with the list), the Past Walks block and the theme pattern "Call to action: upcoming walks" (`patterns/upcoming-walks-cta.php`). No template and no whole-page pattern. Pages of the list are `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered URLs, the canonical of page 2 and on, a 404 past the last page, and the links to the page (found by its slug, left out while it doesn't exist).
 
 ## Why
 
-- **No templates for single pages.** The site's pages share a few page templates; sections are patterns and blocks. A template per page multiplies templates without need.
+- **No templates for single pages.** The site's pages share a few page templates; sections are patterns and blocks. A template per page multiplies templates without need, and so would a pattern that is the whole page.
 - **It works like the other pages.** Title, meta description and the content around the list are edited in WordPress and Rank Math, without a PR.
 - **No URL rules of our own.** `?side=N` needs none, and it is the parameter the calendar list already uses.
 
@@ -18,7 +18,7 @@ The first version of #186: a route defined in code (`add_rewrite_rule()` for `/t
 
 ## Costs we accept
 
-- **One manual step per site:** create the page from the pattern on local, staging and production (`docs/frontend.md` → Past Walks Page).
+- **One manual step per site:** create the page with the block and the pattern on local, staging and production (`docs/frontend.md` → Past Walks Page).
 - **The page can be renamed or deleted in wp-admin.** The links find it by the slug `tidligere-ture`; a changed slug drops them (no broken links) and needs a 301 from the old URL, like any indexed page ([two-way doors](../principles/two-way-doors.md)).
 
 ## Do not propose
