@@ -86,13 +86,13 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | `page.html` (default) | Pages without a rendered title. Also the hero template: make the first content block a full-width Cover and it sits flush against the header. |
 | `page-with-title.html` | Standard content pages (contact, about, …). Renders the post title with a deliberate `medium` space above. |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
-| `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title", or "Kalender / Tidligere ture / Title" once the walk has taken place). |
+| `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title", or "Kalender / Tidligere ture / Title" for a walk the past walks page lists: past, within its 12 months). |
 | `single-organiser.html` | An organiser's page: breadcrumbs ("Kalender / Arrangører / Name", see `Vandrekalender_Breadcrumbs`), the post content and Organiser List ("Andre arrangører"). The page itself is built from the `organiser-*` section patterns, see [Organiser Page](#organiser-page). |
 | `archive-organiser.html` | The organiser overview `/arrangoerer/`: breadcrumbs ("Kalender / Arrangører"), heading and intro, and Organiser List with every organiser. The browser title is the post type's archives label "Arrangører" (`Organiser::filter_archive_title()`), not the admin's "Arrangørsider". |
 | `taxonomy.html` | Region (`/region/<slug>/`) and length (`/laengde/<slug>/`) pages, with breadcrumbs ("Kalender / Region"). |
 | `index.html` | Archive fallback. |
 
-Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active). Events have no archive (#176), so core would put the event's region in the trail; an event's trail is "Kalender / Title" instead, or "Kalender / Tidligere ture / Title" for a past walk. The front page and top-level pages have no breadcrumbs, except the past walks page, whose pattern has the block ("Kalender / Tidligere vandreture").
+Breadcrumbs come from the core Breadcrumbs block. `Vandrekalender_Breadcrumbs` (`includes/class-breadcrumbs.php`) makes every trail start with "Kalender" (linked to `pll_home_url()` when Polylang is active). Events have no archive (#176), so core would put the event's region in the trail; an event's trail is "Kalender / Title" instead, or "Kalender / Tidligere ture / Title" for a walk the past walks page lists (past, within `RETENTION_MONTHS`). The front page and top-level pages have no breadcrumbs, except the past walks page, whose pattern has the block ("Kalender / Tidligere vandreture").
 
 There is deliberately no `front-page.html` — the front page uses `page.html` like any other page.
 

@@ -110,6 +110,18 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
+	 * Whether the page lists a walk on $date (Y-m-d): inside window().
+	 *
+	 * @param string $date  Event date as Y-m-d.
+	 * @param string $today Today as Y-m-d.
+	 * @return bool
+	 */
+	public static function lists_date( string $date, string $today ): bool {
+		$window = self::window( $today );
+		return '' !== $date && $date >= $window['from'] && $date <= $window['to'];
+	}
+
+	/**
 	 * The visitor's filters from the query string.
 	 *
 	 * @return array<string,string> q, region, organiser; '' when not set.

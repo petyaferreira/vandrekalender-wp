@@ -84,4 +84,16 @@ class PastWalksTest extends TestCase {
 		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'q' => 'Viborg' ] ) );
 		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'organiser' => 'mammutmarch' ] ) );
 	}
+
+	/**
+	 * The page lists a date inside the window only: not today, not before
+	 * the window, not empty.
+	 */
+	public function test_lists_date_only_inside_the_window(): void {
+		$this->assertTrue( Vandrekalender_Past_Walks::lists_date( '2026-10-27', '2026-10-28' ) );
+		$this->assertTrue( Vandrekalender_Past_Walks::lists_date( '2025-10-28', '2026-10-28' ) );
+		$this->assertFalse( Vandrekalender_Past_Walks::lists_date( '2025-10-27', '2026-10-28' ) );
+		$this->assertFalse( Vandrekalender_Past_Walks::lists_date( '2026-10-28', '2026-10-28' ) );
+		$this->assertFalse( Vandrekalender_Past_Walks::lists_date( '', '2026-10-28' ) );
+	}
 }
