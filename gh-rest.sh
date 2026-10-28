@@ -27,7 +27,7 @@ pr_number() {
 }
 
 # Open issues with agent-ready and without needs-decision, minus those an open
-# PR mentions (#<n> in its body, or <n> in its branch name). Oldest first.
+# PR mentions (#<n> in its body, or a branch named <prefix>/<n>-...). Oldest first.
 agent_ready() {
     local prs
     prs=$(gh api --paginate "repos/$REPO/pulls?state=open&per_page=100" |
@@ -38,7 +38,7 @@ agent_ready() {
             | select(has("pull_request") | not)
             | select(any(.labels[]; .name == "needs-decision") | not)
             | .number as $n
-            | select(any($prs[]; (.body | test("(^|[^0-9])#\($n)([^0-9]|$)")) or (.ref | test("(^|[^0-9])\($n)([^0-9]|$)"))) | not)
+            | select(any($prs[]; (.body | test("(^|[^0-9])#\($n)([^0-9]|$)")) or (.ref | test("/\($n)(-|$)"))) | not)
             | "\(.number)\t\(.title)"'
 }
 
