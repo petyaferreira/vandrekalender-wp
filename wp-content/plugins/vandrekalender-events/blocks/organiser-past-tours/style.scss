@@ -1,0 +1,57 @@
+// "Tidligere ture" on an organiser page (docs/design/organiser-page/): a
+// plain list of the organiser's last past walks.
+.vk-past-tours {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--wp--preset--color--meadow, #c2d9b0);
+  }
+
+  &__date {
+    color: var(--wp--preset--color--pebble, #7a7268);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &__detail,
+  &__empty {
+    margin: 0;
+    color: var(--wp--preset--color--pebble, #7a7268);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__all {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    min-height: 44px;
+    font-weight: 600;
+  }
+}

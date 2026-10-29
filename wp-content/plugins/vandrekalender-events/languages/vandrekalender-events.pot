@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T12:37:58+00:00\n"
+"POT-Creation-Date: 2026-10-28T12:05:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -125,7 +125,9 @@ msgstr ""
 
 #. translators: card date with year, PHP date format.
 #: blocks/event-cards/render.php:142
+#: blocks/organiser-past-tours/render.php:45
 #: build/blocks/event-cards/render.php:142
+#: build/blocks/organiser-past-tours/render.php:45
 msgctxt "event card date"
 msgid "D j M Y"
 msgstr ""
@@ -159,7 +161,7 @@ msgstr ""
 
 #: blocks/event-filters/render.php:56
 #: build/blocks/event-filters/render.php:56
-#: includes/event/class-event.php:696
+#: includes/event/class-event.php:705
 msgid "Region"
 msgstr ""
 
@@ -172,7 +174,7 @@ msgstr ""
 #: blocks/event-info-card/render.php:263
 #: build/blocks/event-filters/render.php:67
 #: build/blocks/event-info-card/render.php:263
-#: includes/event/class-event.php:767
+#: includes/event/class-event.php:776
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
@@ -189,7 +191,7 @@ msgstr ""
 #: blocks/event-filters/render.php:79
 #: build/blocks/event-filters/render.php:78
 #: build/blocks/event-filters/render.php:79
-#: includes/event/class-event.php:731
+#: includes/event/class-event.php:740
 msgid "Length"
 msgstr ""
 
@@ -460,6 +462,16 @@ msgstr ""
 msgid "See all organisers"
 msgstr ""
 
+#: blocks/organiser-past-tours/render.php:32
+#: build/blocks/organiser-past-tours/render.php:32
+msgid "There are no past walks yet."
+msgstr ""
+
+#: blocks/organiser-past-tours/render.php:57
+#: build/blocks/organiser-past-tours/render.php:57
+msgid "See more past walks"
+msgstr ""
+
 #. translators: %s: number of upcoming walks in the region.
 #: blocks/organiser-regions/render.php:30
 #: build/blocks/organiser-regions/render.php:30
@@ -476,8 +488,8 @@ msgstr ""
 
 #: blocks/organiser-stats/render.php:23
 #: build/blocks/organiser-stats/render.php:23
-#: includes/event/class-event.php:695
-#: includes/event/class-event.php:703
+#: includes/event/class-event.php:704
+#: includes/event/class-event.php:712
 msgid "Regions"
 msgstr ""
 
@@ -582,6 +594,10 @@ msgstr ""
 #: includes/class-author-dashboard.php:407
 #, php-format
 msgid "The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
+msgstr ""
+
+#: includes/class-breadcrumbs.php:36
+msgid "Calendar"
 msgstr ""
 
 #. translators: %s: event title
@@ -802,7 +818,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:99
+#: includes/event/class-event.php:106
 msgid "Event"
 msgstr ""
 
@@ -1051,218 +1067,214 @@ msgstr ""
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:98
-#: includes/event/class-event.php:100
+#: includes/event/class-event.php:105
+#: includes/event/class-event.php:107
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:108
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:102
+#: includes/event/class-event.php:109
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:103
+#: includes/event/class-event.php:110
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:104
+#: includes/event/class-event.php:111
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:105
+#: includes/event/class-event.php:112
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:106
+#: includes/event/class-event.php:113
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:107
+#: includes/event/class-event.php:114
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:108
+#: includes/event/class-event.php:115
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:109
+#: includes/event/class-event.php:116
 msgid "No events found in trash."
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:607
+#: includes/event/class-event.php:616
 #, php-format
 msgid "%s° N"
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:607
+#: includes/event/class-event.php:616
 #, php-format
 msgid "%s° S"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:612
+#: includes/event/class-event.php:621
 #, php-format
 msgid "%s° E"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:612
+#: includes/event/class-event.php:621
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:617
+#: includes/event/class-event.php:626
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:697
+#: includes/event/class-event.php:706
 msgid "Search Regions"
 msgstr ""
 
-#: includes/event/class-event.php:698
+#: includes/event/class-event.php:707
 msgid "All Regions"
 msgstr ""
 
-#: includes/event/class-event.php:699
+#: includes/event/class-event.php:708
 msgid "Edit Region"
 msgstr ""
 
-#: includes/event/class-event.php:700
+#: includes/event/class-event.php:709
 msgid "Update Region"
 msgstr ""
 
-#: includes/event/class-event.php:701
+#: includes/event/class-event.php:710
 msgid "Add New Region"
 msgstr ""
 
-#: includes/event/class-event.php:702
+#: includes/event/class-event.php:711
 msgid "New Region Name"
 msgstr ""
 
-#: includes/event/class-event.php:730
-#: includes/event/class-event.php:738
+#: includes/event/class-event.php:739
+#: includes/event/class-event.php:747
 msgid "Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:732
+#: includes/event/class-event.php:741
 msgid "Search Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:733
+#: includes/event/class-event.php:742
 msgid "All Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:734
+#: includes/event/class-event.php:743
 msgid "Edit Length"
 msgstr ""
 
-#: includes/event/class-event.php:735
+#: includes/event/class-event.php:744
 msgid "Update Length"
 msgstr ""
 
-#: includes/event/class-event.php:736
+#: includes/event/class-event.php:745
 msgid "Add New Length"
 msgstr ""
 
-#: includes/event/class-event.php:737
+#: includes/event/class-event.php:746
 msgid "New Length Name"
 msgstr ""
 
-#: includes/event/class-event.php:766
-#: includes/event/class-event.php:774
-#: includes/organiser/class-organiser.php:109
+#: includes/event/class-event.php:775
+#: includes/event/class-event.php:783
+#: includes/organiser/class-organiser.php:108
 msgid "Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:768
+#: includes/event/class-event.php:777
 msgid "Search Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:769
-#: includes/event/class-event.php:815
+#: includes/event/class-event.php:778
+#: includes/event/class-event.php:824
 msgid "All Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:770
+#: includes/event/class-event.php:779
 msgid "Edit Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:771
+#: includes/event/class-event.php:780
 msgid "Update Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:772
+#: includes/event/class-event.php:781
 msgid "Add New Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:773
+#: includes/event/class-event.php:782
 msgid "New Organiser Name"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:97
-#: includes/organiser/class-organiser.php:99
+#: includes/organiser/class-organiser.php:96
+#: includes/organiser/class-organiser.php:98
 msgid "Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:98
+#: includes/organiser/class-organiser.php:97
 msgid "Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:100
+#: includes/organiser/class-organiser.php:99
 msgid "Add New Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:101
+#: includes/organiser/class-organiser.php:100
 msgid "Edit Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:102
+#: includes/organiser/class-organiser.php:101
 msgid "View Organiser page"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:103
+#: includes/organiser/class-organiser.php:102
 msgid "View Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:104
+#: includes/organiser/class-organiser.php:103
 msgid "All Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:105
+#: includes/organiser/class-organiser.php:104
 msgid "Search Organiser pages"
 msgstr ""
 
-#: includes/organiser/class-organiser.php:106
+#: includes/organiser/class-organiser.php:105
 msgid "No organiser pages found."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:107
+#: includes/organiser/class-organiser.php:106
 msgid "No organiser pages found in trash."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:200
+#: includes/organiser/class-organiser.php:199
 msgid "Choose the organisation in the Organiser panel before publishing."
 msgstr ""
 
-#: includes/organiser/class-organiser.php:210
+#: includes/organiser/class-organiser.php:209
 msgid "This organiser does not exist."
 msgstr ""
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:221
+#: includes/organiser/class-organiser.php:220
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
-msgstr ""
-
-#: includes/organiser/class-organiser.php:382
-msgid "Calendar"
 msgstr ""
 
 #. translators: %s: trip title.
@@ -1352,6 +1364,11 @@ msgstr ""
 #: blocks/organiser-list/edit.js:15
 #: build/blocks/organiser-list/index.js:1
 msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
+msgstr ""
+
+#: blocks/organiser-past-tours/edit.js:10
+#: build/blocks/organiser-past-tours/index.js:1
+msgid "Past tours: the organiser’s last three past walks, newest first, and a link to all of them."
 msgstr ""
 
 #: blocks/organiser-regions/edit.js:10
@@ -1792,6 +1809,18 @@ msgstr ""
 #: build/blocks/organiser-logo/block.json
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
+msgstr ""
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block title"
+msgid "Past Tours"
+msgstr ""
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block description"
+msgid "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it."
 msgstr ""
 
 #: blocks/organiser-regions/block.json

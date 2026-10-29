@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/organiser-past-tours",
+    "title": "Past Tours",
+    "category": "widgets",
+    "description": "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it.",
+    "textdomain": "vandrekalender-events",
+    "usesContext": ["postId", "postType"],
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "html": false,
+        "inserter": false
+    }
+}

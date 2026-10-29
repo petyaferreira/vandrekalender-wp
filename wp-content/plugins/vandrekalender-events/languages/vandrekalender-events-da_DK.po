@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-23T12:37:58+00:00\n"
+"POT-Creation-Date: 2026-10-28T12:05:31+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -117,7 +117,9 @@ msgid "There are no upcoming walks right now."
 msgstr "Der er ingen kommende ture lige nu."
 
 #. translators: card date with year, PHP date format.
-#: blocks/event-cards/render.php:142 build/blocks/event-cards/render.php:142
+#: blocks/event-cards/render.php:142 blocks/organiser-past-tours/render.php:45
+#: build/blocks/event-cards/render.php:142
+#: build/blocks/organiser-past-tours/render.php:45
 msgctxt "event card date"
 msgid "D j M Y"
 msgstr "D j. M Y"
@@ -145,7 +147,7 @@ msgid "Long (25+ km)"
 msgstr "Lang (25+ km)"
 
 #: blocks/event-filters/render.php:56 build/blocks/event-filters/render.php:56
-#: includes/event/class-event.php:696
+#: includes/event/class-event.php:705
 msgid "Region"
 msgstr "Region"
 
@@ -156,7 +158,7 @@ msgstr "Alle regioner"
 #: blocks/event-filters/render.php:67 blocks/event-info-card/render.php:263
 #: build/blocks/event-filters/render.php:67
 #: build/blocks/event-info-card/render.php:263
-#: includes/event/class-event.php:767
+#: includes/event/class-event.php:776
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
@@ -170,7 +172,7 @@ msgstr "Alle arrangører"
 
 #: blocks/event-filters/render.php:78 blocks/event-filters/render.php:79
 #: build/blocks/event-filters/render.php:78
-#: build/blocks/event-filters/render.php:79 includes/event/class-event.php:731
+#: build/blocks/event-filters/render.php:79 includes/event/class-event.php:740
 msgid "Length"
 msgstr "Længde"
 
@@ -427,6 +429,18 @@ msgstr "Ingen kommende ture"
 msgid "See all organisers"
 msgstr "Se alle arrangører"
 
+#: blocks/organiser-past-tours/render.php:32
+#: build/blocks/organiser-past-tours/render.php:32
+#
+msgid "There are no past walks yet."
+msgstr "Der er ingen tidligere ture endnu."
+
+#: blocks/organiser-past-tours/render.php:57
+#: build/blocks/organiser-past-tours/render.php:57
+#
+msgid "See more past walks"
+msgstr "Se flere tidligere ture"
+
 #. translators: %s: number of upcoming walks in the region.
 #: blocks/organiser-regions/render.php:30
 #: build/blocks/organiser-regions/render.php:30
@@ -443,7 +457,7 @@ msgstr "Kommende ture"
 
 #: blocks/organiser-stats/render.php:23
 #: build/blocks/organiser-stats/render.php:23
-#: includes/event/class-event.php:695 includes/event/class-event.php:703
+#: includes/event/class-event.php:704 includes/event/class-event.php:712
 msgid "Regions"
 msgstr "Regioner"
 
@@ -542,6 +556,10 @@ msgstr "filen mangler"
 #, php-format
 msgid "The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
 msgstr "Introduktionsvideoen mangler på %s, så turoprettere får ingen video vist. Den følger med pluginnet, så det betyder som regel, at filen ikke blev committet, eller at deployet ikke fik den med."
+
+#: includes/class-breadcrumbs.php:36
+msgid "Calendar"
+msgstr "Kalender"
 
 #. translators: %s: event title
 #: includes/class-event-join-mailer.php:41
@@ -760,7 +778,7 @@ msgstr "Når du så vil importere: åbn gruppens side med begivenheder på Faceb
 msgid "Recent Facebook imports"
 msgstr "Seneste importer fra Facebook"
 
-#: includes/class-facebook-importer.php:646 includes/event/class-event.php:99
+#: includes/class-facebook-importer.php:646 includes/event/class-event.php:106
 msgid "Event"
 msgstr "Begivenhed"
 
@@ -1007,215 +1025,211 @@ msgstr "Kunne ikke hente GPX-filen %1$s: %2$s"
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr "Kunne ikke tilføje GPX-filen %1$s: %2$s"
 
-#: includes/event/class-event.php:98 includes/event/class-event.php:100
+#: includes/event/class-event.php:105 includes/event/class-event.php:107
 msgid "Events"
 msgstr "Begivenheder"
 
-#: includes/event/class-event.php:101
+#: includes/event/class-event.php:108
 msgid "Add New Event"
 msgstr "Tilføj ny begivenhed"
 
-#: includes/event/class-event.php:102
+#: includes/event/class-event.php:109
 msgid "Edit Event"
 msgstr "Rediger begivenhed"
 
-#: includes/event/class-event.php:103
+#: includes/event/class-event.php:110
 msgid "View Event"
 msgstr "Vis begivenhed"
 
-#: includes/event/class-event.php:104
+#: includes/event/class-event.php:111
 msgid "View Events"
 msgstr "Vis begivenheder"
 
-#: includes/event/class-event.php:105
+#: includes/event/class-event.php:112
 msgid "Update Event"
 msgstr "Opdater begivenhed"
 
-#: includes/event/class-event.php:106
+#: includes/event/class-event.php:113
 msgid "All Events"
 msgstr "Alle begivenheder"
 
-#: includes/event/class-event.php:107
+#: includes/event/class-event.php:114
 msgid "Search Events"
 msgstr "Søg i begivenheder"
 
-#: includes/event/class-event.php:108
+#: includes/event/class-event.php:115
 msgid "No events found."
 msgstr "Ingen begivenheder fundet."
 
-#: includes/event/class-event.php:109
+#: includes/event/class-event.php:116
 msgid "No events found in trash."
 msgstr "Ingen begivenheder fundet i papirkurven."
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:607
+#: includes/event/class-event.php:616
 #, php-format
 msgid "%s° N"
 msgstr "%s° N"
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:607
+#: includes/event/class-event.php:616
 #, php-format
 msgid "%s° S"
 msgstr "%s° S"
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:612
+#: includes/event/class-event.php:621
 #, php-format
 msgid "%s° E"
 msgstr "%s° Ø"
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:612
+#: includes/event/class-event.php:621
 #, php-format
 msgid "%s° W"
 msgstr "%s° V"
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:617
+#: includes/event/class-event.php:626
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr "GPS %1$s, %2$s"
 
-#: includes/event/class-event.php:697
+#: includes/event/class-event.php:706
 msgid "Search Regions"
 msgstr "Søg i regioner"
 
-#: includes/event/class-event.php:698
+#: includes/event/class-event.php:707
 msgid "All Regions"
 msgstr "Alle regioner"
 
-#: includes/event/class-event.php:699
+#: includes/event/class-event.php:708
 msgid "Edit Region"
 msgstr "Rediger region"
 
-#: includes/event/class-event.php:700
+#: includes/event/class-event.php:709
 msgid "Update Region"
 msgstr "Opdater region"
 
-#: includes/event/class-event.php:701
+#: includes/event/class-event.php:710
 msgid "Add New Region"
 msgstr "Tilføj ny region"
 
-#: includes/event/class-event.php:702
+#: includes/event/class-event.php:711
 msgid "New Region Name"
 msgstr "Navn på ny region"
 
-#: includes/event/class-event.php:730 includes/event/class-event.php:738
+#: includes/event/class-event.php:739 includes/event/class-event.php:747
 msgid "Lengths"
 msgstr "Længder"
 
-#: includes/event/class-event.php:732
+#: includes/event/class-event.php:741
 msgid "Search Lengths"
 msgstr "Søg i længder"
 
-#: includes/event/class-event.php:733
+#: includes/event/class-event.php:742
 msgid "All Lengths"
 msgstr "Alle længder"
 
-#: includes/event/class-event.php:734
+#: includes/event/class-event.php:743
 msgid "Edit Length"
 msgstr "Rediger længde"
 
-#: includes/event/class-event.php:735
+#: includes/event/class-event.php:744
 msgid "Update Length"
 msgstr "Opdater længde"
 
-#: includes/event/class-event.php:736
+#: includes/event/class-event.php:745
 msgid "Add New Length"
 msgstr "Tilføj ny længde"
 
-#: includes/event/class-event.php:737
+#: includes/event/class-event.php:746
 msgid "New Length Name"
 msgstr "Navn på ny længde"
 
-#: includes/event/class-event.php:766 includes/event/class-event.php:774
-#: includes/organiser/class-organiser.php:109
+#: includes/event/class-event.php:775 includes/event/class-event.php:783
+#: includes/organiser/class-organiser.php:108
 msgid "Organisers"
 msgstr "Arrangører"
 
-#: includes/event/class-event.php:768
+#: includes/event/class-event.php:777
 msgid "Search Organisers"
 msgstr "Søg i arrangører"
 
-#: includes/event/class-event.php:769 includes/event/class-event.php:815
+#: includes/event/class-event.php:778 includes/event/class-event.php:824
 msgid "All Organisers"
 msgstr "Alle arrangører"
 
-#: includes/event/class-event.php:770
+#: includes/event/class-event.php:779
 msgid "Edit Organiser"
 msgstr "Redigér arrangør"
 
-#: includes/event/class-event.php:771
+#: includes/event/class-event.php:780
 msgid "Update Organiser"
 msgstr "Opdatér arrangør"
 
-#: includes/event/class-event.php:772
+#: includes/event/class-event.php:781
 msgid "Add New Organiser"
 msgstr "Tilføj ny arrangør"
 
-#: includes/event/class-event.php:773
+#: includes/event/class-event.php:782
 msgid "New Organiser Name"
 msgstr "Ny arrangørs navn"
 
-#: includes/organiser/class-organiser.php:97
-#: includes/organiser/class-organiser.php:99
+#: includes/organiser/class-organiser.php:96
+#: includes/organiser/class-organiser.php:98
 msgid "Organiser pages"
 msgstr "Arrangørsider"
 
-#: includes/organiser/class-organiser.php:98
+#: includes/organiser/class-organiser.php:97
 msgid "Organiser page"
 msgstr "Arrangørside"
 
-#: includes/organiser/class-organiser.php:100
+#: includes/organiser/class-organiser.php:99
 msgid "Add New Organiser page"
 msgstr "Tilføj ny arrangørside"
 
-#: includes/organiser/class-organiser.php:101
+#: includes/organiser/class-organiser.php:100
 msgid "Edit Organiser page"
 msgstr "Redigér arrangørside"
 
-#: includes/organiser/class-organiser.php:102
+#: includes/organiser/class-organiser.php:101
 msgid "View Organiser page"
 msgstr "Vis arrangørside"
 
-#: includes/organiser/class-organiser.php:103
+#: includes/organiser/class-organiser.php:102
 msgid "View Organiser pages"
 msgstr "Vis arrangørsider"
 
-#: includes/organiser/class-organiser.php:104
+#: includes/organiser/class-organiser.php:103
 msgid "All Organiser pages"
 msgstr "Alle arrangørsider"
 
-#: includes/organiser/class-organiser.php:105
+#: includes/organiser/class-organiser.php:104
 msgid "Search Organiser pages"
 msgstr "Søg i arrangørsider"
 
-#: includes/organiser/class-organiser.php:106
+#: includes/organiser/class-organiser.php:105
 msgid "No organiser pages found."
 msgstr "Ingen arrangørsider fundet."
 
-#: includes/organiser/class-organiser.php:107
+#: includes/organiser/class-organiser.php:106
 msgid "No organiser pages found in trash."
 msgstr "Ingen arrangørsider fundet i papirkurven."
 
-#: includes/organiser/class-organiser.php:200
+#: includes/organiser/class-organiser.php:199
 msgid "Choose the organisation in the Organiser panel before publishing."
 msgstr "Vælg organisationen i panelet Arrangør, før du udgiver."
 
-#: includes/organiser/class-organiser.php:210
+#: includes/organiser/class-organiser.php:209
 msgid "This organiser does not exist."
 msgstr "Denne arrangør findes ikke."
 
 #. translators: %s: title of the organiser page that already has the organiser
-#: includes/organiser/class-organiser.php:221
+#: includes/organiser/class-organiser.php:220
 #, php-format
 msgid "This organiser already has a page: \"%s\"."
 msgstr "Denne arrangør har allerede en side: \"%s\"."
-
-#: includes/organiser/class-organiser.php:382
-msgid "Calendar"
-msgstr "Kalender"
 
 #. translators: %s: trip title.
 #: includes/scrapers/class-scraper-opdagverden.php:152
@@ -1292,6 +1306,11 @@ msgstr "Arrangørliste: alle arrangører med en side, efter navn, med deres komm
 #: blocks/organiser-list/edit.js:15 build/blocks/organiser-list/index.js:1
 msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
 msgstr "Andre arrangører: op til seks andre arrangører med en side, først dem med ture i de samme regioner."
+
+#: blocks/organiser-past-tours/edit.js:10
+#: build/blocks/organiser-past-tours/index.js:1
+msgid "Past tours: the organiser’s last three past walks, newest first, and a link to all of them."
+msgstr "Tidligere ture: arrangørens seneste tre afholdte ture, nyeste først, og et link til dem alle."
 
 #: blocks/organiser-regions/edit.js:10
 #: build/blocks/organiser-regions/index.js:1
@@ -1696,6 +1715,18 @@ msgstr "Arrangørlogo"
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
 msgstr "Arrangørsidens logo: det fremhævede billede, eller arrangørens forbogstaver indtil der er et."
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block title"
+msgid "Past Tours"
+msgstr "Tidligere ture"
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block description"
+msgid "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it."
+msgstr "Arrangørens seneste afholdte ture, nyeste først, med et link til dem alle. Ingen overskrift: tilføj din egen over den."
 
 #: blocks/organiser-regions/block.json
 #: build/blocks/organiser-regions/block.json
