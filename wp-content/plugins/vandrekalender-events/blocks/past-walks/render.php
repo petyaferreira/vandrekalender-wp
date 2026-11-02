@@ -28,26 +28,10 @@ $vk_groups   = Vandrekalender_Past_Walks::group_by_month( Vandrekalender_Past_Wa
 // One query each for posts, meta and terms instead of several per row.
 _prime_post_caches( $vk_page_ids, true, true );
 
-$vk_regions = get_terms(
-	[
-		'taxonomy'   => \Vandrekalender\Event::TAX_REGION,
-		'hide_empty' => true,
-	]
-);
-$vk_regions = is_wp_error( $vk_regions ) ? [] : $vk_regions;
-
-// Organisers with a walk in the window, so the list never offers one that
-// shows nothing.
-$vk_window_ids = Vandrekalender_Past_Walks::ids( [] );
-$vk_organisers = $vk_window_ids ? wp_get_object_terms(
-	$vk_window_ids,
-	\Vandrekalender\Event::TAX_ORGANISER,
-	[
-		'orderby' => 'name',
-		'order'   => 'ASC',
-	]
-) : [];
-$vk_organisers = is_wp_error( $vk_organisers ) ? [] : $vk_organisers;
+// Regions and organisers with a walk in the window, so neither dropdown
+// offers one that shows nothing.
+$vk_regions    = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_REGION );
+$vk_organisers = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_ORGANISER );
 ?>
 <div <?php echo get_block_wrapper_attributes( [ 'class' => 'vk-past-walks' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<p class="vk-past-walks__intro">
@@ -78,15 +62,17 @@ $vk_organisers = is_wp_error( $vk_organisers ) ? [] : $vk_organisers;
 			<input class="vk-past-walks__input" type="search" id="vk-past-walks-q" name="q" value="<?php echo esc_attr( $vk_filters['q'] ); ?>" placeholder="<?php esc_attr_e( 'E.g. Tirsdagstraveren or Viborg', 'vandrekalender-events' ); ?>" />
 		</div>
 
-		<div class="vk-past-walks__field">
-			<label class="vk-past-walks__label" for="vk-past-walks-region"><?php esc_html_e( 'Region', 'vandrekalender-events' ); ?></label>
-			<select class="vk-past-walks__input" id="vk-past-walks-region" name="region">
-				<option value=""><?php esc_html_e( 'All regions', 'vandrekalender-events' ); ?></option>
-				<?php foreach ( $vk_regions as $vk_region ) : ?>
-					<option value="<?php echo esc_attr( $vk_region->slug ); ?>" <?php selected( $vk_filters['region'], $vk_region->slug ); ?>><?php echo esc_html( $vk_region->name ); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</div>
+		<?php if ( $vk_regions ) : ?>
+			<div class="vk-past-walks__field">
+				<label class="vk-past-walks__label" for="vk-past-walks-region"><?php esc_html_e( 'Region', 'vandrekalender-events' ); ?></label>
+				<select class="vk-past-walks__input" id="vk-past-walks-region" name="region">
+					<option value=""><?php esc_html_e( 'All regions', 'vandrekalender-events' ); ?></option>
+					<?php foreach ( $vk_regions as $vk_region ) : ?>
+						<option value="<?php echo esc_attr( $vk_region->slug ); ?>" <?php selected( $vk_filters['region'], $vk_region->slug ); ?>><?php echo esc_html( $vk_region->name ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		<?php endif; ?>
 
 		<?php if ( $vk_organisers ) : ?>
 			<div class="vk-past-walks__field">

@@ -96,4 +96,51 @@ class PastWalksTest extends TestCase {
 		$this->assertFalse( Vandrekalender_Past_Walks::lists_date( '2026-10-28', '2026-10-28' ) );
 		$this->assertFalse( Vandrekalender_Past_Walks::lists_date( '', '2026-10-28' ) );
 	}
+
+	/**
+	 * The front page link is added once per request: after the first tabs
+	 * block, not after every one.
+	 */
+	public function test_front_page_link_is_added_once(): void {
+		$this->reset_front_page_link();
+		$url = 'https://example.dk/tidligere-ture/';
+
+		$first  = Vandrekalender_Past_Walks::append_link_once( '<div>tabs 1</div>', $url );
+		$second = Vandrekalender_Past_Walks::append_link_once( '<div>tabs 2</div>', $url );
+
+		$this->assertStringStartsWith( '<div>tabs 1</div><p class="vk-past-walks-link">', $first );
+		$this->assertStringContainsString( 'href="' . $url . '"', $first );
+		$this->assertSame( '<div>tabs 2</div>', $second );
+	}
+
+	/**
+	 * Without the page (no URL) there is no link, and a later tabs block can
+	 * still get it.
+	 */
+	public function test_front_page_link_left_out_without_page(): void {
+		$this->reset_front_page_link();
+
+		$this->assertSame( '<div>tabs</div>', Vandrekalender_Past_Walks::append_link_once( '<div>tabs</div>', '' ) );
+		$this->assertStringContainsString(
+			'vk-past-walks-link',
+			Vandrekalender_Past_Walks::append_link_once( '<div>tabs</div>', 'https://example.dk/tidligere-ture/' )
+		);
+	}
+
+	/**
+	 * The filter dropdowns offer only terms with a walk in the window, so
+	 * with no walks in it (the test database is empty) there are none, not
+	 * every region that has any event.
+	 */
+	public function test_window_terms_empty_without_walks_in_window(): void {
+		$this->assertSame( [], Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_REGION ) );
+		$this->assertSame( [], Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_ORGANISER ) );
+	}
+
+	/**
+	 * Starts a new "request" for the front page link.
+	 */
+	private function reset_front_page_link(): void {
+		( new ReflectionProperty( Vandrekalender_Past_Walks::class, 'front_page_link_added' ) )->setValue( null, false );
+	}
 }

@@ -51,6 +51,27 @@ function esc_html( string $text ): string {
 }
 
 /**
+ * Translated and HTML-escaped text.
+ *
+ * @param string $text   Text.
+ * @param string $domain Text domain.
+ * @return string
+ */
+function esc_html__( string $text, string $domain = 'default' ): string {
+	return esc_html( __( $text, $domain ) ); // phpcs:ignore WordPress.WP.I18n -- stand-in passes its arguments through.
+}
+
+/**
+ * URL escaping, for the plain http(s) URLs the tests use: HTML-escapes it.
+ *
+ * @param string $url URL.
+ * @return string
+ */
+function esc_url( string $url ): string {
+	return htmlspecialchars( $url, ENT_QUOTES, 'UTF-8', false );
+}
+
+/**
  * Same steps as WordPress: drop script/style with their content, strip tags,
  * optionally collapse line breaks, trim.
  *

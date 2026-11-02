@@ -38,6 +38,13 @@ class Vandrekalender_Past_Walks {
 	private static $ids = [];
 
 	/**
+	 * Whether the front page link was added in this request.
+	 *
+	 * @var bool
+	 */
+	private static $front_page_link_added = false;
+
+	/**
 	 * Constructor — hooks the page checks, the head tags and the front page
 	 * link.
 	 */
@@ -247,6 +254,31 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
+	 * The terms of $taxonomy (region, organiser) that have a walk in the
+	 * window, by name, so a filter dropdown never offers one that shows
+	 * nothing.
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 * @return \WP_Term[]
+	 */
+	public static function window_terms( string $taxonomy ): array {
+		$ids = self::ids( [] );
+		if ( ! $ids ) {
+			return [];
+		}
+
+		$terms = wp_get_object_terms(
+			$ids,
+			$taxonomy,
+			[
+				'orderby' => 'name',
+				'order'   => 'ASC',
+			]
+		);
+		return is_wp_error( $terms ) ? [] : $terms;
+	}
+
+	/**
 	 * The event date of each walk, in the order of $ids.
 	 *
 	 * @param int[] $ids Post IDs.
@@ -362,10 +394,23 @@ class Vandrekalender_Past_Walks {
 	 * @return string
 	 */
 	public function append_front_page_link( string $block_content ): string {
-		$url = is_front_page() ? self::url() : '';
-		if ( '' === $url ) {
+		return self::append_link_once( $block_content, is_front_page() ? self::url() : '' );
+	}
+
+	/**
+	 * Appends the "Se tidligere vandreture" link to $block_content, only the
+	 * first time in a request: the link belongs under the calendar's tabs,
+	 * not under every tabs block on the page. Nothing when $url is ''.
+	 *
+	 * @param string $block_content The rendered tabs block.
+	 * @param string $url           The past walks page, or ''.
+	 * @return string
+	 */
+	public static function append_link_once( string $block_content, string $url ): string {
+		if ( '' === $url || self::$front_page_link_added ) {
 			return $block_content;
 		}
+		self::$front_page_link_added = true;
 		return $block_content . sprintf(
 			'<p class="vk-past-walks-link"><a href="%s">%s <span aria-hidden="true">›</span></a></p>',
 			esc_url( $url ),
