@@ -10,9 +10,10 @@ defined( 'ABSPATH' ) || exit;
  *
  * The page is a normal WordPress page (default template): an H1 Heading,
  * the Past Walks block, which renders the list, and the theme's
- * call-to-action pattern (decision 0015). This class finds that page for the links to it, and sets
- * what the page's own settings can't: noindex on filtered URLs, the
- * canonical of page 2 and on, and a 404 past the last page.
+ * call-to-action pattern (decision 0015). This class finds that page for
+ * the links to it, and sets what the page's own settings can't: noindex on
+ * filtered URLs, the canonical of page 2 and on, and a 404 past the last
+ * page.
  *
  * @package Vandrekalender
  */

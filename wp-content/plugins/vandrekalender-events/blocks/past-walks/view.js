@@ -26,7 +26,17 @@ function initFilters(form) {
     form.querySelectorAll('input, select').forEach(field => {
       if (!field.value) {
         field.disabled = true;
+        field.dataset.vkEmptyOnSubmit = '';
       }
+    });
+  });
+
+  // Back to a page restored from the bfcache: the fields disabled on submit
+  // would stay disabled, so enable them again.
+  window.addEventListener('pageshow', () => {
+    form.querySelectorAll('[data-vk-empty-on-submit]').forEach(field => {
+      field.disabled = false;
+      delete field.dataset.vkEmptyOnSubmit;
     });
   });
 }
