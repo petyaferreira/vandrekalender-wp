@@ -15,20 +15,30 @@
 import { store, getElement } from '@wordpress/interactivity';
 
 /**
+ * Navigations in flight; the loading style stays on until the last ends.
+ */
+let pending = 0;
+
+/**
  * Fetch and morph a URL's router region into the page.
  *
  * @param {string} url Path plus query string to navigate to.
  */
 function* navigate(url) {
-  if (state.isNavigating) {
-    return;
-  }
+  pending += 1;
   state.isNavigating = true;
   try {
     const { actions } = yield import('@wordpress/interactivity-router');
-    yield actions.navigate(url);
+    // force: always fetch. The router module loads on the first navigation,
+    // after the Event Filters block has already written the new filters
+    // into the URL, and caches the page on screen under that URL: without
+    // force it would "navigate" to that stale copy and change nothing. A
+    // newer navigation makes the router drop an older one, so every filter
+    // change is followed, never skipped.
+    yield actions.navigate(url, { force: true });
   } finally {
-    state.isNavigating = false;
+    pending -= 1;
+    state.isNavigating = pending > 0;
   }
 }
 
