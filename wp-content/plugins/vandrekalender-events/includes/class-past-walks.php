@@ -42,19 +42,11 @@ class Vandrekalender_Past_Walks {
 	private static $ids = [];
 
 	/**
-	 * Whether the front page link was added in this request.
-	 *
-	 * @var bool
-	 */
-	private static $front_page_link_added = false;
-
-	/**
-	 * Constructor — hooks the robots tags and the front page link.
+	 * Constructor — hooks the robots tags.
 	 */
 	public function __construct() {
 		add_filter( 'wp_robots', [ $this, 'filter_robots' ] );
 		add_filter( 'rank_math/frontend/robots', [ $this, 'filter_rank_math_robots' ] );
-		add_filter( 'render_block_vandrekalender/tabs', [ $this, 'append_front_page_link' ] );
 	}
 
 	/**
@@ -360,38 +352,5 @@ class Vandrekalender_Past_Walks {
 			$robots['follow'] = 'follow';
 		}
 		return $robots;
-	}
-
-	/**
-	 * "Se tidligere vandreture" under the calendar, list and map tabs on the
-	 * front page. Added here rather than in the page's content, so no site
-	 * needs the front page edited by hand.
-	 *
-	 * @param string $block_content The rendered tabs block.
-	 * @return string
-	 */
-	public function append_front_page_link( string $block_content ): string {
-		return self::append_link_once( $block_content, is_front_page() ? self::url() : '' );
-	}
-
-	/**
-	 * Appends the "Se tidligere vandreture" link to $block_content, only the
-	 * first time in a request: the link belongs under the calendar's tabs,
-	 * not under every tabs block on the page. Nothing when $url is ''.
-	 *
-	 * @param string $block_content The rendered tabs block.
-	 * @param string $url           The past walks page, or ''.
-	 * @return string
-	 */
-	public static function append_link_once( string $block_content, string $url ): string {
-		if ( '' === $url || self::$front_page_link_added ) {
-			return $block_content;
-		}
-		self::$front_page_link_added = true;
-		return $block_content . sprintf(
-			'<p class="vk-past-walks-link"><a href="%s">%s <span aria-hidden="true">›</span></a></p>',
-			esc_url( $url ),
-			esc_html__( 'See past walks', 'vandrekalender-events' )
-		);
 	}
 }

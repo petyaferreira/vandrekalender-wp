@@ -109,7 +109,7 @@ The **Past Walks** block (`blocks/past-walks/`) renders the results, like Event 
 - 10 walks, then 10 more with each "Vis flere ture", under "Viser 10 af 212 ture". `?side=N` shows the first N × 10 (the same cumulative parameter as Event Cards). "Vis flere ture" is a link to the next `?side`, so it works without JavaScript and crawlers can follow it.
 - `view.js` (Interactivity API module, as Event Cards) re-renders the list through `@wordpress/interactivity-router` on "Vis flere ture" and on `vk:filters-change` from Event Filters.
 - `Vandrekalender_Past_Walks` (`includes/class-past-walks.php`) sets `noindex, follow` on filtered and `?side=` URLs; the canonical stays the page itself. It finds the page by its slug `tidligere-ture` for the links to it; every link to the page, including the organiser page's, goes through `Vandrekalender_Past_Walks::url()`.
-- Links to the page: "Se alle tidligere vandreture" under a past event's "Denne tur har fundet sted" notice, "Se tidligere vandreture" after the calendar/list/map tabs on the front page (`render_block` on `vandrekalender/tabs`, only on the front page and only after the first tabs block, so the front page needs no editing), and "Tidligere ture" in a past event's breadcrumb.
+- Links to the page: "Se alle tidligere vandreture" under a past event's "Denne tur har fundet sted" notice, and "Tidligere ture" in a past event's breadcrumb.
 
 "Spring til måned" is [#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198).
 

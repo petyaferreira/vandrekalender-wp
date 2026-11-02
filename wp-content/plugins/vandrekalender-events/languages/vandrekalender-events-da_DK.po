@@ -946,11 +946,6 @@ msgstr "GPX-filer skal være mindre end 5 MB."
 msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
-#
-#: includes/class-past-walks.php:394
-msgid "See past walks"
-msgstr "Se tidligere vandreture"
-
 #: includes/class-roles.php:210
 msgid "Event Author"
 msgstr "Turopretter"
