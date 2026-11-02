@@ -56,6 +56,8 @@ git worktree remove <path> && git branch -d <branch>
 
 `node_modules/` and `vendor/` are the only untracked files a worktree should have. If `git -C <path> status` shows anything else, ask Petya before removing it.
 
+If the agent that created a worktree is gone (Petya merges the next day), the merged worktree stays until someone removes it. A nightly sweep is parked in [#197](https://github.com/petyaferreira/vandrekalender-wp/issues/197). The daily agent cannot do it: it runs in the cloud and cannot see this machine.
+
 Why: in #176 a preview container (`vk-worktree`) kept serving the merged `past-tours` worktree against the main database for days after PR #190 merged. Four merged worktrees were left behind as well (#194).
 
 ## Reference projects
