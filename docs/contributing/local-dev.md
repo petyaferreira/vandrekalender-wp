@@ -38,6 +38,31 @@ npm run build   # production
 
 **Plugins** are installed with Composer (`composer require wpackagist-plugin/<slug>`, then `./wp.sh plugin activate <slug>`), never with `./wp.sh plugin install` or the WP admin: plugin folders are not committed, so anything else is invisible to deploys and gone after the next `composer install`. Details: [deployment.md](../deployment.md).
 
+## Clean up what you start
+
+Whoever creates a worktree or a preview container removes it. Nobody else knows it is safe to delete.
+
+**Preview containers.** The main stack serves the main checkout. To check a worktree's branch in the browser, an agent may start a second WordPress container that mounts the worktree's plugin and theme (for example on port 8081). Name it `vk-preview-<issue>`. It uses the **main database**, so anything it writes changes the main site too. Remove it in the same session, as soon as the check is done:
+
+```bash
+docker rm -f -v vk-preview-<issue>   # -v also drops its /var/www/html volume
+```
+
+**Worktrees.** When the PR is merged, remove the worktree and its local branch. Check the merge on GitHub first:
+
+```bash
+gh pr list --head <branch> --state merged   # must list the PR; otherwise keep the worktree
+git worktree remove <path> && git branch -D <branch>
+```
+
+Do not use `git branch -d` as the check. For a pushed branch it compares with the branch's own copy on GitHub, not with `main`, so it deletes an unmerged branch with only a warning. And when the remote branch is gone and the local `main` is behind, it refuses a branch that is merged.
+
+`node_modules/` and `vendor/` are the only untracked files a worktree should have. If `git -C <path> status` shows anything else, ask Petya before removing it.
+
+If the agent that created a worktree is gone (Petya merges the next day), the merged worktree stays until someone removes it. A nightly sweep is parked in [#197](https://github.com/petyaferreira/vandrekalender-wp/issues/197). The daily agent cannot do it: it runs in the cloud and cannot see this machine.
+
+Why: in #176 a preview container (`vk-worktree`) kept serving the merged `past-tours` worktree against the main database for days after PR #190 merged. Four merged worktrees were left behind as well (#194).
+
 ## Reference projects
 
 | Project | Where | What to reference |
