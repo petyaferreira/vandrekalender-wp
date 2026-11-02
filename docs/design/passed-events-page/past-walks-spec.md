@@ -8,18 +8,17 @@ Design files: `Tidligere.dc.html` (mobile) and `TidligereDesktop.dc.html` (deskt
 
 Purpose: a plain archive for people who want to find a walk that already happened. It is a list, not a second calendar. Do not build a calendar view or a map view for this page.
 
-* **URLs:** `/tidligere-ture/` is the archive. Month pages are `/tidligere-ture/2026/10/`. Further pages of one month or of the whole list are `/tidligere-ture/side/2/`. All of these are real URLs with plain links between them.
-* **Tabs:** "Kommende ture" and "Tidligere ture" at the top. The current tab uses aria-current="page". Tabs are links, not JavaScript.
+* **URLs:** `/tidligere-ture/` is the archive. Month pages are `/tidligere-ture/2026/10/`. "Vis flere ture" links to `?side=2`, `?side=3`, … (built: the calendar list's cumulative parameter, so no extra URL rules; decided 28 October 2026). All of these are real URLs with plain links between them.
+* **No tabs** (decided 2 November 2026: the "Kommende ture" / "Tidligere ture" tabs in the first design were a mistake). The page is the filters and, below them, the results.
 * **List:** grouped by month, newest first, with the month name and number of walks in each group header. Each row shows date, walk name, place, region, distance and organiser name (links to the organiser page). No images, no price chips, no "Gratis" label.
 * **Desktop row:** grid with columns date, walk and organiser, place, distance, region. **Mobile row:** stacked, date on top, then name, then place and region, then a distance chip and the organiser link.
 * **Row link:** the walk name links to the walk page when the walk page still exists. Otherwise it is plain text.
-* **Filters:** search in name and place, region, organiser, and a reset link. Filters change the list without changing the canonical URL.
-* **"Spring til måned":** links to the month pages inside the retention window, as plain links in the HTML. This also gives Google a clear path to every month.
+* **Filters:** the calendar's Event Filters block, set to Past (decided 2 November 2026): region, organiser, length, from and to date, free only, and reset. No search. Region and organiser only offer values with a walk in the window, and the dates stay inside it. Filters change the list without changing the canonical URL.
+* **"Spring til måned":** a separate block with month chips, built in [#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198).
 * **Empty months are never shown.** A month only appears as a group in the list and as a chip in "Spring til måned" if at least one walk matches the current filters. Example: when the list is filtered to Mammutmarch, which only has walks in some months, only those months show up, and the chips are recalculated for that filter. The design files show this with gaps in the chip row (Okt, Sep, Jun, Maj, Mar, Nov).
 * **Month pages with no walks do not exist.** Do not create or link an empty month page. A request for one returns 404 (410 if the month once had walks), and it is not in the sitemap. Chips on a filtered list keep the filter in the link (for example `?organiser=mammutmarch`), and the page canonicalises to the clean month URL.
-* **"Nyere" and "Ældre" skip empty months.** They go to the next page or month that has walks. The "Side 1 af N" count is calculated from the filtered list only.
-* **Pagination:** "Nyere" and "Ældre" links and "Side 1 af 9". 30 walks per page. They must work without JavaScript. The disabled link is not a link.
-* **Count line:** "212 afholdte ture, nyeste først", derived from the data.
+* **"Vis flere ture"** (decided 2 November 2026, replacing "Nyere" / "Ældre" pages): 10 walks, then 10 more with each click, under "Viser 10 af 212 ture". It is a link, so it works without JavaScript; there is no button once every walk is shown.
+* **Count line:** "212 afholdte ture matcher dine valg", counted over the filtered list.
 * **Call to action at the bottom:** "Lyst til at gå selv?" with a button to the upcoming walks.
 * **Organiser page link:** the "Se flere tidligere ture" link on an organiser page goes to `/tidligere-ture/?organiser={slug}` (decided 28 October 2026: the same `organiser` parameter as the calendar filters).
 
@@ -30,7 +29,7 @@ Meta and headings:
 * Month page title: `Vandreture i {måned} {år}: {N} afholdte ture | Alle Vandreture`
 * Month page meta: `Se de {N} vandreture, der blev afholdt i {måned} {år}. Find dato, sted, længde og arrangør.`
 * One H1 ("Tidligere vandreture", or "Vandreture i {måned} {år}" on month pages). Month group headings are H2.
-* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup.
+* Breadcrumb: Kalender, Tidligere ture (and the month on month pages), with BreadcrumbList markup. (Built without: the page is a top-level page like Om os, which have no breadcrumb; decided 28 October 2026. A past event's breadcrumb does go through Tidligere ture.)
 
 Indexing:
 

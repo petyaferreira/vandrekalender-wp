@@ -1,0 +1,256 @@
+// The past walks page /tidligere-ture/ (docs/design/passed-events-page/):
+// rows stack on mobile and become a five-column grid from 782px.
+$vk-past-walks-desktop: 782px;
+
+.vk-past-walks {
+  --vk-pw-line: var(--wp--preset--color--meadow, #c2d9b0);
+  --vk-pw-muted: var(--wp--preset--color--pebble, #7a7268);
+  --vk-pw-forest: var(--wp--preset--color--forest, #2d5f3f);
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__count,
+  &__empty {
+    margin: 8px 0 0;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__month {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      margin-top: 32px;
+    }
+  }
+
+  &__month-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--vk-pw-forest);
+
+    @media (min-width: $vk-past-walks-desktop) {
+      padding-bottom: 12px;
+    }
+  }
+
+  &__month-title {
+    margin: 0;
+    font-size: var(--wp--preset--font-size--extra-large, 1.5rem);
+    line-height: 1.2;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      font-size: var(--wp--preset--font-size--2-extra-large, 2rem);
+    }
+  }
+
+  &__month-count {
+    flex: none;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__columns {
+    display: none;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Mobile: date, name, "place, region", then the distance chip and the
+  // organiser link on one line.
+  &__row {
+    display: grid;
+    grid-template-areas:
+      'date date'
+      'title title'
+      'place-region place-region'
+      'length organiser';
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--vk-pw-line);
+  }
+
+  &__date {
+    grid-area: date;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    grid-area: title;
+    color: var(--wp--preset--color--charcoal, #1d1a14);
+    font-size: var(--wp--preset--font-size--medium, 1.125rem);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &__organiser {
+    display: inline-flex;
+    grid-area: organiser;
+    align-items: center;
+    justify-self: start;
+    min-height: 32px;
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__place,
+  &__region {
+    display: none;
+  }
+
+  &__place-region {
+    grid-area: place-region;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+  }
+
+  &__length {
+    grid-area: length;
+    justify-self: start;
+    margin-top: 4px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--vk-pw-line);
+    font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+    font-weight: 600;
+  }
+
+  // Desktop: date | walk and organiser | place | length | region.
+  @media (min-width: $vk-past-walks-desktop) {
+    &__columns,
+    &__row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 240px 80px 160px;
+      gap: 2px 24px;
+    }
+
+    &__columns {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--vk-pw-line);
+      color: var(--vk-pw-muted);
+      font-size: var(--wp--preset--font-size--x-small, 0.75rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    &__row {
+      grid-template-areas:
+        'date title place length region'
+        'date organiser place length region';
+    }
+
+    &__date {
+      font-size: var(--wp--preset--font-size--small, 0.875rem);
+      letter-spacing: 0;
+    }
+
+    &__organiser {
+      min-height: 0;
+    }
+
+    &__place-region {
+      display: none;
+    }
+
+    &__place,
+    &__region {
+      display: block;
+      line-height: 1.4;
+    }
+
+    &__place {
+      grid-area: place;
+    }
+
+    &__region {
+      grid-area: region;
+    }
+
+    &__length {
+      margin: 0;
+      padding: 0;
+      background: none;
+      font-size: var(--wp--preset--font-size--regular, 1rem);
+      font-weight: 400;
+    }
+  }
+
+  // "Viser 10 af 212 ture" and "Vis flere ture": centred on desktop,
+  // full width on mobile.
+  &__more {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-top: 32px;
+
+    @media (min-width: $vk-past-walks-desktop) {
+      align-items: center;
+      padding-top: 48px;
+    }
+  }
+
+  &__shown {
+    margin: 0;
+    color: var(--vk-pw-muted);
+    font-size: var(--wp--preset--font-size--small, 0.875rem);
+    text-align: center;
+  }
+
+  &__more-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 32px;
+    border-radius: 999px;
+    background: var(--vk-pw-forest);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+
+    // theme.json colours every link fjord-deep on :hover, :focus and
+    // :active (a:focus outranks this class), and a click focuses the link:
+    // keep the text white on the green in every state.
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
+      color: #fff;
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &.is-loading &__list {
+    opacity: 0.6;
+  }
+}

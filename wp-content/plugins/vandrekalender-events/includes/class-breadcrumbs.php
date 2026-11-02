@@ -4,9 +4,10 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Site-wide breadcrumbs for the core Breadcrumbs block: every trail starts
- * with "Kalender" (the site's home is the calendar), and an event's trail is
- * "Kalender / Title". Events have no archive (#176), so core would otherwise
- * put one of the event's terms (its region) in between.
+ * with "Kalender" (the site's home is the calendar). An event's trail is
+ * "Kalender / Title", or "Kalender / Tidligere ture / Title" when the past
+ * walks page lists it. Events have no archive (#176), so core would
+ * otherwise put one of the event's terms (its region) in between.
  *
  * @package Vandrekalender
  */
@@ -35,8 +36,35 @@ class Vandrekalender_Breadcrumbs {
 			home_url( '/' ),
 			__( 'Calendar', 'vandrekalender-events' ),
 			$home_link,
-			is_singular( \Vandrekalender\Event::CUSTOMPOSTTYPE ) ? [] : null
+			self::event_middle()
 		);
+	}
+
+	/**
+	 * The items between home and an event: none, or the past walks page when
+	 * it lists the walk. Null on any other page (core's items stay).
+	 *
+	 * @return array<int,array<string,string>>|null
+	 */
+	private static function event_middle(): ?array {
+		if ( ! is_singular( \Vandrekalender\Event::CUSTOMPOSTTYPE ) ) {
+			return null;
+		}
+
+		$date = (string) get_post_meta( get_queried_object_id(), \Vandrekalender\Event::META_DATE, true );
+		// Only a walk the past walks page lists goes through it; an older
+		// one (outside its window) is "Kalender / Title".
+		$past_walks = Vandrekalender_Past_Walks::lists_date( $date, current_time( 'Y-m-d' ) ) ? Vandrekalender_Past_Walks::url() : '';
+		if ( '' === $past_walks ) {
+			return [];
+		}
+
+		return [
+			[
+				'label' => __( 'Past walks', 'vandrekalender-events' ),
+				'url'   => $past_walks,
+			],
+		];
 	}
 
 	/**

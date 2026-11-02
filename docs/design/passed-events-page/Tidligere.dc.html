@@ -36,18 +36,12 @@ Alle Vandreture
 <section style="display: flex; flex-direction: column; gap: 16px; padding: 16px 0 32px">
 <h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 36px; line-height: 1.2">Tidligere vandreture</h1>
 <p style="margin: 0; font-size: 16px; line-height: 1.5">Her finder du vandreture, der allerede er afholdt. Arkivet viser de seneste 12 måneder. Brug det til at finde en tur igen, se hvor andre har gået, eller få idéer til næste år.</p>
-<div role="tablist" aria-label="Vis ture" style="display: flex; border-bottom: 1px solid #C2D9B0">
-<a href="#" style="min-height: 48px; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 600; text-decoration: none; color: #7A7268">Kommende ture</a>
-<a href="#" aria-current="page" style="min-height: 48px; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 600; text-decoration: none; color: #2D5F3F; border-bottom: 3px solid #2D5F3F; margin-bottom: -1px">Tidligere ture</a>
-</div>
+<a href="#" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-size: 16px; font-weight: 600">Se kommende ture ›</a>
 </section>
 
 <section aria-label="Filtre" style="display: flex; flex-direction: column; gap: 16px">
 <div style="background: #FAF5EC; border: 1px solid #C2D9B0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<label for="sog" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Søg i navn eller sted</label>
-<input id="sog" type="search" placeholder="Fx Tirsdagstraveren eller Viborg" style="height: 48px; box-sizing: border-box; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit">
-</div>
+<a href="#" style="align-self: flex-end; min-height: 32px; display: flex; align-items: center; font-size: 14px; color: #2D5F3F; text-decoration: underline">Nulstil</a>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <label for="region" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Region</label>
 <select id="region" style="height: 48px; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit"><option>Alle regioner</option></select>
@@ -56,7 +50,25 @@ Alle Vandreture
 <label for="arr" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Arrangør</label>
 <select id="arr" style="height: 48px; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit"><option>Alle arrangører</option></select>
 </div>
-<a href="#" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-size: 14px">Nulstil</a>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Længde</span>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<button style="min-height: 44px; padding: 0 16px; border: 1px solid #2D5F3F; border-radius: 999px; background: transparent; color: #2D5F3F; font-size: 14px; font-family: inherit">Kort (0 til 10 km)</button>
+<button style="min-height: 44px; padding: 0 16px; border: 1px solid #2D5F3F; border-radius: 999px; background: transparent; color: #2D5F3F; font-size: 14px; font-family: inherit">Mellem (10 til 25 km)</button>
+<button style="min-height: 44px; padding: 0 16px; border: 1px solid #2D5F3F; border-radius: 999px; background: transparent; color: #2D5F3F; font-size: 14px; font-family: inherit">Lang (25+ km)</button>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<label for="fra" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Fra dato</label>
+<input id="fra" type="date" style="height: 48px; width: 100%; box-sizing: border-box; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<label for="til" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D5F3F">Til dato</label>
+<input id="til" type="date" style="height: 48px; width: 100%; box-sizing: border-box; border: 1px solid #C2D9B0; border-radius: 8px; background: #FFFFFF; color: #1D1A14; font-size: 16px; padding: 0 12px; font-family: inherit">
+</div>
+</div>
+<label style="display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 16px"><input type="checkbox" style="width: 20px; height: 20px; accent-color: #2D5F3F">Kun gratis</label>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -68,7 +80,7 @@ Alle Vandreture
 </ul>
 </div>
 
-<p style="margin: 0; font-size: 14px; color: #7A7268">212 afholdte ture, nyeste først</p>
+<p style="margin: 0; font-size: 14px; color: #7A7268">212 afholdte ture matcher dine valg</p>
 </section>
 
 <section aria-label="Afholdte ture" style="display: flex; flex-direction: column; gap: 32px; padding-top: 16px">
@@ -95,11 +107,10 @@ Alle Vandreture
 </sc-for>
 </section>
 
-<nav aria-label="Sider" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 32px">
-<span style="min-height: 48px; padding: 0 20px; display: inline-flex; align-items: center; border: 1px solid #C2D9B0; border-radius: 999px; font-size: 16px; font-weight: 600; color: #7A7268">‹ Nyere</span>
-<span style="font-size: 14px; color: #7A7268">Side 1 af 9</span>
-<a href="#" style="min-height: 48px; padding: 0 20px; display: inline-flex; align-items: center; border: 1.5px solid #2D5F3F; border-radius: 999px; font-size: 16px; font-weight: 600; text-decoration: none; color: #2D5F3F">Ældre ›</a>
-</nav>
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding-top: 32px">
+<p style="margin: 0; text-align: center; font-size: 14px; color: #7A7268">Viser 10 af 212 ture</p>
+<a href="#" style="min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #2D5F3F; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none">Vis flere ture</a>
+</div>
 
 <section aria-labelledby="kom-h" style="display: flex; flex-direction: column; gap: 16px; padding-top: 48px">
 <h2 id="kom-h" style="margin: 0; font-family: 'Newsreader', serif; font-weight: 300; font-size: 32px; line-height: 1.2">Lyst til at gå selv?</h2>
@@ -126,12 +137,15 @@ groups: [
 { date: 'TIRS 27. OKT', title: 'Tirsdagstraveren', place: 'Frederikssund', region: 'Hovedstaden', km: '6 km', org: 'Dansk Vandrelaug' },
 { date: 'MAN 26. OKT', title: 'Lunteholdets mandagstur', place: 'Skjolhøjkilen, Aarhus', region: 'Midtjylland', km: '6 km', org: 'Dansk Vandrelaug' },
 { date: 'LØR 24. OKT', title: 'Lang lørdag i Viborg', place: 'Viborg', region: 'Midtjylland', km: '18 km', org: 'Dansk Vandrelaug' },
-{ date: 'SØN 18. OKT', title: 'Amager Rundt', place: 'Amager Strand, København', region: 'Hovedstaden', km: '24 km', org: 'Amager Rundt' }
+{ date: 'SØN 18. OKT', title: 'Amager Rundt', place: 'Amager Strand, København', region: 'Hovedstaden', km: '24 km', org: 'Amager Rundt' },
+{ date: 'SØN 11. OKT', title: 'Efterårstur i Rold Skov', place: 'Rold Skov Besøgscenter', region: 'Nordjylland', km: '14 km', org: 'Dansk Vandrelaug' },
+{ date: 'LØR 3. OKT', title: 'Kystvandring ved Vedbæk', place: 'Vedbæk Station', region: 'Hovedstaden', km: '9 km', org: 'En GÅtur langs kysten' }
 ] },
 { month: 'September 2026', count: '31 ture', rows: [
 { date: 'LØR 26. SEP', title: 'Fototur med tema', place: 'Carlsberg St, København', region: 'Hovedstaden', km: '4 km', org: 'Dansk Vandrelaug' },
 { date: 'SØN 20. SEP', title: 'Kyststi mod nord', place: 'Gilleleje Havn', region: 'Hovedstaden', km: '12 km', org: 'En GÅtur langs kysten' },
-{ date: 'LØR 12. SEP', title: 'Over Stok og Sten', place: 'Silkeborg', region: 'Midtjylland', km: '30 km', org: 'Over Stok og Sten' }
+{ date: 'LØR 12. SEP', title: 'Over Stok og Sten', place: 'Silkeborg', region: 'Midtjylland', km: '30 km', org: 'Over Stok og Sten' },
+{ date: 'LØR 5. SEP', title: 'Opdag Verden i Dyrehaven', place: 'Klampenborg St', region: 'Hovedstaden', km: '8 km', org: 'Opdag Verden' }
 ] }
 ]
 };

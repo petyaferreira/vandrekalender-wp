@@ -10,6 +10,16 @@
                 "lang": "da_DK",
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
+            "Settings": ["Indstillinger"],
+            "Walks": ["Ture"],
+            "Upcoming: for the calendar, cards and map. Past: for the Past Walks block; the region and organiser lists and the dates then cover the walks of the last months.": [
+                "Kommende: til kalenderen, kortene og kortet. Tidligere: til blokken Tidligere ture; listerne over regioner og arrang\u00f8rer og datoerne d\u00e6kker s\u00e5 turene fra de seneste m\u00e5neder."
+            ],
+            "Upcoming": ["Kommende"],
+            "Past": ["Tidligere"],
+            "Event Filters for past walks \u2014 region, organiser, length, date, free. Active on the published page.": [
+                "Begivenhedsfiltre til tidligere ture \u2014 region, arrang\u00f8r, l\u00e6ngde, dato, gratis. Aktive p\u00e5 den publicerede side."
+            ],
             "Event Filters \u2014 region, organiser, length, date, free. Active on the published page.": [
                 "Begivenhedsfiltre \u2014 region, arrang\u00f8r, l\u00e6ngde, dato, gratis. Aktive p\u00e5 den publicerede side."
             ]

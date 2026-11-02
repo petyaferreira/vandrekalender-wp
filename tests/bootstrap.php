@@ -30,6 +30,7 @@ require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser-walks.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-municipalities.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-past-walks.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-dvl.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-mammut.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-opdagverden.php';

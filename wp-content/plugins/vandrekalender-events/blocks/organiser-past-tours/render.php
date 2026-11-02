@@ -17,12 +17,9 @@ $vk_post_id = (int) ( $block->context['postId'] ?? get_the_ID() );
 $vk_term    = $vk_post_id ? \Vandrekalender\Organiser::term_for_post( $vk_post_id ) : null;
 $vk_walks   = $vk_term ? \Vandrekalender\Organiser_Walks::past( $vk_term->term_id ) : [];
 
-// The past walks page (#176) filtered to this organiser; no link while it
-// doesn't exist.
-$vk_all_page = get_page_by_path( 'tidligere-ture' );
-$vk_all_url  = $vk_term && $vk_all_page && 'publish' === $vk_all_page->post_status
-	? add_query_arg( 'organiser', rawurlencode( $vk_term->slug ), (string) get_permalink( $vk_all_page ) )
-	: '';
+// The past walks page (#176) filtered to this organiser; '' (no link) while
+// the page isn't published.
+$vk_all_url = $vk_term ? Vandrekalender_Past_Walks::url( 1, [ 'organiser' => $vk_term->slug ] ) : '';
 
 _prime_post_caches( $vk_walks, false, true );
 $vk_routes = \Vandrekalender\Organiser_Walks::routes( array_map( static fn( $id ) => [ 'id' => $id ], $vk_walks ) );

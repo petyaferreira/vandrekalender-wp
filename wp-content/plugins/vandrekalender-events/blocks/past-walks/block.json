@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "vandrekalender/past-walks",
+    "title": "Past Walks",
+    "category": "widgets",
+    "description": "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\".",
+    "textdomain": "vandrekalender-events",
+    "editorScript": "file:./index.js",
+    "viewScriptModule": "file:./view.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php",
+    "supports": {
+        "align": ["wide"],
+        "html": false,
+        "interactivity": true
+    }
+}

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T12:05:31+00:00\n"
+"POT-Creation-Date: 2026-11-02T11:03:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -112,7 +112,9 @@ msgid "from %d kr"
 msgstr ""
 
 #: blocks/event-cards/render.php:78
+#: blocks/past-walks/render.php:55
 #: build/blocks/event-cards/render.php:78
+#: build/blocks/past-walks/render.php:55
 msgid "No walks match your filters."
 msgstr ""
 
@@ -125,9 +127,9 @@ msgstr ""
 
 #. translators: card date with year, PHP date format.
 #: blocks/event-cards/render.php:142
-#: blocks/organiser-past-tours/render.php:45
+#: blocks/organiser-past-tours/render.php:42
 #: build/blocks/event-cards/render.php:142
-#: build/blocks/organiser-past-tours/render.php:45
+#: build/blocks/organiser-past-tours/render.php:42
 msgctxt "event card date"
 msgid "D j M Y"
 msgstr ""
@@ -140,39 +142,43 @@ msgid "D j M"
 msgstr ""
 
 #: blocks/event-cards/render.php:194
+#: blocks/past-walks/render.php:171
 #: build/blocks/event-cards/render.php:194
+#: build/blocks/past-walks/render.php:171
 msgid "Show more walks"
 msgstr ""
 
-#: blocks/event-filters/render.php:49
-#: build/blocks/event-filters/render.php:49
+#: blocks/event-filters/render.php:66
+#: build/blocks/event-filters/render.php:66
 msgid "Short (0–10 km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:50
-#: build/blocks/event-filters/render.php:50
+#: blocks/event-filters/render.php:67
+#: build/blocks/event-filters/render.php:67
 msgid "Medium (10–25 km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:51
-#: build/blocks/event-filters/render.php:51
+#: blocks/event-filters/render.php:68
+#: build/blocks/event-filters/render.php:68
 msgid "Long (25+ km)"
 msgstr ""
 
-#: blocks/event-filters/render.php:56
-#: build/blocks/event-filters/render.php:56
+#: blocks/event-filters/render.php:73
+#: blocks/past-walks/render.php:92
+#: build/blocks/event-filters/render.php:73
+#: build/blocks/past-walks/render.php:92
 #: includes/event/class-event.php:705
 msgid "Region"
 msgstr ""
 
-#: blocks/event-filters/render.php:58
-#: build/blocks/event-filters/render.php:58
+#: blocks/event-filters/render.php:75
+#: build/blocks/event-filters/render.php:75
 msgid "All regions"
 msgstr ""
 
-#: blocks/event-filters/render.php:67
+#: blocks/event-filters/render.php:84
 #: blocks/event-info-card/render.php:263
-#: build/blocks/event-filters/render.php:67
+#: build/blocks/event-filters/render.php:84
 #: build/blocks/event-info-card/render.php:263
 #: includes/event/class-event.php:776
 #: build/resources/event-meta-fields/index.js:1
@@ -182,36 +188,38 @@ msgstr ""
 msgid "Organiser"
 msgstr ""
 
-#: blocks/event-filters/render.php:69
-#: build/blocks/event-filters/render.php:69
+#: blocks/event-filters/render.php:86
+#: build/blocks/event-filters/render.php:86
 msgid "All organisers"
 msgstr ""
 
-#: blocks/event-filters/render.php:78
-#: blocks/event-filters/render.php:79
-#: build/blocks/event-filters/render.php:78
-#: build/blocks/event-filters/render.php:79
+#: blocks/event-filters/render.php:95
+#: blocks/event-filters/render.php:96
+#: blocks/past-walks/render.php:91
+#: build/blocks/event-filters/render.php:95
+#: build/blocks/event-filters/render.php:96
+#: build/blocks/past-walks/render.php:91
 #: includes/event/class-event.php:740
 msgid "Length"
 msgstr ""
 
-#: blocks/event-filters/render.php:90
-#: build/blocks/event-filters/render.php:90
+#: blocks/event-filters/render.php:107
+#: build/blocks/event-filters/render.php:107
 msgid "From date"
 msgstr ""
 
-#: blocks/event-filters/render.php:95
-#: build/blocks/event-filters/render.php:95
+#: blocks/event-filters/render.php:112
+#: build/blocks/event-filters/render.php:112
 msgid "To date"
 msgstr ""
 
-#: blocks/event-filters/render.php:103
-#: build/blocks/event-filters/render.php:103
+#: blocks/event-filters/render.php:120
+#: build/blocks/event-filters/render.php:120
 msgid "Free only"
 msgstr ""
 
-#: blocks/event-filters/render.php:108
-#: build/blocks/event-filters/render.php:108
+#: blocks/event-filters/render.php:125
+#: build/blocks/event-filters/render.php:125
 msgid "Reset"
 msgstr ""
 
@@ -298,7 +306,9 @@ msgid "per participant"
 msgstr ""
 
 #: blocks/event-info-card/render.php:212
+#: blocks/past-walks/render.php:88
 #: build/blocks/event-info-card/render.php:212
+#: build/blocks/past-walks/render.php:88
 msgid "Date"
 msgstr ""
 
@@ -320,7 +330,9 @@ msgid "Download GPX"
 msgstr ""
 
 #: blocks/event-info-card/render.php:245
+#: blocks/past-walks/render.php:90
 #: build/blocks/event-info-card/render.php:245
+#: build/blocks/past-walks/render.php:90
 msgid "Place"
 msgstr ""
 
@@ -336,7 +348,7 @@ msgstr ""
 
 #: blocks/event-info-card/render.php:283
 #: build/blocks/event-info-card/render.php:283
-#: includes/class-event-past-events.php:282
+#: includes/class-event-past-events.php:283
 msgid "This walk has taken place."
 msgstr ""
 
@@ -462,19 +474,24 @@ msgstr ""
 msgid "See all organisers"
 msgstr ""
 
-#: blocks/organiser-past-tours/render.php:32
-#: build/blocks/organiser-past-tours/render.php:32
+#: blocks/organiser-past-tours/render.php:29
+#: blocks/past-walks/render.php:56
+#: build/blocks/organiser-past-tours/render.php:29
+#: build/blocks/past-walks/render.php:56
 msgid "There are no past walks yet."
 msgstr ""
 
-#: blocks/organiser-past-tours/render.php:57
-#: build/blocks/organiser-past-tours/render.php:57
+#: blocks/organiser-past-tours/render.php:54
+#: build/blocks/organiser-past-tours/render.php:54
 msgid "See more past walks"
 msgstr ""
 
 #. translators: %s: number of upcoming walks in the region.
+#. translators: %s: number of walks in the month.
 #: blocks/organiser-regions/render.php:30
+#: blocks/past-walks/render.php:82
 #: build/blocks/organiser-regions/render.php:30
+#: build/blocks/past-walks/render.php:82
 #, php-format
 msgid "%s walk"
 msgid_plural "%s walks"
@@ -508,6 +525,34 @@ msgstr ""
 #: blocks/organiser-stats/render.php:36
 #: build/blocks/organiser-stats/render.php:36
 msgid "The organiser in numbers"
+msgstr ""
+
+#. translators: %s: number of past walks that match the filters.
+#: blocks/past-walks/render.php:66
+#: build/blocks/past-walks/render.php:66
+#, php-format
+msgid "%s past walk matches your choices"
+msgid_plural "%s past walks match your choices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: blocks/past-walks/render.php:89
+#: build/blocks/past-walks/render.php:89
+msgid "Walk and organiser"
+msgstr ""
+
+#. translators: past walk date, PHP date format.
+#: blocks/past-walks/render.php:136
+#: build/blocks/past-walks/render.php:136
+msgctxt "past walk date"
+msgid "D j M"
+msgstr ""
+
+#. translators: 1: number of walks shown, 2: number of matching walks.
+#: blocks/past-walks/render.php:163
+#: build/blocks/past-walks/render.php:163
+#, php-format
+msgid "Showing %1$s of %2$s walks"
 msgstr ""
 
 #: blocks/slider/render.php:71
@@ -596,8 +641,12 @@ msgstr ""
 msgid "The onboarding video is missing at %s, so no video is shown to event authors. It ships with the plugin, so this usually means the file was not committed or the deploy did not carry it."
 msgstr ""
 
-#: includes/class-breadcrumbs.php:36
+#: includes/class-breadcrumbs.php:37
 msgid "Calendar"
+msgstr ""
+
+#: includes/class-breadcrumbs.php:64
+msgid "Past walks"
 msgstr ""
 
 #. translators: %s: event title
@@ -705,7 +754,11 @@ msgstr ""
 msgid "You are the organiser of this event."
 msgstr ""
 
-#: includes/class-event-past-events.php:286
+#: includes/class-event-past-events.php:288
+msgid "See all past walks"
+msgstr ""
+
+#: includes/class-event-past-events.php:293
 msgid "Upcoming walks nearby"
 msgstr ""
 
@@ -937,6 +990,10 @@ msgstr ""
 
 #: includes/class-gpx-uploads.php:114
 msgid "This file is not a valid GPX track."
+msgstr ""
+
+#: includes/class-past-walks.php:394
+msgid "See past walks"
 msgstr ""
 
 #: includes/class-roles.php:210
@@ -1311,7 +1368,37 @@ msgstr ""
 msgid "Event Cards — events load as a card grid on the published page."
 msgstr ""
 
-#: blocks/event-filters/edit.js:16
+#: blocks/event-filters/edit.js:17
+#: build/blocks/event-filters/index.js:1
+msgid "Settings"
+msgstr ""
+
+#: blocks/event-filters/edit.js:21
+#: build/blocks/event-filters/index.js:1
+msgid "Walks"
+msgstr ""
+
+#: blocks/event-filters/edit.js:22
+#: build/blocks/event-filters/index.js:1
+msgid "Upcoming: for the calendar, cards and map. Past: for the Past Walks block; the region and organiser lists and the dates then cover the walks of the last months."
+msgstr ""
+
+#: blocks/event-filters/edit.js:29
+#: build/blocks/event-filters/index.js:1
+msgid "Upcoming"
+msgstr ""
+
+#: blocks/event-filters/edit.js:32
+#: build/blocks/event-filters/index.js:1
+msgid "Past"
+msgstr ""
+
+#: blocks/event-filters/edit.js:42
+#: build/blocks/event-filters/index.js:1
+msgid "Event Filters for past walks — region, organiser, length, date, free. Active on the published page."
+msgstr ""
+
+#: blocks/event-filters/edit.js:46
 #: build/blocks/event-filters/index.js:1
 msgid "Event Filters — region, organiser, length, date, free. Active on the published page."
 msgstr ""
@@ -1379,6 +1466,11 @@ msgstr ""
 #: blocks/organiser-stats/edit.js:10
 #: build/blocks/organiser-stats/index.js:1
 msgid "Organiser stats: upcoming walks, regions and distances, computed from the organiser’s walks."
+msgstr ""
+
+#: blocks/past-walks/edit.js:10
+#: build/blocks/past-walks/index.js:1
+msgid "Past walks: the walks of the last months that match the Event Filters, newest first, grouped by month, with \"Show more walks\"."
 msgstr ""
 
 #: blocks/slider/edit.js:42
@@ -1724,7 +1816,7 @@ msgstr ""
 #: blocks/event-filters/block.json
 #: build/blocks/event-filters/block.json
 msgctxt "block description"
-msgid "Filter controls for the event calendar."
+msgid "Filter controls for the event calendar, cards and map (Upcoming) or the Past Walks list (Past)."
 msgstr ""
 
 #: blocks/event-info-card/block.json
@@ -1845,6 +1937,18 @@ msgstr ""
 #: build/blocks/organiser-stats/block.json
 msgctxt "block description"
 msgid "The organiser's numbers, computed from its upcoming walks."
+msgstr ""
+
+#: blocks/past-walks/block.json
+#: build/blocks/past-walks/block.json
+msgctxt "block title"
+msgid "Past Walks"
+msgstr ""
+
+#: blocks/past-walks/block.json
+#: build/blocks/past-walks/block.json
+msgctxt "block description"
+msgid "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\"."
 msgstr ""
 
 #: blocks/slider-slide/block.json
