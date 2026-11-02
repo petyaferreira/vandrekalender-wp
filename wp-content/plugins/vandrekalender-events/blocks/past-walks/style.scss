@@ -234,9 +234,18 @@ $vk-past-walks-desktop: 782px;
     font-weight: 600;
     text-decoration: none;
 
+    // theme.json colours every link fjord-deep on :hover, :focus and
+    // :active (a:focus outranks this class), and a click focuses the link:
+    // keep the text white on the green in every state.
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
+      color: #fff;
+    }
+
     &:hover,
     &:focus-visible {
-      color: #fff;
       text-decoration: underline;
     }
   }
