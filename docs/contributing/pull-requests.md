@@ -11,6 +11,7 @@ Every PR starts from an issue ([tasks-and-issues.md](tasks-and-issues.md)), goes
 - Update the docs the change affects (for a planned feature, the docs the plan names, for example `docs/data-model.md`).
 - When the change replaces or removes something, `git grep` its old names and fix every hit ([cleanup.md](../principles/cleanup.md)).
 - If the change chose one approach over a real alternative that someone could propose again (a tool, a library, a way of testing or deploying), add a decision record in the same PR ([decisions/](../decisions/index.md)) and name it in the PR description. Do not wait to be asked: in #68 the choice of plain PHPUnit over the WordPress test suite was only recorded (0005) after Petya asked.
+- Remove any preview container you started for the check ([local-dev.md → Clean up what you start](local-dev.md#clean-up-what-you-start)). Once the PR is merged, remove its worktree and local branch too.
 
 ## Review loop
 
