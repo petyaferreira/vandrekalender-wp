@@ -5,29 +5,32 @@ defined( 'ABSPATH' ) || exit;
 /**
  * The past walks page "Tidligere vandreture" at /tidligere-ture/ (#176):
  * walks of the last RETENTION_MONTHS months whose date has passed, newest
- * first, grouped by month, 30 per page (?side=2).
+ * first, grouped by month, PER_PAGE more with each "Vis flere ture".
  * Design and spec: docs/design/passed-events-page/.
  *
- * The page is a normal WordPress page (default template): an H1 Heading,
- * the Past Walks block, which renders the list, and the theme's
- * call-to-action pattern (decision 0015). This class finds that page for
- * the links to it, and sets what the page's own settings can't: noindex on
- * filtered URLs, the canonical of page 2 and on, and a 404 past the last
- * page.
+ * The page is a normal WordPress page (default template) built like the
+ * front page: the Event Filters block (set to Past) and below it the Past
+ * Walks block, which renders the results (decision 0015). The filters are
+ * the calendar's, in the URL: region, organiser, length, date_from, date_to,
+ * is_free. This class lists the walks, finds the page for the links to it,
+ * and sets noindex on filtered and "Vis flere" URLs.
  *
  * @package Vandrekalender
  */
 class Vandrekalender_Past_Walks {
 
-	const SLUG        = 'tidligere-ture';
-	const BLOCK       = 'vandrekalender/past-walks';
-	const PAGE_PARAM  = 'side';
-	const PER_PAGE    = 30;
-	const FILTER_KEYS = [ 'q', 'region', 'organiser' ];
+	const SLUG       = 'tidligere-ture';
+	const BLOCK      = 'vandrekalender/past-walks';
+	const PAGE_PARAM = 'side';
+	const PER_PAGE   = 10;
 
 	/**
-	 * How long walks are listed (and, with #37, kept). The intro text reads
-	 * this too.
+	 * The calendar's filter params (Vandrekalender_Event_Rest_Api::filters_from_query()).
+	 */
+	const FILTER_KEYS = [ 'region', 'organiser', 'length', 'date_from', 'date_to', 'is_free' ];
+
+	/**
+	 * How long walks are listed (and, with #37, kept).
 	 */
 	const RETENTION_MONTHS = 12;
 
@@ -46,24 +49,22 @@ class Vandrekalender_Past_Walks {
 	private static $front_page_link_added = false;
 
 	/**
-	 * Constructor — hooks the page checks, the head tags and the front page
-	 * link.
+	 * Constructor — hooks the robots tags and the front page link.
 	 */
 	public function __construct() {
-		add_action( 'template_redirect', [ $this, 'check_page_number' ] );
 		add_filter( 'wp_robots', [ $this, 'filter_robots' ] );
 		add_filter( 'rank_math/frontend/robots', [ $this, 'filter_rank_math_robots' ] );
-		add_filter( 'rank_math/frontend/canonical', [ $this, 'filter_rank_math_canonical' ] );
 		add_filter( 'render_block_vandrekalender/tabs', [ $this, 'append_front_page_link' ] );
 	}
 
 	/**
-	 * A page of the list, with the visitor's filters as query params: the
-	 * published page at /tidligere-ture/. '' when there is none, so callers
-	 * leave the link out instead of linking to a 404.
+	 * The published page at /tidligere-ture/, with $filters as query params
+	 * and, from 2, the number of "Vis flere" steps shown. '' when there is no
+	 * published page, so callers leave the link out instead of linking to a
+	 * 404.
 	 *
-	 * @param int                  $page    Page number.
-	 * @param array<string,string> $filters Filters (q, region, organiser); empty ones are left out.
+	 * @param int                  $page    How many steps of PER_PAGE to show.
+	 * @param array<string,string> $filters Filters (FILTER_KEYS); empty ones are left out.
 	 * @return string
 	 */
 	public static function url( int $page = 1, array $filters = [] ): string {
@@ -92,7 +93,7 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * The page number of the current request (?side=N).
+	 * How many steps of PER_PAGE the current request shows (?side=N).
 	 *
 	 * @return int
 	 */
@@ -130,22 +131,16 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * The visitor's filters from the query string.
+	 * The visitor's filters from the query string: the calendar's params.
 	 *
-	 * @return array<string,string> q, region, organiser; '' when not set.
+	 * @return array<string,string> Only the set ones, sanitised.
 	 */
 	public static function filters_from_request(): array {
-		$filters = [];
-		foreach ( self::FILTER_KEYS as $key ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filters.
-			$filters[ $key ] = isset( $_GET[ $key ] ) ? trim( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) ) : '';
-		}
-		return $filters;
+		return Vandrekalender_Event_Rest_Api::filters_from_query();
 	}
 
 	/**
-	 * Whether any filter is set: such a URL is noindex and canonical to the
-	 * clean one.
+	 * Whether any filter is set: such a URL is noindex.
 	 *
 	 * @param array<string,string> $filters Filters (filters_from_request()).
 	 * @return bool
@@ -155,13 +150,44 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * Number of pages for $total walks; at least 1.
+	 * The dates to list: the visitor's date_from / date_to, kept inside
+	 * window(). from after to means nothing matches.
 	 *
-	 * @param int $total Number of walks.
+	 * @param array<string,string> $filters Filters (filters_from_request()).
+	 * @param string               $today   Today as Y-m-d.
+	 * @return array{from: string, to: string} Y-m-d, both inclusive.
+	 */
+	public static function date_range( array $filters, string $today ): array {
+		$window = self::window( $today );
+		$from   = self::valid_date( $filters['date_from'] ?? '' );
+		$to     = self::valid_date( $filters['date_to'] ?? '' );
+
+		return [
+			'from' => '' !== $from && $from > $window['from'] ? $from : $window['from'],
+			'to'   => '' !== $to && $to < $window['to'] ? $to : $window['to'],
+		];
+	}
+
+	/**
+	 * $date when it is a real Y-m-d date, otherwise ''.
+	 *
+	 * @param string $date Date from the URL.
+	 * @return string
+	 */
+	private static function valid_date( string $date ): string {
+		$parsed = DateTimeImmutable::createFromFormat( '!Y-m-d', $date );
+		return $parsed && $parsed->format( 'Y-m-d' ) === $date ? $date : '';
+	}
+
+	/**
+	 * How many of $total walks are shown after $page steps of PER_PAGE.
+	 *
+	 * @param int $total Number of matching walks.
+	 * @param int $page  Steps shown (?side=N, at least 1).
 	 * @return int
 	 */
-	public static function page_count( int $total ): int {
-		return max( 1, (int) ceil( $total / self::PER_PAGE ) );
+	public static function shown_count( int $total, int $page ): int {
+		return min( $total, max( 1, $page ) * self::PER_PAGE );
 	}
 
 	/**
@@ -179,8 +205,8 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * Published walks in the window that match $filters, newest first.
-	 * Search matches the walk's name, place or municipality.
+	 * Published walks that match $filters, newest first, only dates inside
+	 * the window (date_range()).
 	 *
 	 * @param array<string,string> $filters Filters (filters_from_request()).
 	 * @return int[]
@@ -195,15 +221,21 @@ class Vandrekalender_Past_Walks {
 			return self::$ids[ $key ];
 		}
 
-		$window = self::window( current_time( 'Y-m-d' ) );
-		$args   = array_merge(
+		$range = self::date_range( $filters, current_time( 'Y-m-d' ) );
+		if ( $range['from'] > $range['to'] ) {
+			self::$ids[ $key ] = [];
+			return [];
+		}
+
+		$args = array_merge(
 			Vandrekalender_Event_Rest_Api::build_query_args(
-				[
-					'date_from' => $window['from'],
-					'date_to'   => $window['to'],
-					'region'    => $filters['region'] ?? '',
-					'organiser' => $filters['organiser'] ?? '',
-				]
+				array_merge(
+					$filters,
+					[
+						'date_from' => $range['from'],
+						'date_to'   => $range['to'],
+					]
+				)
 			),
 			[
 				'posts_per_page' => -1,
@@ -219,35 +251,12 @@ class Vandrekalender_Past_Walks {
 
 		$ids = array_map( 'intval', get_posts( $args ) );
 
-		$search = $filters['q'] ?? '';
-		if ( '' !== $search && $ids ) {
-			$by_name = get_posts(
-				array_merge(
-					$args,
-					[
-						's'              => $search,
-						'search_columns' => [ 'post_title' ],
-					]
-				)
-			);
-
-			$by_place                 = $args;
-			$by_place['meta_query'][] = [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- only when searching.
-				'relation' => 'OR',
-				[
-					'key'     => \Vandrekalender\Event::META_PLACE_NAME,
-					'value'   => $search,
-					'compare' => 'LIKE',
-				],
-				[
-					'key'     => \Vandrekalender\Event::META_MUNICIPALITY,
-					'value'   => $search,
-					'compare' => 'LIKE',
-				],
-			];
-
-			$matches = array_flip( array_map( 'intval', array_merge( $by_name, get_posts( $by_place ) ) ) );
-			$ids     = array_values( array_filter( $ids, static fn( $id ) => isset( $matches[ $id ] ) ) );
+		// Price lives inside the routes JSON, so the free filter runs in PHP,
+		// as in the calendar.
+		if ( isset( $filters['is_free'] ) && $ids ) {
+			update_meta_cache( 'post', $ids );
+			$want_free = rest_sanitize_boolean( $filters['is_free'] );
+			$ids       = array_values( array_filter( $ids, static fn( $id ) => Vandrekalender_Event_Rest_Api::is_event_free( $id ) === $want_free ) );
 		}
 
 		self::$ids[ $key ] = $ids;
@@ -314,43 +323,24 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * ?side=1 redirects to the page without it; a page number past the last
-	 * page is a 404.
+	 * Whether the current request is the page with filters or ?side=N: those
+	 * repeat what the plain page lists, so only the plain page is indexed
+	 * (its canonical is the page itself, without query params).
 	 *
-	 * @return void
+	 * @return bool
 	 */
-	public function check_page_number(): void {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only page number.
-		if ( ! isset( $_GET[ self::PAGE_PARAM ] ) || ! self::is_page() ) {
-			return;
-		}
-
-		$page    = self::current_page();
-		$filters = self::filters_from_request();
-
-		if ( $page <= 1 ) {
-			wp_safe_redirect( self::url( 1, $filters ), 301 );
-			exit;
-		}
-
-		if ( $page <= self::page_count( count( self::ids( $filters ) ) ) ) {
-			return;
-		}
-
-		global $wp_query;
-		$wp_query->set_404();
-		status_header( 404 );
-		nocache_headers();
+	private static function is_noindex_request(): bool {
+		return self::is_page() && ( self::is_filtered( self::filters_from_request() ) || self::current_page() > 1 );
 	}
 
 	/**
-	 * Filtered and search URLs are noindex, follow (core robots tag).
+	 * Filtered and "Vis flere" URLs are noindex, follow (core robots tag).
 	 *
 	 * @param array<string,bool|string> $robots Robots directives.
 	 * @return array<string,bool|string>
 	 */
 	public function filter_robots( array $robots ): array {
-		if ( self::is_page() && self::is_filtered( self::filters_from_request() ) ) {
+		if ( self::is_noindex_request() ) {
 			$robots['noindex'] = true;
 			$robots['follow']  = true;
 		}
@@ -358,32 +348,18 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * Filtered and search URLs are noindex, follow (Rank Math's robots tag).
+	 * Filtered and "Vis flere" URLs are noindex, follow (Rank Math's robots
+	 * tag).
 	 *
 	 * @param array<string,string> $robots Robots directives.
 	 * @return array<string,string>
 	 */
 	public function filter_rank_math_robots( $robots ) {
-		if ( self::is_page() && self::is_filtered( self::filters_from_request() ) ) {
+		if ( self::is_noindex_request() ) {
 			$robots['index']  = 'noindex';
 			$robots['follow'] = 'follow';
 		}
 		return $robots;
-	}
-
-	/**
-	 * Page 2 and on are their own canonical (Rank Math would point them at
-	 * page 1, which drops the query string); filters are never part of it.
-	 *
-	 * @param string $canonical Rank Math's canonical URL.
-	 * @return string
-	 */
-	public function filter_rank_math_canonical( $canonical ) {
-		if ( ! self::is_page() || self::current_page() < 2 ) {
-			return $canonical;
-		}
-		$url = self::url( self::current_page() );
-		return '' !== $url ? $url : $canonical;
 	}
 
 	/**

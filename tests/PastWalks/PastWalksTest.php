@@ -1,7 +1,8 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
 /**
  * The past walks page /tidligere-ture/ (#176): which dates it lists, how
- * it pages and groups the walks, and which URLs are filtered.
+ * many walks "Vis flere ture" shows, how it groups them, and which URLs are
+ * filtered.
  *
  * @package Vandrekalender
  */
@@ -35,13 +36,73 @@ class PastWalksTest extends TestCase {
 	}
 
 	/**
-	 * 30 walks per page, and one (empty) page when there are none.
+	 * 10 walks, then 10 more with each "Vis flere ture" (?side=N), never more
+	 * than there are.
 	 */
-	public function test_page_count(): void {
-		$this->assertSame( 1, Vandrekalender_Past_Walks::page_count( 0 ) );
-		$this->assertSame( 1, Vandrekalender_Past_Walks::page_count( 30 ) );
-		$this->assertSame( 2, Vandrekalender_Past_Walks::page_count( 31 ) );
-		$this->assertSame( 8, Vandrekalender_Past_Walks::page_count( 212 ) );
+	public function test_shown_count(): void {
+		$this->assertSame( 0, Vandrekalender_Past_Walks::shown_count( 0, 1 ) );
+		$this->assertSame( 7, Vandrekalender_Past_Walks::shown_count( 7, 1 ) );
+		$this->assertSame( 10, Vandrekalender_Past_Walks::shown_count( 212, 1 ) );
+		$this->assertSame( 30, Vandrekalender_Past_Walks::shown_count( 212, 3 ) );
+		$this->assertSame( 212, Vandrekalender_Past_Walks::shown_count( 212, 99 ) );
+		$this->assertSame( 10, Vandrekalender_Past_Walks::shown_count( 212, 0 ) );
+	}
+
+	/**
+	 * The visitor's dates narrow the window but never widen it.
+	 */
+	public function test_date_range_stays_inside_the_window(): void {
+		$today = '2026-11-02';
+
+		$this->assertSame(
+			[
+				'from' => '2025-11-02',
+				'to'   => '2026-11-01',
+			],
+			Vandrekalender_Past_Walks::date_range( [], $today )
+		);
+		$this->assertSame(
+			[
+				'from' => '2026-10-01',
+				'to'   => '2026-10-31',
+			],
+			Vandrekalender_Past_Walks::date_range(
+				[
+					'date_from' => '2026-10-01',
+					'date_to'   => '2026-10-31',
+				],
+				$today
+			)
+		);
+		$this->assertSame(
+			[
+				'from' => '2025-11-02',
+				'to'   => '2026-11-01',
+			],
+			Vandrekalender_Past_Walks::date_range(
+				[
+					'date_from' => '2020-01-01',
+					'date_to'   => '2027-06-01',
+				],
+				$today
+			)
+		);
+	}
+
+	/**
+	 * A date that is not a real Y-m-d date is ignored.
+	 */
+	public function test_date_range_ignores_invalid_dates(): void {
+		$range = Vandrekalender_Past_Walks::date_range(
+			[
+				'date_from' => '2026-02-31',
+				'date_to'   => 'yesterday',
+			],
+			'2026-11-02'
+		);
+
+		$this->assertSame( '2025-11-02', $range['from'] );
+		$this->assertSame( '2026-11-01', $range['to'] );
 	}
 
 	/**
@@ -74,15 +135,17 @@ class PastWalksTest extends TestCase {
 		$this->assertFalse(
 			Vandrekalender_Past_Walks::is_filtered(
 				[
-					'q'         => '',
 					'region'    => '',
 					'organiser' => '',
 				]
 			)
 		);
 		$this->assertFalse( Vandrekalender_Past_Walks::is_filtered( [ 'utm_source' => 'x' ] ) );
-		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'q' => 'Viborg' ] ) );
+		$this->assertFalse( Vandrekalender_Past_Walks::is_filtered( [ 'side' => '2' ] ) );
 		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'organiser' => 'mammutmarch' ] ) );
+		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'length' => 'kort,lang' ] ) );
+		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'date_from' => '2026-10-01' ] ) );
+		$this->assertTrue( Vandrekalender_Past_Walks::is_filtered( [ 'is_free' => 'true' ] ) );
 	}
 
 	/**

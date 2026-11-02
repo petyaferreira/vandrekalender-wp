@@ -1,12 +1,16 @@
 <?php
 /**
- * Server render for the Past Walks block (the past walks page, #176).
+ * Server render for the Past Walks block: the results of the past walks
+ * page (#176), below the Event Filters block set to Past.
  *
- * Intro, the "Kommende ture" / "Tidligere ture" tabs, the filters (search,
- * region, organiser) as a GET form, the count line, the walks of the page
- * grouped by month (newest first, PER_PAGE per page) and the "Nyere" /
- * "Ældre" links. Everything is plain HTML and links, so it works without
- * JavaScript. Design: docs/design/passed-events-page/.
+ * The count line, the walks grouped by month (newest first) and "Viser 10
+ * af 212 ture" with "Vis flere ture". The filters are the calendar's, read
+ * from the URL. Like Event Cards, the list is server-rendered and view.js
+ * re-renders it through `@wordpress/interactivity-router` when the filters
+ * change or "Vis flere ture" is clicked: ?side=N shows the first N times
+ * PER_PAGE walks. "Vis flere ture" is a real link, so it works without
+ * JavaScript and crawlers can follow it. Design:
+ * docs/design/passed-events-page/.
  *
  * @package Vandrekalender
  */
@@ -17,79 +21,32 @@ $vk_filters = Vandrekalender_Past_Walks::filters_from_request();
 $vk_ids     = Vandrekalender_Past_Walks::ids( $vk_filters );
 $vk_total   = count( $vk_ids );
 $vk_page    = Vandrekalender_Past_Walks::current_page();
-$vk_pages   = Vandrekalender_Past_Walks::page_count( $vk_total );
+$vk_shown   = Vandrekalender_Past_Walks::shown_count( $vk_total, $vk_page );
 
 // Walks per month over the whole filtered list, for the group headers.
 $vk_month_totals = array_map( 'count', Vandrekalender_Past_Walks::group_by_month( Vandrekalender_Past_Walks::dates( $vk_ids ) ) );
 
-$vk_page_ids = array_slice( $vk_ids, ( $vk_page - 1 ) * Vandrekalender_Past_Walks::PER_PAGE, Vandrekalender_Past_Walks::PER_PAGE );
+$vk_page_ids = array_slice( $vk_ids, 0, $vk_shown );
 $vk_groups   = Vandrekalender_Past_Walks::group_by_month( Vandrekalender_Past_Walks::dates( $vk_page_ids ) );
 
 // One query each for posts, meta and terms instead of several per row.
 _prime_post_caches( $vk_page_ids, true, true );
 
-// Regions and organisers with a walk in the window, so neither dropdown
-// offers one that shows nothing.
-$vk_regions    = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_REGION );
-$vk_organisers = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event::TAX_ORGANISER );
+$vk_more_url = $vk_shown < $vk_total ? Vandrekalender_Past_Walks::url( $vk_page + 1, $vk_filters ) : '';
+
+$vk_wrapper_attributes = [
+	'class'                     => 'vk-past-walks',
+	'data-wp-interactive'       => 'vandrekalender/past-walks',
+	'data-wp-class--is-loading' => 'state.isNavigating',
+	'data-wp-init'              => 'callbacks.init',
+];
 ?>
-<div <?php echo get_block_wrapper_attributes( [ 'class' => 'vk-past-walks' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-	<p class="vk-past-walks__intro">
-		<?php
-		echo esc_html(
-			sprintf(
-				/* translators: %d: number of months the page lists. */
-				_n(
-					'Here you find walks that have already taken place. The archive shows the last %d month. Use it to find a walk again, see where others have walked, or get ideas for next year.',
-					'Here you find walks that have already taken place. The archive shows the last %d months. Use it to find a walk again, see where others have walked, or get ideas for next year.',
-					Vandrekalender_Past_Walks::RETENTION_MONTHS,
-					'vandrekalender-events'
-				),
-				Vandrekalender_Past_Walks::RETENTION_MONTHS
-			)
-		);
-		?>
-	</p>
-
-	<nav class="vk-past-walks__tabs" aria-label="<?php esc_attr_e( 'Show walks', 'vandrekalender-events' ); ?>">
-		<a class="vk-past-walks__tab" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Upcoming walks', 'vandrekalender-events' ); ?></a>
-		<a class="vk-past-walks__tab" href="<?php echo esc_url( Vandrekalender_Past_Walks::url() ); ?>" aria-current="page"><?php esc_html_e( 'Past walks', 'vandrekalender-events' ); ?></a>
-	</nav>
-
-	<form class="vk-past-walks__filters" method="get" action="<?php echo esc_url( Vandrekalender_Past_Walks::url() ); ?>" aria-label="<?php esc_attr_e( 'Filters', 'vandrekalender-events' ); ?>">
-		<div class="vk-past-walks__field vk-past-walks__field--search">
-			<label class="vk-past-walks__label" for="vk-past-walks-q"><?php esc_html_e( 'Search name or place', 'vandrekalender-events' ); ?></label>
-			<input class="vk-past-walks__input" type="search" id="vk-past-walks-q" name="q" value="<?php echo esc_attr( $vk_filters['q'] ); ?>" placeholder="<?php esc_attr_e( 'E.g. Tirsdagstraveren or Viborg', 'vandrekalender-events' ); ?>" />
-		</div>
-
-		<?php if ( $vk_regions ) : ?>
-			<div class="vk-past-walks__field">
-				<label class="vk-past-walks__label" for="vk-past-walks-region"><?php esc_html_e( 'Region', 'vandrekalender-events' ); ?></label>
-				<select class="vk-past-walks__input" id="vk-past-walks-region" name="region">
-					<option value=""><?php esc_html_e( 'All regions', 'vandrekalender-events' ); ?></option>
-					<?php foreach ( $vk_regions as $vk_region ) : ?>
-						<option value="<?php echo esc_attr( $vk_region->slug ); ?>" <?php selected( $vk_filters['region'], $vk_region->slug ); ?>><?php echo esc_html( $vk_region->name ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-		<?php endif; ?>
-
-		<?php if ( $vk_organisers ) : ?>
-			<div class="vk-past-walks__field">
-				<label class="vk-past-walks__label" for="vk-past-walks-organiser"><?php esc_html_e( 'Organiser', 'vandrekalender-events' ); ?></label>
-				<select class="vk-past-walks__input" id="vk-past-walks-organiser" name="organiser">
-					<option value=""><?php esc_html_e( 'All organisers', 'vandrekalender-events' ); ?></option>
-					<?php foreach ( $vk_organisers as $vk_organiser ) : ?>
-						<option value="<?php echo esc_attr( $vk_organiser->slug ); ?>" <?php selected( $vk_filters['organiser'], $vk_organiser->slug ); ?>><?php echo esc_html( $vk_organiser->name ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-		<?php endif; ?>
-
-		<button class="vk-past-walks__submit" type="submit"><?php esc_html_e( 'Show walks', 'vandrekalender-events' ); ?></button>
-		<a class="vk-past-walks__reset" href="<?php echo esc_url( Vandrekalender_Past_Walks::url() ); ?>"><?php esc_html_e( 'Reset', 'vandrekalender-events' ); ?></a>
-	</form>
-
+<div <?php echo get_block_wrapper_attributes( $vk_wrapper_attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<div
+		class="vk-past-walks__region"
+		data-wp-interactive="vandrekalender/past-walks"
+		data-wp-router-region="vk-past-walks"
+	>
 	<?php if ( ! $vk_total ) : ?>
 		<p class="vk-past-walks__empty">
 			<?php
@@ -105,8 +62,8 @@ $vk_organisers = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event:
 			<?php
 			echo esc_html(
 				sprintf(
-					/* translators: %s: number of past walks. */
-					_n( '%s past walk, newest first', '%s past walks, newest first', $vk_total, 'vandrekalender-events' ),
+					/* translators: %s: number of past walks that match the filters. */
+					_n( '%s past walk matches your choices', '%s past walks match your choices', $vk_total, 'vandrekalender-events' ),
 					number_format_i18n( $vk_total )
 				)
 			);
@@ -198,27 +155,23 @@ $vk_organisers = Vandrekalender_Past_Walks::window_terms( \Vandrekalender\Event:
 			</section>
 		<?php endforeach; ?>
 
-		<?php if ( $vk_pages > 1 ) : ?>
-			<nav class="vk-past-walks__pages" aria-label="<?php esc_attr_e( 'Pages', 'vandrekalender-events' ); ?>">
-				<?php if ( $vk_page > 1 ) : ?>
-					<a class="vk-past-walks__page-link" href="<?php echo esc_url( Vandrekalender_Past_Walks::url( $vk_page - 1, $vk_filters ) ); ?>" rel="prev">‹ <?php esc_html_e( 'Newer', 'vandrekalender-events' ); ?></a>
-				<?php else : ?>
-					<span class="vk-past-walks__page-link is-disabled">‹ <?php esc_html_e( 'Newer', 'vandrekalender-events' ); ?></span>
-				<?php endif; ?>
-
-				<span class="vk-past-walks__page-count">
+		<?php if ( $vk_total > Vandrekalender_Past_Walks::PER_PAGE ) : ?>
+			<div class="vk-past-walks__more">
+				<p class="vk-past-walks__shown">
 					<?php
-					/* translators: 1: current page, 2: number of pages. */
-					echo esc_html( sprintf( __( 'Page %1$d of %2$d', 'vandrekalender-events' ), $vk_page, $vk_pages ) );
+					/* translators: 1: number of walks shown, 2: number of matching walks. */
+					echo esc_html( sprintf( __( 'Showing %1$s of %2$s walks', 'vandrekalender-events' ), number_format_i18n( $vk_shown ), number_format_i18n( $vk_total ) ) );
 					?>
-				</span>
-
-				<?php if ( $vk_page < $vk_pages ) : ?>
-					<a class="vk-past-walks__page-link" href="<?php echo esc_url( Vandrekalender_Past_Walks::url( $vk_page + 1, $vk_filters ) ); ?>" rel="next"><?php esc_html_e( 'Older', 'vandrekalender-events' ); ?> ›</a>
-				<?php else : ?>
-					<span class="vk-past-walks__page-link is-disabled"><?php esc_html_e( 'Older', 'vandrekalender-events' ); ?> ›</span>
+				</p>
+				<?php if ( $vk_more_url ) : ?>
+					<a
+						class="vk-past-walks__more-link"
+						href="<?php echo esc_url( $vk_more_url ); ?>"
+						data-wp-on--click="actions.loadMore"
+					><?php esc_html_e( 'Show more walks', 'vandrekalender-events' ); ?></a>
 				<?php endif; ?>
-			</nav>
+			</div>
 		<?php endif; ?>
 	<?php endif; ?>
+	</div>
 </div>

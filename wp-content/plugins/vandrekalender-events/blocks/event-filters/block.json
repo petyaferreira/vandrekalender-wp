@@ -4,12 +4,19 @@
     "name": "vandrekalender/event-filters",
     "title": "Event Filters",
     "category": "widgets",
-    "description": "Filter controls for the event calendar.",
+    "description": "Filter controls for the event calendar, cards and map (Upcoming) or the Past Walks list (Past).",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
     "viewScript": "file:./view.js",
     "style": "file:./style-index.css",
     "render": "file:./render.php",
+    "attributes": {
+        "walks": {
+            "type": "string",
+            "enum": ["upcoming", "past"],
+            "default": "upcoming"
+        }
+    },
     "supports": {
         "html": false,
         "align": ["wide", "full"]
