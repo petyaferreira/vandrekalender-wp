@@ -992,10 +992,6 @@ msgstr ""
 msgid "This file is not a valid GPX track."
 msgstr ""
 
-#: includes/class-past-walks.php:394
-msgid "See past walks"
-msgstr ""
-
 #: includes/class-roles.php:210
 msgid "Event Author"
 msgstr ""
