@@ -19,6 +19,13 @@ class Vandrekalender_Event_Rest_Api {
 	const REVERSE_RATE_LIMIT  = 60;
 	const REVERSE_RATE_WINDOW = 10 * MINUTE_IN_SECONDS;
 
+	// Event Cards shown per "Vis flere" step (#204). The card grid
+	// (event-cards/style.scss: minmax(280px, 1fr) inside the theme's 1376px
+	// wideSize) has 1 to 4 columns, and 12 divides by each, so every step
+	// ends on a full row. If the grid can get a 5th column (wider wideSize
+	// or smaller minmax), pick a number that fills those rows too.
+	const CARDS_PER_PAGE = 12;
+
 	/**
 	 * Constructor.
 	 */
@@ -421,6 +428,18 @@ class Vandrekalender_Event_Rest_Api {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		return $filters;
+	}
+
+	/**
+	 * How many of $total walks the Event Cards block shows after $page steps
+	 * of CARDS_PER_PAGE (?side=N).
+	 *
+	 * @param int $total Number of matching walks.
+	 * @param int $page  Steps shown (?side=N, at least 1).
+	 * @return int
+	 */
+	public static function cards_shown_count( int $total, int $page ): int {
+		return min( $total, max( 1, $page ) * self::CARDS_PER_PAGE );
 	}
 
 	/**

@@ -6,14 +6,14 @@
  * paint. Filter changes and "Vis flere" re-render through
  * `@wordpress/interactivity-router` (see view.js): the router re-fetches the
  * page with new query params and swaps the `data-wp-router-region` below.
- * Pagination is cumulative — the `side` URL param renders pages 1..N.
+ * Pagination is cumulative — the `side` URL param renders pages 1..N, each
+ * Vandrekalender_Event_Rest_Api::CARDS_PER_PAGE walks.
  *
  * @package Vandrekalender
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$vk_per_page = 50;
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only pagination param.
 $vk_page = isset( $_GET['side'] ) ? max( 1, (int) $_GET['side'] ) : 1;
 
@@ -46,7 +46,7 @@ if ( isset( $vk_filters['is_free'] ) && '' !== $vk_filters['is_free'] ) {
 }
 
 $vk_total     = count( $vk_ids );
-$vk_shown_ids = array_slice( $vk_ids, 0, $vk_page * $vk_per_page );
+$vk_shown_ids = array_slice( $vk_ids, 0, Vandrekalender_Event_Rest_Api::cards_shown_count( $vk_total, $vk_page ) );
 
 // One query each for posts, meta, and terms instead of several per card.
 _prime_post_caches( $vk_shown_ids, true, true );
