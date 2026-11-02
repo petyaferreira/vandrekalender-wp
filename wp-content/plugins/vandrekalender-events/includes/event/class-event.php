@@ -74,6 +74,7 @@ class Event {
 		add_action( 'init', [ $this, 'register_taxonomies' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
 		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_filter( 'block_categories_all', [ $this, 'register_block_category' ] );
 		add_action( 'restrict_manage_posts', [ $this, 'render_organiser_filter' ] );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
@@ -875,6 +876,29 @@ class Event {
 	 */
 	public static function organiser_term_for_source( string $source_name ): string {
 		return in_array( $source_name, self::ORGANISER_SOURCES, true ) ? $source_name : '';
+	}
+
+	/**
+	 * Add the project's block category to the inserter.
+	 *
+	 * Prepended, not appended, so it sits at the top of the inserter above
+	 * Text, Media and Design. Every block.json in blocks/ sets
+	 * "category": "allevandreture" to land here.
+	 *
+	 * @param array $categories Registered block categories.
+	 * @return array Categories with the project's category first.
+	 */
+	public function register_block_category( array $categories ): array {
+		return array_merge(
+			[
+				[
+					'slug'  => 'allevandreture',
+					'title' => __( 'Alle Vandreture', 'vandrekalender-events' ),
+					'icon'  => null,
+				],
+			],
+			$categories
+		);
 	}
 
 	/**
