@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T09:51:58+00:00\n"
+"POT-Creation-Date: 2026-11-02T10:14:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -127,7 +127,9 @@ msgstr ""
 
 #. translators: card date with year, PHP date format.
 #: blocks/event-cards/render.php:142
+#: blocks/organiser-past-tours/render.php:45
 #: build/blocks/event-cards/render.php:142
+#: build/blocks/organiser-past-tours/render.php:45
 msgctxt "event card date"
 msgid "D j M Y"
 msgstr ""
@@ -480,6 +482,18 @@ msgstr ""
 msgid "See all organisers"
 msgstr ""
 
+#: blocks/organiser-past-tours/render.php:32
+#: blocks/past-walks/render.php:113
+#: build/blocks/organiser-past-tours/render.php:32
+#: build/blocks/past-walks/render.php:113
+msgid "There are no past walks yet."
+msgstr ""
+
+#: blocks/organiser-past-tours/render.php:57
+#: build/blocks/organiser-past-tours/render.php:57
+msgid "See more past walks"
+msgstr ""
+
 #. translators: %s: number of upcoming walks in the region.
 #. translators: %s: number of walks in the month.
 #: blocks/organiser-regions/render.php:30
@@ -541,7 +555,7 @@ msgstr ""
 
 #: blocks/past-walks/render.php:72
 #: build/blocks/past-walks/render.php:72
-#: includes/class-breadcrumbs.php:62
+#: includes/class-breadcrumbs.php:64
 msgid "Past walks"
 msgstr ""
 
@@ -558,11 +572,6 @@ msgstr ""
 #: blocks/past-walks/render.php:78
 #: build/blocks/past-walks/render.php:78
 msgid "E.g. Tirsdagstraveren or Viborg"
-msgstr ""
-
-#: blocks/past-walks/render.php:113
-#: build/blocks/past-walks/render.php:113
-msgid "There are no past walks yet."
 msgstr ""
 
 #. translators: %s: number of past walks.
@@ -1045,7 +1054,7 @@ msgstr ""
 msgid "This file is not a valid GPX track."
 msgstr ""
 
-#: includes/class-past-walks.php:360
+#: includes/class-past-walks.php:372
 msgid "See past walks"
 msgstr ""
 
@@ -1474,6 +1483,11 @@ msgstr ""
 #: blocks/organiser-list/edit.js:15
 #: build/blocks/organiser-list/index.js:1
 msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
+msgstr ""
+
+#: blocks/organiser-past-tours/edit.js:10
+#: build/blocks/organiser-past-tours/index.js:1
+msgid "Past tours: the organiser’s last three past walks, newest first, and a link to all of them."
 msgstr ""
 
 #: blocks/organiser-regions/edit.js:10
@@ -1919,6 +1933,18 @@ msgstr ""
 #: build/blocks/organiser-logo/block.json
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
+msgstr ""
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block title"
+msgid "Past Tours"
+msgstr ""
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block description"
+msgid "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it."
 msgstr ""
 
 #: blocks/organiser-regions/block.json

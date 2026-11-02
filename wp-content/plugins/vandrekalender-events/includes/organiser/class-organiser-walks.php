@@ -5,7 +5,8 @@
  * The numbers on an organiser page, computed from the upcoming walks of its
  * event_organiser term on every render, never typed by hand (step 5c of
  * docs/history/organisers-plan.md): the Organiser Stats, Organiser Regions and
- * Organiser List blocks.
+ * Organiser List blocks. Also its last past walks, for Organiser Past Tours
+ * (#176).
  *
  * @package Vandrekalender
  */
@@ -18,6 +19,9 @@ namespace Vandrekalender;
 class Organiser_Walks {
 	// "Andre arrangører" shows this many organisers.
 	public const RELATED_LIMIT = 6;
+
+	// "Tidligere ture" shows this many past walks.
+	public const PAST_LIMIT = 3;
 
 	/**
 	 * Upcoming walks per event_organiser term ID, each walk as
@@ -80,6 +84,64 @@ class Organiser_Walks {
 	 */
 	public static function for_term( int $term_id ): array {
 		return self::by_term()[ $term_id ] ?? [];
+	}
+
+	/**
+	 * One organiser's last past walks (dated before today), newest first.
+	 *
+	 * @param int $term_id event_organiser term ID.
+	 * @param int $limit   How many.
+	 * @return int[] Post IDs.
+	 */
+	public static function past( int $term_id, int $limit = self::PAST_LIMIT ): array {
+		return array_map(
+			'intval',
+			get_posts(
+				[
+					'post_type'      => Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'publish',
+					'posts_per_page' => $limit,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'orderby'        => 'meta_value',
+					'order'          => 'DESC',
+					'meta_key'       => Event::META_DATE, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- one small query per organiser page.
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one small query per organiser page.
+						[
+							'key'     => Event::META_DATE,
+							'value'   => current_time( 'Y-m-d' ),
+							'compare' => '<',
+						],
+					],
+					'tax_query'      => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- one small query per organiser page.
+						[
+							'taxonomy' => Event::TAX_ORGANISER,
+							'field'    => 'term_id',
+							'terms'    => $term_id,
+						],
+					],
+				]
+			)
+		);
+	}
+
+	/**
+	 * The line under a past walk's name: "Aarhus, 6 km", "Aarhus, 30–50 km",
+	 * or only the place or only the length when the other is missing.
+	 *
+	 * @param string                      $place Municipality or place name, '' when unknown.
+	 * @param array{0:float,1:float}|null $range Shortest and longest route (distance_range()), null when none.
+	 * @return string
+	 */
+	public static function past_detail( string $place, ?array $range ): string {
+		$length = '';
+		if ( null !== $range ) {
+			$length = $range[0] === $range[1]
+				? self::format_km( $range[0] ) . ' km'
+				: self::format_km( $range[0] ) . '–' . self::format_km( $range[1] ) . ' km';
+		}
+
+		return implode( ', ', array_filter( [ $place, $length ], 'strlen' ) );
 	}
 
 	/**

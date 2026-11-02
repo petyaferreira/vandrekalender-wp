@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-10-28T09:51:58+00:00\n"
+"POT-Creation-Date: 2026-11-02T10:14:43+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -119,7 +119,9 @@ msgid "There are no upcoming walks right now."
 msgstr "Der er ingen kommende ture lige nu."
 
 #. translators: card date with year, PHP date format.
-#: blocks/event-cards/render.php:142 build/blocks/event-cards/render.php:142
+#: blocks/event-cards/render.php:142 blocks/organiser-past-tours/render.php:45
+#: build/blocks/event-cards/render.php:142
+#: build/blocks/organiser-past-tours/render.php:45
 msgctxt "event card date"
 msgid "D j M Y"
 msgstr "D j. M Y"
@@ -439,6 +441,19 @@ msgstr "Ingen kommende ture"
 msgid "See all organisers"
 msgstr "Se alle arrangører"
 
+#
+#: blocks/organiser-past-tours/render.php:32 blocks/past-walks/render.php:113
+#: build/blocks/organiser-past-tours/render.php:32
+#: build/blocks/past-walks/render.php:113
+msgid "There are no past walks yet."
+msgstr "Der er ingen tidligere ture endnu."
+
+#
+#: blocks/organiser-past-tours/render.php:57
+#: build/blocks/organiser-past-tours/render.php:57
+msgid "See more past walks"
+msgstr "Se flere tidligere ture"
+
 #. translators: %s: number of upcoming walks in the region.
 #. translators: %s: number of walks in the month.
 #: blocks/organiser-regions/render.php:30 blocks/past-walks/render.php:139
@@ -495,7 +510,7 @@ msgstr "Vis ture"
 
 #
 #: blocks/past-walks/render.php:72 build/blocks/past-walks/render.php:72
-#: includes/class-breadcrumbs.php:62
+#: includes/class-breadcrumbs.php:64
 msgid "Past walks"
 msgstr "Tidligere ture"
 
@@ -512,11 +527,6 @@ msgstr "Søg i navn eller sted"
 #: blocks/past-walks/render.php:78 build/blocks/past-walks/render.php:78
 msgid "E.g. Tirsdagstraveren or Viborg"
 msgstr "Fx Tirsdagstraveren eller Viborg"
-
-#
-#: blocks/past-walks/render.php:113 build/blocks/past-walks/render.php:113
-msgid "There are no past walks yet."
-msgstr "Der er ingen tidligere ture endnu."
 
 #. translators: %s: number of past walks.
 #: blocks/past-walks/render.php:123 build/blocks/past-walks/render.php:123
@@ -986,7 +996,7 @@ msgid "This file is not a valid GPX track."
 msgstr "Filen er ikke et gyldigt GPX-spor."
 
 #
-#: includes/class-past-walks.php:360
+#: includes/class-past-walks.php:372
 msgid "See past walks"
 msgstr "Se tidligere vandreture"
 
@@ -1399,6 +1409,11 @@ msgstr "Arrangørliste: alle arrangører med en side, efter navn, med deres komm
 msgid "Other organisers: up to six other organisers with a page, those with walks in the same regions first."
 msgstr "Andre arrangører: op til seks andre arrangører med en side, først dem med ture i de samme regioner."
 
+#: blocks/organiser-past-tours/edit.js:10
+#: build/blocks/organiser-past-tours/index.js:1
+msgid "Past tours: the organiser’s last three past walks, newest first, and a link to all of them."
+msgstr "Tidligere ture: arrangørens seneste tre afholdte ture, nyeste først, og et link til dem alle."
+
 #: blocks/organiser-regions/edit.js:10
 #: build/blocks/organiser-regions/index.js:1
 msgid "Organiser regions: the regions with the organiser’s upcoming walks and their counts, each linking to the walks there."
@@ -1806,6 +1821,18 @@ msgstr "Arrangørlogo"
 msgctxt "block description"
 msgid "The organiser page's logo: its featured image, or the organiser's initials until it has one."
 msgstr "Arrangørsidens logo: det fremhævede billede, eller arrangørens forbogstaver indtil der er et."
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block title"
+msgid "Past Tours"
+msgstr "Tidligere ture"
+
+#: blocks/organiser-past-tours/block.json
+#: build/blocks/organiser-past-tours/block.json
+msgctxt "block description"
+msgid "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it."
+msgstr "Arrangørens seneste afholdte ture, nyeste først, med et link til dem alle. Ingen overskrift: tilføj din egen over den."
 
 #: blocks/organiser-regions/block.json
 #: build/blocks/organiser-regions/block.json

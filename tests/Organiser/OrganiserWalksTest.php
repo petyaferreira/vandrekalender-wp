@@ -259,4 +259,22 @@ class OrganiserWalksTest extends TestCase {
 	public function test_related_none(): void {
 		$this->assertSame( [], Organiser_Walks::related( [], 1, [ 1 => 'DVL' ] ) );
 	}
+
+	/**
+	 * A past walk's line: place and length, one route or a range (#176).
+	 */
+	public function test_past_detail_place_and_length(): void {
+		$this->assertSame( 'Aarhus, 6 km', Organiser_Walks::past_detail( 'Aarhus', [ 6.0, 6.0 ] ) );
+		$this->assertSame( 'Aarhus, 30–50 km', Organiser_Walks::past_detail( 'Aarhus', [ 30.0, 50.0 ] ) );
+		$this->assertSame( 'Viborg, 5.5 km', Organiser_Walks::past_detail( 'Viborg', [ 5.5, 5.5 ] ) );
+	}
+
+	/**
+	 * Without a place or a length, only the other is shown.
+	 */
+	public function test_past_detail_with_a_part_missing(): void {
+		$this->assertSame( 'Aarhus', Organiser_Walks::past_detail( 'Aarhus', null ) );
+		$this->assertSame( '18 km', Organiser_Walks::past_detail( '', [ 18.0, 18.0 ] ) );
+		$this->assertSame( '', Organiser_Walks::past_detail( '', null ) );
+	}
 }
