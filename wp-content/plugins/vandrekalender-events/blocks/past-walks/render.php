@@ -43,7 +43,7 @@ $vk_wrapper_attributes = [
 ?>
 <div <?php echo get_block_wrapper_attributes( $vk_wrapper_attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<div
-		class="vk-past-walks__region"
+		class="vk-past-walks__results"
 		data-wp-interactive="vandrekalender/past-walks"
 		data-wp-router-region="vk-past-walks"
 	>
