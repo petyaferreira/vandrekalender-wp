@@ -42,6 +42,13 @@ $vk_wrapper_attributes = [
 ];
 ?>
 <div <?php echo get_block_wrapper_attributes( $vk_wrapper_attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<?php
+	// data-wp-interactive repeats the wrapper's on purpose: the router only
+	// finds regions that carry it themselves
+	// ([data-wp-interactive][data-wp-router-region]); without it filter
+	// changes and "Vis flere ture" stop updating the list. Event Cards does
+	// the same.
+	?>
 	<div
 		class="vk-past-walks__results"
 		data-wp-interactive="vandrekalender/past-walks"
