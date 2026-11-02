@@ -26,7 +26,6 @@ Every new block and pattern goes in the project category **Alle Vandreture** (sl
 - **Blocks:** set `"category": "allevandreture"` in `block.json`. The category is registered for the inserter by `Event::register_block_category()` (plugin, `includes/event/class-event.php`) on the `block_categories_all` filter. It is prepended, so it is the first category in the inserter.
 - **Patterns:** set `Categories: allevandreture` in the header of the file in the theme's `patterns/`. The category is registered by `vandrekalender_register_pattern_category()` (theme, `functions.php`) on `init` at priority **9**: WordPress registers the theme's pattern files on `init` at priority 10, and a pattern naming a category that does not exist yet is left out of the inserter's category list.
 
-
 ---
 
 ## Accessibility conventions

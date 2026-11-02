@@ -882,8 +882,9 @@ class Event {
 	 * Add the project's block category to the inserter.
 	 *
 	 * Prepended, not appended, so it sits at the top of the inserter above
-	 * Text, Media and Design. Every block.json in blocks/ sets
-	 * "category": "allevandreture" to land here.
+	 * Text, Media and Design. A block lands here by setting
+	 * "category": "allevandreture" in its block.json (the existing blocks
+	 * are moved in #200).
 	 *
 	 * @param array $categories Registered block categories.
 	 * @return array Categories with the project's category first.
