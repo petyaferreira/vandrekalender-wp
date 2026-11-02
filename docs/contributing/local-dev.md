@@ -48,11 +48,14 @@ Whoever creates a worktree or a preview container removes it. Nobody else knows 
 docker rm -f -v vk-preview-<issue>   # -v also drops its /var/www/html volume
 ```
 
-**Worktrees.** When the PR is merged, remove the worktree and its local branch. `git branch -d` refuses an unmerged branch, so it doubles as a check:
+**Worktrees.** When the PR is merged, remove the worktree and its local branch. Check the merge on GitHub first:
 
 ```bash
-git worktree remove <path> && git branch -d <branch>
+gh pr list --head <branch> --state merged   # must list the PR; otherwise keep the worktree
+git worktree remove <path> && git branch -D <branch>
 ```
+
+Do not use `git branch -d` as the check. For a pushed branch it compares with the branch's own copy on GitHub, not with `main`, so it deletes an unmerged branch with only a warning. And when the remote branch is gone and the local `main` is behind, it refuses a branch that is merged.
 
 `node_modules/` and `vendor/` are the only untracked files a worktree should have. If `git -C <path> status` shows anything else, ask Petya before removing it.
 
