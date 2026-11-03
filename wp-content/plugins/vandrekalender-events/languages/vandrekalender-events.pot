@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-02T11:03:50+00:00\n"
+"POT-Creation-Date: 2026-11-03T08:48:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -112,9 +112,9 @@ msgid "from %d kr"
 msgstr ""
 
 #: blocks/event-cards/render.php:78
-#: blocks/past-walks/render.php:55
+#: blocks/past-walks/render.php:62
 #: build/blocks/event-cards/render.php:78
-#: build/blocks/past-walks/render.php:55
+#: build/blocks/past-walks/render.php:62
 msgid "No walks match your filters."
 msgstr ""
 
@@ -142,9 +142,9 @@ msgid "D j M"
 msgstr ""
 
 #: blocks/event-cards/render.php:194
-#: blocks/past-walks/render.php:171
+#: blocks/past-walks/render.php:178
 #: build/blocks/event-cards/render.php:194
-#: build/blocks/past-walks/render.php:171
+#: build/blocks/past-walks/render.php:178
 msgid "Show more walks"
 msgstr ""
 
@@ -164,10 +164,10 @@ msgid "Long (25+ km)"
 msgstr ""
 
 #: blocks/event-filters/render.php:73
-#: blocks/past-walks/render.php:92
+#: blocks/past-walks/render.php:99
 #: build/blocks/event-filters/render.php:73
-#: build/blocks/past-walks/render.php:92
-#: includes/event/class-event.php:705
+#: build/blocks/past-walks/render.php:99
+#: includes/event/class-event.php:706
 msgid "Region"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 #: blocks/event-info-card/render.php:263
 #: build/blocks/event-filters/render.php:84
 #: build/blocks/event-info-card/render.php:263
-#: includes/event/class-event.php:776
+#: includes/event/class-event.php:777
 #: build/resources/event-meta-fields/index.js:1
 #: build/resources/organiser-fields/index.js:1
 #: resources/event-meta-fields/index.js:949
@@ -195,11 +195,11 @@ msgstr ""
 
 #: blocks/event-filters/render.php:95
 #: blocks/event-filters/render.php:96
-#: blocks/past-walks/render.php:91
+#: blocks/past-walks/render.php:98
 #: build/blocks/event-filters/render.php:95
 #: build/blocks/event-filters/render.php:96
-#: build/blocks/past-walks/render.php:91
-#: includes/event/class-event.php:740
+#: build/blocks/past-walks/render.php:98
+#: includes/event/class-event.php:741
 msgid "Length"
 msgstr ""
 
@@ -306,9 +306,9 @@ msgid "per participant"
 msgstr ""
 
 #: blocks/event-info-card/render.php:212
-#: blocks/past-walks/render.php:88
+#: blocks/past-walks/render.php:95
 #: build/blocks/event-info-card/render.php:212
-#: build/blocks/past-walks/render.php:88
+#: build/blocks/past-walks/render.php:95
 msgid "Date"
 msgstr ""
 
@@ -330,9 +330,9 @@ msgid "Download GPX"
 msgstr ""
 
 #: blocks/event-info-card/render.php:245
-#: blocks/past-walks/render.php:90
+#: blocks/past-walks/render.php:97
 #: build/blocks/event-info-card/render.php:245
-#: build/blocks/past-walks/render.php:90
+#: build/blocks/past-walks/render.php:97
 msgid "Place"
 msgstr ""
 
@@ -475,9 +475,9 @@ msgid "See all organisers"
 msgstr ""
 
 #: blocks/organiser-past-tours/render.php:29
-#: blocks/past-walks/render.php:56
+#: blocks/past-walks/render.php:63
 #: build/blocks/organiser-past-tours/render.php:29
-#: build/blocks/past-walks/render.php:56
+#: build/blocks/past-walks/render.php:63
 msgid "There are no past walks yet."
 msgstr ""
 
@@ -489,9 +489,9 @@ msgstr ""
 #. translators: %s: number of upcoming walks in the region.
 #. translators: %s: number of walks in the month.
 #: blocks/organiser-regions/render.php:30
-#: blocks/past-walks/render.php:82
+#: blocks/past-walks/render.php:89
 #: build/blocks/organiser-regions/render.php:30
-#: build/blocks/past-walks/render.php:82
+#: build/blocks/past-walks/render.php:89
 #, php-format
 msgid "%s walk"
 msgid_plural "%s walks"
@@ -505,8 +505,8 @@ msgstr ""
 
 #: blocks/organiser-stats/render.php:23
 #: build/blocks/organiser-stats/render.php:23
-#: includes/event/class-event.php:704
-#: includes/event/class-event.php:712
+#: includes/event/class-event.php:705
+#: includes/event/class-event.php:713
 msgid "Regions"
 msgstr ""
 
@@ -528,29 +528,29 @@ msgid "The organiser in numbers"
 msgstr ""
 
 #. translators: %s: number of past walks that match the filters.
-#: blocks/past-walks/render.php:66
-#: build/blocks/past-walks/render.php:66
+#: blocks/past-walks/render.php:73
+#: build/blocks/past-walks/render.php:73
 #, php-format
 msgid "%s past walk matches your choices"
 msgid_plural "%s past walks match your choices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: blocks/past-walks/render.php:89
-#: build/blocks/past-walks/render.php:89
+#: blocks/past-walks/render.php:96
+#: build/blocks/past-walks/render.php:96
 msgid "Walk and organiser"
 msgstr ""
 
 #. translators: past walk date, PHP date format.
-#: blocks/past-walks/render.php:136
-#: build/blocks/past-walks/render.php:136
+#: blocks/past-walks/render.php:143
+#: build/blocks/past-walks/render.php:143
 msgctxt "past walk date"
 msgid "D j M"
 msgstr ""
 
 #. translators: 1: number of walks shown, 2: number of matching walks.
-#: blocks/past-walks/render.php:163
-#: build/blocks/past-walks/render.php:163
+#: blocks/past-walks/render.php:170
+#: build/blocks/past-walks/render.php:170
 #, php-format
 msgid "Showing %1$s of %2$s walks"
 msgstr ""
@@ -871,7 +871,7 @@ msgid "Recent Facebook imports"
 msgstr ""
 
 #: includes/class-facebook-importer.php:646
-#: includes/event/class-event.php:106
+#: includes/event/class-event.php:107
 msgid "Event"
 msgstr ""
 
@@ -1120,159 +1120,163 @@ msgstr ""
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:105
-#: includes/event/class-event.php:107
+#: includes/event/class-event.php:106
+#: includes/event/class-event.php:108
 msgid "Events"
 msgstr ""
 
-#: includes/event/class-event.php:108
+#: includes/event/class-event.php:109
 msgid "Add New Event"
 msgstr ""
 
-#: includes/event/class-event.php:109
+#: includes/event/class-event.php:110
 msgid "Edit Event"
 msgstr ""
 
-#: includes/event/class-event.php:110
+#: includes/event/class-event.php:111
 msgid "View Event"
 msgstr ""
 
-#: includes/event/class-event.php:111
+#: includes/event/class-event.php:112
 msgid "View Events"
 msgstr ""
 
-#: includes/event/class-event.php:112
+#: includes/event/class-event.php:113
 msgid "Update Event"
 msgstr ""
 
-#: includes/event/class-event.php:113
+#: includes/event/class-event.php:114
 msgid "All Events"
 msgstr ""
 
-#: includes/event/class-event.php:114
+#: includes/event/class-event.php:115
 msgid "Search Events"
 msgstr ""
 
-#: includes/event/class-event.php:115
+#: includes/event/class-event.php:116
 msgid "No events found."
 msgstr ""
 
-#: includes/event/class-event.php:116
+#: includes/event/class-event.php:117
 msgid "No events found in trash."
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:616
+#: includes/event/class-event.php:617
 #, php-format
 msgid "%s° N"
 msgstr ""
 
 #. translators: %s: latitude in degrees, e.g. 55.67286
-#: includes/event/class-event.php:616
+#: includes/event/class-event.php:617
 #, php-format
 msgid "%s° S"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:621
+#: includes/event/class-event.php:622
 #, php-format
 msgid "%s° E"
 msgstr ""
 
 #. translators: %s: longitude in degrees, e.g. 12.56103
-#: includes/event/class-event.php:621
+#: includes/event/class-event.php:622
 #, php-format
 msgid "%s° W"
 msgstr ""
 
 #. translators: 1: latitude, e.g. 55.67286° N, 2: longitude, e.g. 12.56103° E
-#: includes/event/class-event.php:626
+#: includes/event/class-event.php:627
 #, php-format
 msgid "GPS %1$s, %2$s"
 msgstr ""
 
-#: includes/event/class-event.php:706
+#: includes/event/class-event.php:707
 msgid "Search Regions"
 msgstr ""
 
-#: includes/event/class-event.php:707
+#: includes/event/class-event.php:708
 msgid "All Regions"
 msgstr ""
 
-#: includes/event/class-event.php:708
+#: includes/event/class-event.php:709
 msgid "Edit Region"
 msgstr ""
 
-#: includes/event/class-event.php:709
+#: includes/event/class-event.php:710
 msgid "Update Region"
 msgstr ""
 
-#: includes/event/class-event.php:710
+#: includes/event/class-event.php:711
 msgid "Add New Region"
 msgstr ""
 
-#: includes/event/class-event.php:711
+#: includes/event/class-event.php:712
 msgid "New Region Name"
 msgstr ""
 
-#: includes/event/class-event.php:739
-#: includes/event/class-event.php:747
+#: includes/event/class-event.php:740
+#: includes/event/class-event.php:748
 msgid "Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:741
+#: includes/event/class-event.php:742
 msgid "Search Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:742
+#: includes/event/class-event.php:743
 msgid "All Lengths"
 msgstr ""
 
-#: includes/event/class-event.php:743
+#: includes/event/class-event.php:744
 msgid "Edit Length"
 msgstr ""
 
-#: includes/event/class-event.php:744
+#: includes/event/class-event.php:745
 msgid "Update Length"
 msgstr ""
 
-#: includes/event/class-event.php:745
+#: includes/event/class-event.php:746
 msgid "Add New Length"
 msgstr ""
 
-#: includes/event/class-event.php:746
+#: includes/event/class-event.php:747
 msgid "New Length Name"
 msgstr ""
 
-#: includes/event/class-event.php:775
-#: includes/event/class-event.php:783
+#: includes/event/class-event.php:776
+#: includes/event/class-event.php:784
 #: includes/organiser/class-organiser.php:108
 msgid "Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:777
+#: includes/event/class-event.php:778
 msgid "Search Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:778
-#: includes/event/class-event.php:824
+#: includes/event/class-event.php:779
+#: includes/event/class-event.php:825
 msgid "All Organisers"
 msgstr ""
 
-#: includes/event/class-event.php:779
+#: includes/event/class-event.php:780
 msgid "Edit Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:780
+#: includes/event/class-event.php:781
 msgid "Update Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:781
+#: includes/event/class-event.php:782
 msgid "Add New Organiser"
 msgstr ""
 
-#: includes/event/class-event.php:782
+#: includes/event/class-event.php:783
 msgid "New Organiser Name"
+msgstr ""
+
+#: includes/event/class-event.php:897
+msgid "Alle Vandreture"
 msgstr ""
 
 #: includes/organiser/class-organiser.php:96

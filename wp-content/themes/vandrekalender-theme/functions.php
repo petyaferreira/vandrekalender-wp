@@ -32,6 +32,23 @@ function vandrekalender_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'vandrekalender_enqueue_assets' );
 
 /**
+ * Register the project's pattern category.
+ *
+ * Priority 9: WordPress registers theme patterns (patterns/*.php) on init at
+ * the default priority 10, and a pattern naming a category that does not
+ * exist yet is left out of the inserter's category list.
+ *
+ * @return void
+ */
+function vandrekalender_register_pattern_category(): void {
+	register_block_pattern_category(
+		'allevandreture',
+		[ 'label' => __( 'Alle Vandreture', 'vandrekalender-theme' ) ]
+	);
+}
+add_action( 'init', 'vandrekalender_register_pattern_category', 9 );
+
+/**
  * Register editor styles.
  *
  * The add_editor_style() call loads stylesheets inside the editor canvas, so
