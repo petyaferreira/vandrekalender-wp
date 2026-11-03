@@ -33,6 +33,14 @@ Once a week, Dependabot opens a PR for each dependency with a newer version. It 
 
 Leaflet was loaded from cdnjs, where nothing told us about new versions. Moving it to npm with Dependabot fixed that ([decision 0010](../decisions/0010-leaflet-bundled-from-npm.md)).
 
+## Summary on every PR
+
+`.github/workflows/dependabot-summary.yml` posts one comment on each Dependabot PR: **What changed** (the most important changes between the two versions, breaking changes and security fixes first) and **Check after merging** (what in this project to test: which block, which wp-admin screen, or that the build is enough). Claude reads the release notes and how the project uses the package, with `Read`, `Grep` and `Glob` only: release notes are written outside the project, so Claude cannot run commands, post or reach the network, and the workflow posts the comment itself after refusing anything that looks like a token. It reruns when Dependabot moves the PR to a newer version (the title changes), not on a rebase.
+
+It needs `CLAUDE_CODE_OAUTH_TOKEN` twice: as a repository secret (like the review) and as a **Dependabot secret**, because a workflow started by Dependabot cannot read repository secrets. Set or update the Dependabot one in the browser, Settings → Secrets and variables → **Dependabot**: `claude setup-token` prints the token over two lines, and a terminal prompt cuts it at the line break, while the browser's text box shows the break so you can remove it. A broken Dependabot secret shows as "Claude did not return structured_output" after about 2 seconds, at no cost.
+
+To check it, or to summarise a PR opened before the workflow existed: Actions → **Dependabot summary** → Run workflow, with the PR number.
+
 ## Alerts and security updates are switched on in every repo
 
 `dependabot.yml` only drives the weekly version updates. Two more things are repo settings, so a new repo, or one copied from a template, starts with both off:
