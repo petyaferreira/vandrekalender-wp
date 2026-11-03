@@ -19,6 +19,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0013](0013-github-rest-only-in-the-cloud.md) | In the cloud, agents use the GitHub REST API only; GraphQL is blocked by design | 23 Oct 2026 |
 | [0014](0014-no-enrichment-queue.md) | No wp-admin queue of scraped events missing data | 28 Oct 2026 |
 | [0015](0015-past-walks-page-is-a-page.md) | The past walks page `/tidligere-ture/` is a normal page built from a block and a pattern, not a route and template in code | 28 Oct 2026 |
+| [0016](0016-dependabot-pr-summary-read-only.md) | Dependabot PRs get a two-line summary from a read-only Claude; the workflow posts it | 3 Nov 2026 |
 
 ## Format
 

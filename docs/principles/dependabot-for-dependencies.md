@@ -75,3 +75,4 @@ Or by hand: Settings → Advanced Security (Code security on older repos) → en
 
 - [Clean up after every change](cleanup.md)
 - [Fail loudly at the right layer](fail-loudly.md)
+- [0016: Dependabot PR summary from a read-only Claude](../decisions/0016-dependabot-pr-summary-read-only.md)
