@@ -33,6 +33,26 @@ Once a week, Dependabot opens a PR for each dependency with a newer version. It 
 
 Leaflet was loaded from cdnjs, where nothing told us about new versions. Moving it to npm with Dependabot fixed that ([decision 0010](../decisions/0010-leaflet-bundled-from-npm.md)).
 
+## Alerts and security updates are switched on in every repo
+
+`dependabot.yml` only drives the weekly version updates. Two more things are repo settings, so a new repo, or one copied from a template, starts with both off:
+
+- **Dependabot alerts**: GitHub flags a dependency with a known vulnerability.
+- **Dependabot security updates**: Dependabot opens the fix PR straight away instead of waiting for the weekly run. Needs alerts on.
+
+Without them the weekly PRs still arrive, so a repo looks covered when it is not. This repo had both off until 3 November 2026. Switch them on when the repo is created, from its directory with `gh` logged in as someone with admin rights on the repo (anything less gets a 403):
+
+```bash
+gh api -X PUT "repos/{owner}/{repo}/vulnerability-alerts"
+gh api -X PUT "repos/{owner}/{repo}/automated-security-fixes"
+
+# check: 204 = alerts on; {"enabled":true,...} = security updates on
+gh api -i "repos/{owner}/{repo}/vulnerability-alerts" | head -1
+gh api "repos/{owner}/{repo}/automated-security-fixes"
+```
+
+Or by hand: Settings → Advanced Security (Code security on older repos) → enable **Dependabot alerts** and **Dependabot security updates**.
+
 ## Rules
 
 - **Adding the first `package.json` or `composer.json`** to a project or a new folder: add its `directory` to `dependabot.yml` in the same PR. Create the file if it does not exist yet.
@@ -41,6 +61,7 @@ Leaflet was loaded from cdnjs, where nothing told us about new versions. Moving 
 - **Pin exact versions** (`"leaflet": "1.9.4"`, not `^1.9.4`) for libraries that ship to visitors, so an upgrade happens only through a reviewed Dependabot PR.
 - **A third-party library loaded from a CDN** cannot be watched this way. Install it from npm instead.
 - **A new project** copies the `dependabot` check from `validate.sh` along with this page, so the rule is checked there too.
+- **A new repo** gets alerts and security updates switched on (commands above) the day it is created. `validate.sh` cannot check repo settings, so this is on the setup checklist ([project-setup.md](../contributing/project-setup.md)).
 
 ## Related
 

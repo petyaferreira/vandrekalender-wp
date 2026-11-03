@@ -15,4 +15,4 @@ Most of the Claude setup travels with the repo: `CLAUDE.md`, `docs/`, `validate.
   >
   > If something the page needs is missing or fails in this environment, do not work around it and do not change any guardrail: stop, and end with a short report of what was missing. Always end with a short report: which issue you picked (or none), the PR link, and whether it was merged or left for Petya.
 
-- [ ] **Dependabot.** `.github/dependabot.yml` is in the repo; alerts and security updates are switched on in the repo settings.
+- [ ] **Dependabot.** `.github/dependabot.yml` is in the repo. **Dependabot alerts** and **Dependabot security updates** are repo settings, off in a new or copied repo: switch both on with the two `gh api` commands in [dependabot-for-dependencies.md](../principles/dependabot-for-dependencies.md#alerts-and-security-updates-are-switched-on-in-every-repo), and check them with the commands below those. Switched on here on 3 November 2026.
