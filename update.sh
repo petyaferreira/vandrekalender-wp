@@ -28,10 +28,16 @@ cd "$(git rev-parse --show-toplevel)"
 
 # The builds must run on the Node version in .nvmrc (decision 0012). nvm is a
 # shell function, so the script cannot switch for you.
+# Compares major versions only, so .nvmrc may say 24, v24 or 24.1.0.
+if ! command -v node >/dev/null; then
+    echo "Node is not installed. Install nvm, then: nvm install, then ./update.sh again" >&2
+    exit 1
+fi
 want_node=$(tr -d '[:space:]v' <.nvmrc)
-node=$(node -p 'process.versions.node.split(".")[0]')
-if [ "$node" != "$want_node" ]; then
-    echo "Node $node, but .nvmrc wants $want_node. Run: nvm use, then ./update.sh again" >&2
+want_node=${want_node%%.*}
+have_node=$(node -p 'process.versions.node.split(".")[0]')
+if [ "$have_node" != "$want_node" ]; then
+    echo "Node $have_node, but .nvmrc wants $want_node. Run: nvm use, then ./update.sh again" >&2
     exit 1
 fi
 
