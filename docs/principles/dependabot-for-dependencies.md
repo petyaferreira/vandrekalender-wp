@@ -69,6 +69,8 @@ Or by hand: Settings → Advanced Security (Code security on older repos) → en
 - **Pin exact versions** (`"leaflet": "1.9.4"`, not `^1.9.4`) for libraries that ship to visitors, so an upgrade happens only through a reviewed Dependabot PR.
 - **A third-party library loaded from a CDN** cannot be watched this way. Install it from npm instead.
 - **A security update Dependabot cannot make** (the run fails with `security_update_not_possible`, because the only path downgrades a package we use) gets an npm `overrides` entry in that folder's `package.json`, pinned to the first fixed version or later. Check that the build output is unchanged. List it below, and remove it once the package that pulls it in requires a fixed version itself.
+- **A new project** copies the `dependabot` check from `validate.sh` along with this page, so the rule is checked there too.
+- **A new repo** gets alerts and security updates switched on (commands above) the day it is created. `validate.sh` cannot check repo settings, so this is on the setup checklist ([project-setup.md](../contributing/project-setup.md)).
 
 ### Current overrides
 
@@ -78,8 +80,6 @@ Both in the plugin and the theme `package.json` ([#234](https://github.com/petya
 |---|---|---|---|
 | `serialize-javascript` | `^7.1.3` | `@wordpress/scripts` → `copy-webpack-plugin` 10 (requires `^6.0.0`) | `@wordpress/scripts` uses a `copy-webpack-plugin` that requires 7.1.3 or later |
 | `smol-toml` | `^1.8.1` | `@wordpress/scripts` → `markdownlint-cli` 0.49 (requires `~1.7.0`) | `@wordpress/scripts` uses a `markdownlint-cli` that requires 1.8.1 or later |
-- **A new project** copies the `dependabot` check from `validate.sh` along with this page, so the rule is checked there too.
-- **A new repo** gets alerts and security updates switched on (commands above) the day it is created. `validate.sh` cannot check repo settings, so this is on the setup checklist ([project-setup.md](../contributing/project-setup.md)).
 
 ## Related
 
