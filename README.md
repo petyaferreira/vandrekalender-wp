@@ -22,6 +22,19 @@ cd wp-content/themes/vandrekalender-theme && npm install && npm run build
 cd wp-content/plugins/vandrekalender-events && npm install && npm run build
 ```
 
+`npm run start` in either directory watches and rebuilds on save while you work.
+
+## After every `git pull`
+
+Including after merging Dependabot PRs:
+
+```bash
+nvm use        # Node version from .nvmrc
+./update.sh    # install from the lockfiles, build theme and plugin
+```
+
+Merging a Dependabot PR changes the lockfiles on GitHub, not what is installed on your machine. Until you run this, the site keeps using the old plugin versions and the old bundled libraries (Leaflet is bundled into the map blocks). The script runs `composer install`, then `npm ci` in the root, theme and plugin, then both builds. It installs exactly what the lockfiles say and never updates anything to a newer version. Stop any `npm run start` watcher first, and open wp-admin once after plugin updates (some plugins update their database tables on the first admin page load). Details: [docs/contributing/local-dev.md](docs/contributing/local-dev.md#after-every-git-pull).
+
 ## Plugins & Themes
 
 WordPress plugins and themes are managed via Composer using [WPackagist](https://wpackagist.org).
