@@ -27,6 +27,20 @@ npm run start   # dev watch
 npm run build   # production
 ```
 
+## After every `git pull`
+
+Including after merging Dependabot PRs: merging changes the lockfiles on GitHub, not what is installed here, and the bundled libraries (Leaflet in the map blocks) only change after a rebuild.
+
+```bash
+nvm use        # the script stops if Node does not match .nvmrc
+./update.sh
+```
+
+It runs `composer install` (WordPress plugins, PHPCS, PHPUnit), `npm ci` in the root, theme and plugin, then `npm run build` in the theme and plugin, and stops at the first step that fails. It never updates to newer versions; that is Dependabot's job, via PRs ([dependabot-for-dependencies.md](../principles/dependabot-for-dependencies.md)).
+
+- **Stop any `npm run start` watcher first**: `npm ci` replaces `node_modules` under it. For your own changes, `npm run start` is still the way to rebuild on save.
+- **After plugin updates, open wp-admin once.** Some plugins update their database tables on the first admin page load.
+
 **Email (local):** every `wp_mail()` is caught by Mailpit instead of being delivered — read it at `http://localhost:${MAILPIT_PORT}` (8025). Wired at the PHP level (`sendmail_path` in the Dockerfile), so there is no SMTP plugin to activate and nothing in the database. See [deployment.md → Email](../deployment.md#email).
 
 **WP-CLI:**
