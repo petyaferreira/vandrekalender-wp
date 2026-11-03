@@ -40,7 +40,7 @@ Leaflet was loaded from cdnjs, where nothing told us about new versions. Moving 
 - **Dependabot alerts**: GitHub flags a dependency with a known vulnerability.
 - **Dependabot security updates**: Dependabot opens the fix PR straight away instead of waiting for the weekly run. Needs alerts on.
 
-Without them the weekly PRs still arrive, so a repo looks covered when it is not. This repo had both off until 3 November 2026. Switch them on when the repo is created, from its directory with `gh` logged in:
+Without them the weekly PRs still arrive, so a repo looks covered when it is not. This repo had both off until 3 November 2026. Switch them on when the repo is created, from its directory with `gh` logged in as someone with admin rights on the repo (anything less gets a 403):
 
 ```bash
 gh api -X PUT "repos/{owner}/{repo}/vulnerability-alerts"
