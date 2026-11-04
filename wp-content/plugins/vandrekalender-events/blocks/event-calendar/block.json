@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/event-calendar",
     "title": "Event Calendar",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "A month calendar that marks days with walking events. Click a day to see its events.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",

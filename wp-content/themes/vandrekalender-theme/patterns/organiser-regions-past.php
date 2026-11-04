@@ -2,7 +2,7 @@
 /**
  * Title: Organiser: regions and past walks
  * Slug: vandrekalender-theme/organiser-regions-past
- * Categories: featured
+ * Categories: allevandreture
  * Post Types: organiser
  * Description: Two columns: Ture i hele landet (the regions with the organiser's upcoming walks) beside Tidligere ture (its last past walks).
  *

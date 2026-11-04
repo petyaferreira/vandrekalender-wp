@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/past-walks",
     "title": "Past Walks",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\".",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",

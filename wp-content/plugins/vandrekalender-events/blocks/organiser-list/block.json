@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-list",
     "title": "Organiser List",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "Organisers with a page: \"Andre arrangører\" under an organiser page, or all of them on the overview.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],

@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-logo",
     "title": "Organiser Logo",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The organiser page's logo: its featured image, or the organiser's initials until it has one.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],

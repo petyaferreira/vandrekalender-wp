@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-badge",
     "title": "Official Organiser Badge",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The \"Officiel arrangør\" badge, shown only when the organiser page is flagged as official.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],

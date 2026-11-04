@@ -4,7 +4,7 @@
     "name": "vandrekalender/tabs",
     "version": "1.0.0",
     "title": "Tabs",
-    "category": "design",
+    "category": "allevandreture",
     "icon": "media-interactive",
     "description": "A tabbed container. Add Tab blocks inside and place any content in each tab.",
     "allowedBlocks": ["vandrekalender/tab"],
