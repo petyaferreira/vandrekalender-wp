@@ -2,7 +2,7 @@
 /**
  * Title: Text and CTA
  * Slug: vandrekalender-theme/text-and-cta
- * Categories: featured
+ * Categories: allevandreture
  * Description: A block pattern with a text and a call to action button.
  *
  * @package vandrekalender-theme

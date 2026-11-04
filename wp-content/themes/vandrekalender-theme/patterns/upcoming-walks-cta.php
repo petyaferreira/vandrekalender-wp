@@ -2,7 +2,7 @@
 /**
  * Title: Call to action: upcoming walks
  * Slug: vandrekalender-theme/upcoming-walks-cta
- * Categories: featured
+ * Categories: allevandreture
  * Description: "Lyst til at gå selv?" with a button to the calendar. Used under the past walks list.
  *
  * @package vandrekalender-theme

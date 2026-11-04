@@ -2,7 +2,7 @@
 /**
  * Title: Card with Image
  * Slug: vandrekalender-theme/card-with-image
- * Categories: featured
+ * Categories: allevandreture
  * Description: A card with an image, heading, paragraph, and author information. Drop it inside a slider slide or use it on its own anywhere on the page.
  *
  * @package vandrekalender-theme

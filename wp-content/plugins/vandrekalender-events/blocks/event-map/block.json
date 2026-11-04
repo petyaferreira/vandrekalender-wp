@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/event-map",
     "title": "Event Map",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "A map of Denmark with a pin for each walking event. Built on Leaflet + OpenStreetMap.",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",

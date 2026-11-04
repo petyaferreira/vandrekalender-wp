@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/event-filters",
     "title": "Event Filters",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "Filter controls for the event calendar, cards and map (Upcoming) or the Past Walks list (Past).",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",

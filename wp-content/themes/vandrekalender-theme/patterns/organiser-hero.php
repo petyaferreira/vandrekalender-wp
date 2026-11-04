@@ -2,7 +2,7 @@
 /**
  * Title: Organiser: hero
  * Slug: vandrekalender-theme/organiser-hero
- * Categories: featured
+ * Categories: allevandreture
  * Post Types: organiser
  * Description: Logo or initials and the Officiel arrangør badge, the name, the short description (the excerpt) and a link to the organiser's website, beside the organiser's numbers (docs/design/organiser-page/arrangoer-header-1b.html).
  *

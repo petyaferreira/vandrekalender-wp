@@ -2,7 +2,7 @@
 /**
  * Title: Organiser: walks
  * Slug: vandrekalender-theme/organiser-walks
- * Categories: featured
+ * Categories: allevandreture
  * Post Types: organiser
  * Description: Kommende ture: the front page's filter bar, list, calendar and map, limited to the organiser.
  *

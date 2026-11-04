@@ -4,7 +4,7 @@
     "name": "vandrekalender/slider-slide",
     "version": "1.0.0",
     "title": "Slider Slide",
-    "category": "design",
+    "category": "allevandreture",
     "icon": "media-interactive",
     "description": "A single slide within slider slides block.",
     "parent": ["vandrekalender/slider"],

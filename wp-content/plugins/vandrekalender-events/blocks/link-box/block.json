@@ -4,7 +4,7 @@
     "name": "vandrekalender/link-box",
     "version": "1.0.0",
     "title": "Link Box",
-    "category": "design",
+    "category": "allevandreture",
     "icon": "admin-links",
     "description": "A container that turns all of its content into a single link. Don't place other links or buttons inside it.",
     "example": {},
