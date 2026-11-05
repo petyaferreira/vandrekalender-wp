@@ -12,3 +12,5 @@ composer run phpcbf   # auto-fix PHP
 `claude-md-size` fails when `CLAUDE.md` grows past `MAX_CLAUDE_MD_LINES` in `validate.sh`: see [lean-agent-context.md](../principles/lean-agent-context.md).
 
 WordPress-Extra ruleset. Text domains: `vandrekalender-theme`, `vandrekalender-events`. The pre-commit hook checks the staged version of each file under its real path (so `phpcs.xml` exclude-patterns and `.prettierignore` apply as in `./validate.sh`), auto-fixes staged PHP (phpcbf) and JS/SCSS/CSS/JSON (Prettier), and blocks the commit if PHP violations remain. A file with unstaged changes is not auto-fixed (that would stage them too); the commit is blocked with the fix command instead.
+
+**Frontend JavaScript:** use the Interactivity API for anything interactive beyond a self-contained widget, and write the reason at the top of any plain JS view script ([decision 0017](../decisions/0017-interactivity-api-for-frontend.md)).
