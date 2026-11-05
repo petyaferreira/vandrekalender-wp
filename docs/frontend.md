@@ -134,7 +134,7 @@ The **Event Filters** block (`blocks/event-filters/`) renders a `<form class="vk
 | From date / To date | `date_from`, `date_to` | `YYYY-MM-DD` |
 | Free only (checkbox) | `is_free` | `true` |
 
-**Known exception to [decision 0017](decisions/0017-interactivity-api-for-frontend.md):** Event Filters is plain JS until its rework ([#203](https://github.com/petyaferreira/vandrekalender-wp/issues/203)).
+**Known exception to [decision 0017](decisions/0017-interactivity-api-for-frontend.md):** Event Filters is plain JS until its rework ([#203](https://github.com/petyaferreira/vandrekalender-wp/issues/203)). The other one is the event page pair Event Info Card and Event Route Map, which use the custom `vk:route-change` event.
 
 The URL is the single source of truth. `view.js` (a plain `viewScript`) reads the controls on every change, writes them to the query string with `history.replaceState`, and dispatches a bubbling `vk:filters-change` event on `document`. On load it fills the controls from the URL, so reloads and shared links keep their state. "Reset" clears everything. Event Cards, Event Calendar, Event Map and the `[vk_filtered_count]` shortcode listen for `vk:filters-change`; the server side reads the same params with `Vandrekalender_Event_Rest_Api::filters_from_query()`.
 
