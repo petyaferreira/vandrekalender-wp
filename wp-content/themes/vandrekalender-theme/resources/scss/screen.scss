@@ -341,3 +341,35 @@ body {
   min-height: 44px;
   padding-block: var(--wp--preset--spacing--regular);
 }
+
+// Core Accordion open/close icon: core draws a bare "+" (turning into "×"
+// when open) with no size of its own, so it reads as a tiny button. Give it a
+// 44×44px area (our tap-target rule) holding a 28px circle with a larger
+// glyph. Forest on cream/white is well above 3:1 (WCAG 1.4.11). The whole row
+// stays the button; core still swaps the icon and sets aria-expanded.
+.wp-block-accordion-heading__toggle-icon {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--wp--preset--color--forest);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+}
+
+.wp-block-accordion-heading__toggle:focus-visible {
+  outline: 2px solid var(--wp--preset--color--forest);
+  outline-offset: 2px;
+}
