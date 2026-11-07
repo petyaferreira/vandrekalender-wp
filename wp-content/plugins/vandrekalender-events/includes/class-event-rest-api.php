@@ -69,17 +69,6 @@ class Vandrekalender_Event_Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
-			'/events',
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_events' ],
-				'permission_callback' => '__return_true',
-				'args'                => $this->get_collection_params(),
-			]
-		);
-
-		register_rest_route(
-			self::NAMESPACE,
 			'/events/count',
 			[
 				'methods'             => WP_REST_Server::READABLE,
@@ -162,60 +151,6 @@ class Vandrekalender_Event_Rest_Api {
 				'municipality' => $result['municipality'] ?? '',
 			]
 		);
-	}
-
-	/**
-	 * Return a filtered, paginated list of published events.
-	 *
-	 * Queries matching IDs first (cheap even for thousands of events), applies
-	 * the PHP-side free/paid filter to the full ID list, and only then slices
-	 * the requested page. That keeps page boundaries and the X-WP-Total /
-	 * X-WP-TotalPages headers exact even though the price lives inside the
-	 * routes JSON and cannot be filtered in SQL.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response
-	 */
-	public function get_events( WP_REST_Request $request ) {
-		$per_page = (int) $request->get_param( 'per_page' );
-		$per_page = $per_page > 0 ? min( $per_page, 100 ) : 50;
-		$page     = max( 1, (int) $request->get_param( 'page' ) );
-
-		$args = self::build_query_args( $this->extract_filters( $request ) );
-
-		$args['posts_per_page'] = -1;
-		$args['fields']         = 'ids';
-		$args['orderby']        = 'meta_value';
-		$args['meta_key']       = \Vandrekalender\Event::META_DATE;
-		$args['order']          = 'ASC';
-
-		$ids = get_posts( $args );
-
-		// Price lives inside the routes JSON, so the free/paid filter runs in PHP.
-		if ( null !== $request->get_param( 'is_free' ) && '' !== $request->get_param( 'is_free' ) ) {
-			update_meta_cache( 'post', $ids );
-			$want_free = rest_sanitize_boolean( $request->get_param( 'is_free' ) );
-			$ids       = array_values(
-				array_filter(
-					$ids,
-					fn( $id ) => self::is_event_free( $id ) === $want_free
-				)
-			);
-		}
-
-		$total    = count( $ids );
-		$page_ids = array_slice( $ids, ( $page - 1 ) * $per_page, $per_page );
-
-		$events = array_map(
-			fn( $id ) => $this->format_event( get_post( $id ) ),
-			$page_ids
-		);
-
-		$response = rest_ensure_response( $events );
-		$response->header( 'X-WP-Total', (string) $total );
-		$response->header( 'X-WP-TotalPages', (string) (int) ceil( $total / $per_page ) );
-
-		return $response;
 	}
 
 	/**
@@ -690,7 +625,7 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Return the query param definitions for the events collection endpoint.
+	 * Return the query param definitions shared by the count, days and locations endpoints.
 	 *
 	 * @return array
 	 */
@@ -718,12 +653,6 @@ class Vandrekalender_Event_Rest_Api {
 			],
 			'is_free'   => [
 				'type' => 'boolean',
-			],
-			'per_page'  => [
-				'type' => 'integer',
-			],
-			'page'      => [
-				'type' => 'integer',
 			],
 		];
 	}

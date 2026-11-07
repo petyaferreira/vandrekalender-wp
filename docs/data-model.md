@@ -260,9 +260,9 @@ All filters for the frontend event listing. Each filter maps to either a meta fi
 
 Base namespace: `vandrekalender/v1`
 
-### `GET /events`
+### Filter params
 
-Returns a filtered, paginated list of events. Used by the cards and map views (and the calendar's clicked-day list). Sorted by `event_date` ascending. Pagination: `per_page` (default 50, max 100) and `page` (1-based); the response carries `X-WP-Total` and `X-WP-TotalPages` headers, which stay exact even with the PHP-side `is_free` filter (IDs are filtered before the page is sliced). The cards block renders page 1 and appends further pages via its "Vis flere vandreture" button until the last page.
+`GET /events/count`, `GET /events/days` and `GET /events/locations` share these params. The cards block and the calendar's day list do not use the REST API: they render on the server ([frontend.md](frontend.md)).
 
 **Filter params:**
 
@@ -276,30 +276,11 @@ Returns a filtered, paginated list of events. Used by the cards and map views (a
 | `is_free` | boolean | Derived from `event_routes` prices (computed in PHP, not a meta field) |
 | `lang` | string | `da` or `en`. Passed to Polylang via `WP_Query` `lang` arg |
 
-**Response shape per event:**
-
-```json
-{
-  "id": 42,
-  "title": "Mammutmarch",
-  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
-  "date": "2026-06-20",
-  "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
-  "place_name": "Gribskov Naturpark",
-  "lat": 56.051,
-  "lng": 12.301,
-  "is_free": false,
-  "length": ["medium", "long"],
-  "region": "hovedstaden"
-}
-```
-
 ---
 
 ### `GET /events/count`
 
-Returns the number of published events matching the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Used by the `[vk_filtered_count]` shortcode.
+Returns the number of published events matching the [filter params](#filter-params) (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Used by the `[vk_filtered_count]` shortcode.
 
 **Response shape:**
 
@@ -311,7 +292,7 @@ Returns the number of published events matching the same filter params as `GET /
 
 ### `GET /events/days`
 
-Returns per-day event counts for the same filter params as `GET /events` (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds) and fetches a single day's full events from `GET /events` only when that day is clicked.
+Returns per-day event counts for the [filter params](#filter-params) (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds).
 
 **Response shape** (empty object when no events match):
 
@@ -323,7 +304,7 @@ Returns per-day event counts for the same filter params as `GET /events` (`date_
 
 ### `GET /events/locations`
 
-Returns **all** matching events (same filter params and upcoming-only default as `GET /events`, no pagination) as a slim map-pin payload: `id`, `title`, `permalink`, `date`, `lat`, `lng`, `distances_km`, `price_from`, `is_free`. Powers the map view — pins need every event but only the popup line, so this skips description rendering entirely (~130 KB for 500+ events). Events without usable coordinates (unset or 0/0) are excluded server-side.
+Returns **all** matching events (same [filter params](#filter-params) and upcoming-only default, no pagination) as a slim map-pin payload: `id`, `title`, `permalink`, `date`, `lat`, `lng`, `distances_km`, `price_from`, `is_free`. Powers the map view — pins need every event but only the popup line, so this skips description rendering entirely (~130 KB for 500+ events). Events without usable coordinates (unset or 0/0) are excluded server-side.
 
 ---
 
