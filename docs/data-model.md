@@ -262,7 +262,7 @@ Base namespace: `vandrekalender/v1`
 
 ### Filter params
 
-`GET /events/count`, `GET /events/days` and `GET /events/locations` share these params. The cards block and the calendar's day list do not use the REST API: they render on the server ([frontend.md](frontend.md)).
+`GET /events/count` and `GET /events/locations` share these params. The cards block and the calendar's day list do not use the REST API: they render on the server ([frontend.md](frontend.md)).
 
 **Filter params:**
 
@@ -290,57 +290,9 @@ Returns the number of published events matching the [filter params](#filter-para
 
 ---
 
-### `GET /events/days`
-
-Returns per-day event counts for the [filter params](#filter-params) (`date_from`, `date_to`, `region`, `organiser`, `length`, `is_free`), including the same upcoming-only default when no date range is given. Powers the calendar block's month grid: the dots only need counts, so the payload stays ~1 KB per month no matter how many events exist. The calendar fetches one visible month at a time (`date_from`/`date_to` = month bounds).
-
-**Response shape** (empty object when no events match):
-
-```json
-{ "2026-08-01": 7, "2026-08-02": 6, "2026-08-05": 12 }
-```
-
----
-
 ### `GET /events/locations`
 
 Returns **all** matching events (same [filter params](#filter-params) and upcoming-only default, no pagination) as a slim map-pin payload: `id`, `title`, `permalink`, `date`, `lat`, `lng`, `distances_km`, `price_from`, `is_free`. Powers the map view — pins need every event but only the popup line, so this skips description rendering entirely (~130 KB for 500+ events). Events without usable coordinates (unset or 0/0) are excluded server-side.
-
----
-
-### `GET /events/{id}`
-
-Returns full detail for a single event. Used by the event detail page.
-
-**Response shape:**
-
-```json
-{
-  "id": 42,
-  "title": "Mammutmarch",
-  "permalink": "https://allevandreture.dk/begivenhed/mammutmarch",
-  "date": "2026-06-20",
-  "content": "<p>Full description...</p>",
-  "excerpt": "Årlig marchtur i Gribskov...",
-  "featured_image": "https://allevandreture.dk/wp-content/uploads/mammutmarch.jpg",
-  "place_name": "Gribskov Naturpark",
-  "address": "Esrum Møllegård, Esrum Klostervej 14, 3230 Græsted",
-  "lat": 56.051,
-  "lng": 12.301,
-  "is_free": false,
-  "length": ["medium", "long"],
-  "region": "hovedstaden",
-  "routes": [
-    { "distance_km": 30.0, "start_time": "08:00", "cutoff_time": 8, "price": 0, "gpx_id": "", "gpx_url": "" },
-    { "distance_km": 50.0, "start_time": "06:00", "cutoff_time": 12, "price": 250, "gpx_id": "2578", "gpx_url": "https://allevandreture.dk/wp-content/uploads/2026/09/mammutmarch-50k.gpx" }
-  ],
-  "organiser_name": "Mammutmarch",
-  "organiser_url": "https://mammutmarch.dk",
-  "source_url": "https://mammutmarch.dk/events/mammutmarch-koebenhavn-75-100-km"
-}
-```
-
-Each route in `routes` also carries a derived `gpx_url` (`Vandrekalender\Event::add_gpx_urls()`, resolved from `gpx_id` with `wp_get_attachment_url()`, empty string when no file or the attachment no longer exists). `gpx_source_url` is never included here — stripped by the same `strip_gpx_source_url()` used for the core post-meta REST output (see `event_routes` above).
 
 ---
 

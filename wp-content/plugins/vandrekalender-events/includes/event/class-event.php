@@ -520,10 +520,9 @@ class Event {
 	/**
 	 * Remove gpx_source_url from every route in a routes array.
 	 *
-	 * Shared by the core `rest_prepare_event` filter above and by
-	 * Vandrekalender_Event_Rest_Api::format_event(), which also puts the raw
-	 * `event_routes` meta into its own public response. Both need the same
-	 * "never public" rule from docs/history/route-gpx-plan.md.
+	 * Used by the core `rest_prepare_event` filter above, which puts the raw
+	 * `event_routes` meta into its public response. The "never public" rule is
+	 * from docs/history/route-gpx-plan.md.
 	 *
 	 * @param array $routes A route array, as stored in event_routes meta.
 	 * @return array The same routes with gpx_source_url removed from each.
@@ -545,8 +544,7 @@ class Event {
 	 * Resolves each route's gpx_id (an attachment ID) to a public URL, so
 	 * consumers never need their own wp_get_attachment_url() call. Empty
 	 * string when the route has no gpx_id or the attachment no longer
-	 * exists. Shared by Vandrekalender_Event_Rest_Api::format_event() and the
-	 * event-info-card and event-route-map block renders (see
+	 * exists. Used by the event-info-card and event-route-map block renders (see
 	 * docs/history/route-gpx-plan.md, PR 3).
 	 *
 	 * @param array $routes A route array, as stored in event_routes meta.
