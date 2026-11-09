@@ -3,8 +3,10 @@
  *
  * Plain classic script, not the Interactivity API: the single event page is
  * not a router region, so there is no <head>-morphing hazard to guard
- * against and no shared state to coordinate (see docs/history/route-gpx-plan.md,
- * PR 3b). Lazy-loads Leaflet and the leaflet-gpx plugin from the npm bundle, draws
+ * against (see docs/history/route-gpx-plan.md, PR 3b). The `vk:route-change`
+ * event it listens to is a known exception (decision 0017).
+ *
+ * Lazy-loads Leaflet and the leaflet-gpx plugin from the npm bundle, draws
  * one L.GPX layer per route that has a file, and shows only the currently
  * selected route's track (matching the Event Info Card's active tab on
  * first paint, then the `vk:route-change` event it dispatches on every

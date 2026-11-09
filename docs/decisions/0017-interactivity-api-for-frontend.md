@@ -9,11 +9,11 @@ Frontend behaviour uses the WordPress Interactivity API (`viewScriptModule`, a s
 - updates server-rendered content (filters, "Vis flere", month navigation), or
 - shares state with another block (filters and the results they drive).
 
-Plain JavaScript (`viewScript`) is only for self-contained widgets that share nothing with other blocks and replace no server HTML: today Tabs, and the Leaflet maps on the event page (Event Route Map, Event Info Card; Event Info Card also ships a `viewScriptModule`, `join.js`). Each such file says at the top why it is plain JS, as `blocks/event-route-map/view.js` does.
+Plain JavaScript (`viewScript`) is only for self-contained widgets that share nothing with other blocks and replace no server HTML: today Tabs, Event Route Map (a Leaflet map) and the route tabs in Event Info Card (its "Jeg kommer" button is a `viewScriptModule`, `join.js`). Each such file says at the top why it is plain JS, as `blocks/event-route-map/view.js` does.
 
 Blocks talk to each other through a shared Interactivity API store, not custom DOM events (`document.dispatchEvent( new CustomEvent( 'vk:…' ) )`) and not by writing the URL with `history.replaceState` before the router navigates. The router changes the URL itself.
 
-Known exceptions until reworked: Event Filters (`vk:filters-change`, [#203](https://github.com/petyaferreira/vandrekalender-wp/issues/203)), and the event page pair Event Info Card and Event Route Map, which talk through `vk:route-change`. When either is reworked, it moves to a shared store.
+Known exceptions until reworked: Event Filters (`vk:filters-change`, [#203](https://github.com/petyaferreira/vandrekalender-wp/issues/203)); the event page pair Event Info Card and Event Route Map, which talk through `vk:route-change`; and Tabs, whose `vk:tab-shown` tells an Event Map inside a tab to re-measure itself. When one is reworked, it moves to a shared store.
 
 ## Why
 

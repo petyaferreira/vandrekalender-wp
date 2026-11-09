@@ -6,6 +6,11 @@
  * (set server-side). No fetch — every route's values are already in the
  * markup. Also dispatches `vk:route-change` so the Event Route Map block
  * (a separate, independent block) can highlight the matching track.
+ *
+ * Plain JS, not the Interactivity API: the tabs change values the runtime never
+ * rendered, so a store would have nothing to bind to (the "Jeg kommer" button
+ * is the part that needs one: join.js). `vk:route-change` is a known exception
+ * (decision 0017).
  */
 
 /**
