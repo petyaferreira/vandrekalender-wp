@@ -342,6 +342,13 @@ body {
   padding-block: var(--wp--preset--spacing--regular);
 }
 
+// The question's own padding is the space above the answer, so no block gap
+// on top of it. Core drops this padding while the panel is closed.
+.vk-organiser-page .wp-block-accordion-panel {
+  margin-block-start: 0;
+  padding-block-end: var(--wp--preset--spacing--regular);
+}
+
 // Core Accordion open/close icon ("+", turning into "×" when open). Core sizes
 // its box in em and centres the glyph, so a larger font size is all it needs.
 .wp-block-accordion-heading__toggle-icon {
