@@ -4,6 +4,10 @@
  * Plain, dependency-free tab switching. Clicking a nav item activates the
  * matching panel by index. Progressive enhancement: the first panel is already
  * marked active server-side, so content shows even if this script never runs.
+ *
+ * Plain JS, not the Interactivity API: it replaces no server HTML and holds no
+ * state another block reads, so a store would add a module script for nothing.
+ * Its `vk:tab-shown` event is a known exception (decision 0017).
  */
 
 /**
