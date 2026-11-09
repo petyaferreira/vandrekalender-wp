@@ -4,7 +4,7 @@
     "name": "vandrekalender/tab",
     "version": "1.0.0",
     "title": "Tab",
-    "category": "design",
+    "category": "allevandreture",
     "icon": "media-interactive",
     "description": "A single tab panel. Place any blocks inside. Lives inside a Tabs block.",
     "parent": ["vandrekalender/tabs"],

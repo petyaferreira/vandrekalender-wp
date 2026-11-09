@@ -2,7 +2,7 @@
 /**
  * Title: Organiser: about
  * Slug: vandrekalender-theme/organiser-about
- * Categories: featured
+ * Categories: allevandreture
  * Post Types: organiser
  * Description: Two columns: Om arrangøren (text and an image) beside Ofte stillede spørgsmål (questions and answers in an accordion).
  *

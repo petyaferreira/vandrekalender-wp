@@ -2,7 +2,7 @@
 /**
  * Title: How It Works
  * Slug: vandrekalender-theme/how-it-works
- * Categories: featured
+ * Categories: allevandreture
  * Description: Three-step explainer for first-time visitors: find a walk, join it, or create your own. Informational only, no call to action.
  *
  * @package vandrekalender-theme

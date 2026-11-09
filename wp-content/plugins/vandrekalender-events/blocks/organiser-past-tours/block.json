@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-past-tours",
     "title": "Past Tours",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The organiser's last past walks, newest first, with a link to all of them. No heading: add your own above it.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],

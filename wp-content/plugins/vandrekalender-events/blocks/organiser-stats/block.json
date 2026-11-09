@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-stats",
     "title": "Organiser Stats",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The organiser's numbers, computed from its upcoming walks.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],

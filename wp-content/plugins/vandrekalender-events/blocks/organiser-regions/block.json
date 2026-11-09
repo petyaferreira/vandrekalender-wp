@@ -3,7 +3,7 @@
     "apiVersion": 3,
     "name": "vandrekalender/organiser-regions",
     "title": "Organiser Regions",
-    "category": "widgets",
+    "category": "allevandreture",
     "description": "The regions where the organiser has upcoming walks, each linking to its walks there.",
     "textdomain": "vandrekalender-events",
     "usesContext": ["postId", "postType"],
