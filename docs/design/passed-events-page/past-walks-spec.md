@@ -8,7 +8,7 @@ Design files: `Tidligere.dc.html` (mobile) and `TidligereDesktop.dc.html` (deskt
 
 Purpose: a plain archive for people who want to find a walk that already happened. It is a list, not a second calendar. Do not build a calendar view or a map view for this page.
 
-* **URLs:** `/tidligere-ture/` is the archive. Month pages are `/tidligere-ture/2026/10/`. "Vis flere ture" links to `?side=2`, `?side=3`, … (built: the calendar list's cumulative parameter, so no extra URL rules; decided 28 October 2026). All of these are real URLs with plain links between them.
+* **URLs:** `/tidligere-vandreture/` is the archive. Month pages are `/tidligere-vandreture/2026/10/`. "Vis flere ture" links to `?side=2`, `?side=3`, … (built: the calendar list's cumulative parameter, so no extra URL rules; decided 28 October 2026). All of these are real URLs with plain links between them.
 * **No tabs** (decided 2 November 2026: the "Kommende ture" / "Tidligere ture" tabs in the first design were a mistake). The page is the filters and, below them, the results.
 * **List:** grouped by month, newest first, with the month name and number of walks in each group header. Each row shows date, walk name, place, region, distance and organiser name (links to the organiser page). No images, no price chips, no "Gratis" label.
 * **Desktop row:** grid with columns date, walk and organiser, place, distance, region. **Mobile row:** stacked, date on top, then name, then place and region, then a distance chip and the organiser link.
@@ -20,7 +20,7 @@ Purpose: a plain archive for people who want to find a walk that already happene
 * **"Vis flere ture"** (decided 2 November 2026, replacing "Nyere" / "Ældre" pages): 10 walks, then 10 more with each click, under "Viser 10 af 212 ture". It is a link, so it works without JavaScript; there is no button once every walk is shown.
 * **Count line:** "212 afholdte ture matcher dine valg", counted over the filtered list.
 * **Call to action at the bottom:** "Lyst til at gå selv?" with a button to the upcoming walks.
-* **Organiser page link:** the "Se flere tidligere ture" link on an organiser page goes to `/tidligere-ture/?organiser={slug}` (decided 28 October 2026: the same `organiser` parameter as the calendar filters).
+* **Organiser page link:** the "Se flere tidligere ture" link on an organiser page goes to `/tidligere-vandreture/?organiser={slug}` (decided 28 October 2026: the same `organiser` parameter as the calendar filters).
 
 Meta and headings:
 
