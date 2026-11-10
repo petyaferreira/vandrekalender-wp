@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The past walks page "Tidligere vandreture" at /tidligere-ture/ (#176):
+ * The past walks page "Tidligere vandreture" at /tidligere-vandreture/ (#176):
  * walks of the last RETENTION_MONTHS months whose date has passed, newest
  * first, grouped by month, PER_PAGE more with each "Vis flere ture".
  * Design and spec: docs/design/passed-events-page/.
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Vandrekalender_Past_Walks {
 
-	const SLUG       = 'tidligere-ture';
+	const SLUG       = 'tidligere-vandreture';
 	const BLOCK      = 'vandrekalender/past-walks';
 	const PAGE_PARAM = 'side';
 	const PER_PAGE   = 10;
@@ -50,7 +50,7 @@ class Vandrekalender_Past_Walks {
 	}
 
 	/**
-	 * The published page at /tidligere-ture/, with $filters as query params
+	 * The published page at /tidligere-vandreture/, with $filters as query params
 	 * and, from 2, the number of "Vis flere" steps shown. '' when there is no
 	 * published page, so callers leave the link out instead of linking to a
 	 * 404.

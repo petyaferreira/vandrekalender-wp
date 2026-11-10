@@ -5,7 +5,7 @@
  * Renders the filter controls. Upcoming (the default `walks` setting, for
  * the calendar, cards and map): region options come from the event_region
  * taxonomy, organiser options are the event_organiser terms that have an
- * upcoming event. Past (for the Past Walks block on /tidligere-ture/): both
+ * upcoming event. Past (for the Past Walks block on /tidligere-vandreture/): both
  * lists only hold terms with a walk in the past walks window, and the date
  * inputs are limited to it. Either way the list never offers a filter that
  * shows nothing. Length options are the fixed kort/mellem/lang buckets. The

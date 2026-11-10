@@ -110,7 +110,7 @@ class BreadcrumbsTest extends TestCase {
 		$middle = [
 			[
 				'label' => 'Tidligere ture',
-				'url'   => 'https://vandrekalender.dk/tidligere-ture/',
+				'url'   => 'https://vandrekalender.dk/tidligere-vandreture/',
 			],
 		];
 

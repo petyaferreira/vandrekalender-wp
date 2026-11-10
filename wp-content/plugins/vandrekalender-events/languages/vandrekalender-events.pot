@@ -1948,7 +1948,7 @@ msgstr ""
 #: blocks/past-walks/block.json
 #: build/blocks/past-walks/block.json
 msgctxt "block description"
-msgid "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\"."
+msgid "The results of the past walks page /tidligere-vandreture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\"."
 msgstr ""
 
 #: blocks/slider-slide/block.json

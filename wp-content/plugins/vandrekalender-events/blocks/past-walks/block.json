@@ -4,7 +4,7 @@
     "name": "vandrekalender/past-walks",
     "title": "Past Walks",
     "category": "allevandreture",
-    "description": "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\".",
+    "description": "The results of the past walks page /tidligere-vandreture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\".",
     "textdomain": "vandrekalender-events",
     "editorScript": "file:./index.js",
     "viewScriptModule": "file:./view.js",

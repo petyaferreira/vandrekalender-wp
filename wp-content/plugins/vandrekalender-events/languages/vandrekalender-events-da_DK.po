@@ -1837,8 +1837,8 @@ msgstr "Tidligere ture"
 
 #: blocks/past-walks/block.json build/blocks/past-walks/block.json
 msgctxt "block description"
-msgid "The results of the past walks page /tidligere-ture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\"."
-msgstr "Resultaterne på siden med tidligere ture /tidligere-ture/: turene fra de seneste måneder, der matcher begivenhedsfiltrene, grupperet efter måned, nyeste først, med \"Vis flere ture\"."
+msgid "The results of the past walks page /tidligere-vandreture/: the walks of the last months that match the Event Filters, grouped by month, newest first, with \"Vis flere ture\"."
+msgstr "Resultaterne på siden med tidligere ture /tidligere-vandreture/: turene fra de seneste måneder, der matcher begivenhedsfiltrene, grupperet efter måned, nyeste først, med \"Vis flere ture\"."
 
 #: blocks/slider-slide/block.json build/blocks/slider-slide/block.json
 msgctxt "block title"

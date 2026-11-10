@@ -1,6 +1,6 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
 /**
- * The past walks page /tidligere-ture/ (#176): which dates it lists, how
+ * The past walks page /tidligere-vandreture/ (#176): which dates it lists, how
  * many walks "Vis flere ture" shows, how it groups them, and which URLs are
  * filtered.
  *

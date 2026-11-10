@@ -4,7 +4,7 @@ Decided 28 October 2026 with Petya ([#176](https://github.com/petyaferreira/vand
 
 ## Decision
 
-`/tidligere-ture/` is a normal WordPress page (slug `tidligere-ture`, template "Page (without title)"; the default until #255). It is built like the front page: the Event Filters block (set to Past) and below it the Past Walks block with the results (2 November 2026). Around them: an H1 Heading block (wide, lined up with the list), the intro as a Paragraph and the theme pattern "Call to action: upcoming walks" (`patterns/upcoming-walks-cta.php`). No template and no whole-page pattern. "Vis flere ture" is `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered and `?side=` URLs, and the links to the page (found by its slug, left out while it doesn't exist).
+`/tidligere-vandreture/` (`/tidligere-ture/` until 10 November 2026, [#257](https://github.com/petyaferreira/vandrekalender-wp/issues/257)) is a normal WordPress page (slug `tidligere-vandreture`, template "Page (without title)"; the default until #255). It is built like the front page: the Event Filters block (set to Past) and below it the Past Walks block with the results (2 November 2026). Around them: an H1 Heading block (wide, lined up with the list), the intro as a Paragraph and the theme pattern "Call to action: upcoming walks" (`patterns/upcoming-walks-cta.php`). No template and no whole-page pattern. "Vis flere ture" is `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered and `?side=` URLs, and the links to the page (found by its slug, left out while it doesn't exist).
 
 ## Why
 
@@ -21,7 +21,7 @@ Also rejected (2 November 2026): one Past Walks block holding its own intro, tab
 ## Costs we accept
 
 - **One manual step per site:** create the page with its blocks and the pattern on local, staging and production (`docs/frontend.md` → Past Walks Page).
-- **The page can be renamed or deleted in wp-admin.** The links find it by the slug `tidligere-ture`; a changed slug drops them (no broken links) and needs a 301 from the old URL, like any indexed page ([two-way doors](../principles/two-way-doors.md)).
+- **The page can be renamed or deleted in wp-admin.** The links find it by the slug `tidligere-vandreture`; a changed slug drops them (no broken links) and needs a 301 from the old URL, like any indexed page ([two-way doors](../principles/two-way-doors.md)).
 
 ## Do not propose
 
@@ -29,4 +29,4 @@ A template or a code route for the past walks page, unless the conditions below 
 
 ## Revisit when
 
-The month pages of #176 step 3 (`/tidligere-ture/2026/10/` in the spec) are built: they need a rule that points to this page, or the month as a query parameter too. Decide that in step 3.
+The month pages of #176 step 3 (`/tidligere-vandreture/2026/10/` in the spec) are built: they need a rule that points to this page, or the month as a query parameter too. Decide that in step 3.
