@@ -36,6 +36,8 @@ require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-mammut.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-opdagverden.php';
 require VANDREKALENDER_TEST_INCLUDES . '/scrapers/class-scraper-sportstiming.php';
 
+require __DIR__ . '/../wp-content/themes/vandrekalender-theme/inc/class-page-templates.php';
+
 require __DIR__ . '/fakes/class-test-scraper-dvl.php';
 require __DIR__ . '/fakes/class-test-scraper-mammut.php';
 require __DIR__ . '/fakes/class-test-scraper-opdagverden.php';

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  * first, grouped by month, PER_PAGE more with each "Vis flere ture".
  * Design and spec: docs/design/passed-events-page/.
  *
- * The page is a normal WordPress page (default template) built like the
+ * The page is a normal WordPress page (page-without-title) built like the
  * front page: the Event Filters block (set to Past) and below it the Past
  * Walks block, which renders the results (decision 0015). The filters are
  * the calendar's, in the URL: region, organiser, length, date_from, date_to,

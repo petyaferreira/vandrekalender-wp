@@ -7,6 +7,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/inc/class-page-templates.php';
+Vandrekalender_Page_Templates::init();
+
 /**
  * Enqueue compiled theme assets.
  */
