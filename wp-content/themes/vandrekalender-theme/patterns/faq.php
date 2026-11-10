@@ -12,8 +12,8 @@
 <!-- wp:group {"templateLock":"contentOnly","metadata":{"name":"FAQ"},"align":"wide","layout":{"type":"constrained"}} -->
 <div class="wp-block-group alignwide"><!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|extra-large"}}}} -->
 <div class="wp-block-columns alignwide"><!-- wp:column {"className":"vk-faq__intro"} -->
-<div class="wp-block-column vk-faq__intro"><!-- wp:heading -->
-<h2 class="wp-block-heading">Om arrangøren</h2>
+<div class="wp-block-column vk-faq__intro"><!-- wp:heading {"placeholder":"Om … (for eksempel Om arrangøren eller Om arkivet)"} -->
+<h2 class="wp-block-heading"></h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"placeholder":"Hvem står bag, hvad siden handler om, og hvorfor den er nyttig. 150 til 250 ord."} -->
