@@ -80,38 +80,12 @@ class Vandrekalender_Event_Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
-			'/events/days',
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_events_days' ],
-				'permission_callback' => '__return_true',
-				'args'                => $this->get_collection_params(),
-			]
-		);
-
-		register_rest_route(
-			self::NAMESPACE,
 			'/events/locations',
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_events_locations' ],
 				'permission_callback' => '__return_true',
 				'args'                => $this->get_collection_params(),
-			]
-		);
-
-		register_rest_route(
-			self::NAMESPACE,
-			'/events/(?P<id>\d+)',
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_event' ],
-				'permission_callback' => '__return_true',
-				'args'                => [
-					'id' => [
-						'validate_callback' => fn( $v ) => is_numeric( $v ),
-					],
-				],
 			]
 		);
 	}
@@ -164,25 +138,10 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Return per-day event counts for the given filters.
-	 *
-	 * Powers the calendar's month grid: the dots only need how many events
-	 * fall on each date, so this stays a ~1 KB payload no matter how many
-	 * events exist. Response shape: { "2026-08-01": 12, "2026-08-02": 7 }.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response
-	 */
-	public function get_events_days( WP_REST_Request $request ) {
-		// Cast so an empty result serialises as {} rather than [].
-		return rest_ensure_response( (object) self::count_events_by_day( $this->extract_filters( $request ) ) );
-	}
-
-	/**
 	 * Count matching events per day.
 	 *
-	 * Shared by the /events/days endpoint and the server-rendered Event
-	 * Calendar block.
+	 * Powers the server-rendered Event Calendar block: the dots only need how
+	 * many events fall on each date.
 	 *
 	 * @param array $filters Filter values keyed by REST param name.
 	 * @return array Date key (Y-m-d) => event count, sorted by date.
@@ -533,7 +492,7 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Whether an event is free, using the same rule as format_event():
+	 * Whether an event is free, the rule for the free/paid filter and the cards:
 	 * free when no route records a real price, or the cheapest price is 0.
 	 * Public because server renders (the Event Cards block) reuse it.
 	 *
@@ -554,78 +513,7 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Return a single event by ID.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function get_event( WP_REST_Request $request ) {
-		$post = get_post( (int) $request->get_param( 'id' ) );
-
-		if ( ! $post || $post->post_type !== \Vandrekalender\Event::CUSTOMPOSTTYPE ) {
-			return new WP_Error( 'not_found', __( 'Event not found.', 'vandrekalender-events' ), [ 'status' => 404 ] );
-		}
-
-		return rest_ensure_response( $this->format_event( $post ) );
-	}
-
-	/**
-	 * Format a post into an event response array.
-	 *
-	 * @param WP_Post $post The event post.
-	 * @return array
-	 */
-	private function format_event( WP_Post $post ) {
-		$date   = get_post_meta( $post->ID, \Vandrekalender\Event::META_DATE, true );
-		$routes = get_post_meta( $post->ID, \Vandrekalender\Event::META_ROUTES, true );
-		$routes = is_array( $routes ) ? $routes : [];
-
-		$distances = [];
-		$prices    = [];
-
-		foreach ( $routes as $route ) {
-			if ( isset( $route['distance_km'] ) && '' !== $route['distance_km'] ) {
-				$distances[] = (float) $route['distance_km'];
-			}
-			if ( isset( $route['price'] ) && '' !== $route['price'] ) {
-				$prices[] = (float) $route['price'];
-			}
-		}
-
-		$price_from = ! empty( $prices ) ? min( $prices ) : null;
-
-		$lat = get_post_meta( $post->ID, \Vandrekalender\Event::META_LAT, true );
-		$lng = get_post_meta( $post->ID, \Vandrekalender\Event::META_LNG, true );
-
-		$thumbnail_url = get_the_post_thumbnail_url( $post->ID, 'large' );
-
-		return [
-			'id'                 => $post->ID,
-			'title'              => $post->post_title,
-			'description'        => apply_filters( 'the_content', $post->post_content ),
-			'permalink'          => get_permalink( $post->ID ),
-			'featured_image_url' => $thumbnail_url ? $thumbnail_url : null,
-			'date'               => $date ? $date : null,
-			'place_name'         => get_post_meta( $post->ID, \Vandrekalender\Event::META_PLACE_NAME, true ),
-			'municipality'       => get_post_meta( $post->ID, \Vandrekalender\Event::META_MUNICIPALITY, true ),
-			'organiser'          => get_post_meta( $post->ID, \Vandrekalender\Event::META_ORGANISER_NAME, true ),
-			'lat'                => '' !== $lat ? (float) $lat : null,
-			'lng'                => '' !== $lng ? (float) $lng : null,
-			'routes'             => \Vandrekalender\Event::strip_gpx_source_url( \Vandrekalender\Event::add_gpx_urls( $routes ) ),
-			'distances_km'       => $distances,
-			'price_from'         => $price_from,
-			// Free when no route records a real price, or when the cheapest
-			// recorded price is 0. Only a route priced above 0 makes it paid.
-			'is_free'            => null === $price_from || 0.0 === (float) $price_from,
-			'taxonomies'         => [
-				'region' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_REGION, [ 'fields' => 'names' ] ),
-				'length' => wp_get_post_terms( $post->ID, \Vandrekalender\Event::TAX_LENGTH, [ 'fields' => 'slugs' ] ),
-			],
-		];
-	}
-
-	/**
-	 * Return the query param definitions shared by the count, days and locations endpoints.
+	 * Return the query param definitions shared by the count and locations endpoints.
 	 *
 	 * @return array
 	 */
