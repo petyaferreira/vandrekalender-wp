@@ -79,7 +79,9 @@ class Vandrekalender_Page_Templates {
 	 * The version is stored before the pages are moved: a second request that
 	 * starts while the first is still running must not move a page twice (a
 	 * page-with-title page, once moved to the default, would otherwise move on
-	 * to page-without-title).
+	 * to page-without-title). The cost: if the request dies midway, the rest
+	 * stays unmoved. To run it again, delete the option:
+	 * ./wp.sh option delete vandrekalender_theme_page_templates_version
 	 *
 	 * @return void
 	 */
