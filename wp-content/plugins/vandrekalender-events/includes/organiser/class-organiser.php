@@ -37,7 +37,7 @@ class Organiser {
 	public const PATTERNS = [
 		'vandrekalender-theme/organiser-hero',
 		'vandrekalender-theme/organiser-walks',
-		'vandrekalender-theme/organiser-about',
+		'vandrekalender-theme/faq',
 		'vandrekalender-theme/organiser-regions-past',
 	];
 

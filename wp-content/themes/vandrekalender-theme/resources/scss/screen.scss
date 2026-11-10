@@ -294,18 +294,19 @@ body {
   }
 }
 
-// About (organiser-about pattern): the image under the text fills the space
-// left beside the FAQ column, so both columns end level, between 240px and
-// 480px high (cropped to fit). Stacked below 782px (core Columns): 4:3.
-// The FAQ pattern's image does the same beside its questions.
-.vk-organiser-about__intro,
-.vk-faq__media {
+// FAQ pattern: the image under the "Om …" text fills the space left beside
+// the questions, so both columns end level, between 240px and 480px high
+// (cropped to fit). Stacked below 782px (core Columns): 4:3. The
+// vk-organiser-about__ names are the pattern's classes before #259, still in
+// the content of organiser pages made before it.
+.vk-faq__intro,
+.vk-organiser-about__intro {
   display: flex;
   flex-direction: column;
 }
 
-.vk-organiser-about__image,
-.vk-faq__image {
+.vk-faq__image,
+.vk-organiser-about__image {
   position: relative;
   flex: 1 1 0;
   min-height: 240px;
@@ -329,7 +330,7 @@ body {
 
 // FAQ questions read as list rows, not h3 headings: body size, with a
 // divider between them as in the design. Every core Accordion on the site
-// (organiser About, the FAQ pattern).
+// (the FAQ pattern on organiser pages and the past walks page).
 .wp-block-accordion-item {
   border-block-end: 1px solid var(--wp--preset--color--meadow);
 }
