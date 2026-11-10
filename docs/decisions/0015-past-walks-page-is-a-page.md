@@ -4,7 +4,7 @@ Decided 28 October 2026 with Petya ([#176](https://github.com/petyaferreira/vand
 
 ## Decision
 
-`/tidligere-ture/` is a normal WordPress page (slug `tidligere-ture`, default template). It is built like the front page: the Event Filters block (set to Past) and below it the Past Walks block with the results (2 November 2026). Around them: an H1 Heading block (wide, lined up with the list), the intro as a Paragraph and the theme pattern "Call to action: upcoming walks" (`patterns/upcoming-walks-cta.php`). No template and no whole-page pattern. "Vis flere ture" is `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered and `?side=` URLs, and the links to the page (found by its slug, left out while it doesn't exist).
+`/tidligere-ture/` is a normal WordPress page (slug `tidligere-ture`, template "Page (without title)"; the default until #255). It is built like the front page: the Event Filters block (set to Past) and below it the Past Walks block with the results (2 November 2026). Around them: an H1 Heading block (wide, lined up with the list), the intro as a Paragraph and the theme pattern "Call to action: upcoming walks" (`patterns/upcoming-walks-cta.php`). No template and no whole-page pattern. "Vis flere ture" is `?side=N`, a query parameter, not a URL rule. The plugin only adds what the page can't set itself: noindex on filtered and `?side=` URLs, and the links to the page (found by its slug, left out while it doesn't exist).
 
 ## Why
 
