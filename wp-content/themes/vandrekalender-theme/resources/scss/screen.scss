@@ -294,14 +294,18 @@ body {
   }
 }
 
-// About (organiser-about pattern): the image under the text fills the space
-// left beside the FAQ column, so both columns end level, between 240px and
-// 480px high (cropped to fit). Stacked below 782px (core Columns): 4:3.
+// FAQ pattern: the image under the "Om …" text fills the space left beside
+// the questions, so both columns end level, between 240px and 480px high
+// (cropped to fit). Stacked below 782px (core Columns): 4:3. The
+// vk-organiser-about__ names are the pattern's classes before #259, still in
+// the content of organiser pages made before it.
+.vk-faq__intro,
 .vk-organiser-about__intro {
   display: flex;
   flex-direction: column;
 }
 
+.vk-faq__image,
 .vk-organiser-about__image {
   position: relative;
   flex: 1 1 0;
@@ -325,26 +329,27 @@ body {
 }
 
 // FAQ questions read as list rows, not h3 headings: body size, with a
-// divider between them as in the design.
-.vk-organiser-page .wp-block-accordion-item {
+// divider between them as in the design. Every core Accordion on the site
+// (the FAQ pattern on organiser pages and the past walks page).
+.wp-block-accordion-item {
   border-block-end: 1px solid var(--wp--preset--color--meadow);
 }
 
-.vk-organiser-page .wp-block-accordion-heading {
+.wp-block-accordion-heading {
   margin: 0;
   font-family: var(--wp--preset--font-family--inter);
   font-size: var(--wp--preset--font-size--regular);
   font-weight: 600;
 }
 
-.vk-organiser-page .wp-block-accordion-heading__toggle {
+.wp-block-accordion-heading__toggle {
   min-height: 44px;
   padding-block: var(--wp--preset--spacing--regular);
 }
 
 // The question's own padding is the space above the answer, so no block gap
 // on top of it. Core drops this padding while the panel is closed.
-.vk-organiser-page .wp-block-accordion-panel {
+.wp-block-accordion-panel {
   margin-block-start: 0;
   padding-block-end: var(--wp--preset--spacing--regular);
 }
