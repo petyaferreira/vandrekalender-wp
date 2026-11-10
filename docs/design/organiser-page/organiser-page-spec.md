@@ -113,7 +113,7 @@ Handle singular and plural ("1 tur", "2 ture"). Omit the sentence parts that hav
 
 ## 5. Meta, headings and copy rules
 
-> **Not built yet:** titles, meta descriptions and the JSON-LD of section 7 are decided together with the event pages' SEO in [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167) and [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
+> **Not built yet:** titles and meta descriptions are decided together with the event pages' SEO in [#167](https://github.com/petyaferreira/vandrekalender-wp/issues/167) and [#97](https://github.com/petyaferreira/vandrekalender-wp/issues/97).
 
 * Title template: `{Navn}: {N} kommende vandreture | Alle Vandreture` (aim for 60 characters or fewer, drop "{N} kommende" if too long)
 * Meta description template: `Se kommende vandreture fra {Navn}: {N} ture i {R} regioner, {F} gratis. Find dato, sted og længde, og tilmeld dig hos arrangøren.` (aim for 155 characters or fewer)
@@ -134,7 +134,7 @@ Handle singular and plural ("1 tur", "2 ture"). Omit the sentence parts that hav
 
 ## 7. Structured data (JSON-LD)
 
-Use Rank Math's schema where it fits and extend it with the `rank_math/json_ld` filter. Output these on the organiser page:
+**Built differently (#224):** our own `Organiser_Schema` prints it, not Rank Math's filter ([decision 0004](../../decisions/0004-own-event-json-ld.md)); see [frontend.md](../../frontend.md#organiser-page). The original plan: use Rank Math's schema where it fits and extend it with the `rank_math/json_ld` filter. Output these on the organiser page:
 
 1. Organization: name, url (the organiser page), sameAs [website_url], logo, description (short_description), email and telephone when public, address when public
 2. BreadcrumbList: Kalender, Arrangører, Navn
