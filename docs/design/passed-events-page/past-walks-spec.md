@@ -46,17 +46,17 @@ What deletion does to SEO: deleted pages drop out of Google and lose their searc
 * **Weekly job** finds walks older than RETENTION_MONTHS and lists them as candidates.
 * **Keep flag:** before removal, check Google Search Console (clicks in the last 12 months) and backlinks. A walk with traffic or links gets a "behold" flag and is skipped. This check can be manual at first, but the flag must exist in the data model.
 * **Removal:** set the walk status to archived. The walk URL returns 410 Gone (404 is acceptable if 410 is hard to do). Do not redirect old walks to the front page, because Google treats that as a soft 404.
-* **Redirect only with a clear match:** a 301 is allowed when there is a real equivalent, for example a recurring walk with a newer page, or the organiser page for a one time walk with an organiser. Decide per case, never in bulk.
+* **Redirects:** an archived recurring walk keeps the existing 301 to its next upcoming occurrence. No other 301s for now (decided 10 November 2026); never redirect to the front page.
 * **Delete later:** archived walks are deleted 3 years after they were archived, with their images and GPX files, but only files nothing else uses.
 * **Cleanup:** remove archived walks from the XML sitemap, the archive lists, month pages, region pages, the organiser pages' "Tidligere ture", and from the derived counts. Fix internal links to the removed URL.
-* **Month pages** older than the retention window return 410 as well, and the "Spring til måned" chips only show months inside the window.
+* **Month pages** (not built yet) older than the retention window return 410 as well, and the "Spring til måned" chips only show months inside the window.
 * **Organiser pages:** after removals, an organiser may have no upcoming and no past walks. Follow [the organiser page spec, section 6](../organiser-page/organiser-page-spec.md#6-indexing-rules): keep the page indexable when it has about text, show the zero state, and set noindex, follow when it has neither text nor walks.
 * **Early removal:** private guides can ask for their walks to be removed earlier. Support a manual "fjern nu" action in the admin.
 * **Default decision:** no text only archive rows beyond 12 months. Add that later only if Search Console shows the old pages still matter.
 
 Decided (28 October 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6465222423)): only the flag on each walk, off by default, with a "Behold" column and a "Due for removal" filter in the Events list. Removal runs without anyone acting; checking Search Console is optional.
 
-Decided (10 November 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6791819009)): archive first and delete 3 years later, as above. No new 301s for now: only an archived recurring occurrence keeps its existing redirect to the next occurrence. No month pages exist, so the month page rule needs no work; the "Spring til måned" chips are [#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198). Steps: [docs/plans/past-walks-retention-plan.md](../../plans/past-walks-retention-plan.md).
+Decided (10 November 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6791819009)): archive first and delete 3 years later, as above. No new 301s for now: only an archived recurring occurrence keeps its existing redirect to the next occurrence. Month pages are not built yet, so the month page rule is for when they are; the "Spring til måned" chips are [#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198). Why archive first: [decision 0018](../../decisions/0018-past-walks-archived-then-purged.md). Steps: [docs/plans/past-walks-retention-plan.md](../../plans/past-walks-retention-plan.md).
 
 ## 3. Definition of done
 

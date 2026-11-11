@@ -8,12 +8,12 @@ Five steps, one PR each, in order, as [stacked PRs](../contributing/pull-request
 
 A walk's life: **published** → **archived** after `RETENTION_MONTHS` (12) months, unless it has "Behold" → **deleted** 3 years after it was archived. An archived walk answers 410 Gone and is gone from every list, but its row and files stay, so it can be restored. Nobody has to act for this to happen.
 
-## Decisions (on #37)
+## Decisions (on #37, recorded in [decision 0018](../decisions/0018-past-walks-archived-then-purged.md))
 
 - 28 October 2026: a "Behold" flag on each walk, off by default; no separate admin screen, only a column and a filter in the Events list. Search Console checks are optional.
 - 10 November 2026: archive first, delete 3 years later. Images and GPX files are deleted only with the walk, and only when nothing else uses them (editors can reuse one Media Library image on several walks).
 - 10 November 2026: no new 301s. An archived recurring occurrence keeps the existing redirect to the next upcoming occurrence; every other archived walk answers 410.
-- No month pages exist, so the spec's "month pages return 410" needs no step. The "Spring til måned" chips ([#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198)) only show months inside the window.
+- Month pages are not built yet, so the spec's "month pages return 410" needs no step here; it applies when they are built. The "Spring til måned" chips ([#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198)) only show months inside the window.
 
 ## Steps
 
@@ -27,6 +27,7 @@ A walk's life: **published** → **archived** after `RETENTION_MONTHS` (12) mont
 
 ## Not in this plan
 
+- **Privacy text (Petya's call).** `docs/business/gdpr-plan.md` says contact details on walks are shown while the walk is published. That stays true (archived walks show nothing), but their contact meta stays in the database until the walk is deleted 3 years later. Whether the privacy text should say so, or step 2 should clear contact meta on archiving, is for Petya to decide.
 - The past walks page intro and its Rank Math description say "12 måneder" as plain text in the page content, not read from `RETENTION_MONTHS`. Edit them by hand if the setting changes.
 - Keeping walks with Search Console traffic automatically (Search Console API). A separate issue if wanted.
 
