@@ -98,7 +98,7 @@ Vi sælger ikke dine oplysninger. Vi bruger følgende leverandører, som behandl
 
 **Hvor længe vi gemmer oplysninger**
 
-Kontooplysninger gemmes, indtil du sletter din konto. Deltagelser slettes 6 måneder efter turen. Henvendelser slettes efter 12 måneder. Kontaktoplysninger på ture vises, så længe turen er offentliggjort.
+Kontooplysninger gemmes, indtil du sletter din konto. Deltagelser slettes 6 måneder efter turen. Henvendelser slettes efter 12 måneder. Ture og arrangørens kontaktoplysninger fjernes fra siden 12 måneder efter turen og slettes helt 3 år senere. Vil du have en tur fjernet tidligere, så skriv til os.
 
 **Dine rettigheder**
 
@@ -124,8 +124,8 @@ GDPR article 30 asks every controller to keep a record of what they process. For
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Brugerkonti | Arrangører | Navn, e-mail, Google-id, logintidspunkt | Adgang til at oprette ture | Aftale (art. 6.1.b) | Nordicway, Google | Ved sletning af konto | Hashede adgangskoder, HTTPS, adgang kun for administrator |
 | Deltagelse | Brugere | Bruger-id, tur-id, tidspunkt | Vise deltagelse, give arrangør besked | Aftale (art. 6.1.b) | Nordicway, arrangøren | 6 mdr. efter turen | Som ovenfor |
-| Arrangøroplysninger på ture | Arrangører, kontaktpersoner | Navn, e-mail, hjemmeside | Kontakt mellem deltager og arrangør | Legitim interesse (art. 6.1.f) | Offentligt på siden | Når turen fjernes eller på anmodning | HTTPS |
-| Indsamlede ture fra offentlige kilder | Arrangører | Navn, offentliggjorte kontaktoplysninger | Samle vandreture ét sted | Legitim interesse (art. 6.1.f) | Offentligt på siden | Når turen fjernes eller på anmodning | HTTPS |
+| Arrangøroplysninger på ture | Arrangører, kontaktpersoner | Navn, e-mail, hjemmeside | Kontakt mellem deltager og arrangør | Legitim interesse (art. 6.1.f) | Offentligt på siden | Skjules 12 mdr. efter turen, slettes 3 år senere, eller på anmodning | HTTPS |
+| Indsamlede ture fra offentlige kilder | Arrangører | Navn, offentliggjorte kontaktoplysninger | Samle vandreture ét sted | Legitim interesse (art. 6.1.f) | Offentligt på siden | Skjules 12 mdr. efter turen, slettes 3 år senere, eller på anmodning | HTTPS |
 | Kontaktformular | Alle | Navn, e-mail, besked | Besvare henvendelser | Legitim interesse (art. 6.1.f) | Nordicway (e-mail) | 12 mdr. | Som ovenfor |
 | Serverlogs | Alle besøgende | IP-adresse, besøgte sider | Sikkerhed og drift | Legitim interesse (art. 6.1.f) | Nordicway | Efter Nordicways standard | Nordicways sikkerhed |
 
