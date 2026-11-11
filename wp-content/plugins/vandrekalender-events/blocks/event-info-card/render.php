@@ -67,11 +67,11 @@ $vk_directions_url = \Vandrekalender\Event::directions_url( $vk_post_id );
  * @return string
  */
 $vk_format_price = function ( array $vk_route ) {
-	if ( ! isset( $vk_route['price'] ) || '' === $vk_route['price'] ) {
+	$vk_price = Vandrekalender_Event_Rest_Api::cheapest_price( [ $vk_route ] );
+
+	if ( null === $vk_price ) {
 		return __( 'Price not listed', 'vandrekalender-events' );
 	}
-
-	$vk_price = (float) $vk_route['price'];
 
 	if ( $vk_price <= 0.0 ) {
 		return __( 'Free', 'vandrekalender-events' );
