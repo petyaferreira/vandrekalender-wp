@@ -27,7 +27,7 @@ A walk's life: **published** → **archived** after `RETENTION_MONTHS` (12) mont
 
 ## Not in this plan
 
-- **Privacy text (Petya's call).** `docs/business/gdpr-plan.md` says contact details on walks are shown while the walk is published. That stays true (archived walks show nothing), but their contact meta stays in the database until the walk is deleted 3 years later. Whether the privacy text should say so, or step 2 should clear contact meta on archiving, is for Petya to decide.
+- **Privacy text.** The draft in `docs/business/gdpr-plan.md` now says walks are archived after 12 months and deleted 3 years later. The live page `/privatlivspolitik/` is edited in WordPress, not in the repo: Petya adds that paragraph once step 3 ([#267](https://github.com/petyaferreira/vandrekalender-wp/issues/267)) runs on production.
 - The past walks page intro and its Rank Math description say "12 måneder" as plain text in the page content, not read from `RETENTION_MONTHS`. Edit them by hand if the setting changes.
 - Keeping walks with Search Console traffic automatically (Search Console API). A separate issue if wanted.
 

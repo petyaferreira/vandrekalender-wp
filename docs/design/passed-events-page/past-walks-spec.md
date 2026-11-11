@@ -39,9 +39,9 @@ Indexing:
 
 ## 2. Retention: walks older than 12 months
 
-The site removes walks 12 months after they happen. Treat 12 as a single setting (RETENTION_MONTHS), because the intro text on the archive page ("de seneste 12 måneder") must read from the same value.
+The site archives walks 12 months after they happen and deletes them 3 years after that. Treat 12 as a single setting (RETENTION_MONTHS). The intro on the archive page and its Rank Math description say "de seneste 12 måneder" as plain text, so edit them by hand if the value changes.
 
-What deletion does to SEO: deleted pages drop out of Google and lose their search traffic and links, but it does not lower the ranking of the rest of the site. The risks are lost traffic from walks that still rank, and organiser pages that become thin. So do the removal carefully:
+What removal does to SEO: an archived walk answers 410, so it drops out of Google at archiving, not at the final deletion 3 years later. Removed pages drop out of Google and lose their search traffic and links, but that does not lower the ranking of the rest of the site. The risks are lost traffic from walks that still rank, and organiser pages that become thin. So do the removal carefully:
 
 * **Weekly job** finds walks older than RETENTION_MONTHS and lists them as candidates.
 * **Keep flag:** before removal, check Google Search Console (clicks in the last 12 months) and backlinks. A walk with traffic or links gets a "behold" flag and is skipped. This check can be manual at first, but the flag must exist in the data model.
