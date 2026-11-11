@@ -27,7 +27,7 @@ A walk's life: **published** → **archived** after `RETENTION_MONTHS` (12) mont
 
 ## Not in this plan
 
-- **Privacy text.** The draft in `docs/business/gdpr-plan.md` now says walks are archived after 12 months and deleted 3 years later. The live page `/privatlivspolitik/` is edited in WordPress, not in the repo: Petya adds that paragraph once step 3 ([#267](https://github.com/petyaferreira/vandrekalender-wp/issues/267)) runs on production.
+- **Privacy text.** The live page `/privatlivspolitik/` (edited in WordPress, page ID 3) says since 11 November 2026: "Ture og arrangørens kontaktoplysninger fjernes fra siden 12 måneder efter turen og slettes helt 3 år senere." Until step 3 ([#267](https://github.com/petyaferreira/vandrekalender-wp/issues/267)) runs on production, that is not yet what the site does, so ship steps 1–3 soon.
 - The past walks page intro and its Rank Math description say "12 måneder" as plain text in the page content, not read from `RETENTION_MONTHS`. Edit them by hand if the setting changes.
 - Keeping walks with Search Console traffic automatically (Search Console API). A separate issue if wanted.
 

@@ -98,7 +98,7 @@ Vi sælger ikke dine oplysninger. Vi bruger følgende leverandører, som behandl
 
 **Hvor længe vi gemmer oplysninger**
 
-Kontooplysninger gemmes, indtil du sletter din konto. Deltagelser slettes 6 måneder efter turen. Henvendelser slettes efter 12 måneder. Kontaktoplysninger på ture vises, så længe turen er offentliggjort. 12 måneder efter turen arkiveres den: den vises ikke længere på siden, men oplysningerne gemmes, så turen kan gendannes, hvis den er arkiveret ved en fejl. 3 år efter arkiveringen slettes turen og dens oplysninger helt. Vil du have en tur fjernet tidligere, så skriv til os.
+Kontooplysninger gemmes, indtil du sletter din konto. Deltagelser slettes 6 måneder efter turen. Henvendelser slettes efter 12 måneder. Ture og arrangørens kontaktoplysninger fjernes fra siden 12 måneder efter turen og slettes helt 3 år senere. Vil du have en tur fjernet tidligere, så skriv til os.
 
 **Dine rettigheder**
 
