@@ -60,13 +60,18 @@ $vk_date_label     = $vk_date ? date_i18n( get_option( 'date_format' ), strtotim
 $vk_directions_url = \Vandrekalender\Event::directions_url( $vk_post_id );
 
 /**
- * Format a route's price as "Gratis" or "{n} kr".
+ * Format a route's price as "Pris ikke oplyst", "Gratis" or "{n} kr".
+ * A route without a recorded price is not free: only an explicit 0 is.
  *
  * @param array $vk_route Route data.
  * @return string
  */
 $vk_format_price = function ( array $vk_route ) {
-	$vk_price = isset( $vk_route['price'] ) ? (float) $vk_route['price'] : 0.0;
+	$vk_price = Vandrekalender_Event_Rest_Api::cheapest_price( [ $vk_route ] );
+
+	if ( null === $vk_price ) {
+		return __( 'Price not listed', 'vandrekalender-events' );
+	}
 
 	if ( $vk_price <= 0.0 ) {
 		return __( 'Free', 'vandrekalender-events' );

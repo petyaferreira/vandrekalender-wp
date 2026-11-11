@@ -40,14 +40,15 @@ $vk_context = [
 	// and script modules have no wp_set_script_translations() equivalent — so
 	// the server hands them over already in the visitor's language.
 	'i18n'      => [
-		'free'      => __( 'Free', 'vandrekalender-events' ),
+		'free'         => __( 'Free', 'vandrekalender-events' ),
+		'priceUnknown' => __( 'Price not listed', 'vandrekalender-events' ),
 		/* translators: %d: lowest price in kroner. */
-		'priceFrom' => __( 'from %d kr', 'vandrekalender-events' ),
-		'details'   => __( 'See details', 'vandrekalender-events' ),
-		'noMatches' => __( 'No walks with a location match your filters.', 'vandrekalender-events' ),
-		'loading'   => __( 'Loading map…', 'vandrekalender-events' ),
-		'loadError' => __( 'Could not load the map. Please try again.', 'vandrekalender-events' ),
-		'initError' => __( 'The map could not be loaded.', 'vandrekalender-events' ),
+		'priceFrom'    => __( 'from %d kr', 'vandrekalender-events' ),
+		'details'      => __( 'See details', 'vandrekalender-events' ),
+		'noMatches'    => __( 'No walks with a location match your filters.', 'vandrekalender-events' ),
+		'loading'      => __( 'Loading map…', 'vandrekalender-events' ),
+		'loadError'    => __( 'Could not load the map. Please try again.', 'vandrekalender-events' ),
+		'initError'    => __( 'The map could not be loaded.', 'vandrekalender-events' ),
 	],
 ];
 

@@ -98,19 +98,17 @@ $vk_wrapper_attributes = [
 
 					$vk_routes    = get_post_meta( $vk_event_id, \Vandrekalender\Event::META_ROUTES, true );
 					$vk_distances = [];
-					$vk_prices    = [];
 					foreach ( ( is_array( $vk_routes ) ? $vk_routes : [] ) as $vk_route ) {
 						if ( isset( $vk_route['distance_km'] ) && '' !== $vk_route['distance_km'] ) {
 							$vk_distances[] = (float) $vk_route['distance_km'];
 						}
-						if ( isset( $vk_route['price'] ) && '' !== $vk_route['price'] ) {
-							$vk_prices[] = (float) $vk_route['price'];
-						}
 					}
 					sort( $vk_distances );
 
-					$vk_price_from = ! empty( $vk_prices ) ? min( $vk_prices ) : null;
-					if ( null === $vk_price_from || 0.0 === $vk_price_from ) {
+					$vk_price_from = Vandrekalender_Event_Rest_Api::cheapest_price( $vk_routes );
+					if ( null === $vk_price_from ) {
+						$vk_price_label = __( 'Price not listed', 'vandrekalender-events' );
+					} elseif ( 0.0 === $vk_price_from ) {
 						$vk_price_label = __( 'Free', 'vandrekalender-events' );
 					} else {
 						/* translators: %d: lowest route price in kroner. */
