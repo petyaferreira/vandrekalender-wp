@@ -253,7 +253,9 @@ $vk_wrapper_attributes = [
 					sort( $vk_distances );
 
 					$vk_price_from = ! empty( $vk_prices ) ? min( $vk_prices ) : null;
-					if ( null === $vk_price_from || 0.0 === $vk_price_from ) {
+					if ( null === $vk_price_from ) {
+						$vk_price_label = __( 'Price not listed', 'vandrekalender-events' );
+					} elseif ( 0.0 === $vk_price_from ) {
 						$vk_price_label = __( 'Free', 'vandrekalender-events' );
 					} else {
 						/* translators: %d: lowest route price in kroner. */
