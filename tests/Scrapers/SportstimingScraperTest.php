@@ -10,6 +10,9 @@
  * - 18672 Long Lonely Wolf Walk: listed on two dates, three distances.
  * - 19811 Vandretur på Jyske Ås: no place on the page.
  * - 19426 Egeskovløbet is typed "Løb, Walk" and must be dropped.
+ * - 99001 is event-17385 with its address changed to Ostseebad Binz,
+ *   Tyskland (an edited copy, not a real event): it is outside Denmark and
+ *   must be skipped.
  *
  * When Sportstiming changes its JSON or markup, save fresh copies and update
  * the expected values here on purpose (docs/contributing/tests.md).
@@ -210,6 +213,32 @@ class SportstimingScraperTest extends TestCase {
 		$this->assertSame( 'Lundhags EventyrHike Svanninge Bakker 2026', $events[0]['post_title'] );
 		$this->assertSame( [], $events[0][ Event::META_ROUTES ] );
 		$this->assertSame( '', $events[0]['post_content'] );
+		$this->assertContains( self::HIKE, $scraper->seen_urls() );
+	}
+
+	/**
+	 * An event whose page names another country is skipped and not marked as
+	 * seen, so an earlier import of it is unpublished. Danish events stay.
+	 */
+	public function test_event_outside_denmark_is_skipped(): void {
+		$search = json_decode( Test_Scraper_Sportstiming::fixture( 'search.json' ), true );
+		array_unshift(
+			$search['Events'],
+			[
+				'Date'          => '2027-06-20',
+				'Name'          => 'BALTIC X HORIZON HIKE 2027',
+				'EventTypeName' => 'Hike',
+				'LinkEvent'     => '/event/99001',
+			]
+		);
+
+		$scraper = new Test_Scraper_Sportstiming();
+		$scraper->pages[ Test_Scraper_Sportstiming::BASE_URL . '/event/99001' ] = 'event-99001-germany.html';
+
+		$events = array_column( $scraper->parse_search( (string) wp_json_encode( $search ) ), null, Event::META_SOURCE_URL );
+
+		$this->assertSame( [ self::HIKE, self::WOLF_1, self::WOLF_2, self::JYSKE_AS ], array_keys( $events ) );
+		$this->assertNotContains( 'https://www.sportstiming.dk/event/99001#2027-06-20', $scraper->seen_urls() );
 		$this->assertContains( self::HIKE, $scraper->seen_urls() );
 	}
 
