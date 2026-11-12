@@ -259,6 +259,7 @@ Every scraper's listing covers **all upcoming events** at its source, so after e
 - **Claimed events are never touched** — the organiser is the source of truth.
 - **A failed or empty fetch drafts nothing** — if the run saw no URLs at all, the source is assumed unreachable rather than empty.
 - **Draft, not delete**: the source-URL dedup matches drafts, so if the source re-lists the event (or the feed had a one-day glitch), the next run republishes the same post instead of creating a duplicate.
+- **Sportstiming events outside Denmark are skipped.** The scraper reads the country that ends the address in the detail page's "Event information" panel (`Danmark`, `Tyskland`) and skips an event with another country. A skipped event is not marked as seen, so if it was imported earlier the sweep above moves it to draft (and an event already published then needs no hand removal). If the page cannot be loaded or names no country, the event is kept. Mammut filters on `eventCountry` in the same way.
 
 All meta keys use the **canonical, no-underscore schema keys** registered in `class-event.php` (`Vandrekalender\Event::META_*`) — the same keys the REST API and frontend read. A scraped event surfaces through exactly the same path as a manually created one. Writing `event_routes` and `event_municipality` also triggers the derive-on-save hooks, so `event_length` and `event_region` taxonomies are assigned automatically.
 

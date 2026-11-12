@@ -89,9 +89,18 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 				continue;
 			}
 			$seen[ $source_url ] = true;
+
+			$html = $this->remote_get( $page_url );
+
+			// Denmark only. A foreign event is not marked as seen, so an
+			// earlier import of it is unpublished like any event the source
+			// no longer lists.
+			if ( $this->is_outside_denmark( $html ) ) {
+				continue;
+			}
 			$this->mark_source_url_seen( $source_url );
 
-			$event = $this->build_event( $page_url, $source_url, (string) ( $item['Name'] ?? '' ), $date );
+			$event = $this->build_event( $html, $page_url, $source_url, (string) ( $item['Name'] ?? '' ), $date );
 			if ( null !== $event ) {
 				$events[] = $event;
 			}
@@ -103,14 +112,14 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 	/**
 	 * Build a canonical event array from the detail page's og: metadata.
 	 *
+	 * @param string $html       The event detail page HTML, or '' when it could not be loaded.
 	 * @param string $page_url   The event detail page URL.
 	 * @param string $source_url Unique dedup key (page URL + date).
 	 * @param string $name       Event name from the listing (fallback title).
 	 * @param string $date       Event date (YYYY-MM-DD).
 	 * @return array|null
 	 */
-	private function build_event( string $page_url, string $source_url, string $name, string $date ): ?array {
-		$html        = $this->remote_get( $page_url );
+	private function build_event( string $html, string $page_url, string $source_url, string $name, string $date ): ?array {
 		$title       = trim( $name );
 		$description = '';
 		$image       = '';
@@ -177,6 +186,42 @@ class Vandrekalender_Scraper_Sportstiming extends Vandrekalender_Scraper_Base {
 		}
 
 		return $event;
+	}
+
+	/**
+	 * Whether the detail page names a country other than Denmark.
+	 *
+	 * The "Event information" panel ends the address with the country
+	 * ("Danmark", "Tyskland"). A page that could not be loaded, or that has no
+	 * country line, counts as Danish: the event is kept.
+	 *
+	 * @param string $html Page HTML.
+	 * @return bool
+	 */
+	private function is_outside_denmark( string $html ): bool {
+		if ( ! preg_match( '#fa fa-map-marker.*?<td[^>]*>(.*?)</td>#is', $html, $cell ) ) {
+			return false;
+		}
+
+		$cell  = (string) preg_replace( '#<small>.*?</small>#is', '', $cell[1] );
+		$lines = preg_split( '#<br\s*/?>#i', $cell );
+		$lines = array_values(
+			array_filter(
+				array_map(
+					static fn( string $line ): string => trim( html_entity_decode( wp_strip_all_tags( $line ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ),
+					is_array( $lines ) ? $lines : []
+				),
+				static fn( string $line ): bool => '' !== $line
+			)
+		);
+
+		$country = end( $lines );
+		// With no country line the last line is the postcode and town.
+		if ( false === $country || count( $lines ) < 2 || preg_match( '/\d/', $country ) ) {
+			return false;
+		}
+
+		return ! in_array( mb_strtolower( $country ), [ 'danmark', 'denmark' ], true );
 	}
 
 	/**
