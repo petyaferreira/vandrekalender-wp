@@ -115,6 +115,21 @@ class Vandrekalender_Event_Join {
 	}
 
 	/**
+	 * The login screen URL a logged-out joiner is sent to.
+	 *
+	 * `redirect_to` is the joined URL, not the plain event URL: Login with
+	 * Google copies it into its OAuth state and redirects there itself, so the
+	 * `login_redirect` filter never runs for it. If the sign-up does not happen,
+	 * the event card ignores `?joined=1` for a visitor who is not attending.
+	 *
+	 * @param int $event_id Event post ID.
+	 * @return string
+	 */
+	public static function login_url( int $event_id ): string {
+		return wp_login_url( self::joined_url( $event_id ) );
+	}
+
+	/**
 	 * Handle a form submission from the join button.
 	 *
 	 * This is the no-JavaScript path, so the single button has to serve both
@@ -145,7 +160,7 @@ class Vandrekalender_Event_Join {
 			// a logged-out nonce would be baked into page-cached HTML, so a
 			// stale one would greet real visitors with "Are you sure?".
 			$this->set_pending_cookie( $event_id );
-			wp_safe_redirect( wp_login_url( $target ) );
+			wp_safe_redirect( self::login_url( $event_id ) );
 			exit;
 		}
 
