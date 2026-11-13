@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@wordpress/icons": "^19.0.0",
-        "@wordpress/scripts": "^37.0.0"
+        "@wordpress/scripts": "^37.1.0"
     },
     "dependencies": {
         "leaflet": "1.9.4",
