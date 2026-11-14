@@ -334,17 +334,13 @@ body {
 
 // FAQ pattern: the image under the "Om …" text fills the space left beside
 // the questions, so both columns end level, between 240px and 480px high
-// (cropped to fit). Stacked below 782px (core Columns): 4:3. The
-// vk-organiser-about__ names are the pattern's classes before #259, still in
-// the content of organiser pages made before it.
-.vk-faq__intro,
-.vk-organiser-about__intro {
+// (cropped to fit). Stacked below 782px (core Columns): 4:3.
+.vk-faq__intro {
   display: flex;
   flex-direction: column;
 }
 
-.vk-faq__image,
-.vk-organiser-about__image {
+.vk-faq__image {
   position: relative;
   flex: 1 1 0;
   min-height: 240px;

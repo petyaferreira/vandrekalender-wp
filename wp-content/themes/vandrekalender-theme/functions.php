@@ -10,6 +10,9 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/inc/class-page-templates.php';
 Vandrekalender_Page_Templates::init();
 
+require_once __DIR__ . '/inc/class-organiser-faq-classes.php';
+Vandrekalender_Organiser_Faq_Classes::init();
+
 /**
  * Enqueue compiled theme assets.
  */
