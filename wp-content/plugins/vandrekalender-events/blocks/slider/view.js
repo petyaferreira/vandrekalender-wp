@@ -40,6 +40,12 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
   const originals = Array.from(wrapper.children);
   if (originals.length === 0) return null;
 
+  // prefers-reduced-motion: no movement, no clones. A static, scrollable row.
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    ref.classList.add('is-static');
+    return null;
+  }
+
   // Duplicate slides until track >= 2x container width
   const targetWidth = ref.clientWidth * 2;
   let safety = 0;
@@ -58,13 +64,6 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
     safety++;
   }
 
-  // prefers-reduced-motion: no movement. A static, scrollable row instead.
-  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-    wrapper.querySelectorAll('.is-duplicate').forEach(n => n.remove());
-    ref.classList.add('is-static');
-    return null;
-  }
-
   // Pause on hover and keyboard focus, resume when both are gone.
   let hovered = false;
   let focused = false;
@@ -81,11 +80,14 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
       swiper.autoplay.start();
     }
   };
-  ref.addEventListener('mouseenter', () => {
+  // Mouse only: a tap on touch fires mouseenter without a mouseleave.
+  ref.addEventListener('pointerenter', event => {
+    if (event.pointerType !== 'mouse') return;
     hovered = true;
     sync();
   });
-  ref.addEventListener('mouseleave', () => {
+  ref.addEventListener('pointerleave', event => {
+    if (event.pointerType !== 'mouse') return;
     hovered = false;
     sync();
   });
