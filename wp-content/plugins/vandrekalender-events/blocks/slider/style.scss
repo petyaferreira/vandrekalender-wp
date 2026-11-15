@@ -68,6 +68,16 @@
       }
     }
 
+    /* prefers-reduced-motion: static row, scrollable sideways (view.js) */
+    &.is-static {
+      mask-image: none;
+      overflow-x: auto;
+
+      .swiper-wrapper {
+        transform: none !important;
+      }
+    }
+
     /* Hide controls in marquee */
     .swiper-controls {
       display: none;

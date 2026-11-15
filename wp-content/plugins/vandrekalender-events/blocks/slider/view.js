@@ -23,6 +23,9 @@ const ensureSwiperAvailable = () => {
   return true;
 };
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 /**
  * Behavior option builders
  */
@@ -46,10 +49,55 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
       const clone = slide.cloneNode(true);
       clone.classList.add('is-duplicate');
       clone.setAttribute('aria-hidden', 'true');
+      // Clones must not be reachable by keyboard: each link is tabbable once.
+      clone
+        .querySelectorAll(FOCUSABLE_SELECTOR)
+        .forEach(el => el.setAttribute('tabindex', '-1'));
       wrapper.appendChild(clone);
     });
     safety++;
   }
+
+  // prefers-reduced-motion: no movement. A static, scrollable row instead.
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    wrapper.querySelectorAll('.is-duplicate').forEach(n => n.remove());
+    ref.classList.add('is-static');
+    return null;
+  }
+
+  // Pause on hover and keyboard focus, resume when both are gone.
+  let hovered = false;
+  let focused = false;
+  const sync = () => {
+    const swiper = ref.swiper;
+    if (!swiper?.autoplay) return;
+    if (hovered || focused) {
+      // Freeze the track where it is: the running slide transition would
+      // otherwise keep moving until it ends.
+      swiper.autoplay.stop();
+      swiper.setTranslate(swiper.getTranslate());
+      swiper.setTransition(0);
+    } else if (!swiper.autoplay.running) {
+      swiper.autoplay.start();
+    }
+  };
+  ref.addEventListener('mouseenter', () => {
+    hovered = true;
+    sync();
+  });
+  ref.addEventListener('mouseleave', () => {
+    hovered = false;
+    sync();
+  });
+  ref.addEventListener('focusin', () => {
+    focused = true;
+    sync();
+  });
+  ref.addEventListener('focusout', event => {
+    if (event.relatedTarget && ref.contains(event.relatedTarget)) return;
+    focused = false;
+    sync();
+  });
 
   return {
     ...baseOptions,
