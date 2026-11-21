@@ -23,6 +23,9 @@ const ensureSwiperAvailable = () => {
   return true;
 };
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 /**
  * Behavior option builders
  */
@@ -37,6 +40,12 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
   const originals = Array.from(wrapper.children);
   if (originals.length === 0) return null;
 
+  // prefers-reduced-motion: no movement, no clones. A static, scrollable row.
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    ref.classList.add('is-static');
+    return null;
+  }
+
   // Duplicate slides until track >= 2x container width
   const targetWidth = ref.clientWidth * 2;
   let safety = 0;
@@ -46,10 +55,51 @@ const buildMarqueeOptions = (ref, baseOptions, ctx = {}) => {
       const clone = slide.cloneNode(true);
       clone.classList.add('is-duplicate');
       clone.setAttribute('aria-hidden', 'true');
+      // Clones must not be reachable by keyboard: each link is tabbable once.
+      clone
+        .querySelectorAll(FOCUSABLE_SELECTOR)
+        .forEach(el => el.setAttribute('tabindex', '-1'));
       wrapper.appendChild(clone);
     });
     safety++;
   }
+
+  // Pause on hover and keyboard focus, resume when both are gone.
+  let hovered = false;
+  let focused = false;
+  const sync = () => {
+    const swiper = ref.swiper;
+    if (!swiper?.autoplay) return;
+    if (hovered || focused) {
+      // Freeze the track where it is: the running slide transition would
+      // otherwise keep moving until it ends.
+      swiper.autoplay.stop();
+      swiper.setTranslate(swiper.getTranslate());
+      swiper.setTransition(0);
+    } else if (!swiper.autoplay.running) {
+      swiper.autoplay.start();
+    }
+  };
+  // Mouse only: a tap on touch fires mouseenter without a mouseleave.
+  ref.addEventListener('pointerenter', event => {
+    if (event.pointerType !== 'mouse') return;
+    hovered = true;
+    sync();
+  });
+  ref.addEventListener('pointerleave', event => {
+    if (event.pointerType !== 'mouse') return;
+    hovered = false;
+    sync();
+  });
+  ref.addEventListener('focusin', () => {
+    focused = true;
+    sync();
+  });
+  ref.addEventListener('focusout', event => {
+    if (event.relatedTarget && ref.contains(event.relatedTarget)) return;
+    focused = false;
+    sync();
+  });
 
   return {
     ...baseOptions,
