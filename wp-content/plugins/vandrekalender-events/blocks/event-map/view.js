@@ -88,7 +88,7 @@ function popupHtml(event, i18n) {
     ? i18n.free
     : event.price_from != null
       ? i18n.priceFrom.replace('%d', Math.round(event.price_from))
-      : '';
+      : i18n.priceUnknown;
   const meta = [date, dist, price].filter(Boolean).join(' · ');
 
   return `<div class="vk-map__popup">

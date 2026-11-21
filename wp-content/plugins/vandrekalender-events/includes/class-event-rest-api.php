@@ -233,18 +233,14 @@ class Vandrekalender_Event_Rest_Api {
 			$routes = is_array( $routes ) ? $routes : [];
 
 			$distances = [];
-			$prices    = [];
 			foreach ( $routes as $route ) {
 				if ( isset( $route['distance_km'] ) && '' !== $route['distance_km'] ) {
 					$distances[] = (float) $route['distance_km'];
 				}
-				if ( isset( $route['price'] ) && '' !== $route['price'] ) {
-					$prices[] = (float) $route['price'];
-				}
 			}
 
-			$price_from = ! empty( $prices ) ? min( $prices ) : null;
-			$is_free    = null === $price_from || 0.0 === (float) $price_from;
+			$price_from = self::cheapest_price( $routes );
+			$is_free    = 0.0 === $price_from;
 
 			if ( null !== $want_free && $is_free !== $want_free ) {
 				continue;
@@ -492,15 +488,13 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Whether an event is free, the rule for the free/paid filter and the cards:
-	 * free when no route records a real price, or the cheapest price is 0.
-	 * Public because server renders (the Event Cards block) reuse it.
+	 * The cheapest price recorded on any route. A route without a price
+	 * (empty or missing) records nothing: it is skipped, never counted as 0.
 	 *
-	 * @param int $post_id The event post ID.
-	 * @return bool
+	 * @param mixed $routes The event_routes meta value.
+	 * @return float|null The cheapest recorded price, or null when no route has one.
 	 */
-	public static function is_event_free( $post_id ) {
-		$routes = get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true );
+	public static function cheapest_price( $routes ) {
 		$prices = [];
 
 		foreach ( ( is_array( $routes ) ? $routes : [] ) as $route ) {
@@ -509,7 +503,22 @@ class Vandrekalender_Event_Rest_Api {
 			}
 		}
 
-		return empty( $prices ) || 0.0 === min( $prices );
+		return empty( $prices ) ? null : min( $prices );
+	}
+
+	/**
+	 * Whether an event is known to be free, the rule for the free/paid filter
+	 * and the cards: the cheapest recorded route price is 0. An event with no
+	 * recorded price is not free, its price is just unknown.
+	 * Public because server renders (the Event Cards block) reuse it.
+	 *
+	 * @param int $post_id The event post ID.
+	 * @return bool
+	 */
+	public static function is_event_free( $post_id ) {
+		$routes = get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true );
+
+		return 0.0 === self::cheapest_price( $routes );
 	}
 
 	/**
