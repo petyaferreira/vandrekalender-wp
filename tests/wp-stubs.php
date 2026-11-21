@@ -224,3 +224,45 @@ function wp_remote_head( string $url, array $args = [] ) { // phpcs:ignore Gener
 function wp_remote_retrieve_header( $response, string $header ): string {
 	return is_array( $response ) ? (string) ( $response['headers'][ strtolower( $header ) ] ?? '' ) : '';
 }
+
+/**
+ * Permalink of a post: a fixed event URL for the ids the tests use.
+ *
+ * @param int $post_id Post ID.
+ * @return string|false
+ */
+function get_permalink( int $post_id ) {
+	return $post_id > 0 ? 'https://example.test/begivenhed/test-event/' : false;
+}
+
+/**
+ * Home URL (as WordPress, for a path).
+ *
+ * @param string $path Path.
+ * @return string
+ */
+function home_url( string $path = '' ): string {
+	return 'https://example.test' . $path;
+}
+
+/**
+ * Add one query argument to a URL without a query string yet.
+ *
+ * @param string $key   Argument name.
+ * @param string $value Argument value.
+ * @param string $url   URL.
+ * @return string
+ */
+function add_query_arg( string $key, string $value, string $url ): string {
+	return $url . ( str_contains( $url, '?' ) ? '&' : '?' ) . rawurlencode( $key ) . '=' . rawurlencode( $value );
+}
+
+/**
+ * Login URL with a redirect_to argument.
+ *
+ * @param string $redirect Where to go after login.
+ * @return string
+ */
+function wp_login_url( string $redirect = '' ): string {
+	return 'https://example.test/wp-login.php' . ( '' !== $redirect ? '?redirect_to=' . rawurlencode( $redirect ) : '' );
+}
