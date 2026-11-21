@@ -27,6 +27,7 @@ require VANDREKALENDER_TEST_INCLUDES . '/class-wkt.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-breadcrumbs.php';
 require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser.php';
 require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser-walks.php';
+require VANDREKALENDER_TEST_INCLUDES . '/organiser/class-organiser-schema.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-municipalities.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
