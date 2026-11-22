@@ -129,10 +129,12 @@ class Vandrekalender_Scraper_DVL extends Vandrekalender_Scraper_Base {
 			$distance = $km > 0 ? (string) $km : '';
 		}
 
-		// Day walks carry a "Turen er gratis for medlemmer" note — price 0 keeps
-		// the derived free/paid state accurate. Pages without it (typically
-		// paid multi-day vandreferier) get no price rather than a wrong one.
-		$is_free = (bool) preg_match( '/Turen er gratis|gratis for medlemmer/iu', $html );
+		// Day walks carry a "Turen er gratis for medlemmer" note, and open walks
+		// say so in the title ("… – gratis for alle", #285) — price 0 keeps the
+		// derived free/paid state accurate. Pages with neither (typically paid
+		// multi-day vandreferier) get no price rather than a wrong one.
+		$is_free = preg_match( '/Turen er gratis|gratis for medlemmer/iu', $html )
+			|| preg_match( '/\bgratis\b/iu', $title );
 
 		$routes = [
 			[

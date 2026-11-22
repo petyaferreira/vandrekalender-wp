@@ -24,6 +24,14 @@ class Test_Scraper_DVL extends Vandrekalender_Scraper_DVL {
 	];
 
 	/**
+	 * Tour page URL → raw HTML, for a page a test builds itself. Checked
+	 * before $pages.
+	 *
+	 * @var array<string, string>
+	 */
+	public array $bodies = [];
+
+	/**
 	 * Fixture body for a known URL, '' otherwise (as remote_get() on failure).
 	 *
 	 * @param string $url     URL.
@@ -31,6 +39,10 @@ class Test_Scraper_DVL extends Vandrekalender_Scraper_DVL {
 	 * @return string
 	 */
 	protected function remote_get( string $url, array $headers = [] ): string {
+		if ( isset( $this->bodies[ $url ] ) ) {
+			return $this->bodies[ $url ];
+		}
+
 		return isset( $this->pages[ $url ] ) ? self::fixture( $this->pages[ $url ] ) : '';
 	}
 

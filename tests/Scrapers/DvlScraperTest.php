@@ -107,6 +107,32 @@ class DvlScraperTest extends TestCase {
 	}
 
 	/**
+	 * "Gratis" in the title makes the tour free even without the members'
+	 * note (#285); a page with neither gets no price.
+	 */
+	public function test_gratis_in_title_is_free(): void {
+		$free = 'https://dvl.dk/vandreture/ga-gront-gennem-byen-gratis-for-alle/';
+		$paid = 'https://dvl.dk/vandreture/vandreferie-i-harzen/';
+
+		$scraper         = new Test_Scraper_DVL();
+		$scraper->bodies = [
+			$free => '<meta property="og:title" content="Gå grønt gennem byen – gratis for alle - DVL" /><article><p>En tur i byen.</p></article>',
+			$paid => '<meta property="og:title" content="Vandreferie i Harzen - DVL" /><article><p>En uge i bjergene.</p></article>',
+		];
+
+		$feed   = (string) wp_json_encode(
+			[
+				[ 'A', '55.6', '12.5', '<a href="' . $free . '">Vis tur</a>' ],
+				[ 'B', '51.8', '10.6', '<a href="' . $paid . '">Vis tur</a>' ],
+			]
+		);
+		$events = array_column( $scraper->parse_feed( $feed ), null, Event::META_SOURCE_URL );
+
+		$this->assertSame( '0', $events[ $free ][ Event::META_ROUTES ][0]['price'] );
+		$this->assertSame( '', $events[ $paid ][ Event::META_ROUTES ][0]['price'] );
+	}
+
+	/**
 	 * A tour page that fails to load is skipped, not treated as removed.
 	 */
 	public function test_unreachable_tour_page_is_skipped_but_still_seen(): void {
