@@ -176,10 +176,11 @@ function set_transient( string $transient, $value, int $expiration = 0 ): bool {
  * JSON encode (WordPress adds a sanity check on top of json_encode()).
  *
  * @param mixed $value Value.
+ * @param int   $flags json_encode() flags.
  * @return string|false
  */
-function wp_json_encode( $value ) {
-	return json_encode( $value ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- this is the stand-in.
+function wp_json_encode( $value, int $flags = 0 ) {
+	return json_encode( $value, $flags ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- this is the stand-in.
 }
 
 /**

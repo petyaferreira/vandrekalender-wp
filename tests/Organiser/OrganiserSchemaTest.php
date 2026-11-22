@@ -199,4 +199,15 @@ class OrganiserSchemaTest extends TestCase {
 		$this->assertSame( 'https://a.dk/', Organiser_Schema::most_common_url( [ 'https://a.dk/', 'https://b.dk/' ] ) );
 		$this->assertSame( '', Organiser_Schema::most_common_url( [ 'nonsense', 'javascript:alert(1)', '' ] ) );
 	}
+
+	/**
+	 * Text from an editor cannot close the script block.
+	 */
+	public function test_json_cannot_close_script_tag(): void {
+		$json = Organiser_Schema::to_json( Organiser_Schema::build_graph( self::data( [ 'name' => 'A </script><script>alert(1)</script> & B' ] ) ) );
+
+		$this->assertStringNotContainsString( '</script>', $json );
+		$this->assertStringNotContainsString( '<', $json );
+		$this->assertStringContainsString( '\\u003C', $json );
+	}
 }

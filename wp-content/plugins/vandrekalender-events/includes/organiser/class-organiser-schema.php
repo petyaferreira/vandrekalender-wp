@@ -83,10 +83,8 @@ class Organiser_Schema {
 			return;
 		}
 
-		// wp_json_encode escapes correctly for a <script> context; running the
-		// result through esc_html()/wp_kses() would corrupt the JSON.
 		echo '<script type="application/ld+json">'
-			. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode escapes for a script context; further escaping breaks the JSON.
+			. self::to_json( $graph ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped for a script context by to_json(); further escaping breaks the JSON.
 			. '</script>' . "\n";
 	}
 
@@ -120,6 +118,19 @@ class Organiser_Schema {
 		}
 
 		return $urls;
+	}
+
+	/**
+	 * The graph as JSON for a <script> tag. JSON_HEX_TAG and JSON_HEX_AMP turn
+	 * < > & into \u003C \u003E \u0026, so text written by an editor cannot
+	 * close the script block. Running the result through esc_html()/wp_kses()
+	 * would corrupt the JSON.
+	 *
+	 * @param array<string,mixed> $graph The schema.
+	 * @return string
+	 */
+	public static function to_json( array $graph ): string {
+		return (string) wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP );
 	}
 
 	/**
