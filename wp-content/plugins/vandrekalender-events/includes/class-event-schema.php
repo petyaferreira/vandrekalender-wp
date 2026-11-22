@@ -304,15 +304,9 @@ class Vandrekalender_Event_Schema {
 	 * @return array
 	 */
 	private function build_offers( int $post_id, array $meta, array $routes, string $status ): array {
-		$prices = [];
+		$price = Vandrekalender_Event_Rest_Api::cheapest_price( $routes );
 
-		foreach ( $routes as $route ) {
-			if ( isset( $route['price'] ) && '' !== (string) $route['price'] && is_numeric( $route['price'] ) ) {
-				$prices[] = (float) $route['price'];
-			}
-		}
-
-		if ( empty( $prices ) ) {
+		if ( null === $price ) {
 			return [];
 		}
 
@@ -321,7 +315,7 @@ class Vandrekalender_Event_Schema {
 
 		$offer = [
 			'@type'         => 'Offer',
-			'price'         => rtrim( rtrim( sprintf( '%.2f', min( $prices ) ), '0' ), '.' ),
+			'price'         => rtrim( rtrim( sprintf( '%.2f', $price ), '0' ), '.' ),
 			'priceCurrency' => 'DKK',
 		];
 

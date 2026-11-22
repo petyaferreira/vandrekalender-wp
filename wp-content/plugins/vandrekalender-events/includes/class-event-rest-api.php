@@ -488,8 +488,9 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * The cheapest price recorded on any route. A route without a price
-	 * (empty or missing) records nothing: it is skipped, never counted as 0.
+	 * The cheapest price recorded on any route. A route without a numeric
+	 * price (empty, missing or text such as "gratis") records nothing: it is
+	 * skipped, never counted as 0. The JSON-LD offers use the same rule.
 	 *
 	 * @param mixed $routes The event_routes meta value.
 	 * @return float|null The cheapest recorded price, or null when no route has one.
@@ -498,7 +499,7 @@ class Vandrekalender_Event_Rest_Api {
 		$prices = [];
 
 		foreach ( ( is_array( $routes ) ? $routes : [] ) as $route ) {
-			if ( isset( $route['price'] ) && '' !== $route['price'] ) {
+			if ( isset( $route['price'] ) && is_numeric( $route['price'] ) ) {
 				$prices[] = (float) $route['price'];
 			}
 		}

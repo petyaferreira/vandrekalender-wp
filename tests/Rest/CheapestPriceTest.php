@@ -29,6 +29,17 @@ class CheapestPriceTest extends TestCase {
 	}
 
 	/**
+	 * A non-numeric price is unknown, not free (#284), and a numeric price
+	 * stored as a number counts like one stored as a string.
+	 */
+	public function test_non_numeric_price_is_unknown(): void {
+		$this->assertNull( Vandrekalender_Event_Rest_Api::cheapest_price( [ [ 'price' => 'gratis' ] ] ) );
+		$this->assertNull( Vandrekalender_Event_Rest_Api::cheapest_price( [ [ 'price' => null ] ] ) );
+		$this->assertSame( 150.0, Vandrekalender_Event_Rest_Api::cheapest_price( [ [ 'price' => 'gratis' ], [ 'price' => 150 ] ] ) );
+		$this->assertFalse( Vandrekalender_Event_Rest_Api::has_price_amount( [ [ 'price' => 'gratis' ] ] ) );
+	}
+
+	/**
 	 * An explicit price of 0 is free.
 	 */
 	public function test_zero_price_is_free(): void {
