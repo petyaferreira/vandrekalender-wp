@@ -507,6 +507,20 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
+	 * Whether the cheapest recorded price is an amount above 0, the case
+	 * where "per participant" belongs after it. "Free" and "Price not listed"
+	 * stand alone.
+	 *
+	 * @param mixed $routes The event_routes meta value, or one route in an array.
+	 * @return bool
+	 */
+	public static function has_price_amount( $routes ) {
+		$price = self::cheapest_price( $routes );
+
+		return null !== $price && $price > 0.0;
+	}
+
+	/**
 	 * Whether an event is known to be free, the rule for the free/paid filter
 	 * and the cards: the cheapest recorded route price is 0. An event with no
 	 * recorded price is not free, its price is just unknown.

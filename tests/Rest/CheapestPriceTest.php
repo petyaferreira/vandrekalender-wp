@@ -49,4 +49,14 @@ class CheapestPriceTest extends TestCase {
 		$routes[] = [ 'price' => '0' ];
 		$this->assertSame( 0.0, Vandrekalender_Event_Rest_Api::cheapest_price( $routes ) );
 	}
+
+	/**
+	 * "per participant" only follows an amount: not after Free or an unknown price.
+	 */
+	public function test_has_price_amount_only_above_zero(): void {
+		$this->assertTrue( Vandrekalender_Event_Rest_Api::has_price_amount( [ [ 'price' => '150' ] ] ) );
+		$this->assertFalse( Vandrekalender_Event_Rest_Api::has_price_amount( [ [ 'price' => '0' ] ] ) );
+		$this->assertFalse( Vandrekalender_Event_Rest_Api::has_price_amount( [ [ 'price' => '' ] ] ) );
+		$this->assertFalse( Vandrekalender_Event_Rest_Api::has_price_amount( [ [ 'distance_km' => '10' ] ] ) );
+	}
 }

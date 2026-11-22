@@ -187,7 +187,8 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 	<?php if ( $vk_routes ) : ?>
 		<div class="vk-info-card__price">
 			<span data-vk-info-field="price"><?php echo esc_html( $vk_format_price( $vk_first_route ) ); ?></span>
-			<span class="vk-info-card__price-unit"><?php esc_html_e( 'per participant', 'vandrekalender-events' ); ?></span>
+			<?php // "per participant" only follows an amount, never "Free" or "Price not listed". ?>
+			<span class="vk-info-card__price-unit" data-vk-info-field="price-unit"<?php echo Vandrekalender_Event_Rest_Api::has_price_amount( [ $vk_first_route ] ) ? '' : ' hidden'; ?>><?php esc_html_e( 'per participant', 'vandrekalender-events' ); ?></span>
 		</div>
 	<?php endif; ?>
 
@@ -200,6 +201,7 @@ if ( $vk_joinable && ! $vk_is_organiser ) {
 					class="vk-info-card__tab<?php echo 0 === $vk_key ? ' vk-info-card__tab--active' : ''; ?>"
 					aria-selected="<?php echo 0 === $vk_key ? 'true' : 'false'; ?>"
 					data-vk-price="<?php echo esc_attr( $vk_format_price( $vk_route ) ); ?>"
+					data-vk-price-unit="<?php echo Vandrekalender_Event_Rest_Api::has_price_amount( [ $vk_route ] ) ? 'true' : 'false'; ?>"
 					data-vk-start-time="<?php echo esc_attr( $vk_format_start_time( $vk_route ) ); ?>"
 					data-vk-cutoff="<?php echo esc_attr( $vk_format_cutoff( $vk_route ) ); ?>"
 					data-vk-route-id="<?php echo esc_attr( $vk_route['id'] ?? '' ); ?>"
