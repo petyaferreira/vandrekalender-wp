@@ -26,6 +26,7 @@ function initInfoCard(root) {
   }
 
   const price = root.querySelector('[data-vk-info-field="price"]');
+  const priceUnit = root.querySelector('[data-vk-info-field="price-unit"]');
   const startTime = root.querySelector('[data-vk-info-field="start-time"]');
   const cutoff = root.querySelector('[data-vk-info-field="cutoff"]');
   const gpxRow = root.querySelector('[data-vk-gpx-row]');
@@ -40,6 +41,9 @@ function initInfoCard(root) {
 
       if (price) {
         price.textContent = tab.dataset.vkPrice;
+      }
+      if (priceUnit) {
+        priceUnit.hidden = tab.dataset.vkPriceUnit !== 'true';
       }
       if (startTime) {
         startTime.textContent = tab.dataset.vkStartTime;

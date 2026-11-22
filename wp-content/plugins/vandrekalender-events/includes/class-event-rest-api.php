@@ -233,18 +233,14 @@ class Vandrekalender_Event_Rest_Api {
 			$routes = is_array( $routes ) ? $routes : [];
 
 			$distances = [];
-			$prices    = [];
 			foreach ( $routes as $route ) {
 				if ( isset( $route['distance_km'] ) && '' !== $route['distance_km'] ) {
 					$distances[] = (float) $route['distance_km'];
 				}
-				if ( isset( $route['price'] ) && '' !== $route['price'] ) {
-					$prices[] = (float) $route['price'];
-				}
 			}
 
-			$price_from = ! empty( $prices ) ? min( $prices ) : null;
-			$is_free    = null === $price_from || 0.0 === (float) $price_from;
+			$price_from = self::cheapest_price( $routes );
+			$is_free    = 0.0 === $price_from;
 
 			if ( null !== $want_free && $is_free !== $want_free ) {
 				continue;
@@ -492,8 +488,43 @@ class Vandrekalender_Event_Rest_Api {
 	}
 
 	/**
-	 * Whether an event is free, the rule for the free/paid filter and the cards:
-	 * free when no route records a real price, or the cheapest price is 0.
+	 * The cheapest price recorded on any route. A route without a numeric
+	 * price (empty, missing or text such as "gratis") records nothing: it is
+	 * skipped, never counted as 0. The JSON-LD offers use the same rule.
+	 *
+	 * @param mixed $routes The event_routes meta value.
+	 * @return float|null The cheapest recorded price, or null when no route has one.
+	 */
+	public static function cheapest_price( $routes ) {
+		$prices = [];
+
+		foreach ( ( is_array( $routes ) ? $routes : [] ) as $route ) {
+			if ( isset( $route['price'] ) && is_numeric( $route['price'] ) ) {
+				$prices[] = (float) $route['price'];
+			}
+		}
+
+		return empty( $prices ) ? null : min( $prices );
+	}
+
+	/**
+	 * Whether the cheapest recorded price is an amount above 0, the case
+	 * where "per participant" belongs after it. "Free" and "Price not listed"
+	 * stand alone.
+	 *
+	 * @param mixed $routes The event_routes meta value, or one route in an array.
+	 * @return bool
+	 */
+	public static function has_price_amount( $routes ) {
+		$price = self::cheapest_price( $routes );
+
+		return null !== $price && $price > 0.0;
+	}
+
+	/**
+	 * Whether an event is known to be free, the rule for the free/paid filter
+	 * and the cards: the cheapest recorded route price is 0. An event with no
+	 * recorded price is not free, its price is just unknown.
 	 * Public because server renders (the Event Cards block) reuse it.
 	 *
 	 * @param int $post_id The event post ID.
@@ -501,15 +532,8 @@ class Vandrekalender_Event_Rest_Api {
 	 */
 	public static function is_event_free( $post_id ) {
 		$routes = get_post_meta( $post_id, \Vandrekalender\Event::META_ROUTES, true );
-		$prices = [];
 
-		foreach ( ( is_array( $routes ) ? $routes : [] ) as $route ) {
-			if ( isset( $route['price'] ) && '' !== $route['price'] ) {
-				$prices[] = (float) $route['price'];
-			}
-		}
-
-		return empty( $prices ) || 0.0 === min( $prices );
+		return 0.0 === self::cheapest_price( $routes );
 	}
 
 	/**

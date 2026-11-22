@@ -191,6 +191,14 @@ msgstr "Fra dato"
 msgid "To date"
 msgstr "Til dato"
 
+#: blocks/event-cards/render.php:113 blocks/event-info-card/render.php:68
+#: blocks/event-map/render.php:44
+#: build/blocks/event-cards/render.php:113
+#: build/blocks/event-info-card/render.php:68
+#: build/blocks/event-map/render.php:44
+msgid "Price not listed"
+msgstr "Pris ikke oplyst"
+
 #: blocks/event-filters/render.php:120
 #: build/blocks/event-filters/render.php:120
 msgid "Free only"

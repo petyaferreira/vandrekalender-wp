@@ -87,7 +87,7 @@ Some fields are present but embedded in free text rather than structured element
 | `event_routes[].distance_km` | Regex on title/description | `"15 km"` / `"15km"` / `"15 kilometer"` → `15.0` |
 | `event_routes[].start_time` | Regex | `"kl. 09:00"` / `"09.00"` / `"kl 9"` |
 | `event_routes[].cutoff_time` | Regex | Stated cut-off / max duration where present |
-| `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value |
+| `event_routes[].price` | Keyword / amount | `"gratis"` / `"free"` → `0`; a DKK amount → that value; nothing found → empty (shown as "Pris ikke oplyst", never as free) |
 | `event_address` → `event_lat` / `event_lng` / `event_municipality` | **Adressevælger** lookup | The geocoder searches the extracted address string, looks the chosen house number up, and returns coordinates **and** municipality. Same provider as manual event entry in the editor |
 
 The free/paid state (`is_free`) and the `event_length` taxonomy are **not scraped** — `is_free` is computed at read time from `event_routes` prices and `event_length` is auto-assigned on save from route distances, the same as for manually created events. The scraper only needs to populate `event_routes` correctly; the save hook handles `event_length` and nothing needs to store `is_free`.
