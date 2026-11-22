@@ -66,7 +66,7 @@ class Organiser_Schema {
 				'url'           => (string) get_permalink( $post_id ),
 				'description'   => self::description(
 					(string) get_post_meta( $post_id, 'rank_math_description', true ),
-					(string) get_the_excerpt( $post_id ),
+					$post ? (string) $post->post_excerpt : '',
 					$post ? (string) $post->post_content : ''
 				),
 				'image'         => self::first_image_url( $post ? (string) $post->post_content : '' ),
@@ -262,11 +262,17 @@ class Organiser_Schema {
 
 	/**
 	 * The description: Rank Math's (what the search snippet shows), else the
-	 * excerpt, else the first paragraph of the content. A Rank Math text with
-	 * variables (%…%) is not the final text, so it does not count.
+	 * excerpt, else the first paragraph of the "Om …" text. A Rank Math text
+	 * with variables (%…%) is not the final text, so it does not count.
+	 *
+	 * The excerpt is the one written by hand: WordPress's generated excerpt
+	 * is the start of the whole page, headings and walk count included. The
+	 * "Om …" text is the intro column of the FAQ pattern (vk-faq__intro, or
+	 * vk-organiser-about__intro on pages made before #259); the first
+	 * paragraph of the content is the walk count, not a description.
 	 *
 	 * @param string $rank_math Post meta rank_math_description.
-	 * @param string $excerpt   Post excerpt.
+	 * @param string $excerpt   Post excerpt as saved (post_excerpt).
 	 * @param string $content   Post content (block markup).
 	 * @return string
 	 */
@@ -281,7 +287,7 @@ class Organiser_Schema {
 			return $excerpt;
 		}
 
-		if ( preg_match( '#<p\b[^>]*>(.*?)</p>#su', $content, $match ) ) {
+		if ( preg_match( '#\b(?:vk-faq__intro|vk-organiser-about__intro)\b.*?<p\b[^>]*>(.*?)</p>#su', $content, $match ) ) {
 			return self::plain( $match[1] );
 		}
 
