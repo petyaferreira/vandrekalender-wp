@@ -9,7 +9,7 @@
         "build": "wp-scripts build"
     },
     "devDependencies": {
-        "@wordpress/scripts": "^37.0.0"
+        "@wordpress/scripts": "^37.1.0"
     },
     "overrides": {
         "serialize-javascript": "^7.1.3",
