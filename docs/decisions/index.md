@@ -21,6 +21,7 @@ Decisions already taken, so nobody proposes the opposite again without knowing w
 | [0015](0015-past-walks-page-is-a-page.md) | The past walks page `/tidligere-vandreture/` is a normal page built from a block and a pattern, not a route and template in code | 28 Oct 2026 |
 | [0016](0016-dependabot-pr-summary-read-only.md) | Dependabot PRs get a two-line summary from a read-only Claude; the workflow posts it | 3 Nov 2026 |
 | [0017](0017-interactivity-api-for-frontend.md) | Frontend behaviour uses the Interactivity API; plain JS only for self-contained widgets | 2 Nov 2026 |
+| [0018](0018-past-walks-archived-then-purged.md) | Old walks are archived after 12 months (410, unless "Behold") and deleted 3 years later with files nothing else uses | 10 Nov 2026 |
 
 ## Format
 
