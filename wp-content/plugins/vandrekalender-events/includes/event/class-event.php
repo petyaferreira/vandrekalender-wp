@@ -45,6 +45,10 @@ class Event {
 	public const META_ORGANISER_NAME       = 'event_organiser_name';
 	public const META_ORGANISER_URL        = 'event_organiser_url';
 	public const META_ORGANISER_EMAIL      = 'event_organiser_email';
+	public const META_KEEP                 = 'event_keep';
+
+	// Query param of the "Due for removal" filter in the events list.
+	public const DUE_FOR_REMOVAL_PARAM = 'due_for_removal';
 
 	// Source / scraping meta.
 	public const META_SOURCE      = 'event_source';
@@ -76,6 +80,10 @@ class Event {
 		add_action( 'init', [ $this, 'register_blocks' ] );
 		add_filter( 'block_categories_all', [ $this, 'register_block_category' ] );
 		add_action( 'restrict_manage_posts', [ $this, 'render_organiser_filter' ] );
+		add_action( 'restrict_manage_posts', [ $this, 'render_due_for_removal_filter' ] );
+		add_action( 'pre_get_posts', [ $this, 'filter_due_for_removal' ] );
+		add_filter( 'manage_' . self::CUSTOMPOSTTYPE . '_posts_columns', [ $this, 'add_keep_column' ] );
+		add_action( 'manage_' . self::CUSTOMPOSTTYPE . '_posts_custom_column', [ $this, 'render_keep_column' ], 10, 2 );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_organiser_email_in_rest' ], 10, 2 );
 		add_filter( 'rest_prepare_' . self::CUSTOMPOSTTYPE, [ $this, 'hide_gpx_source_url_in_rest' ], 10, 3 );
 		// Hook directly into meta saves — fires at the exact moment each value is
@@ -257,6 +265,18 @@ class Event {
 		register_post_meta(
 			self::CUSTOMPOSTTYPE,
 			self::META_LOCATION_APPROXIMATE,
+			[
+				'type'         => 'boolean',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => false,
+			]
+		);
+
+		// "Behold": the walk is never archived automatically (#37).
+		register_post_meta(
+			self::CUSTOMPOSTTYPE,
+			self::META_KEEP,
 			[
 				'type'         => 'boolean',
 				'single'       => true,
@@ -825,6 +845,98 @@ class Event {
 				'orderby'         => 'name',
 			]
 		);
+	}
+
+	/**
+	 * Adds the "Behold" column to the events list.
+	 *
+	 * @param array<string,string> $columns Columns by key.
+	 * @return array<string,string>
+	 */
+	public function add_keep_column( array $columns ): array {
+		$columns[ self::META_KEEP ] = __( 'Keep', 'vandrekalender-events' );
+		return $columns;
+	}
+
+	/**
+	 * Prints ✓ in the "Behold" column of a kept walk.
+	 *
+	 * @param string $column  Column key.
+	 * @param int    $post_id Event ID.
+	 * @return void
+	 */
+	public function render_keep_column( string $column, int $post_id ): void {
+		if ( self::META_KEEP === $column && get_post_meta( $post_id, self::META_KEEP, true ) ) {
+			echo '<span aria-label="' . esc_attr__( 'Keep', 'vandrekalender-events' ) . '">&#10003;</span>';
+		}
+	}
+
+	/**
+	 * The "Due for removal" checkbox next to the list filters.
+	 *
+	 * @param string $post_type Post type of the list.
+	 * @return void
+	 */
+	public function render_due_for_removal_filter( string $post_type ): void {
+		if ( self::CUSTOMPOSTTYPE !== $post_type ) {
+			return;
+		}
+
+		$checked = ! empty( $_GET[ self::DUE_FOR_REMOVAL_PARAM ] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filter.
+		printf(
+			'<label><input type="checkbox" name="%1$s" value="1" %2$s> %3$s</label>',
+			esc_attr( self::DUE_FOR_REMOVAL_PARAM ),
+			checked( $checked, true, false ),
+			esc_html__( 'Due for removal', 'vandrekalender-events' )
+		);
+	}
+
+	/**
+	 * Limits the events list to walks due for removal when the filter is on.
+	 *
+	 * @param \WP_Query $query The query.
+	 * @return void
+	 */
+	public function filter_due_for_removal( $query ): void {
+		if ( ! is_admin() || ! $query->is_main_query() || self::CUSTOMPOSTTYPE !== $query->get( 'post_type' ) || empty( $_GET[ self::DUE_FOR_REMOVAL_PARAM ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filter.
+			return;
+		}
+
+		$meta_query   = (array) $query->get( 'meta_query' );
+		$meta_query[] = self::due_for_removal_meta_query( \Vandrekalender_Past_Walks::retention_cutoff( current_time( 'Y-m-d' ) ) );
+		$query->set( 'meta_query', $meta_query );
+		$query->set( 'post_status', 'publish' );
+	}
+
+	/**
+	 * The meta query for walks due for removal: dated before $cutoff and not
+	 * kept.
+	 *
+	 * @param string $cutoff Vandrekalender_Past_Walks::retention_cutoff().
+	 * @return array<int|string,mixed>
+	 */
+	public static function due_for_removal_meta_query( string $cutoff ): array {
+		return [
+			'relation' => 'AND',
+			[
+				'key'     => self::META_DATE,
+				'value'   => $cutoff,
+				'compare' => '<',
+				'type'    => 'DATE',
+			],
+			[
+				'relation' => 'OR',
+				[
+					'key'     => self::META_KEEP,
+					'compare' => 'NOT EXISTS',
+				],
+				[
+					'key'     => self::META_KEEP,
+					'value'   => [ '', '0' ],
+					'compare' => 'IN',
+				],
+			],
+		];
 	}
 
 	/**

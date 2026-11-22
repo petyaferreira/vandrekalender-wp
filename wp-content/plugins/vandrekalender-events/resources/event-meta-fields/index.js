@@ -8,6 +8,7 @@ import {
   Flex,
   Icon,
   SelectControl,
+  CheckboxControl,
   TextControl,
   DatePicker,
   Modal,
@@ -992,6 +993,26 @@ const OrganiserPanel = ({ meta, setMeta }) => {
   );
 };
 
+const KeepPanel = ({ meta, setMeta }) => (
+  <PluginDocumentSettingPanel
+    name="vandrekalender-keep"
+    title={__('Keep', 'vandrekalender-events')}
+    className="vandrekalender-keep"
+    initialOpen={false}
+  >
+    <CheckboxControl
+      label={__('Keep', 'vandrekalender-events')}
+      help={__(
+        'Do not archive this walk automatically',
+        'vandrekalender-events'
+      )}
+      checked={!!meta.event_keep}
+      onChange={value => setMeta({ event_keep: value })}
+      __nextHasNoMarginBottom
+    />
+  </PluginDocumentSettingPanel>
+);
+
 // ── Root component ────────────────────────────────────────────────────────────
 
 const EventDocumentFields = () => {
@@ -1015,6 +1036,7 @@ const EventDocumentFields = () => {
       <EventDetailsPanel meta={meta} setMeta={setMeta} />
       <LocationPanel meta={meta} setMeta={setMeta} />
       <OrganiserPanel meta={meta} setMeta={setMeta} />
+      <KeepPanel meta={meta} setMeta={setMeta} />
     </>
   );
 };

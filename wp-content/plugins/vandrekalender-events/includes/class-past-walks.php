@@ -105,9 +105,21 @@ class Vandrekalender_Past_Walks {
 		$day = new DateTimeImmutable( $today );
 
 		return [
-			'from' => $day->modify( '-' . self::RETENTION_MONTHS . ' months' )->format( 'Y-m-d' ),
+			'from' => self::retention_cutoff( $today ),
 			'to'   => $day->modify( '-1 day' )->format( 'Y-m-d' ),
 		];
+	}
+
+	/**
+	 * The oldest date still kept: RETENTION_MONTHS months before $today.
+	 * Walks dated before it are due for removal (#37), and window() starts
+	 * here, so the list page, the admin filter and the job agree.
+	 *
+	 * @param string $today Today as Y-m-d.
+	 * @return string Y-m-d.
+	 */
+	public static function retention_cutoff( string $today ): string {
+		return ( new DateTimeImmutable( $today ) )->modify( '-' . self::RETENTION_MONTHS . ' months' )->format( 'Y-m-d' );
 	}
 
 	/**
