@@ -164,16 +164,24 @@ class OrganiserSchemaTest extends TestCase {
 	}
 
 	/**
-	 * The description is Rank Math's, then the excerpt, then the first paragraph.
+	 * The description is Rank Math's, then the excerpt, then the first
+	 * paragraph of the "Om …" text (never the walk count above it).
 	 */
 	public function test_description_fallbacks(): void {
-		$content = "<!-- wp:paragraph -->\n<p>Første <strong>afsnit</strong> &amp; mere.</p>\n<!-- /wp:paragraph -->\n<p>Andet.</p>";
+		$content = '<!-- wp:paragraph --><p>[vk_filtered_count] ture</p><!-- /wp:paragraph -->'
+			. '<!-- wp:column {"className":"vk-faq__intro"} --><div class="wp-block-column vk-faq__intro">'
+			. '<!-- wp:heading --><h2 class="wp-block-heading">Om arrangøren</h2><!-- /wp:heading -->'
+			. "<!-- wp:paragraph -->\n<p>Første <strong>afsnit</strong> &amp; mere.</p>\n<!-- /wp:paragraph -->\n<p>Andet.</p>";
 
 		$this->assertSame( 'Rank Math tekst', Organiser_Schema::description( ' Rank Math tekst ', 'Uddrag', $content ) );
 		$this->assertSame( 'Uddrag', Organiser_Schema::description( '', 'Uddrag', $content ) );
 		$this->assertSame( 'Uddrag', Organiser_Schema::description( '%excerpt% | %sitename%', 'Uddrag', $content ) );
 		$this->assertSame( 'Første afsnit & mere.', Organiser_Schema::description( '', '', $content ) );
-		$this->assertSame( '', Organiser_Schema::description( '', '', 'Ingen afsnit' ) );
+		$this->assertSame(
+			'Første afsnit & mere.',
+			Organiser_Schema::description( '', '', str_replace( 'vk-faq__intro', 'vk-organiser-about__intro', $content ) )
+		);
+		$this->assertSame( '', Organiser_Schema::description( '', '', '<p>[vk_filtered_count] ture</p><p>Ingen Om-tekst</p>' ) );
 	}
 
 	/**
