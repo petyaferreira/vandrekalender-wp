@@ -15,7 +15,7 @@ Vandrekalender.dk is a single-page-primary site where the homepage is the primar
 | URL | Purpose |
 |---|---|
 | `/` | Homepage — hero, search, filters, calendar/list/map tabs (all real-time filtered) |
-| `/begivenhed/[slug]` | Single event detail page |
+| `/begivenhed/[slug]` | Single event detail page. An archived walk answers 410 Gone, or 301 to the next occurrence of its series ([data-model.md](data-model.md#custom-post-type-event)), and is left out of `/wp-sitemap*.xml` |
 | `/tidligere-vandreture/` | Past walks of the last 12 months, newest first, grouped by month, 10 more with each "Vis flere ture" (`?side=2`, noindex), with the calendar's filters (`?region=`, `?organiser=`, `?length=`, `?date_from=`, `?date_to=`, `?is_free=`, noindex). A normal page (Event Filters set to Past, the Past Walks block and a call-to-action pattern), created once per site. Linked from past events and organiser pages. See [frontend.md](frontend.md#past-walks-page) |
 | `/om` | About page — site mission, how it works, membership info |
 | `/kontakt` | Contact form |
@@ -60,7 +60,7 @@ Users with the "Event Author" role access these WordPress native pages. There ar
 |---|---|---|
 | `/wp-admin` | WordPress dashboard | Administrators only |
 | `/wp-admin/post-new.php?post_type=event` | Manage all events | Administrators only |
-| `/wp-admin/edit.php?post_type=event` | Event list with approval/removal | Administrators only |
+| `/wp-admin/edit.php?post_type=event` | Event list with approval/removal; "Arkiveret (n)" lists archived walks, with "Gendan" to publish one again | Administrators only |
 | `/wp-admin/edit-tags.php?taxonomy=event_organiser&post_type=event` | Manage organisers | Administrators only |
 
 ---

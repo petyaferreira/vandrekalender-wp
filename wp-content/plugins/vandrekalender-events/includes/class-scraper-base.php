@@ -235,6 +235,18 @@ abstract class Vandrekalender_Scraper_Base {
 			if ( $claimed ) {
 				return false;
 			}
+
+			// 'any' finds archived walks too (exclude_from_search is false
+			// for the status). One still older than the retention cutoff
+			// stays archived; one dated inside the window is updated and
+			// published below like any other walk.
+			if ( Vandrekalender_Archived_Walks::scraper_keeps_archived(
+				$existing[0]->post_status,
+				(string) ( $event[ \Vandrekalender\Event::META_DATE ] ?? '' ),
+				current_time( 'Y-m-d' )
+			) ) {
+				return false;
+			}
 		}
 
 		$author_id = $this->get_scraper_author_id();

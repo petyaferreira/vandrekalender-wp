@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-11-23T10:54:05+00:00\n"
+"POT-Creation-Date: 2026-11-23T11:14:29+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -330,7 +330,7 @@ msgstr "Du er arrangør af denne tur"
 
 #: blocks/event-info-card/render.php:290
 #: build/blocks/event-info-card/render.php:290
-#: includes/class-event-past-events.php:283
+#: includes/class-event-past-events.php:372
 msgid "This walk has taken place."
 msgstr "Denne tur har fundet sted."
 
@@ -544,6 +544,37 @@ msgstr "Næste slide"
 msgid "Tab"
 msgstr "Faneblad"
 
+#: includes/class-archived-walks.php:68
+msgctxt "post status"
+msgid "Archived"
+msgstr "Arkiveret"
+
+#. translators: %s: number of archived walks.
+#: includes/class-archived-walks.php:70
+#, php-format
+msgid "Archived <span class=\"count\">(%s)</span>"
+msgid_plural "Archived <span class=\"count\">(%s)</span>"
+msgstr[0] "Arkiveret <span class=\"count\">(%s)</span>"
+msgstr[1] "Arkiveret <span class=\"count\">(%s)</span>"
+
+#: includes/class-archived-walks.php:139
+msgid "Restore"
+msgstr "Gendan"
+
+#: includes/class-archived-walks.php:156
+msgid "You are not allowed to restore this walk."
+msgstr "Du har ikke tilladelse til at gendanne denne tur."
+
+#: includes/class-archived-walks.php:161
+msgid "This walk is not archived."
+msgstr "Denne tur er ikke arkiveret."
+
+#. translators: %s: walk title.
+#: includes/class-archived-walks.php:217
+#, php-format
+msgid "\"%s\" is published again."
+msgstr "“%s” er udgivet igen."
+
 #: includes/class-author-dashboard.php:118
 msgid "Vandrekalender"
 msgstr ""
@@ -720,11 +751,11 @@ msgid "You are the organiser of this event."
 msgstr "Du er arrangør af denne tur."
 
 #
-#: includes/class-event-past-events.php:288
+#: includes/class-event-past-events.php:377
 msgid "See all past walks"
 msgstr "Se alle tidligere vandreture"
 
-#: includes/class-event-past-events.php:293
+#: includes/class-event-past-events.php:382
 msgid "Upcoming walks nearby"
 msgstr "Kommende vandreture i nærheden"
 
@@ -1068,13 +1099,13 @@ msgid "The source loaded, but no events were found in it. Its site may have chan
 msgstr "Kilden blev hentet, men der blev ikke fundet nogen begivenheder i den. Siden kan være ændret."
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:485
+#: includes/class-scraper-base.php:497
 #, php-format
 msgid "Could not download the GPX file %1$s: %2$s"
 msgstr "Kunne ikke hente GPX-filen %1$s: %2$s"
 
 #. translators: 1: GPX file URL, 2: error message.
-#: includes/class-scraper-base.php:508
+#: includes/class-scraper-base.php:520
 #, php-format
 msgid "Could not add the GPX file %1$s: %2$s"
 msgstr "Kunne ikke tilføje GPX-filen %1$s: %2$s"
