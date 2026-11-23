@@ -19,8 +19,10 @@ class Test_Scraper_DVL extends Vandrekalender_Scraper_DVL {
 	 * @var array<string, string>
 	 */
 	public array $pages = [
-		'https://dvl.dk/vandreture/saeby/' => 'saeby.html',
-		'https://dvl.dk/vandreture/ud-i-det-blaa-i-svanninge-bakker-og-bjerge/' => 'ud-i-det-blaa-i-svanninge-bakker-og-bjerge.html',
+		'https://www.dvl.dk/ture/7820e612-4486-5a42-a62f-33251b94171e/lunteholdets-mandagstur' => 'lunteholdets-mandagstur.html',
+		'https://www.dvl.dk/ture/da249383-7e71-5392-ab20-fc04ad6b69eb/gaa-groent-gennem-byen-fra-carlsberg-st-til-broenshoej-torv-gratis-for-alle' => 'gaa-groent-gennem-byen-fra-carlsberg-st-til-broenshoej-torv-gratis-for-alle.html',
+		'https://www.dvl.dk/ture/db0b7694-0274-5eb1-96c6-f039fb3de826/dragefestival-paa-fanoe' => 'dragefestival-paa-fanoe.html',
+		'https://www.dvl.dk/ture/6a8de1cf-6798-56aa-9d6c-dced38284060/efter-pinsetur-2027-til-esbjerg-og-fanoe-turen-er-fuldtegnet-venteliste-oprettes' => 'efter-pinsetur.html',
 	];
 
 	/**
@@ -45,13 +47,13 @@ class Test_Scraper_DVL extends Vandrekalender_Scraper_DVL {
 	}
 
 	/**
-	 * Parse a feed body.
+	 * Parse a tour search page.
 	 *
-	 * @param string $json Feed body.
+	 * @param string $html Search page HTML.
 	 * @return array
 	 */
-	public function parse_feed( string $json ): array {
-		return $this->parse( $json );
+	public function parse_list( string $html ): array {
+		return $this->parse( $html );
 	}
 
 	/**
