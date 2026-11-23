@@ -27,7 +27,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * Adressevælger has no reverse geocoding, so reverse() and
  * municipality_from_coords() ask Datafordeler's DAR register (GraphQL, API
- * key in VANDREKALENDER_DATAFORDELER_API_KEY) for the nearest address point.
+ * key in VANDREKALENDER_DATAFORDELER_API_KEY) for the nearest address point,
+ * and its DAGI register for that address's municipality code.
  * There is no place-name search ("Stevns Klint"); see docs/history/dawa-migration-plan.md
  * → Place names.
  *
@@ -426,8 +427,11 @@ class Vandrekalender_Geocoder {
 	 *
 	 * Adressevælger has no reverse lookup, so this asks Datafordeler's DAR
 	 * register for the address points inside a small square around the
-	 * point (widening it when empty), takes the nearest, and looks its house
-	 * number up in Adressevælger for the address text and municipality code.
+	 * point (widening it when empty) and takes the nearest with a current
+	 * house number, whose address text DAR has too. Its municipality code
+	 * comes from Datafordeler's DAGI register. Adressevælger is not asked:
+	 * it answered HTTP 500 for some house numbers (#293), which left the
+	 * event without a region and stopped its lookups for the rest of the run.
 	 * Points far out in nature still get the nearest address within a few
 	 * kilometres, so the municipality (and region) is right in practice even
 	 * though the address is only "near".
@@ -485,15 +489,14 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
-		$husnummer_id = $nearest['husnummer'];
-		$lookup       = $this->request( '/husnumre/' . rawurlencode( $husnummer_id ) );
-		if ( null === $lookup ) {
+		// No code (recorded as an issue) is not cached, like a failed request.
+		$code = $this->municipality_code( $nearest['husnummer']['kommuneinddeling'] );
+		if ( null === $code || '' === $code ) {
 			return null;
 		}
 
-		$code   = (string) ( $lookup['husnummer']['navngivenvejkommunedel']['kommune'] ?? '' );
 		$result = [
-			'address'      => (string) ( $lookup['husnummer']['adgangsadressebetegnelse'] ?? '' ),
+			'address'      => $nearest['husnummer']['address'],
 			'municipality' => Vandrekalender_Municipalities::name( $code ),
 			'distance'     => round( $nearest['distance'] ),
 		];
@@ -559,7 +562,8 @@ class Vandrekalender_Geocoder {
 	 * these address points.
 	 *
 	 * @param string[] $address_point_ids DAR_Adressepunkt id_lokalId values, at most DAR_IN_LIMIT.
-	 * @return array<string, string>|null House number id keyed by its access point id, or null on failure.
+	 * @return array<string, array{address: string, kommuneinddeling: string}>|null
+	 *         Keyed by access point id (see Vandrekalender_Dar::current_husnumre()), or null on failure.
 	 */
 	private function current_husnumre_at( array $address_point_ids ): ?array {
 		if ( empty( $address_point_ids ) ) {
@@ -570,7 +574,7 @@ class Vandrekalender_Geocoder {
 		$data = $this->request_datafordeler(
 			'DAR/v3',
 			sprintf(
-				'{ DAR_Husnummer(first: %1$d, virkningstid: "%2$s", registreringstid: "%2$s", where: { adgangspunkt: { in: %3$s } }) { nodes { id_lokalId adgangspunkt status } } }',
+				'{ DAR_Husnummer(first: %1$d, virkningstid: "%2$s", registreringstid: "%2$s", where: { adgangspunkt: { in: %3$s } }) { nodes { id_lokalId adgangspunkt status adgangsadressebetegnelse kommuneinddeling } } }',
 				count( $ids ) * 2,
 				gmdate( 'Y-m-d\TH:i:s\Z' ),
 				wp_json_encode( array_values( $ids ) )
@@ -580,15 +584,41 @@ class Vandrekalender_Geocoder {
 			return null;
 		}
 
-		$map = [];
-		foreach ( $data['DAR_Husnummer']['nodes'] ?? [] as $node ) {
-			// Status 3 is a current house number (the ones Adressevælger returns).
-			if ( isset( $node['id_lokalId'], $node['adgangspunkt'] ) && '3' === (string) ( $node['status'] ?? '' ) ) {
-				$map[ (string) $node['adgangspunkt'] ] = (string) $node['id_lokalId'];
-			}
+		return Vandrekalender_Dar::current_husnumre( $data['DAR_Husnummer']['nodes'] ?? [] );
+	}
+
+	/**
+	 * The municipality code of a DAGI municipality division (DAR's
+	 * kommuneinddeling on a house number).
+	 *
+	 * @param string $kommuneinddeling DAGI_Kommuneinddeling id_lokalId.
+	 * @return string|null Four-digit code, '' when DAGI has none, or null on failure.
+	 */
+	private function municipality_code( string $kommuneinddeling ): ?string {
+		$data = $this->request_datafordeler(
+			'DAGI/v2',
+			sprintf(
+				'{ DAGI_Kommuneinddeling(first: 1, virkningstid: "%1$s", registreringstid: "%1$s", where: { id_lokalId: { eq: "%2$s" } }) { nodes { kommunekode } } }',
+				gmdate( 'Y-m-d\TH:i:s\Z' ),
+				preg_replace( '/[^0-9a-f-]/i', '', $kommuneinddeling )
+			)
+		);
+		if ( null === $data ) {
+			return null;
 		}
 
-		return $map;
+		$code = Vandrekalender_Dar::municipality_code( $data['DAGI_Kommuneinddeling']['nodes'] ?? [] );
+		if ( '' === $code ) {
+			self::record_issue(
+				sprintf(
+					/* translators: %s: DAGI municipality division id. */
+					__( 'Datafordeler has no municipality code for municipality division %s, so the event gets no region.', 'vandrekalender-events' ),
+					$kommuneinddeling
+				)
+			);
+		}
+
+		return $code;
 	}
 
 	/**

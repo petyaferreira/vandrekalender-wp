@@ -34,6 +34,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-municipalities.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-utm-converter.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-wkt.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-dar.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-geocoder.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
