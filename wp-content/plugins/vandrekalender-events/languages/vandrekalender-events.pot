@@ -2053,3 +2053,25 @@ msgstr ""
 msgctxt "block description"
 msgid "A tabbed container. Add Tab blocks inside and place any content in each tab."
 msgstr ""
+
+#: blocks/month-quick-filter/block.json build/blocks/month-quick-filter/block.json
+msgctxt "block title"
+msgid "Month Quick Filter"
+msgstr ""
+
+#: blocks/month-quick-filter/block.json build/blocks/month-quick-filter/block.json
+msgctxt "block description"
+msgid "A row of month chips (\"Jump to month\") that filter the calendar, cards, map or past walks list to one month."
+msgstr ""
+
+#: blocks/month-quick-filter/edit.js:31 build/blocks/month-quick-filter/index.js:1
+msgid "Months"
+msgstr ""
+
+#: blocks/month-quick-filter/edit.js:33 build/blocks/month-quick-filter/index.js:1
+msgid "Future"
+msgstr ""
+
+#: blocks/month-quick-filter/edit.js:44 blocks/month-quick-filter/render.php:28 build/blocks/month-quick-filter/index.js:1
+msgid "Jump to month"
+msgstr ""

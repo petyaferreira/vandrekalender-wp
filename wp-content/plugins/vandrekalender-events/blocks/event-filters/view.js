@@ -70,6 +70,8 @@ function publish(filters) {
 
 /**
  * Apply the current URL params to the controls so the UI matches the link.
+ * Controls whose param is not in the URL are cleared, so the same function
+ * follows a change made by another block (the Month Quick Filter).
  *
  * @param {HTMLElement} form The filters form element.
  */
@@ -77,13 +79,13 @@ function hydrateFromUrl(form) {
   const params = new URLSearchParams(window.location.search);
 
   const region = form.querySelector('[data-filter="region"]');
-  if (region && params.get('region')) {
-    region.value = params.get('region');
+  if (region) {
+    region.value = params.get('region') || '';
   }
 
   const organiser = form.querySelector('[data-filter="organiser"]');
-  if (organiser && params.get('organiser')) {
-    organiser.value = params.get('organiser');
+  if (organiser) {
+    organiser.value = params.get('organiser') || '';
   }
 
   const lengths = (params.get('length') || '').split(',').filter(Boolean);
@@ -95,13 +97,13 @@ function hydrateFromUrl(form) {
   });
 
   const from = form.querySelector('[data-filter="date_from"]');
-  if (from && params.get('date_from')) {
-    from.value = params.get('date_from');
+  if (from) {
+    from.value = params.get('date_from') || '';
   }
 
   const to = form.querySelector('[data-filter="date_to"]');
-  if (to && params.get('date_to')) {
-    to.value = params.get('date_to');
+  if (to) {
+    to.value = params.get('date_to') || '';
   }
 
   const free = form.querySelector('[data-filter="is_free"]');
@@ -119,6 +121,9 @@ function initFilters(form) {
   hydrateFromUrl(form);
 
   form.addEventListener('change', () => publish(collect(form)));
+
+  // Another block (Month Quick Filter) changed the filters in the URL.
+  document.addEventListener('vk:filters-change', () => hydrateFromUrl(form));
 
   form.querySelectorAll('[data-filter="length"]').forEach(pill => {
     pill.addEventListener('click', () => {
