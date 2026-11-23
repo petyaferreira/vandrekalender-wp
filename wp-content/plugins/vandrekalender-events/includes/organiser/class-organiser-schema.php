@@ -256,9 +256,8 @@ class Organiser_Schema {
 	 *
 	 * The excerpt is the one written by hand: WordPress's generated excerpt
 	 * is the start of the whole page, headings and walk count included. The
-	 * "Om …" text is the intro column of the FAQ pattern (vk-faq__intro, or
-	 * vk-organiser-about__intro on pages made before #259); the first
-	 * paragraph of the content is the walk count, not a description.
+	 * "Om …" text is the intro column of the FAQ pattern (vk-faq__intro); the
+	 * first paragraph of the content is the walk count, not a description.
 	 *
 	 * @param string $rank_math Post meta rank_math_description.
 	 * @param string $excerpt   Post excerpt as saved (post_excerpt).
@@ -276,7 +275,7 @@ class Organiser_Schema {
 			return $excerpt;
 		}
 
-		if ( preg_match( '#\b(?:vk-faq__intro|vk-organiser-about__intro)\b.*?<p\b[^>]*>(.*?)</p>#su', $content, $match ) ) {
+		if ( preg_match( '#\bvk-faq__intro\b.*?<p\b[^>]*>(.*?)</p>#su', $content, $match ) ) {
 			return self::plain( $match[1] );
 		}
 

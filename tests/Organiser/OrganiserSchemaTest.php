@@ -178,8 +178,9 @@ class OrganiserSchemaTest extends TestCase {
 		$this->assertSame( 'Uddrag', Organiser_Schema::description( '%excerpt% | %sitename%', 'Uddrag', $content ) );
 		$this->assertSame( 'Første afsnit & mere.', Organiser_Schema::description( '', '', $content ) );
 		$this->assertSame(
-			'Første afsnit & mere.',
-			Organiser_Schema::description( '', '', str_replace( 'vk-faq__intro', 'vk-organiser-about__intro', $content ) )
+			'',
+			Organiser_Schema::description( '', '', str_replace( 'vk-faq__intro', 'vk-organiser-about__intro', $content ) ),
+			'The pre-#259 class is renamed in the content (#261), so it no longer counts.'
 		);
 		$this->assertSame( '', Organiser_Schema::description( '', '', '<p>[vk_filtered_count] ture</p><p>Ingen Om-tekst</p>' ) );
 	}
