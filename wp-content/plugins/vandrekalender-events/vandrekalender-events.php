@@ -41,6 +41,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-base.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-alerts.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-archive-job.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-admin.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-facebook-importer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
@@ -66,6 +67,7 @@ new Vandrekalender_Archived_Walks();
 new Vandrekalender_Event_Sitemap();
 new Vandrekalender_Legacy_Event_Urls();
 new Vandrekalender_Scraper_Scheduler();
+new Vandrekalender_Archive_Job();
 new Vandrekalender_Scraper_Admin();
 new Vandrekalender_Facebook_Importer();
 
@@ -201,6 +203,38 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			}
 
 			WP_CLI::success( sprintf( '%d events updated in %ss.', $entry['total'], $entry['duration'] ) );
+		}
+	);
+}
+
+/**
+ * Register the `wp vandrekalender archive-old` command (#267).
+ *
+ * Runs the weekly archive job by hand: archives every published walk dated
+ * before the retention cutoff that is not kept, and prints them. --dry-run
+ * only prints them. A real run is recorded in the Scraper Log.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender archive-old',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+			$result  = Vandrekalender_Archive_Job::execute( 'manual', $dry_run );
+
+			foreach ( $result['walks'] as $walk ) {
+				WP_CLI::log( sprintf( '%d  %s  %s', $walk['id'], $walk['date'], $walk['title'] ) );
+			}
+
+			foreach ( $result['failed'] as $post_id => $message ) {
+				WP_CLI::warning( sprintf( '%d: %s', $post_id, $message ) );
+			}
+
+			$count = count( $result['walks'] );
+			WP_CLI::success( $dry_run ? sprintf( '%d walks would be archived (dry run).', $count ) : sprintf( '%d walks archived.', $count ) );
+
+			if ( $result['failed'] ) {
+				WP_CLI::halt( 1 );
+			}
 		}
 	);
 }
@@ -590,6 +624,7 @@ add_filter(
 
 register_activation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'Vandrekalender_Scraper_Scheduler', 'deactivate' ] );
+register_deactivation_hook( __FILE__, [ 'Vandrekalender_Archive_Job', 'deactivate' ] );
 
 /**
  * Flush rewrite rules automatically when any custom rewrite slug changes.

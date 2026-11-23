@@ -34,6 +34,7 @@ require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-past-walks.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-archived-walks.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-archive-job.php';
 require VANDREKALENDER_TEST_INCLUDES . '/trait-polylang-language.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-past-events.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-join.php';

@@ -884,7 +884,8 @@ class Event {
 
 	/**
 	 * The meta query for walks due for removal: dated before $cutoff and not
-	 * kept.
+	 * kept. A walk with an empty event_date is never due: MySQL reads ''
+	 * as before any date, so it is ruled out explicitly.
 	 *
 	 * @param string $cutoff Vandrekalender_Past_Walks::retention_cutoff().
 	 * @return array<int|string,mixed>
@@ -909,6 +910,11 @@ class Event {
 					'value'   => [ '', '0' ],
 					'compare' => 'IN',
 				],
+			],
+			[
+				'key'     => self::META_DATE,
+				'value'   => '',
+				'compare' => '!=',
 			],
 		];
 	}
