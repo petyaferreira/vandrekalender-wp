@@ -12,7 +12,7 @@ The scraping pipeline is **built and running**. What exists today:
 
 - An abstract base class (`Vandrekalender_Scraper_Base`) with `fetch()`, `parse()`, `run()`, and `upsert_event()`.
 - A WP-Cron scheduler (`Vandrekalender_Scraper_Scheduler`) that runs **all** scrapers once daily at 02:12 (site timezone), gated to production by the `VK_ENABLE_SCRAPING` constant. See [Running & scheduling](#running--scheduling).
-- Four implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the national maps feed), and `opdagverden.dk` (`Vandrekalender_Scraper_Opdagverden` — day walks).
+- Four implemented scrapers: `mammutmarch.dk` (`Vandrekalender_Scraper_Mammut`), `sportstiming.dk` (`Vandrekalender_Scraper_Sportstiming`), `dvl.dk` (`Vandrekalender_Scraper_DVL` — all regional chapters via the tour list embedded in the national search page), and `opdagverden.dk` (`Vandrekalender_Scraper_Opdagverden` — day walks).
 
 Coordinates come from the server-side Adressevælger helper (see [Geocoding](#geocoding-server-side-adressevælger-helper--built)); DVL brings its own coordinates and only reverse-geocodes the municipality. Opdag Verden has no street addresses; its meeting point comes from the trip description and its pin from a Google Maps link, the route page or the region (see the Opdag Verden row below).
 
