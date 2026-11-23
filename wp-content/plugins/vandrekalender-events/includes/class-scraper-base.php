@@ -554,31 +554,8 @@ abstract class Vandrekalender_Scraper_Base {
 	 * @return void
 	 */
 	protected function adopt_legacy_source_url( string $new_url, string $date, string $legacy_pattern ): void {
-		if ( '' === $date || ! defined( static::class . '::SOURCE_NAME' ) ) {
-			return;
-		}
-
-		$same_day = get_posts(
-			[
-				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
-				'post_status'    => 'any',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => [
-					[
-						'key'   => \Vandrekalender\Event::META_SOURCE_NAME,
-						'value' => (string) constant( static::class . '::SOURCE_NAME' ),
-					],
-					[
-						'key'   => \Vandrekalender\Event::META_DATE,
-						'value' => $date,
-					],
-				],
-			]
-		);
-
 		$legacy_id = 0;
-		foreach ( $same_day as $post_id ) {
+		foreach ( $this->same_day_posts( $date ) as $post_id ) {
 			$url = (string) get_post_meta( $post_id, \Vandrekalender\Event::META_SOURCE_URL, true );
 			if ( $url === $new_url ) {
 				return;
@@ -591,6 +568,41 @@ abstract class Vandrekalender_Scraper_Base {
 		if ( $legacy_id > 0 ) {
 			update_post_meta( $legacy_id, \Vandrekalender\Event::META_SOURCE_URL, $new_url );
 		}
+	}
+
+	/**
+	 * IDs of this source's posts (any status) on a date, for matching an event
+	 * to a post stored under an old source URL.
+	 *
+	 * @param string $date Event date (Y-m-d).
+	 * @return int[]
+	 */
+	protected function same_day_posts( string $date ): array {
+		if ( '' === $date || ! defined( static::class . '::SOURCE_NAME' ) ) {
+			return [];
+		}
+
+		return array_map(
+			'intval',
+			get_posts(
+				[
+					'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_query'     => [
+						[
+							'key'   => \Vandrekalender\Event::META_SOURCE_NAME,
+							'value' => (string) constant( static::class . '::SOURCE_NAME' ),
+						],
+						[
+							'key'   => \Vandrekalender\Event::META_DATE,
+							'value' => $date,
+						],
+					],
+				]
+			)
+		);
 	}
 
 	/**
