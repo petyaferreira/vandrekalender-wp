@@ -28,6 +28,32 @@ class PastWalksTest extends TestCase {
 	}
 
 	/**
+	 * The cutoff is RETENTION_MONTHS months before today, and window() starts there.
+	 */
+	public function test_retention_cutoff_is_the_start_of_the_window(): void {
+		$this->assertSame( '2025-10-28', Vandrekalender_Past_Walks::retention_cutoff( '2026-10-28' ) );
+		$this->assertSame( '2025-03-01', Vandrekalender_Past_Walks::retention_cutoff( '2026-03-01' ) );
+		$this->assertSame(
+			Vandrekalender_Past_Walks::retention_cutoff( '2026-11-22' ),
+			Vandrekalender_Past_Walks::window( '2026-11-22' )['from']
+		);
+	}
+
+	/**
+	 * "Due for removal": dated before the cutoff, and the keep flag missing, empty or 0.
+	 */
+	public function test_due_for_removal_meta_query(): void {
+		$query = \Vandrekalender\Event::due_for_removal_meta_query( '2025-11-22' );
+
+		$this->assertSame( 'event_date', $query[0]['key'] );
+		$this->assertSame( '<', $query[0]['compare'] );
+		$this->assertSame( '2025-11-22', $query[0]['value'] );
+		$this->assertSame( 'OR', $query[1]['relation'] );
+		$this->assertSame( 'NOT EXISTS', $query[1][0]['compare'] );
+		$this->assertSame( [ '', '0' ], $query[1][1]['value'] );
+	}
+
+	/**
 	 * Yesterday crosses month and year boundaries.
 	 */
 	public function test_window_ends_yesterday_across_boundaries(): void {

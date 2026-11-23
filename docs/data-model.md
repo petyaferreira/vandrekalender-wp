@@ -149,6 +149,7 @@ See [Custom Post Type: `organiser`](#custom-post-type-organiser).
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
+| `event_keep` | boolean | — | "Keep" (Danish "Behold"): `true` means the walk is never archived automatically ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37), plan: `docs/plans/past-walks-retention-plan.md`). Set with a checkbox in the editor sidebar. Default `false`. The events list has no column for it, only a "Due for removal" filter: published walks with `event_date` before `Vandrekalender_Past_Walks::retention_cutoff()` (today minus `RETENTION_MONTHS` months) and `event_keep` not true. Nothing is archived yet |
 | `event_organiser_name` | string | — | Organiser display name, also when the event has an `event_organiser` term: a DVL walk shows its chapter ("DVL Herning Ikast") and belongs to the Dansk Vandrelaug term. For manually created events defaults to the WP author's `display_name`. For scraped events set by the scraper from the source data |
 | `event_organiser_url` | string (url) | — | Organiser's website or Facebook page |
 | `event_organiser_email` | string (email) | — | Contact email. Admin only — never displayed publicly |

@@ -10,8 +10,9 @@
                 "lang": "da_DK",
                 "plural-forms": "nplurals=2; plural=(n != 1);"
             },
-            "Route": ["Rute"],
             "Organiser": ["Arrang\u00f8r"],
+            "Route": ["Rute"],
+            "Keep": ["Behold"],
             "\u2014": ["\u2014"],
             "Address search is unavailable. Try again later, or paste coordinates below.": [
                 "Adresses\u00f8gning er ikke tilg\u00e6ngelig. Pr\u00f8v igen senere, eller inds\u00e6t koordinater nedenfor."
@@ -74,6 +75,7 @@
             "Stored securely. Never shown publicly. Used for the event claim flow.": [
                 "Gemmes sikkert. Vises aldrig offentligt. Bruges til at overtage begivenheder."
             ],
+            "Do not archive this walk automatically": ["Arkiv\u00e9r ikke denne tur automatisk"],
             "New here?": ["Ny her?"],
             "Watch the how-to video": ["Se hvordan-videoen"]
         }

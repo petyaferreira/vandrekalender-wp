@@ -10,7 +10,7 @@ A walk's life: **published** → **archived** after `RETENTION_MONTHS` (12) mont
 
 ## Decisions (on #37, recorded in [decision 0018](../decisions/0018-past-walks-archived-then-purged.md))
 
-- 28 October 2026: a "Behold" flag on each walk, off by default; no separate admin screen, only a column and a filter in the Events list. Search Console checks are optional.
+- 28 October 2026: a "Behold" flag on each walk, off by default; no separate admin screen, only a filter in the Events list (23 November 2026: the planned column was dropped, it was empty for almost every walk). Search Console checks are optional.
 - 10 November 2026: archive first, delete 3 years later. Images and GPX files are deleted only with the walk, and only when nothing else uses them (editors can reuse one Media Library image on several walks).
 - 10 November 2026: no new 301s. An archived recurring occurrence keeps the existing redirect to the next upcoming occurrence; every other archived walk answers 410.
 - Month pages are not built yet, so the spec's "month pages return 410" needs no step here; it applies when they are built. The "Spring til måned" chips ([#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198)) only show months inside the window.

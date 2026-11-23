@@ -54,7 +54,7 @@ What removal does to SEO: an archived walk answers 410, so it drops out of Googl
 * **Early removal:** private guides can ask for their walks to be removed earlier. Support a manual "fjern nu" action in the admin.
 * **Default decision:** no text only archive rows beyond 12 months. Add that later only if Search Console shows the old pages still matter.
 
-Decided (28 October 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6465222423)): only the flag on each walk, off by default, with a "Behold" column and a "Due for removal" filter in the Events list. Removal runs without anyone acting; checking Search Console is optional.
+Decided (28 October 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6465222423)): only the flag on each walk, off by default, with a "Due for removal" filter in the Events list. The planned "Behold" column was dropped on 23 November 2026: it was empty for almost every walk. Removal runs without anyone acting; checking Search Console is optional.
 
 Decided (10 November 2026, [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37#issuecomment-6791819009)): archive first and delete 3 years later, as above. No new 301s for now: only an archived recurring occurrence keeps its existing redirect to the next occurrence. Month pages are not built yet, so the month page rule is for when they are; the "Spring til måned" chips are [#198](https://github.com/petyaferreira/vandrekalender-wp/issues/198). Why archive first: [decision 0018](../../decisions/0018-past-walks-archived-then-purged.md). Steps: [docs/plans/past-walks-retention-plan.md](../../plans/past-walks-retention-plan.md).
 
