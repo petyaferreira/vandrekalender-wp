@@ -178,6 +178,38 @@ class PurgeJobTest extends TestCase {
 	}
 
 	/**
+	 * When a walk cannot be deleted, its files stay; other walks' files go.
+	 */
+	public function test_files_of_a_walk_that_failed_to_delete_are_kept(): void {
+		$split = Vandrekalender_Purge_Job::keep_files_of_failed_walks(
+			[
+				55 => '2026/11/a.jpg',
+				56 => '2026/11/b.jpg',
+				57 => '2026/11/shared.jpg',
+			],
+			[
+				10 => [ 55, 57 ],
+				11 => [ 56, 57 ],
+			],
+			[ 10 ]
+		);
+
+		$this->assertSame( [ 56 => '2026/11/b.jpg' ], $split['delete'] );
+		$this->assertSame( [ 55, 57 ], array_keys( $split['keep'] ) );
+		$this->assertSame( [ 'post 10 (could not be deleted)' ], $split['keep'][57]['users'] );
+	}
+
+	/**
+	 * Nothing failed: every file decided as unused is deleted.
+	 */
+	public function test_no_failed_walks_keeps_the_decision(): void {
+		$split = Vandrekalender_Purge_Job::keep_files_of_failed_walks( [ 55 => 'a.jpg' ], [ 10 => [ 55 ] ], [] );
+
+		$this->assertSame( [ 55 => 'a.jpg' ], $split['delete'] );
+		$this->assertSame( [], $split['keep'] );
+	}
+
+	/**
 	 * IDs named in block markup and shortcodes.
 	 */
 	public function test_attachment_ids_in_content(): void {

@@ -54,9 +54,10 @@ class Vandrekalender_Purge_Job {
 		$started  = microtime( true );
 		$walk_ids = array_map( 'intval', get_posts( self::selection_args( current_time( 'Y-m-d' ) ) ) );
 
-		$walks  = [];
-		$files  = [];
-		$failed = [];
+		$walks      = [];
+		$files      = [];
+		$walk_files = [];
+		$failed     = [];
 
 		foreach ( $walk_ids as $walk_id ) {
 			$walks[ $walk_id ] = [
@@ -66,7 +67,8 @@ class Vandrekalender_Purge_Job {
 				'attendees'   => Vandrekalender_Event_Attendees::count( $walk_id ),
 			];
 
-			foreach ( self::walk_files( $walk_id ) as $file_id ) {
+			$walk_files[ $walk_id ] = self::walk_files( $walk_id );
+			foreach ( $walk_files[ $walk_id ] as $file_id ) {
 				$files[ $file_id ] = true;
 			}
 		}
@@ -90,14 +92,24 @@ class Vandrekalender_Purge_Job {
 		}
 
 		if ( ! $dry_run ) {
+			$failed_walks = [];
 			foreach ( $walk_ids as $walk_id ) {
-				Vandrekalender_Event_Attendees::delete_for_event( $walk_id );
-
 				if ( ! wp_delete_post( $walk_id, true ) ) {
 					$failed[ $walk_id ] = 'wp_delete_post failed';
+					$failed_walks[]     = $walk_id;
 					unset( $walks[ $walk_id ] );
+					continue;
 				}
+
+				// Only once the walk is gone: a walk that stays keeps its attendees.
+				Vandrekalender_Event_Attendees::delete_for_event( $walk_id );
 			}
+
+			// The files were decided with every due walk as deleted. A walk
+			// that is still there still uses its files, so they stay.
+			$split  = self::keep_files_of_failed_walks( $delete, $walk_files, $failed_walks );
+			$delete = $split['delete'];
+			$keep  += $split['keep'];
 
 			foreach ( array_keys( $delete ) as $file_id ) {
 				if ( ! wp_delete_attachment( $file_id, true ) ) {
@@ -116,6 +128,36 @@ class Vandrekalender_Purge_Job {
 			'delete' => $delete,
 			'keep'   => $keep,
 			'failed' => $failed,
+		];
+	}
+
+	/**
+	 * Moves the files of walks that could not be deleted from $delete to
+	 * kept: those walks still exist and still use them.
+	 *
+	 * @param array<int, string> $delete       File ID => file, decided as unused.
+	 * @param array<int, int[]>  $walk_files   Walk ID => its file IDs.
+	 * @param int[]              $failed_walks Walks wp_delete_post() did not delete.
+	 * @return array{delete: array<int, string>, keep: array<int, array{file: string, users: string[]}>}
+	 */
+	public static function keep_files_of_failed_walks( array $delete, array $walk_files, array $failed_walks ): array {
+		$keep = [];
+
+		foreach ( $failed_walks as $walk_id ) {
+			foreach ( $walk_files[ $walk_id ] ?? [] as $file_id ) {
+				if ( ! isset( $delete[ $file_id ] ) ) {
+					continue;
+				}
+
+				$keep[ $file_id ]['file']    = $delete[ $file_id ];
+				$keep[ $file_id ]['users'][] = 'post ' . $walk_id . ' (could not be deleted)';
+				unset( $delete[ $file_id ] );
+			}
+		}
+
+		return [
+			'delete' => $delete,
+			'keep'   => $keep,
 		];
 	}
 

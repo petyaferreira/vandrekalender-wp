@@ -313,7 +313,7 @@ Trigger manually:
 - Selects walks with status `archived` and `event_archived_at` more than `ARCHIVE_PURGE_YEARS` (3) years ago. A walk without `event_archived_at` is never deleted.
 - A walk's files: its featured image, the attachments its content names (`wp-image-<id>` classes, block `"id"`/`"ids"`/`"mediaId"`, `[gallery ids]`, upload URLs), each route's `gpx_id`, and the attachments uploaded to it.
 - A file is deleted (`wp_delete_attachment( $id, true )`) only when nothing else refers to it: no other post of any type and status, in its content or any meta (another walk's featured image or route, an organiser page's logo, an SEO plugin's share image), and no option (site icon, the theme's logo); transients are caches and do not count. Walks deleted in the same run do not count. The SQL only gathers candidate rows; `users_from_rows()` decides, and it is deliberately broad: a wrong match keeps a file, it never deletes one that is in use.
-- Then the walk's rows in the attendees table go (`Vandrekalender_Event_Attendees::delete_for_event()`), and the walk (`wp_delete_post( $id, true )`).
+- Then each walk is deleted (`wp_delete_post( $id, true )`), and after that its rows in the attendees table (`Vandrekalender_Event_Attendees::delete_for_event()`). If a walk cannot be deleted, it keeps its attendees and its files, and the next run tries again.
 - By hand: `./wp.sh vandrekalender purge-archived --dry-run` prints the walks, the files it would delete and the files it keeps with what uses them ("post 123", "option site_icon"); without `--dry-run` it deletes them.
 
 ---
