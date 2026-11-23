@@ -12,7 +12,9 @@ defined( 'ABSPATH' ) || exit;
  * becomes archived it gets event_archived_at, the date the purge (step 5)
  * counts from.
  *
- * Nothing archives walks automatically yet; that is step 3 (#267).
+ * Walks are archived by the weekly job (Vandrekalender_Archive_Job), or by
+ * hand with "Fjern nu" in the Events list (#268), for example when a private
+ * guide asks for their walks to be removed early.
  *
  * @package Vandrekalender
  */
@@ -34,19 +36,56 @@ class Vandrekalender_Archived_Walks {
 	const RESTORE_ACTION = 'vk_restore_walk';
 
 	/**
-	 * Query param that shows the "restored" notice after "Gendan".
+	 * The admin-post.php action of the "Fjern nu" row action.
 	 */
-	const RESTORED_PARAM = 'vk_restored';
+	const REMOVE_ACTION = 'vk_remove_walk';
 
 	/**
-	 * Constructor — hooks the status, the archived date and "Gendan".
+	 * Query param that names the action and walk for the notice after the
+	 * redirect, as "<action>-<post ID>".
+	 */
+	const DONE_PARAM = 'vk_walk_done';
+
+	/**
+	 * What handle_status_change() reports.
+	 */
+	const CHANGED     = 'changed';
+	const NOT_ALLOWED = 'not_allowed';
+	const WRONG_STATE = 'wrong_state';
+	const FAILED      = 'failed';
+
+	/**
+	 * Constructor — hooks the status, the archived date, "Gendan" and
+	 * "Fjern nu".
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_status' ] );
 		add_action( 'transition_post_status', [ $this, 'track_archived_at' ], 10, 3 );
-		add_filter( 'post_row_actions', [ $this, 'add_restore_row_action' ], 10, 2 );
-		add_action( 'admin_post_' . self::RESTORE_ACTION, [ $this, 'handle_restore' ] );
-		add_action( 'admin_notices', [ $this, 'render_restored_notice' ] );
+		add_filter( 'post_row_actions', [ $this, 'add_row_actions' ], 10, 2 );
+		add_action( 'admin_post_' . self::RESTORE_ACTION, [ $this, 'handle_row_action' ] );
+		add_action( 'admin_post_' . self::REMOVE_ACTION, [ $this, 'handle_row_action' ] );
+		add_action( 'admin_notices', [ $this, 'render_done_notice' ] );
+	}
+
+	/**
+	 * The two row actions: the status a walk must have, the one it gets, and
+	 * whether publishing rights are needed.
+	 *
+	 * @return array<string, array{from: string, to: string, publishes: bool}>
+	 */
+	private static function actions(): array {
+		return [
+			self::RESTORE_ACTION => [
+				'from'      => self::STATUS,
+				'to'        => 'publish',
+				'publishes' => true,
+			],
+			self::REMOVE_ACTION  => [
+				'from'      => 'publish',
+				'to'        => self::STATUS,
+				'publishes' => false,
+			],
+		];
 	}
 
 	/**
@@ -110,114 +149,162 @@ class Vandrekalender_Archived_Walks {
 	}
 
 	/**
-	 * Adds "Gendan" to an archived walk's row in the Events list.
+	 * Adds "Gendan" to an archived walk's row in the Events list, and
+	 * "Fjern nu" to a published walk's row (any date, also a kept one).
 	 *
 	 * @param array<string,string> $actions Row actions.
 	 * @param \WP_Post             $post    The row's post.
 	 * @return array<string,string>
 	 */
-	public function add_restore_row_action( array $actions, \WP_Post $post ): array {
-		if ( \Vandrekalender\Event::CUSTOMPOSTTYPE !== $post->post_type || self::STATUS !== $post->post_status ) {
+	public function add_row_actions( array $actions, \WP_Post $post ): array {
+		if ( \Vandrekalender\Event::CUSTOMPOSTTYPE !== $post->post_type ) {
 			return $actions;
 		}
 
-		if ( ! self::can_restore( $post->ID ) ) {
-			return $actions;
+		foreach ( self::actions() as $action => $rule ) {
+			if ( $rule['from'] !== $post->post_status || ! self::can( $action, $post->ID ) ) {
+				continue;
+			}
+
+			$url = wp_nonce_url(
+				add_query_arg(
+					[
+						'action' => $action,
+						'post'   => $post->ID,
+					],
+					admin_url( 'admin-post.php' )
+				),
+				$action . '_' . $post->ID
+			);
+
+			if ( self::RESTORE_ACTION === $action ) {
+				$actions['vk_restore'] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Restore', 'vandrekalender-events' ) . '</a>';
+			} else {
+				$confirm              = __( 'Remove this walk from the site now? You can undo it with Restore in the Archived list.', 'vandrekalender-events' );
+				$actions['vk_remove'] = '<a href="' . esc_url( $url ) . '" onclick="return confirm(' . esc_attr( wp_json_encode( $confirm ) ) . ');">' . esc_html__( 'Remove now', 'vandrekalender-events' ) . '</a>';
+			}
 		}
-
-		$url = wp_nonce_url(
-			add_query_arg(
-				[
-					'action' => self::RESTORE_ACTION,
-					'post'   => $post->ID,
-				],
-				admin_url( 'admin-post.php' )
-			),
-			self::RESTORE_ACTION . '_' . $post->ID
-		);
-
-		$actions['vk_restore'] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Restore', 'vandrekalender-events' ) . '</a>';
 
 		return $actions;
 	}
 
 	/**
-	 * "Gendan": publishes an archived walk again, then returns to the list.
-	 * track_archived_at() clears event_archived_at.
+	 * "Gendan" and "Fjern nu": change the walk's status, then return to the
+	 * Events list with a notice. track_archived_at() sets or clears
+	 * event_archived_at.
 	 *
 	 * @return void
 	 */
-	public function handle_restore(): void {
+	public function handle_row_action(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- the nonce is checked in handle_status_change().
+		$action  = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : '';
 		$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+		$nonce   = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		// phpcs:enable
 
-		check_admin_referer( self::RESTORE_ACTION . '_' . $post_id );
+		$result = self::handle_status_change( $action, $post_id, false !== wp_verify_nonce( $nonce, $action . '_' . $post_id ) );
 
-		if ( ! $post_id || ! self::can_restore( $post_id ) ) {
-			wp_die( esc_html__( 'You are not allowed to restore this walk.', 'vandrekalender-events' ), 403 );
+		switch ( $result ) {
+			case self::NOT_ALLOWED:
+				wp_die( esc_html__( 'You are not allowed to change this walk.', 'vandrekalender-events' ), 403 );
+				break;
+			case self::WRONG_STATE:
+				wp_die( esc_html__( 'This walk cannot be changed this way: its status has changed. Reload the list.', 'vandrekalender-events' ), 400 );
+				break;
+			case self::FAILED:
+				wp_die( esc_html__( 'The walk could not be saved. Try again.', 'vandrekalender-events' ), 500 );
+				break;
+		}
+
+		$args = [
+			'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+			self::DONE_PARAM => $action . '-' . $post_id,
+		];
+		// After "Gendan", stay in the Archived view the walk was restored from.
+		if ( self::RESTORE_ACTION === $action ) {
+			$args['post_status'] = self::STATUS;
+		}
+
+		wp_safe_redirect( add_query_arg( $args, admin_url( 'edit.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * The checks and the change behind a row action, without the request
+	 * around it: nothing changes unless the nonce is valid, the user may do
+	 * it, and the walk has the status the action starts from.
+	 *
+	 * @param string $action   RESTORE_ACTION or REMOVE_ACTION.
+	 * @param int    $post_id  Walk ID.
+	 * @param bool   $nonce_ok Whether the request's nonce is valid.
+	 * @return string CHANGED, NOT_ALLOWED, WRONG_STATE or FAILED.
+	 */
+	public static function handle_status_change( string $action, int $post_id, bool $nonce_ok ): string {
+		$rules = self::actions();
+
+		if ( ! $nonce_ok || ! isset( $rules[ $action ] ) || ! $post_id || ! self::can( $action, $post_id ) ) {
+			return self::NOT_ALLOWED;
 		}
 
 		$post = get_post( $post_id );
-		if ( ! $post || \Vandrekalender\Event::CUSTOMPOSTTYPE !== $post->post_type || self::STATUS !== $post->post_status ) {
-			wp_die( esc_html__( 'This walk is not archived.', 'vandrekalender-events' ), 400 );
+		if ( ! $post || \Vandrekalender\Event::CUSTOMPOSTTYPE !== $post->post_type || $rules[ $action ]['from'] !== $post->post_status ) {
+			return self::WRONG_STATE;
 		}
 
 		$result = wp_update_post(
 			[
 				'ID'          => $post_id,
-				'post_status' => 'publish',
+				'post_status' => $rules[ $action ]['to'],
 			],
 			true
 		);
 
-		if ( is_wp_error( $result ) ) {
-			wp_die( esc_html( $result->get_error_message() ), 500 );
-		}
-
-		wp_safe_redirect(
-			add_query_arg(
-				[
-					'post_type'          => \Vandrekalender\Event::CUSTOMPOSTTYPE,
-					'post_status'        => self::STATUS,
-					self::RESTORED_PARAM => $post_id,
-				],
-				admin_url( 'edit.php' )
-			)
-		);
-		exit;
+		return is_wp_error( $result ) || ! $result ? self::FAILED : self::CHANGED;
 	}
 
 	/**
-	 * Whether the current user may restore a walk: "Gendan" publishes it, so
-	 * it needs the right to publish as well as to edit.
+	 * Whether the current user may run $action on a walk. Both need the
+	 * right to edit it; "Gendan" publishes, so it also needs the right to
+	 * publish.
 	 *
-	 * @param int $post_id Walk ID.
+	 * @param string $action  RESTORE_ACTION or REMOVE_ACTION.
+	 * @param int    $post_id Walk ID.
 	 * @return bool
 	 */
-	private static function can_restore( int $post_id ): bool {
-		return current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_post', $post_id );
+	private static function can( string $action, int $post_id ): bool {
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+
+		return ! self::actions()[ $action ]['publishes'] || current_user_can( 'publish_post', $post_id );
 	}
 
 	/**
-	 * After "Gendan", says which walk was published again.
+	 * After a row action, says what happened to which walk.
 	 *
 	 * @return void
 	 */
-	public function render_restored_notice(): void {
+	public function render_done_notice(): void {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice after a nonce-checked redirect.
-		$post_id = isset( $_GET[ self::RESTORED_PARAM ] ) ? absint( $_GET[ self::RESTORED_PARAM ] ) : 0;
-		if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+		$done = isset( $_GET[ self::DONE_PARAM ] ) ? sanitize_text_field( wp_unslash( $_GET[ self::DONE_PARAM ] ) ) : '';
+		if ( ! preg_match( '/^(' . self::RESTORE_ACTION . '|' . self::REMOVE_ACTION . ')-(\d+)$/', $done, $match ) ) {
 			return;
 		}
 
+		$post_id = (int) $match[2];
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$message = self::RESTORE_ACTION === $match[1]
+			/* translators: %s: walk title. */
+			? __( '"%s" is published again.', 'vandrekalender-events' )
+			/* translators: %s: walk title. */
+			: __( '"%s" is archived and no longer shown on the site.', 'vandrekalender-events' );
+
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-			esc_html(
-				sprintf(
-					/* translators: %s: walk title. */
-					__( '"%s" is published again.', 'vandrekalender-events' ),
-					get_the_title( $post_id )
-				)
-			)
+			esc_html( sprintf( $message, get_the_title( $post_id ) ) )
 		);
 	}
 

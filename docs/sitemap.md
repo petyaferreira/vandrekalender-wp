@@ -60,7 +60,7 @@ Users with the "Event Author" role access these WordPress native pages. There ar
 |---|---|---|
 | `/wp-admin` | WordPress dashboard | Administrators only |
 | `/wp-admin/post-new.php?post_type=event` | Manage all events | Administrators only |
-| `/wp-admin/edit.php?post_type=event` | Event list with approval/removal; "Arkiveret (n)" lists archived walks, with "Gendan" to publish one again | Administrators only |
+| `/wp-admin/edit.php?post_type=event` | Event list with approval/removal; "Arkiveret (n)" lists archived walks, with "Gendan" to publish one again; "Fjern nu" on a published walk archives it right away | Administrators only |
 | `/wp-admin/edit-tags.php?taxonomy=event_organiser&post_type=event` | Manage organisers | Administrators only |
 
 ---

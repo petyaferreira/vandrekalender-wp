@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-23T11:14:29+00:00\n"
+"POT-Creation-Date: 2026-11-23T11:41:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vandrekalender-events\n"
@@ -592,35 +592,53 @@ msgstr ""
 msgid "Tab"
 msgstr ""
 
-#: includes/class-archived-walks.php:68
+#: includes/class-archived-walks.php:107
 msgctxt "post status"
 msgid "Archived"
 msgstr ""
 
 #. translators: %s: number of archived walks.
-#: includes/class-archived-walks.php:70
+#: includes/class-archived-walks.php:109
 #, php-format
 msgid "Archived <span class=\"count\">(%s)</span>"
 msgid_plural "Archived <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-archived-walks.php:139
+#: includes/class-archived-walks.php:181
 msgid "Restore"
 msgstr ""
 
-#: includes/class-archived-walks.php:156
-msgid "You are not allowed to restore this walk."
+#: includes/class-archived-walks.php:183
+msgid "Remove this walk from the site now? You can undo it with Restore in the Archived list."
 msgstr ""
 
-#: includes/class-archived-walks.php:161
-msgid "This walk is not archived."
+#: includes/class-archived-walks.php:184
+msgid "Remove now"
+msgstr ""
+
+#: includes/class-archived-walks.php:209
+msgid "You are not allowed to change this walk."
+msgstr ""
+
+#: includes/class-archived-walks.php:212
+msgid "This walk cannot be changed this way: its status has changed. Reload the list."
+msgstr ""
+
+#: includes/class-archived-walks.php:215
+msgid "The walk could not be saved. Try again."
 msgstr ""
 
 #. translators: %s: walk title.
-#: includes/class-archived-walks.php:217
+#: includes/class-archived-walks.php:301
 #, php-format
 msgid "\"%s\" is published again."
+msgstr ""
+
+#. translators: %s: walk title.
+#: includes/class-archived-walks.php:303
+#, php-format
+msgid "\"%s\" is archived and no longer shown on the site."
 msgstr ""
 
 #: includes/class-author-dashboard.php:118
@@ -930,95 +948,101 @@ msgstr ""
 msgid "View on Facebook"
 msgstr ""
 
-#: includes/class-geocoder.php:143
+#: includes/class-geocoder.php:144
 msgid "Address lookup returned no coordinates."
 msgstr ""
 
 #. translators: %s: four-digit municipality code, e.g. 0101.
-#: includes/class-geocoder.php:153
+#: includes/class-geocoder.php:154
 #, php-format
 msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
 msgstr ""
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:208
+#: includes/class-geocoder.php:209
 #, php-format
 msgid "Address \"%1$s\" was not found, and postcode %2$s has no area, so the event gets no pin."
 msgstr ""
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:223
+#: includes/class-geocoder.php:224
 #, php-format
 msgid "Address \"%1$s\" was not found and names no town to check postcode %2$s against, so the event gets no pin."
 msgstr ""
 
 #. translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address.
-#: includes/class-geocoder.php:229
+#: includes/class-geocoder.php:230
 #, php-format
 msgid "Address \"%1$s\" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin."
 msgstr ""
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:252
+#: includes/class-geocoder.php:253
 #, php-format
 msgid "Street not found for \"%1$s\", so the pin is placed in the middle of postcode %2$s."
 msgstr ""
 
-#: includes/class-geocoder.php:305
-#: includes/class-geocoder.php:792
+#: includes/class-geocoder.php:306
+#: includes/class-geocoder.php:822
 msgid "Address search returned an unexpected response."
 msgstr ""
 
-#: includes/class-geocoder.php:660
+#. translators: %s: DAGI municipality division id.
+#: includes/class-geocoder.php:615
+#, php-format
+msgid "Datafordeler has no municipality code for municipality division %s, so the event gets no region."
+msgstr ""
+
+#: includes/class-geocoder.php:690
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr ""
 
-#: includes/class-geocoder.php:664
+#: includes/class-geocoder.php:694
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:686
+#: includes/class-geocoder.php:716
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:699
+#: includes/class-geocoder.php:729
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:707
+#: includes/class-geocoder.php:737
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr ""
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:720
+#: includes/class-geocoder.php:750
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr ""
 
-#: includes/class-geocoder.php:721
+#: includes/class-geocoder.php:751
 msgid "unexpected response"
 msgstr ""
 
-#: includes/class-geocoder.php:742
+#: includes/class-geocoder.php:772
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr ""
 
-#: includes/class-geocoder.php:747
+#: includes/class-geocoder.php:777
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr ""
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:767
+#: includes/class-geocoder.php:797
 #, php-format
 msgid "Address search request failed: %s"
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:780
+#: includes/class-geocoder.php:810
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr ""
@@ -1319,7 +1343,7 @@ msgstr ""
 msgid "Due for removal"
 msgstr ""
 
-#: includes/event/class-event.php:981
+#: includes/event/class-event.php:987
 msgid "Alle Vandreture"
 msgstr ""
 
