@@ -1,6 +1,6 @@
 # Past walks retention: implementation plan
 
-Issue: [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37). Spec: [past-walks-spec.md, section 2](../design/passed-events-page/past-walks-spec.md#2-retention-walks-older-than-12-months). Status: steps 1–3 merged, step 4 in review. Owner: Petya.
+Issue: [#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37). Spec: [past-walks-spec.md, section 2](../design/passed-events-page/past-walks-spec.md#2-retention-walks-older-than-12-months). Status: done 23 November 2026 (all five steps merged). Owner: Petya.
 
 Five steps, one PR each, in order, as [stacked PRs](../contributing/pull-requests.md#planned-features). Each step's issue says what to change and how to check it.
 

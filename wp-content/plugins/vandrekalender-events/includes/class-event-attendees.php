@@ -139,6 +139,22 @@ class Vandrekalender_Event_Attendees {
 	}
 
 	/**
+	 * Delete every attendee row of an event, before the event itself is
+	 * deleted (Vandrekalender_Purge_Job).
+	 *
+	 * @param int $event_id Event post ID.
+	 * @return int Rows deleted.
+	 */
+	public static function delete_for_event( int $event_id ): int {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table.
+		$deleted = $wpdb->delete( self::table(), [ 'event_id' => $event_id ], [ '%d' ] );
+
+		return (int) $deleted;
+	}
+
+	/**
 	 * Whether a user has already joined an event.
 	 *
 	 * @param int $event_id Event post ID.

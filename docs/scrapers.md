@@ -278,7 +278,7 @@ Recurring occurrences are deduplicated differently instead, without touching pub
 
 **Known limitation: an admin can't remove a scraped event for good** while the source still lists it. `upsert_event()` finds events by source URL with `post_status => 'any'`, which leaves out trashed posts, and it always writes `post_status => 'publish'`. So on the next scrape a Draft event is published again, a permanently deleted one is created again, and a trashed one comes back as a new duplicate (the trashed copy stays in Trash). Only claimed events are left alone. No event has needed removing so far, so tombstones (a list of dismissed source URLs) are not built. If this becomes a problem, reopen [#36](https://github.com/petyaferreira/vandrekalender-wp/issues/36), which has the analysis and the open question about admin drafts versus drafts from the removal sweep.
 
-Walks older than 12 months are archived (410 Gone) by a weekly job, see [Archiving old walks](#archiving-old-walks). Deleting them 3 years later is not built yet ([#269](https://github.com/petyaferreira/vandrekalender-wp/issues/269)).
+Walks older than 12 months are archived (410 Gone) by a weekly job and deleted 3 years after that, see [Archiving old walks](#archiving-old-walks).
 
 > Resolved 2026-06-24: the base class previously used underscore-prefixed meta (`_event_source_url`, `_event_claim_status`) that the rest of the app never read. It now uses the registered `event_source_url` / `event_claimed` keys, and `event_source`, `event_source_url`, `event_source_name`, `event_scraped_at`, `event_claimed` are registered as REST-visible meta. The remaining claim-flow fields (`event_claimed_by`, `event_claimed_at`, claim tokens) are documented in `data-model.md` and will be registered with the claim flow ([#86](https://github.com/petyaferreira/vandrekalender-wp/issues/86)).
 
@@ -307,6 +307,14 @@ Trigger manually:
 - Every real run is one row in the Scraper Log ("Archive old walks: n"). It never sends the alert email. A walk that cannot be archived shows as an error on that row.
 - By hand, the same code: `./wp.sh vandrekalender archive-old --dry-run` prints ID, date and title of each walk it would archive; without `--dry-run` it archives them. Or run the cron event: `./wp.sh cron event run vandrekalender_archive_old_walks`.
 - Undo one walk with "Gendan" in the Events list ("Arkiveret" view).
+
+**Deleting archived walks** (`Vandrekalender_Purge_Job`, `includes/class-purge-job.php`, [#269](https://github.com/petyaferreira/vandrekalender-wp/issues/269)) runs in the same weekly cron event, right after the archiving, with its own Scraper Log row ("Delete archived walks: n"):
+
+- Selects walks with status `archived` and `event_archived_at` more than `ARCHIVE_PURGE_YEARS` (3) years ago. A walk without `event_archived_at` is never deleted.
+- A walk's files: its featured image, the attachments its content names (`wp-image-<id>` classes, block `"id"`/`"ids"`/`"mediaId"`, `[gallery ids]`, upload URLs), each route's `gpx_id`, and the attachments uploaded to it.
+- A file is deleted (`wp_delete_attachment( $id, true )`) only when nothing else refers to it: no other post of any type and status, in its content or any meta (another walk's featured image or route, an organiser page's logo, an SEO plugin's share image), and no option (site icon, the theme's logo); transients are caches and do not count. Walks deleted in the same run do not count. The SQL only gathers candidate rows; `users_from_rows()` decides, and it is deliberately broad: a wrong match keeps a file, it never deletes one that is in use.
+- Then the walk's rows in the attendees table go (`Vandrekalender_Event_Attendees::delete_for_event()`), and the walk (`wp_delete_post( $id, true )`).
+- By hand: `./wp.sh vandrekalender purge-archived --dry-run` prints the walks, the files it would delete and the files it keeps with what uses them ("post 123", "option site_icon"); without `--dry-run` it deletes them.
 
 ---
 

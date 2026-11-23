@@ -1,6 +1,6 @@
 # 0018: Old walks are archived after 12 months and deleted 3 years later
 
-Decided 28 October and 10 November 2026; the column dropped 23 November 2026 ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)). Steps: [plans/past-walks-retention-plan.md](../plans/past-walks-retention-plan.md).
+Decided 28 October and 10 November 2026; the column dropped 23 November 2026 ([#37](https://github.com/petyaferreira/vandrekalender-wp/issues/37)). Steps: [history/past-walks-retention-plan.md](../history/past-walks-retention-plan.md).
 
 ## Decision
 

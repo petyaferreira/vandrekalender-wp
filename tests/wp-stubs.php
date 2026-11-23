@@ -312,3 +312,17 @@ function wp_update_post( array $postarr, bool $wp_error = false ): int { // phpc
 	}
 	return (int) $postarr['ID'];
 }
+
+/**
+ * Unserializes a serialized value, like WordPress.
+ *
+ * @param mixed $data Possibly serialized value.
+ * @return mixed
+ */
+function maybe_unserialize( $data ) {
+	if ( is_string( $data ) && preg_match( '/^(?:[aOsibd]:|N;)/', $data ) ) {
+		$value = @unserialize( trim( $data ), [ 'allowed_classes' => false ] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- test stand-in for maybe_unserialize().
+		return false === $value && 'b:0;' !== $data ? $data : $value;
+	}
+	return $data;
+}
