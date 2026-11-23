@@ -29,6 +29,7 @@ class Vandrekalender_Event_Past_Events {
 	 */
 	public function __construct() {
 		add_action( 'template_redirect', [ $this, 'maybe_redirect_to_next_occurrence' ] );
+		add_filter( 'pre_handle_404', [ $this, 'handle_archived_walk' ], 10, 2 );
 		add_filter( 'vandrekalender_event_is_joinable', [ $this, 'disable_join_for_past_events' ], 10, 2 );
 		add_filter( 'the_content', [ $this, 'append_past_event_notice' ] );
 
@@ -83,6 +84,94 @@ class Vandrekalender_Event_Past_Events {
 			wp_safe_redirect( get_permalink( $next ), 301 );
 			exit;
 		}
+	}
+
+	/**
+	 * The URL of an archived walk (#266): 301 to the next occurrence of its
+	 * series when there is one, else 410 Gone with the theme's 404 page.
+	 *
+	 * The status is not public, so the main query finds nothing and
+	 * WordPress is about to answer 404; template_redirect never sees the
+	 * post. Look the slug up here instead.
+	 *
+	 * @param bool      $preempt  Whether another callback already handled the 404.
+	 * @param \WP_Query $wp_query The main query.
+	 * @return bool True when this answered the request.
+	 */
+	public function handle_archived_walk( $preempt, $wp_query ) {
+		if ( $preempt || ! $wp_query instanceof \WP_Query || $wp_query->posts ) {
+			return $preempt;
+		}
+
+		$slug = (string) $wp_query->get( \Vandrekalender\Event::CUSTOMPOSTTYPE );
+		if ( '' === $slug && \Vandrekalender\Event::CUSTOMPOSTTYPE === $wp_query->get( 'post_type' ) ) {
+			$slug = (string) $wp_query->get( 'name' );
+		}
+		if ( '' === $slug ) {
+			return $preempt;
+		}
+
+		$ids = get_posts(
+			[
+				'post_type'      => \Vandrekalender\Event::CUSTOMPOSTTYPE,
+				'post_status'    => Vandrekalender_Archived_Walks::STATUS,
+				'name'           => $slug,
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+			]
+		);
+		if ( ! $ids ) {
+			return $preempt;
+		}
+
+		$post_id  = (int) $ids[0];
+		$response = self::archived_walk_response(
+			(string) get_post_meta( $post_id, \Vandrekalender\Event::META_SERIES_KEY, true ),
+			(bool) get_post_meta( $post_id, \Vandrekalender\Event::META_CLAIMED, true ),
+			fn( string $series_key ): int => $this->find_next_occurrence( $series_key, $post_id )
+		);
+
+		if ( 301 === $response['status'] ) {
+			wp_safe_redirect( get_permalink( $response['post_id'] ), 301 );
+			exit;
+		}
+
+		// The 404 template renders the page body; the status says the walk
+		// is gone for good, so search engines drop it sooner than for a 404.
+		$wp_query->set_404();
+		status_header( 410 );
+		nocache_headers();
+
+		return true;
+	}
+
+	/**
+	 * What an archived walk's URL answers: 301 to the next occurrence of its
+	 * series, or 410. Claimed walks are never redirected, like in
+	 * maybe_redirect_to_next_occurrence(). No other redirects (decided on
+	 * #37, 10 November 2026).
+	 *
+	 * @param string   $series_key      The walk's event_series_key, may be ''.
+	 * @param bool     $claimed         Whether an organiser claimed the walk.
+	 * @param callable $next_occurrence Series key => post ID of the next published occurrence, or 0.
+	 * @return array{status: int, post_id: int}
+	 */
+	public static function archived_walk_response( string $series_key, bool $claimed, callable $next_occurrence ): array {
+		$gone = [
+			'status'  => 410,
+			'post_id' => 0,
+		];
+
+		if ( '' === $series_key || $claimed ) {
+			return $gone;
+		}
+
+		$next = (int) $next_occurrence( $series_key );
+
+		return $next > 0 ? [
+			'status'  => 301,
+			'post_id' => $next,
+		] : $gone;
 	}
 
 	/**
