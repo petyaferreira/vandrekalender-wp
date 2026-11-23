@@ -10,10 +10,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Vandrekalender_Month_Quick_Filter {
 
-	const BLOCK  = 'vandrekalender/month-quick-filter';
-	const CHIPS  = 6;
-	const PAST   = 'past';
-	const FUTURE = 'future';
+	const CHIPS = 6;
+	const PAST  = 'past';
 
 	/**
 	 * The 6 months a chip row shows, worked out from $today, never stored.
