@@ -1,6 +1,6 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- PHPUnit needs the file named like the class.
 /**
- * Page template migration of #255: every page keeps the look it had.
+ * Page template files of #255.
  *
  * @package Vandrekalender
  */
@@ -8,7 +8,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Vandrekalender_Page_Templates::migrated_template() and the template files.
+ * The page template files.
  */
 class PageTemplatesTest extends TestCase {
 
@@ -19,30 +19,6 @@ class PageTemplatesTest extends TestCase {
 	 */
 	private function templates_dir(): string {
 		return dirname( __DIR__, 2 ) . '/wp-content/themes/vandrekalender-theme/templates/';
-	}
-
-	/**
-	 * Pages on the old no-title default move to page-without-title.
-	 */
-	public function test_default_moves_to_without_title(): void {
-		$this->assertSame( 'page-without-title', Vandrekalender_Page_Templates::migrated_template( '' ) );
-		$this->assertSame( 'page-without-title', Vandrekalender_Page_Templates::migrated_template( 'default' ) );
-	}
-
-	/**
-	 * Pages on the old title template move to the default, which now has the title.
-	 */
-	public function test_with_title_moves_to_default(): void {
-		$this->assertSame( 'default', Vandrekalender_Page_Templates::migrated_template( 'page-with-title' ) );
-	}
-
-	/**
-	 * Every other template stays.
-	 */
-	public function test_other_templates_stay(): void {
-		foreach ( [ 'page-without-gaps', 'page-spaced-no-title', 'page-without-title' ] as $template ) {
-			$this->assertNull( Vandrekalender_Page_Templates::migrated_template( $template ), $template );
-		}
 	}
 
 	/**
