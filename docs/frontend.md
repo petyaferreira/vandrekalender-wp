@@ -93,7 +93,7 @@ All page templates share one skeleton — header part → `<main>` → footer pa
 | Template | Use case |
 |---|---|
 | `page.html` (default) | Standard content pages. Renders the post title, so the editor shows a title field for new pages (#255). |
-| `page-without-title.html` | "Page (without title)": pages that put their own H1 in the content (front page, Kontakt, Tidligere ture). Also the hero template: make the first content block a full-width Cover and it sits flush against the header. The default before #255; a one-time migration (`inc/class-page-templates.php`) moved the existing pages to it. |
+| `page-without-title.html` | "Page (without title)": pages that put their own H1 in the content (front page, Kontakt, Tidligere ture). Also the hero template: make the first content block a full-width Cover and it sits flush against the header. The default before #255; the existing pages were moved to it in #255. |
 | `page-spaced-no-title.html` | "Page (spaced, no title)": like page-without-title, but the content sits in a constrained `<main>` (Om os). |
 | `page-without-gaps.html` | Full-bleed pages: zero `blockGap` between content blocks and a flush footer. |
 | `single-event.html` | Single event view, with breadcrumbs ("Kalender / Title", or "Kalender / Tidligere ture / Title" for a walk the past walks page lists: past, within its 12 months). |
