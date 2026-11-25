@@ -29,6 +29,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-schema.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/trait-polylang-language.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-past-events.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-past-walks.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-month-quick-filter.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-archived-walks.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-event-sitemap.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-legacy-event-urls.php';

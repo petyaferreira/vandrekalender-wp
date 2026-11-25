@@ -33,6 +33,7 @@ require VANDREKALENDER_TEST_INCLUDES . '/class-municipalities.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-scraper-base.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-event-rest-api.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-past-walks.php';
+require VANDREKALENDER_TEST_INCLUDES . '/class-month-quick-filter.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-archived-walks.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-archive-job.php';
 require VANDREKALENDER_TEST_INCLUDES . '/class-purge-job.php';
