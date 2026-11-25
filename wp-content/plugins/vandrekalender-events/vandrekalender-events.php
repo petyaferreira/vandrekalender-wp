@@ -42,6 +42,7 @@ require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-log.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-alerts.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-scheduler.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-archive-job.php';
+require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-purge-job.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-scraper-admin.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/class-facebook-importer.php';
 require_once VANDREKALENDER_EVENTS_DIR . 'includes/scrapers/class-scraper-mammut.php';
@@ -231,6 +232,49 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 			$count = count( $result['walks'] );
 			WP_CLI::success( $dry_run ? sprintf( '%d walks would be archived (dry run).', $count ) : sprintf( '%d walks archived.', $count ) );
+
+			if ( $result['failed'] ) {
+				WP_CLI::halt( 1 );
+			}
+		}
+	);
+}
+
+/**
+ * Register the `wp vandrekalender purge-archived` command (#269).
+ *
+ * Deletes every walk archived ARCHIVE_PURGE_YEARS ago, with its attendees
+ * and the files nothing else uses, and prints the walks, the files it
+ * deletes and the files it keeps with what uses them. --dry-run only
+ * prints. A real run is recorded in the Scraper Log.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command(
+		'vandrekalender purge-archived',
+		function ( $args, $assoc_args ) {
+			$dry_run = isset( $assoc_args['dry-run'] );
+			$result  = Vandrekalender_Purge_Job::execute( 'manual', $dry_run );
+
+			foreach ( $result['walks'] as $walk ) {
+				WP_CLI::log( sprintf( 'Walk %d  archived %s  %d attendees  %s', $walk['id'], $walk['archived_at'], $walk['attendees'], $walk['title'] ) );
+			}
+			foreach ( $result['delete'] as $file_id => $file ) {
+				WP_CLI::log( sprintf( 'Delete file %d  %s', $file_id, $file ) );
+			}
+			foreach ( $result['keep'] as $file_id => $kept ) {
+				WP_CLI::log( sprintf( 'Keep file %d  %s  used by %s', $file_id, $kept['file'], implode( ', ', $kept['users'] ) ) );
+			}
+			foreach ( $result['failed'] as $id => $message ) {
+				WP_CLI::warning( sprintf( '%d: %s', $id, $message ) );
+			}
+
+			$walks = count( $result['walks'] );
+			$files = count( $result['delete'] );
+			WP_CLI::success(
+				$dry_run
+					? sprintf( '%d walks and %d files would be deleted (dry run).', $walks, $files )
+					: sprintf( '%d walks and %d files deleted.', $walks, $files )
+			);
 
 			if ( $result['failed'] ) {
 				WP_CLI::halt( 1 );

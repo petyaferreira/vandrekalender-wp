@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
  * Scheduled weekly where VK_ENABLE_SCRAPING is set (production), like the
  * scrapers, and cleared elsewhere. `wp vandrekalender archive-old [--dry-run]`
  * runs the same code by hand. Every real run is recorded in the Scraper Log.
+ * The same weekly run then deletes walks archived 3 years ago
+ * (Vandrekalender_Purge_Job).
  *
  * @package Vandrekalender
  */
@@ -81,12 +83,15 @@ class Vandrekalender_Archive_Job {
 	}
 
 	/**
-	 * Cron entry point.
+	 * Cron entry point: archive old walks, then delete the walks archived
+	 * ARCHIVE_PURGE_YEARS ago (Vandrekalender_Purge_Job). Each records its
+	 * own row in the Scraper Log.
 	 *
 	 * @return void
 	 */
 	public static function run_from_cron(): void {
 		self::execute( 'cron', false );
+		Vandrekalender_Purge_Job::execute( 'cron', false );
 	}
 
 	/**
@@ -167,14 +172,16 @@ class Vandrekalender_Archive_Job {
 
 	/**
 	 * The Scraper Log entry for a run: one row, the job as its only "scraper".
+	 * Vandrekalender_Purge_Job uses it too, with its own name.
 	 *
 	 * @param string             $trigger  'cron' or 'manual'.
-	 * @param int                $archived Walks archived.
-	 * @param array<int, string> $failed   Error message by walk ID.
+	 * @param int                $archived Walks archived (or deleted).
+	 * @param array<int, string> $failed   Error message by walk or file ID.
 	 * @param float              $seconds  How long the run took.
+	 * @param string             $name     The job's name in the log.
 	 * @return array
 	 */
-	public static function log_entry( string $trigger, int $archived, array $failed, float $seconds ): array {
+	public static function log_entry( string $trigger, int $archived, array $failed, float $seconds, string $name = self::LOG_NAME ): array {
 		$errors = [];
 		foreach ( $failed as $post_id => $message ) {
 			$errors[] = sprintf( '#%d: %s', $post_id, $message );
@@ -187,7 +194,7 @@ class Vandrekalender_Archive_Job {
 			'total'    => $archived,
 			'scrapers' => [
 				[
-					'name'     => self::LOG_NAME,
+					'name'     => $name,
 					'count'    => $archived,
 					'status'   => $errors ? 'error' : 'ok',
 					'error'    => implode( '; ', $errors ),
