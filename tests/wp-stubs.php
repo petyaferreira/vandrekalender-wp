@@ -266,3 +266,49 @@ function add_query_arg( string $key, string $value, string $url ): string {
 function wp_login_url( string $redirect = '' ): string {
 	return 'https://example.test/wp-login.php' . ( '' !== $redirect ? '?redirect_to=' . rawurlencode( $redirect ) : '' );
 }
+
+/*
+ * Users, posts and updates for tests of admin actions. A test sets
+ * $GLOBALS['vandrekalender_test_caps'] (capability => bool) and
+ * $GLOBALS['vandrekalender_test_posts'] (ID => object), and reads the
+ * updates made from $GLOBALS['vandrekalender_test_updates'].
+ */
+$GLOBALS['vandrekalender_test_caps']    = [];
+$GLOBALS['vandrekalender_test_posts']   = [];
+$GLOBALS['vandrekalender_test_updates'] = [];
+
+/**
+ * Whether the test user has a capability (the object ID is ignored).
+ *
+ * @param string $capability Capability.
+ * @param mixed  ...$args    Object ID and more.
+ * @return bool
+ */
+function current_user_can( string $capability, ...$args ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as WordPress.
+	return ! empty( $GLOBALS['vandrekalender_test_caps'][ $capability ] );
+}
+
+/**
+ * A test post by ID, or null.
+ *
+ * @param int $post_id Post ID.
+ * @return object|null
+ */
+function get_post( int $post_id ) {
+	return $GLOBALS['vandrekalender_test_posts'][ $post_id ] ?? null;
+}
+
+/**
+ * Records the update and applies the status to the test post.
+ *
+ * @param array $postarr  Post fields.
+ * @param bool  $wp_error Whether to return a WP_Error on failure.
+ * @return int Post ID.
+ */
+function wp_update_post( array $postarr, bool $wp_error = false ): int { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as WordPress.
+	$GLOBALS['vandrekalender_test_updates'][] = $postarr;
+	if ( isset( $postarr['post_status'], $GLOBALS['vandrekalender_test_posts'][ $postarr['ID'] ] ) ) {
+		$GLOBALS['vandrekalender_test_posts'][ $postarr['ID'] ]->post_status = $postarr['post_status'];
+	}
+	return (int) $postarr['ID'];
+}
