@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vandrekalender Events 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vandrekalender-events\n"
-"POT-Creation-Date: 2026-11-23T11:14:29+00:00\n"
+"POT-Creation-Date: 2026-11-23T11:41:37+00:00\n"
 "PO-Revision-Date: 2026-10-08 15:00+0200\n"
 "Last-Translator: Petya Ferreira\n"
 "Language-Team: Danish\n"
@@ -544,36 +544,54 @@ msgstr "Næste slide"
 msgid "Tab"
 msgstr "Faneblad"
 
-#: includes/class-archived-walks.php:68
+#: includes/class-archived-walks.php:107
 msgctxt "post status"
 msgid "Archived"
 msgstr "Arkiveret"
 
 #. translators: %s: number of archived walks.
-#: includes/class-archived-walks.php:70
+#: includes/class-archived-walks.php:109
 #, php-format
 msgid "Archived <span class=\"count\">(%s)</span>"
 msgid_plural "Archived <span class=\"count\">(%s)</span>"
 msgstr[0] "Arkiveret <span class=\"count\">(%s)</span>"
 msgstr[1] "Arkiveret <span class=\"count\">(%s)</span>"
 
-#: includes/class-archived-walks.php:139
+#: includes/class-archived-walks.php:181
 msgid "Restore"
 msgstr "Gendan"
 
-#: includes/class-archived-walks.php:156
-msgid "You are not allowed to restore this walk."
-msgstr "Du har ikke tilladelse til at gendanne denne tur."
+#: includes/class-archived-walks.php:183
+msgid "Remove this walk from the site now? You can undo it with Restore in the Archived list."
+msgstr "Fjern turen fra siden nu? Du kan fortryde med Gendan under Arkiveret."
 
-#: includes/class-archived-walks.php:161
-msgid "This walk is not archived."
-msgstr "Denne tur er ikke arkiveret."
+#: includes/class-archived-walks.php:184
+msgid "Remove now"
+msgstr "Fjern nu"
+
+#: includes/class-archived-walks.php:209
+msgid "You are not allowed to change this walk."
+msgstr "Du har ikke tilladelse til at ændre denne tur."
+
+#: includes/class-archived-walks.php:212
+msgid "This walk cannot be changed this way: its status has changed. Reload the list."
+msgstr "Turen kan ikke ændres på den måde: dens status er ændret. Genindlæs listen."
+
+#: includes/class-archived-walks.php:215
+msgid "The walk could not be saved. Try again."
+msgstr "Turen kunne ikke gemmes. Prøv igen."
 
 #. translators: %s: walk title.
-#: includes/class-archived-walks.php:217
+#: includes/class-archived-walks.php:301
 #, php-format
 msgid "\"%s\" is published again."
 msgstr "“%s” er udgivet igen."
+
+#. translators: %s: walk title.
+#: includes/class-archived-walks.php:303
+#, php-format
+msgid "\"%s\" is archived and no longer shown on the site."
+msgstr "“%s” er arkiveret og vises ikke længere på siden."
 
 #: includes/class-author-dashboard.php:118
 msgid "Vandrekalender"
@@ -883,94 +901,100 @@ msgstr "Kilde"
 msgid "View on Facebook"
 msgstr "Se på Facebook"
 
-#: includes/class-geocoder.php:143
+#: includes/class-geocoder.php:144
 msgid "Address lookup returned no coordinates."
 msgstr "Adresseopslaget returnerede ingen koordinater."
 
 #. translators: %s: four-digit municipality code, e.g. 0101.
-#: includes/class-geocoder.php:153
+#: includes/class-geocoder.php:154
 #, php-format
 msgid "Municipality code \"%s\" is not in data/municipalities.json, so the event gets no region. Add it to the file."
 msgstr "Kommunekoden \"%s\" findes ikke i data/municipalities.json, så begivenheden får ingen region. Tilføj den til filen."
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:208
+#: includes/class-geocoder.php:209
 #, php-format
 msgid "Address \"%1$s\" was not found, and postcode %2$s has no area, so the event gets no pin."
 msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s har intet område, så begivenheden får ingen nål."
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:223
+#: includes/class-geocoder.php:224
 #, php-format
 msgid "Address \"%1$s\" was not found and names no town to check postcode %2$s against, so the event gets no pin."
 msgstr "Adressen \"%1$s\" blev ikke fundet og nævner ingen by at holde postnummer %2$s op imod, så begivenheden får ingen nål."
 
 #. translators: 1: address, 2: four-digit postcode, 3: the postcode's town, 4: the town in the address.
-#: includes/class-geocoder.php:229
+#: includes/class-geocoder.php:230
 #, php-format
 msgid "Address \"%1$s\" was not found, and postcode %2$s is %3$s, not %4$s, so the event gets no pin."
 msgstr "Adressen \"%1$s\" blev ikke fundet, og postnummer %2$s er %3$s, ikke %4$s, så begivenheden får ingen nål."
 
 #. translators: 1: address, 2: four-digit postcode.
-#: includes/class-geocoder.php:252
+#: includes/class-geocoder.php:253
 #, php-format
 msgid "Street not found for \"%1$s\", so the pin is placed in the middle of postcode %2$s."
 msgstr "Vejen i \"%1$s\" blev ikke fundet, så nålen sættes midt i postnummer %2$s."
 
-#: includes/class-geocoder.php:305 includes/class-geocoder.php:792
+#: includes/class-geocoder.php:306 includes/class-geocoder.php:822
 msgid "Address search returned an unexpected response."
 msgstr "Adressesøgningen returnerede et uventet svar."
 
-#: includes/class-geocoder.php:660
+#. translators: %s: DAGI municipality division id.
+#: includes/class-geocoder.php:615
+#, php-format
+msgid "Datafordeler has no municipality code for municipality division %s, so the event gets no region."
+msgstr "Datafordeler har ingen kommunekode for kommuneinddelingen %s, så begivenheden får ingen region."
+
+#: includes/class-geocoder.php:690
 msgid "Datafordeler is not configured (VANDREKALENDER_DATAFORDELER_API_KEY is missing), so no municipality or address could be found from coordinates."
 msgstr "Datafordeler er ikke sat op (VANDREKALENDER_DATAFORDELER_API_KEY mangler), så der kunne ikke findes kommune eller adresse ud fra koordinater."
 
-#: includes/class-geocoder.php:664
+#: includes/class-geocoder.php:694
 msgid "Skipped a Datafordeler lookup because Datafordeler failed earlier in this run."
 msgstr "Et opslag i Datafordeler blev sprunget over, fordi Datafordeler fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:686
+#: includes/class-geocoder.php:716
 #, php-format
 msgid "Datafordeler request failed: %s"
 msgstr "Kaldet til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:699
+#: includes/class-geocoder.php:729
 msgid "Datafordeler rejected the API key (expired, wrong, or created less than 15 minutes ago). See docs/deployment.md → Datafordeler API key."
 msgstr "Datafordeler afviste API-nøglen (udløbet, forkert eller oprettet for under 15 minutter siden). Se docs/deployment.md → Datafordeler API key."
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:707
+#: includes/class-geocoder.php:737
 #, php-format
 msgid "Datafordeler returned HTTP %d."
 msgstr "Datafordeler returnerede HTTP %d."
 
 #. translators: %s: first error message returned by the GraphQL API.
-#: includes/class-geocoder.php:720
+#: includes/class-geocoder.php:750
 #, php-format
 msgid "Datafordeler query failed: %s"
 msgstr "Forespørgslen til Datafordeler fejlede: %s"
 
-#: includes/class-geocoder.php:721
+#: includes/class-geocoder.php:751
 msgid "unexpected response"
 msgstr "uventet svar"
 
-#: includes/class-geocoder.php:742
+#: includes/class-geocoder.php:772
 msgid "Address search is not configured (VANDREKALENDER_ADRESSEVAELGER_TOKEN is missing), so no addresses were geocoded."
 msgstr "Adressesøgning er ikke sat op (VANDREKALENDER_ADRESSEVAELGER_TOKEN mangler), så ingen adresser blev geokodet."
 
-#: includes/class-geocoder.php:747
+#: includes/class-geocoder.php:777
 msgid "Skipped an address lookup because the address search failed earlier in this run."
 msgstr "Et adresseopslag blev sprunget over, fordi adressesøgningen fejlede tidligere i denne kørsel."
 
 #. translators: %s: error message from the HTTP request.
-#: includes/class-geocoder.php:767
+#: includes/class-geocoder.php:797
 #, php-format
 msgid "Address search request failed: %s"
 msgstr "Adressesøgningen fejlede: %s"
 
 #. translators: %d: HTTP status code.
-#: includes/class-geocoder.php:780
+#: includes/class-geocoder.php:810
 #, php-format
 msgid "Address search returned HTTP %d."
 msgstr "Adressesøgningen returnerede HTTP %d."
@@ -1266,7 +1290,7 @@ msgstr "Ny arrangørs navn"
 msgid "Due for removal"
 msgstr "Skal fjernes"
 
-#: includes/event/class-event.php:981
+#: includes/event/class-event.php:987
 msgid "Alle Vandreture"
 msgstr "Alle Vandreture"
 
