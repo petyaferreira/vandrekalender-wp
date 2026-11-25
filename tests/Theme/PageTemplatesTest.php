@@ -24,7 +24,7 @@ class PageTemplatesTest extends TestCase {
 	/**
 	 * The default renders the title, page-without-title does not, and the old title template is gone.
 	 */
-	public function test_template_files_match_the_mapping(): void {
+	public function test_page_templates_render_the_title_as_documented(): void {
 		$dir = $this->templates_dir();
 		// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local files in a test.
 		$this->assertStringContainsString( 'wp:post-title', (string) file_get_contents( $dir . 'page.html' ) );
